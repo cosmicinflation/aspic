@@ -600,6 +600,7 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
+FC_MODEXT
 SRCOMMDIR
 RANLIB
 CPP
@@ -3055,6 +3056,8 @@ FCFLAGS="-O -fopenmp"
 
 SRCOMMDIR="common"
 
+
+FC_MODEXT="mod"
 
 
 am__api_version='1.11'

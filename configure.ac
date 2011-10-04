@@ -9,6 +9,8 @@ FCFLAGS="-O -fopenmp"
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
 
+FC_MODEXT="mod"
+AC_SUBST([FC_MODEXT]) 
 
 AM_INIT_AUTOMAKE(slowroll, 0.1)
 
