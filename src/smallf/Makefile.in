@@ -14,7 +14,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -32,7 +31,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = common
+check_PROGRAMS = sfrehmain$(EXEEXT)
+subdir = src/smallf
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -41,21 +41,19 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-LIBRARIES = $(noinst_LIBRARIES)
-AR = ar
-ARFLAGS = cru
-libsrcommon_a_AR = $(AR) $(ARFLAGS)
-libsrcommon_a_LIBADD =
-am_libsrcommon_a_OBJECTS = infprec.$(OBJEXT) cosmopar.$(OBJEXT) \
-	infinout.$(OBJEXT) inftools.$(OBJEXT) srreheat.$(OBJEXT)
-libsrcommon_a_OBJECTS = $(am_libsrcommon_a_OBJECTS)
+am_sfrehmain_OBJECTS = sfrehmain-sfsrevol.$(OBJEXT) \
+	sfrehmain-sfreheat.$(OBJEXT) sfrehmain-sfrehmain.$(OBJEXT)
+sfrehmain_OBJECTS = $(am_sfrehmain_OBJECTS)
+sfrehmain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+sfrehmain_LINK = $(FCLD) $(sfrehmain_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 FCLD = $(FC)
 FCLINK = $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
-SOURCES = $(libsrcommon_a_SOURCES)
-DIST_SOURCES = $(libsrcommon_a_SOURCES)
+SOURCES = $(sfrehmain_SOURCES)
+DIST_SOURCES = $(sfrehmain_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -149,8 +147,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libsrcommon.a
-libsrcommon_a_SOURCES = infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 srreheat.f90
+sfrehmain_SOURCES = sfsrevol.f90 sfreheat.f90 sfrehmain.f90
+sfrehmain_FCFLAGS = -I../$(SRCOMMDIR)
+sfrehmain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 all: all-am
 
 .SUFFIXES:
@@ -164,9 +163,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu common/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/smallf/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu common/Makefile
+	  $(AUTOMAKE) --gnu src/smallf/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -186,12 +185,11 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-libsrcommon.a: $(libsrcommon_a_OBJECTS) $(libsrcommon_a_DEPENDENCIES) 
-	-rm -f libsrcommon.a
-	$(libsrcommon_a_AR) libsrcommon.a $(libsrcommon_a_OBJECTS) $(libsrcommon_a_LIBADD)
-	$(RANLIB) libsrcommon.a
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+sfrehmain$(EXEEXT): $(sfrehmain_OBJECTS) $(sfrehmain_DEPENDENCIES) 
+	@rm -f sfrehmain$(EXEEXT)
+	$(sfrehmain_LINK) $(sfrehmain_OBJECTS) $(sfrehmain_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -204,6 +202,24 @@ distclean-compile:
 
 .f90.obj:
 	$(FCCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+sfrehmain-sfsrevol.o: sfsrevol.f90
+	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfsrevol.o `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
+
+sfrehmain-sfsrevol.obj: sfsrevol.f90
+	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfsrevol.obj `if test -f 'sfsrevol.f90'; then $(CYGPATH_W) 'sfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/sfsrevol.f90'; fi`
+
+sfrehmain-sfreheat.o: sfreheat.f90
+	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfreheat.o `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
+
+sfrehmain-sfreheat.obj: sfreheat.f90
+	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfreheat.obj `if test -f 'sfreheat.f90'; then $(CYGPATH_W) 'sfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/sfreheat.f90'; fi`
+
+sfrehmain-sfrehmain.o: sfrehmain.f90
+	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfrehmain.o `test -f 'sfrehmain.f90' || echo '$(srcdir)/'`sfrehmain.f90
+
+sfrehmain-sfrehmain.obj: sfrehmain.f90
+	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfrehmain.obj `if test -f 'sfrehmain.f90'; then $(CYGPATH_W) 'sfrehmain.f90'; else $(CYGPATH_W) '$(srcdir)/sfrehmain.f90'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -288,8 +304,9 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -318,8 +335,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-local clean-noinstLIBRARIES \
-	mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-local mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
@@ -384,10 +400,10 @@ ps-am:
 
 uninstall-am:
 
-.MAKE: install-am install-strip
+.MAKE: check-am install-am install-strip
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-local clean-noinstLIBRARIES ctags distclean \
+.PHONY: CTAGS GTAGS all all-am check check-am clean \
+	clean-checkPROGRAMS clean-generic clean-local ctags distclean \
 	distclean-compile distclean-generic distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \

@@ -15,6 +15,6 @@ AC_SUBST([FC_MODEXT])
 AM_INIT_AUTOMAKE(slowroll, 0.1)
 
 AC_CONFIG_FILES([Makefile                 
-		 common/Makefile
-                 smallf/Makefile])
+		 src/common/Makefile
+                 src/smallf/Makefile])
 AC_OUTPUT

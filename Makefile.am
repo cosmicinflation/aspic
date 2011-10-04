@@ -1,4 +1,4 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = common smallf
+SUBDIRS = src/common src/smallf
 
