@@ -17,10 +17,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function lf_x_reheat(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function lf_x_reheat(p,w,lnRhoReh,Pstar,bfold)    
     implicit none
-    real(kp) :: sf_x_reheat
-    real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
+    real(kp) :: lf_x_reheat
+    real(kp), intent(in) :: p,lnRhoReh,w,Pstar
     real(kp), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
@@ -54,7 +54,7 @@ contains
     lf_x_reheat = x
 
     if (present(bfold)) then
-       bfold = - (matter**2/(2._kp * p) - nuEnd)
+       bfold = - (lf_nufunc(x,p) - nuEnd)
     endif
 
   end function lf_x_reheat
@@ -65,7 +65,7 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: lfData
 
-    real(kp) :: nuStar,p,mu,w,CalFplusNuEnd,potStar,epsStar
+    real(kp) :: nuStar,p,w,CalFplusNuEnd,potStar,epsStar
 
     p=lfData%real1
     w = lfData%real2
@@ -143,14 +143,15 @@ contains
   function lf_lnrhoreh(wreh,eps1,eps2,Pstar,bfold)     
     implicit none
     real(kp) :: lf_lnrhoreh
-    real(kp), intent(in) :: wreh,eps1,eps2,Pstar
+    real(kp), intent(inout) :: wreh
+    real(kp), intent(in) :: eps1,eps2,Pstar
     real(kp), optional :: bfold
 
     real(kp) :: w, p
     real(kp) :: xEnd, potEnd, epsEnd
     real(kp) :: x, potStar, epsStar, lnH2OverEps
     real(kp) :: oneMinusThreeWlnTreh, deltaNstar
-    real(kp), dimension(3) :: lfstar
+    real(kp), dimension(2) :: lfstar
 
     logical, parameter :: printTest = .false.
     logical, parameter :: enforceWofp = .true.
@@ -166,7 +167,7 @@ contains
        w = wreh
     endif
 
-    xEnd = lf_x_endinf_lf(p)       
+    xEnd = lf_x_endinf(p)       
     potEnd  = lf_norm_potential(xEnd,p)
     epsEnd = lf_epsilon_one(xEnd,p)
     
