@@ -66,7 +66,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libsrmodels_la_DEPENDENCIES = common/libsrcommon.la
+libsrmodels_la_DEPENDENCIES = common/libsrcommon.la \
+	smallf/libsmallf.la largef/liblargef.la
 am_libsrmodels_la_OBJECTS =
 libsrmodels_la_OBJECTS = $(am_libsrmodels_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -248,10 +249,10 @@ nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
 
 #while the real sources are already built libs
 libsrmodels_la_LIBADD = \
-         common/libsrcommon.la       
+        common/libsrcommon.la          \
+        smallf/libsmallf.la            \
+        largef/liblargef.la
 
-#        src/smallf/libsmallf.la         \
-#        src/largef/liblargef.la
 
 #to be build from there
 SUBDIRS = common smallf largef

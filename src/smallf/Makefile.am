@@ -1,9 +1,13 @@
-check_PROGRAMS = sfrehmain
+SMALLFSRC = sfsrevol.f90 sfreheat.f90
 
-sfrehmain_SOURCES = sfsrevol.f90 sfreheat.f90 sfrehmain.f90
+check_PROGRAMS = sfrehmain
+sfrehmain_SOURCES = $(SMALLFSRC) sfrehmain.f90
 sfrehmain_FCFLAGS = -I../$(SRCOMMDIR)
 sfrehmain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
+noinst_LTLIBRARIES = libsmallf.la
+libsmallf_la_SOURCES = $(SMALLFSRC)
+libsmallf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 
 clean-local: clean-modules
 clean-modules:

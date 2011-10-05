@@ -14,6 +14,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -43,8 +44,17 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am_sfrehmain_OBJECTS = sfrehmain-sfsrevol.$(OBJEXT) \
-	sfrehmain-sfreheat.$(OBJEXT) sfrehmain-sfrehmain.$(OBJEXT)
+LTLIBRARIES = $(noinst_LTLIBRARIES)
+libsmallf_la_LIBADD =
+am__objects_1 = libsmallf_la-sfsrevol.lo libsmallf_la-sfreheat.lo
+am_libsmallf_la_OBJECTS = $(am__objects_1)
+libsmallf_la_OBJECTS = $(am_libsmallf_la_OBJECTS)
+libsmallf_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libsmallf_la_FCFLAGS) \
+	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_2 = sfrehmain-sfsrevol.$(OBJEXT) \
+	sfrehmain-sfreheat.$(OBJEXT)
+am_sfrehmain_OBJECTS = $(am__objects_2) sfrehmain-sfrehmain.$(OBJEXT)
 sfrehmain_OBJECTS = $(am_sfrehmain_OBJECTS)
 sfrehmain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
 sfrehmain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
@@ -58,8 +68,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(sfrehmain_SOURCES)
-DIST_SOURCES = $(sfrehmain_SOURCES)
+SOURCES = $(libsmallf_la_SOURCES) $(sfrehmain_SOURCES)
+DIST_SOURCES = $(libsmallf_la_SOURCES) $(sfrehmain_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -181,9 +191,13 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-sfrehmain_SOURCES = sfsrevol.f90 sfreheat.f90 sfrehmain.f90
+SMALLFSRC = sfsrevol.f90 sfreheat.f90
+sfrehmain_SOURCES = $(SMALLFSRC) sfrehmain.f90
 sfrehmain_FCFLAGS = -I../$(SRCOMMDIR)
 sfrehmain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+noinst_LTLIBRARIES = libsmallf.la
+libsmallf_la_SOURCES = $(SMALLFSRC)
+libsmallf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -219,6 +233,17 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+libsmallf.la: $(libsmallf_la_OBJECTS) $(libsmallf_la_DEPENDENCIES) 
+	$(libsmallf_la_LINK)  $(libsmallf_la_OBJECTS) $(libsmallf_la_LIBADD) $(LIBS)
+
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
@@ -245,6 +270,12 @@ distclean-compile:
 
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
+
+libsmallf_la-sfsrevol.lo: sfsrevol.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsmallf_la_FCFLAGS) $(FCFLAGS) -c -o libsmallf_la-sfsrevol.lo `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
+
+libsmallf_la-sfreheat.lo: sfreheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsmallf_la_FCFLAGS) $(FCFLAGS) -c -o libsmallf_la-sfreheat.lo `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
 
 sfrehmain-sfsrevol.o: sfsrevol.f90
 	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfsrevol.o `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
@@ -355,7 +386,7 @@ distdir: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 check: check-am
-all-am: Makefile
+all-am: Makefile $(LTLIBRARIES)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -385,7 +416,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
-	mostlyclean-am
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
@@ -455,14 +486,14 @@ uninstall-am:
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean \
 	clean-checkPROGRAMS clean-generic clean-libtool clean-local \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	clean-noinstLTLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am
