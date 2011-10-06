@@ -1,9 +1,9 @@
 SMALLFSRC = sfsrevol.f90 sfreheat.f90
 
-check_PROGRAMS = sfrehmain
-sfrehmain_SOURCES = $(SMALLFSRC) sfrehmain.f90
-sfrehmain_FCFLAGS = -I../$(SRCOMMDIR)
-sfrehmain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+check_PROGRAMS = sftest
+sftest_SOURCES = $(SMALLFSRC) sftest.f90
+sftest_FCFLAGS = -I../$(SRCOMMDIR)
+sftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = libsmallf.la
 libsmallf_la_SOURCES = $(SMALLFSRC)

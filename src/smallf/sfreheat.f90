@@ -12,10 +12,11 @@ module sfreheat
   private
 
   public sf_x_reheat, sf_lnrhoend, sf_lnrhoreh, sf_x_obs
+  public find_sfreheat
 
 contains
 
-!returns x such given potential parameters, scalar power, wreh and
+!returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
   function sf_x_reheat(p,mu,w,lnRhoReh,Pstar,bfold)    
     implicit none
@@ -61,7 +62,7 @@ contains
     endif
 
     if (x.gt.1._kp) then
-       stop 'sf_x_reheat: phi>mu!'
+       if (display) write(*,*) 'sf_x_reheat: phi>mu!'
     endif
 
   end function sf_x_reheat

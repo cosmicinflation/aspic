@@ -1,9 +1,9 @@
 LARGEFSRC = lfsrevol.f90 lfreheat.f90
 
-check_PROGRAMS = lfrehmain
-lfrehmain_SOURCES = $(LARGEFSRC) lfrehmain.f90
-lfrehmain_FCFLAGS = -I../$(SRCOMMDIR)
-lfrehmain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+check_PROGRAMS = lftest
+lftest_SOURCES = $(LARGEFSRC) lftest.f90
+lftest_FCFLAGS = -I../$(SRCOMMDIR)
+lftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = liblargef.la
 liblargef_la_SOURCES = $(LARGEFSRC)

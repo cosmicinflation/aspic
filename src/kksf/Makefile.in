@@ -34,8 +34,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = lftest$(EXEEXT)
-subdir = src/largef
+check_PROGRAMS = kksftest$(EXEEXT)
+subdir = src/kksf
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -45,20 +45,23 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-liblargef_la_LIBADD =
-am__objects_1 = liblargef_la-lfsrevol.lo liblargef_la-lfreheat.lo
-am_liblargef_la_OBJECTS = $(am__objects_1)
-liblargef_la_OBJECTS = $(am_liblargef_la_OBJECTS)
-liblargef_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(liblargef_la_FCFLAGS) \
+libkksf_la_LIBADD =
+am__objects_1 = libkksf_la-kksfsrevol.lo libkksf_la-kksfreheat.lo
+am_libkksf_la_OBJECTS = $(am__objects_1)
+libkksf_la_OBJECTS = $(am_libkksf_la_OBJECTS)
+libkksf_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libkksf_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = lftest-lfsrevol.$(OBJEXT) lftest-lfreheat.$(OBJEXT)
-am_lftest_OBJECTS = $(am__objects_2) lftest-lftest.$(OBJEXT)
-lftest_OBJECTS = $(am_lftest_OBJECTS)
-lftest_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
-lftest_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(FCLD) $(lftest_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+am__objects_2 = kksftest-kksfsrevol.$(OBJEXT) \
+	kksftest-kksfreheat.$(OBJEXT)
+am_kksftest_OBJECTS = $(am__objects_2) kksftest-kksftest.$(OBJEXT)
+kksftest_OBJECTS = $(am_kksftest_OBJECTS)
+kksftest_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a \
+	../smallf/libsmallf_la-sfreheat.o \
+	../smallf/libsmallf_la-sfsrevol.o
+kksftest_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(kksftest_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -67,8 +70,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(liblargef_la_SOURCES) $(lftest_SOURCES)
-DIST_SOURCES = $(liblargef_la_SOURCES) $(lftest_SOURCES)
+SOURCES = $(libkksf_la_SOURCES) $(kksftest_SOURCES)
+DIST_SOURCES = $(libkksf_la_SOURCES) $(kksftest_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -190,13 +193,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-LARGEFSRC = lfsrevol.f90 lfreheat.f90
-lftest_SOURCES = $(LARGEFSRC) lftest.f90
-lftest_FCFLAGS = -I../$(SRCOMMDIR)
-lftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-noinst_LTLIBRARIES = liblargef.la
-liblargef_la_SOURCES = $(LARGEFSRC)
-liblargef_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+KKSFSRC = kksfsrevol.f90 kksfreheat.f90
+kksftest_SOURCES = $(KKSFSRC) kksftest.f90
+kksftest_FCFLAGS = -I../$(SRCOMMDIR) -I../smallf
+kksftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a \
+	../smallf/libsmallf_la-sfreheat.o \
+	../smallf/libsmallf_la-sfsrevol.o
+noinst_LTLIBRARIES = libkksf.la
+libkksf_la_SOURCES = $(KKSFSRC)
+libkksf_la_FCFLAGS = -I../$(SRCOMMDIR) -I../smallf $(AM_FCFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -210,9 +215,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/largef/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/kksf/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/largef/Makefile
+	  $(AUTOMAKE) --gnu src/kksf/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -240,8 +245,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-liblargef.la: $(liblargef_la_OBJECTS) $(liblargef_la_DEPENDENCIES) 
-	$(liblargef_la_LINK)  $(liblargef_la_OBJECTS) $(liblargef_la_LIBADD) $(LIBS)
+libkksf.la: $(libkksf_la_OBJECTS) $(libkksf_la_DEPENDENCIES) 
+	$(libkksf_la_LINK)  $(libkksf_la_OBJECTS) $(libkksf_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -251,9 +256,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-lftest$(EXEEXT): $(lftest_OBJECTS) $(lftest_DEPENDENCIES) 
-	@rm -f lftest$(EXEEXT)
-	$(lftest_LINK) $(lftest_OBJECTS) $(lftest_LDADD) $(LIBS)
+kksftest$(EXEEXT): $(kksftest_OBJECTS) $(kksftest_DEPENDENCIES) 
+	@rm -f kksftest$(EXEEXT)
+	$(kksftest_LINK) $(kksftest_OBJECTS) $(kksftest_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -270,29 +275,29 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-liblargef_la-lfsrevol.lo: lfsrevol.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblargef_la_FCFLAGS) $(FCFLAGS) -c -o liblargef_la-lfsrevol.lo `test -f 'lfsrevol.f90' || echo '$(srcdir)/'`lfsrevol.f90
+libkksf_la-kksfsrevol.lo: kksfsrevol.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libkksf_la_FCFLAGS) $(FCFLAGS) -c -o libkksf_la-kksfsrevol.lo `test -f 'kksfsrevol.f90' || echo '$(srcdir)/'`kksfsrevol.f90
 
-liblargef_la-lfreheat.lo: lfreheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblargef_la_FCFLAGS) $(FCFLAGS) -c -o liblargef_la-lfreheat.lo `test -f 'lfreheat.f90' || echo '$(srcdir)/'`lfreheat.f90
+libkksf_la-kksfreheat.lo: kksfreheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libkksf_la_FCFLAGS) $(FCFLAGS) -c -o libkksf_la-kksfreheat.lo `test -f 'kksfreheat.f90' || echo '$(srcdir)/'`kksfreheat.f90
 
-lftest-lfsrevol.o: lfsrevol.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfsrevol.o `test -f 'lfsrevol.f90' || echo '$(srcdir)/'`lfsrevol.f90
+kksftest-kksfsrevol.o: kksfsrevol.f90
+	$(FC) $(kksftest_FCFLAGS) $(FCFLAGS) -c -o kksftest-kksfsrevol.o `test -f 'kksfsrevol.f90' || echo '$(srcdir)/'`kksfsrevol.f90
 
-lftest-lfsrevol.obj: lfsrevol.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfsrevol.obj `if test -f 'lfsrevol.f90'; then $(CYGPATH_W) 'lfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/lfsrevol.f90'; fi`
+kksftest-kksfsrevol.obj: kksfsrevol.f90
+	$(FC) $(kksftest_FCFLAGS) $(FCFLAGS) -c -o kksftest-kksfsrevol.obj `if test -f 'kksfsrevol.f90'; then $(CYGPATH_W) 'kksfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/kksfsrevol.f90'; fi`
 
-lftest-lfreheat.o: lfreheat.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfreheat.o `test -f 'lfreheat.f90' || echo '$(srcdir)/'`lfreheat.f90
+kksftest-kksfreheat.o: kksfreheat.f90
+	$(FC) $(kksftest_FCFLAGS) $(FCFLAGS) -c -o kksftest-kksfreheat.o `test -f 'kksfreheat.f90' || echo '$(srcdir)/'`kksfreheat.f90
 
-lftest-lfreheat.obj: lfreheat.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfreheat.obj `if test -f 'lfreheat.f90'; then $(CYGPATH_W) 'lfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/lfreheat.f90'; fi`
+kksftest-kksfreheat.obj: kksfreheat.f90
+	$(FC) $(kksftest_FCFLAGS) $(FCFLAGS) -c -o kksftest-kksfreheat.obj `if test -f 'kksfreheat.f90'; then $(CYGPATH_W) 'kksfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/kksfreheat.f90'; fi`
 
-lftest-lftest.o: lftest.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lftest.o `test -f 'lftest.f90' || echo '$(srcdir)/'`lftest.f90
+kksftest-kksftest.o: kksftest.f90
+	$(FC) $(kksftest_FCFLAGS) $(FCFLAGS) -c -o kksftest-kksftest.o `test -f 'kksftest.f90' || echo '$(srcdir)/'`kksftest.f90
 
-lftest-lftest.obj: lftest.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lftest.obj `if test -f 'lftest.f90'; then $(CYGPATH_W) 'lftest.f90'; else $(CYGPATH_W) '$(srcdir)/lftest.f90'; fi`
+kksftest-kksftest.obj: kksftest.f90
+	$(FC) $(kksftest_FCFLAGS) $(FCFLAGS) -c -o kksftest-kksftest.obj `if test -f 'kksftest.f90'; then $(CYGPATH_W) 'kksftest.f90'; else $(CYGPATH_W) '$(srcdir)/kksftest.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -1,5 +1,5 @@
 !test the reheating derivation from slow-roll
-program sfrehmain  
+program sftest
   use infprec, only : kp, transfert
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use sfreheat, only : sf_x_reheat, sf_lnrhoend
@@ -76,4 +76,4 @@ program sfrehmain
      print *,'lnRhoReh =',lnrhoReh
   endif
 
-end program sfrehmain
+end program sftest

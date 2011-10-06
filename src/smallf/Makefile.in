@@ -34,7 +34,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = sfrehmain$(EXEEXT)
+check_PROGRAMS = sftest$(EXEEXT)
 subdir = src/smallf
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -52,14 +52,13 @@ libsmallf_la_OBJECTS = $(am_libsmallf_la_OBJECTS)
 libsmallf_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libsmallf_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = sfrehmain-sfsrevol.$(OBJEXT) \
-	sfrehmain-sfreheat.$(OBJEXT)
-am_sfrehmain_OBJECTS = $(am__objects_2) sfrehmain-sfrehmain.$(OBJEXT)
-sfrehmain_OBJECTS = $(am_sfrehmain_OBJECTS)
-sfrehmain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
-sfrehmain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(sfrehmain_FCFLAGS) \
-	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_2 = sftest-sfsrevol.$(OBJEXT) sftest-sfreheat.$(OBJEXT)
+am_sftest_OBJECTS = $(am__objects_2) sftest-sftest.$(OBJEXT)
+sftest_OBJECTS = $(am_sftest_OBJECTS)
+sftest_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+sftest_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(sftest_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -68,8 +67,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libsmallf_la_SOURCES) $(sfrehmain_SOURCES)
-DIST_SOURCES = $(libsmallf_la_SOURCES) $(sfrehmain_SOURCES)
+SOURCES = $(libsmallf_la_SOURCES) $(sftest_SOURCES)
+DIST_SOURCES = $(libsmallf_la_SOURCES) $(sftest_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -192,9 +191,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SMALLFSRC = sfsrevol.f90 sfreheat.f90
-sfrehmain_SOURCES = $(SMALLFSRC) sfrehmain.f90
-sfrehmain_FCFLAGS = -I../$(SRCOMMDIR)
-sfrehmain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+sftest_SOURCES = $(SMALLFSRC) sftest.f90
+sftest_FCFLAGS = -I../$(SRCOMMDIR)
+sftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 noinst_LTLIBRARIES = libsmallf.la
 libsmallf_la_SOURCES = $(SMALLFSRC)
 libsmallf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
@@ -252,9 +251,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-sfrehmain$(EXEEXT): $(sfrehmain_OBJECTS) $(sfrehmain_DEPENDENCIES) 
-	@rm -f sfrehmain$(EXEEXT)
-	$(sfrehmain_LINK) $(sfrehmain_OBJECTS) $(sfrehmain_LDADD) $(LIBS)
+sftest$(EXEEXT): $(sftest_OBJECTS) $(sftest_DEPENDENCIES) 
+	@rm -f sftest$(EXEEXT)
+	$(sftest_LINK) $(sftest_OBJECTS) $(sftest_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -277,23 +276,23 @@ libsmallf_la-sfsrevol.lo: sfsrevol.f90
 libsmallf_la-sfreheat.lo: sfreheat.f90
 	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsmallf_la_FCFLAGS) $(FCFLAGS) -c -o libsmallf_la-sfreheat.lo `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
 
-sfrehmain-sfsrevol.o: sfsrevol.f90
-	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfsrevol.o `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
+sftest-sfsrevol.o: sfsrevol.f90
+	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfsrevol.o `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
 
-sfrehmain-sfsrevol.obj: sfsrevol.f90
-	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfsrevol.obj `if test -f 'sfsrevol.f90'; then $(CYGPATH_W) 'sfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/sfsrevol.f90'; fi`
+sftest-sfsrevol.obj: sfsrevol.f90
+	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfsrevol.obj `if test -f 'sfsrevol.f90'; then $(CYGPATH_W) 'sfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/sfsrevol.f90'; fi`
 
-sfrehmain-sfreheat.o: sfreheat.f90
-	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfreheat.o `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
+sftest-sfreheat.o: sfreheat.f90
+	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfreheat.o `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
 
-sfrehmain-sfreheat.obj: sfreheat.f90
-	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfreheat.obj `if test -f 'sfreheat.f90'; then $(CYGPATH_W) 'sfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/sfreheat.f90'; fi`
+sftest-sfreheat.obj: sfreheat.f90
+	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfreheat.obj `if test -f 'sfreheat.f90'; then $(CYGPATH_W) 'sfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/sfreheat.f90'; fi`
 
-sfrehmain-sfrehmain.o: sfrehmain.f90
-	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfrehmain.o `test -f 'sfrehmain.f90' || echo '$(srcdir)/'`sfrehmain.f90
+sftest-sftest.o: sftest.f90
+	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sftest.o `test -f 'sftest.f90' || echo '$(srcdir)/'`sftest.f90
 
-sfrehmain-sfrehmain.obj: sfrehmain.f90
-	$(FC) $(sfrehmain_FCFLAGS) $(FCFLAGS) -c -o sfrehmain-sfrehmain.obj `if test -f 'sfrehmain.f90'; then $(CYGPATH_W) 'sfrehmain.f90'; else $(CYGPATH_W) '$(srcdir)/sfrehmain.f90'; fi`
+sftest-sftest.obj: sftest.f90
+	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sftest.obj `if test -f 'sftest.f90'; then $(CYGPATH_W) 'sftest.f90'; else $(CYGPATH_W) '$(srcdir)/sftest.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

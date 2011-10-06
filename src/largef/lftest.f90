@@ -1,5 +1,5 @@
 !test the reheating derivation from slow-roll
-program lfrehmain  
+program lftest
   use infprec, only : kp, transfert
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use lfsrevol, only : lf_epsilon_one, lf_epsilon_two
@@ -61,4 +61,4 @@ program lfrehmain
 
   
 
-end program lfrehmain
+end program lftest

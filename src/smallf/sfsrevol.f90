@@ -11,8 +11,9 @@ module sfsrevol
 
   private
 
-  public  sf_norm_potential, sf_epsilon_one, sf_epsilon_two
-  public  sf_x_endinf, sf_nufunc
+  public sf_norm_potential, sf_epsilon_one, sf_epsilon_two
+  public sf_x_endinf, sf_nufunc, sf_x_trajectory
+  public sf_x_epstwo, find_sfepstwo, find_sftraj, find_sfendinf
  
 contains
 !returns V/M^4

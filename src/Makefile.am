@@ -10,8 +10,9 @@ nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
 libsrmodels_la_LIBADD =                \
         common/libsrcommon.la          \
         smallf/libsmallf.la            \
-        largef/liblargef.la
+        largef/liblargef.la            \
+        kksf/libkksf.la
 
 #to be build from there
-SUBDIRS = common smallf largef
+SUBDIRS = common smallf largef kksf
 
