@@ -11,8 +11,9 @@ libsrmodels_la_LIBADD =                \
         common/libsrcommon.la          \
         smallf/libsmallf.la            \
         largef/liblargef.la            \
-        kksf/libkksf.la
+        kksf/libkksf.la                \
+        kklt/libkklt.la
 
 #to be build from there
-SUBDIRS = common smallf largef kksf
+SUBDIRS = common smallf largef kksf kklt
 

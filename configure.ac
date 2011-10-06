@@ -21,5 +21,6 @@ AC_CONFIG_FILES([Makefile
                  src/smallf/Makefile
                  src/largef/Makefile
                  src/kksf/Makefile
+                 src/kklt/Makefile
                 ])
 AC_OUTPUT

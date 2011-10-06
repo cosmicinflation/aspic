@@ -114,7 +114,8 @@ contains
   end function kksf_x_trajectory
 
     
-!returns x given epsilon2  
+!returns x given epsilon2. If x~1, the small field approx may be not
+!good enough, use kklt instead
   function kksf_x_epstwo(eps2,p,mu)   
     implicit none
     real(kp), intent(in) :: p,mu,eps2

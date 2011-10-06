@@ -52,7 +52,7 @@ contains
     kksfData%real3 = w
     kksfData%real4 = calF + nuEnd
 
-    mini = xEnd - epsilon(1._kp)
+    mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
     x = zbrent(find_sfreheat,mini,maxi,tolFind,kksfData)
