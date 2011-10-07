@@ -1,7 +1,13 @@
-This package compiles and install the shared library libsrmodels. It
-contains diverse functions for an exhaustive list of models allowing
-to compute their inflationary predictions, in the slow-roll
-approximations.
+This package compiles and install the shared scientific library
+libsrmodels.
+
+This is a collection of functions associated with various inflationary
+models that allow an easy computation of their respective observable
+predictions, in the slow-roll approximation. The library aims at
+implementing all of the inflationary models proposed so far. It is
+therefore released as GNU software, you are free and welcome to expand
+this code and distribute the source code along the rules specified in
+COPYING.
 
 * Compilation and installation of the library
   ./configure
