@@ -14411,7 +14411,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/common/Makefile src/smallf/Makefile src/largef/Makefile src/kksf/Makefile src/kklt/Makefile src/mixlf/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/common/Makefile src/smallf/Makefile src/largef/Makefile src/kksf/Makefile src/kklt/Makefile src/mixlf/Makefile src/rmass/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15545,6 +15545,7 @@ do
     "src/kksf/Makefile") CONFIG_FILES="$CONFIG_FILES src/kksf/Makefile" ;;
     "src/kklt/Makefile") CONFIG_FILES="$CONFIG_FILES src/kklt/Makefile" ;;
     "src/mixlf/Makefile") CONFIG_FILES="$CONFIG_FILES src/mixlf/Makefile" ;;
+    "src/rmass/Makefile") CONFIG_FILES="$CONFIG_FILES src/rmass/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

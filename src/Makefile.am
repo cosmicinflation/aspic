@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 lib_LTLIBRARIES = libsrmodels.la
 libsrmodels_la_SOURCES =
 
@@ -13,8 +11,9 @@ libsrmodels_la_LIBADD =                \
         largef/liblargef.la            \
         kksf/libkksf.la                \
         kklt/libkklt.la                \
-        mixlf/libmixlf.la
+        mixlf/libmixlf.la              \
+        rmass/librmass.la
 
 #to be build from there
-SUBDIRS = common smallf largef kksf kklt mixlf
+SUBDIRS = common smallf largef kksf kklt mixlf rmass
 
