@@ -24,5 +24,6 @@ AC_CONFIG_FILES([Makefile
                  src/kklt/Makefile
                  src/mixlf/Makefile
                  src/rmass/Makefile
+                 src/hybrid/Makefile
                 ])
 AC_OUTPUT

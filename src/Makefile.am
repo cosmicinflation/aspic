@@ -12,8 +12,9 @@ libsrmodels_la_LIBADD =                \
         kksf/libkksf.la                \
         kklt/libkklt.la                \
         mixlf/libmixlf.la              \
-        rmass/librmass.la
+        rmass/librmass.la              \
+        hybrid/libhybrid.la
 
 #to be build from there
-SUBDIRS = common smallf largef kksf kklt mixlf rmass
+SUBDIRS = common smallf largef kksf kklt mixlf rmass hybrid
 
