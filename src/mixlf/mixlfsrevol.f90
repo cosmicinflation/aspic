@@ -1,6 +1,6 @@
 !slow-roll functions for the large field mixed potential
 !
-!V(phi) = M^4 / [phi^p + alpha phi^q]
+!V(phi) = M^4 [phi^p + alpha phi^q]
 !
 !x = phi
 
