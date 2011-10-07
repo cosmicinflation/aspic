@@ -68,7 +68,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsrmodels_la_DEPENDENCIES = common/libsrcommon.la \
 	smallf/libsmallf.la largef/liblargef.la kksf/libkksf.la \
-	kklt/libkklt.la
+	kklt/libkklt.la mixlf/libmixlf.la
 am_libsrmodels_la_OBJECTS =
 libsrmodels_la_OBJECTS = $(am_libsrmodels_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -254,11 +254,12 @@ libsrmodels_la_LIBADD = \
         smallf/libsmallf.la            \
         largef/liblargef.la            \
         kksf/libkksf.la                \
-        kklt/libkklt.la
+        kklt/libkklt.la                \
+        mixlf/libmixlf.la
 
 
 #to be build from there
-SUBDIRS = common smallf largef kksf kklt
+SUBDIRS = common smallf largef kksf kklt mixlf
 all: all-recursive
 
 .SUFFIXES:

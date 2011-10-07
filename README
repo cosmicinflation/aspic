@@ -1,0 +1,19 @@
+This package compiles and install the shared library libsrmodels. It
+contains diverse functions for an exhaustive list of models allowing
+to compute their inflationary predictions, in the slow-roll
+approximations.
+
+* Compilation and installation of the library
+  ./configure
+  make
+  make install
+  
+  See INSTALL for more options.
+
+* Testing each models individually
+  ./configure
+  make check
+
+  In each model subdirectory (located under src/), a test program
+  print and generate slow-roll predictions for various values of the
+  reheating energy density.

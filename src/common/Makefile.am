@@ -1,4 +1,5 @@
-COMMONSRC = infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 srreheat.f90
+COMMONSRC = infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 \
+            hyper2F1.f90 specialinf.f90 srreheat.f90
 
 check_LIBRARIES = libsrcommon.a
 libsrcommon_a_SOURCES = $(COMMONSRC)

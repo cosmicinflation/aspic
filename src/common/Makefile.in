@@ -47,13 +47,15 @@ ARFLAGS = cru
 libsrcommon_a_AR = $(AR) $(ARFLAGS)
 libsrcommon_a_LIBADD =
 am__objects_1 = infprec.$(OBJEXT) cosmopar.$(OBJEXT) \
-	infinout.$(OBJEXT) inftools.$(OBJEXT) srreheat.$(OBJEXT)
+	infinout.$(OBJEXT) inftools.$(OBJEXT) hyper2F1.$(OBJEXT) \
+	specialinf.$(OBJEXT) srreheat.$(OBJEXT)
 am_libsrcommon_a_OBJECTS = $(am__objects_1)
 libsrcommon_a_OBJECTS = $(am_libsrcommon_a_OBJECTS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libsrcommon_la_LIBADD =
 am__objects_2 = libsrcommon_la-infprec.lo libsrcommon_la-cosmopar.lo \
 	libsrcommon_la-infinout.lo libsrcommon_la-inftools.lo \
+	libsrcommon_la-hyper2F1.lo libsrcommon_la-specialinf.lo \
 	libsrcommon_la-srreheat.lo
 am_libsrcommon_la_OBJECTS = $(am__objects_2)
 libsrcommon_la_OBJECTS = $(am_libsrcommon_la_OBJECTS)
@@ -191,7 +193,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-COMMONSRC = infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 srreheat.f90
+COMMONSRC = infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 \
+            hyper2F1.f90 specialinf.f90 srreheat.f90
+
 check_LIBRARIES = libsrcommon.a
 libsrcommon_a_SOURCES = $(COMMONSRC)
 noinst_LTLIBRARIES = libsrcommon.la
@@ -277,6 +281,12 @@ libsrcommon_la-infinout.lo: infinout.f90
 
 libsrcommon_la-inftools.lo: inftools.f90
 	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-inftools.lo `test -f 'inftools.f90' || echo '$(srcdir)/'`inftools.f90
+
+libsrcommon_la-hyper2F1.lo: hyper2F1.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-hyper2F1.lo `test -f 'hyper2F1.f90' || echo '$(srcdir)/'`hyper2F1.f90
+
+libsrcommon_la-specialinf.lo: specialinf.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-specialinf.lo `test -f 'specialinf.f90' || echo '$(srcdir)/'`specialinf.f90
 
 libsrcommon_la-srreheat.lo: srreheat.f90
 	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-srreheat.lo `test -f 'srreheat.f90' || echo '$(srcdir)/'`srreheat.f90

@@ -13,7 +13,7 @@ program kklttest
   integer :: npts = 20
 
   real(kp) :: mu,p,wreh,bfold
-  real(kp) :: lnRhoReh,chi,eps1,eps2,eps3
+  real(kp) :: lnRhoReh,chi,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(3) :: vecbuffer
@@ -28,6 +28,7 @@ program kklttest
 
 
   call delete_file('kkltreh_eps2eps1.dat')
+  call delete_file('kkltreh_nsr.dat')
 
 !chi stands for phi/mu
  
@@ -47,7 +48,12 @@ program kklttest
      if (display) print *,'lnRhoReh= N*= ',lnRhoReh,abs(bfold),eps1
 
      call livewrite('kkltreh_eps2eps1.dat',eps2,eps1,abs(bfold),lnRhoReh)
-  
+   
+     ns = 1._kp - 2._kp*eps1 - eps2
+     r =16._kp*eps1
+
+     call livewrite('kkltreh_nsr.dat',ns,r,abs(bfold),lnRhoReh)
+
   end do
 
  
