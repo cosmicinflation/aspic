@@ -10,6 +10,8 @@ kksftest_LDADD += ../smallf/libsmallf_la-sfsrevol.o
 noinst_LTLIBRARIES = libkksf.la
 libkksf_la_SOURCES = $(KKSFSRC)
 libkksf_la_FCFLAGS = -I../$(SRCOMMDIR) -I../smallf $(AM_FCFLAGS)
+libkksf_la_includedir = $(includedir)/$(SRINCDIR)
+libkksf_la_include_HEADERS = *.$(FC_MODEXT)
 
 clean-local: clean-modules
 clean-modules:

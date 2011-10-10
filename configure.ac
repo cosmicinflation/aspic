@@ -10,6 +10,9 @@ FCFLAGS="-O -fopenmp"
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
 
+SRINCDIR="srmodels"
+AC_SUBST([SRINCDIR])
+
 FC_MODEXT="mod"
 AC_SUBST([FC_MODEXT]) 
 

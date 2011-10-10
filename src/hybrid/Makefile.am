@@ -8,6 +8,8 @@ hytest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 noinst_LTLIBRARIES = libhybrid.la
 libhybrid_la_SOURCES = $(HYSRC)
 libhybrid_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libhybrid_la_includedir = $(includedir)/$(SRINCDIR)
+libhybrid_la_include_HEADERS = *.$(FC_MODEXT)
 
 clean-local: clean-modules
 clean-modules:

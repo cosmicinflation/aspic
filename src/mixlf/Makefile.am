@@ -8,6 +8,8 @@ mixlftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 noinst_LTLIBRARIES = libmixlf.la
 libmixlf_la_SOURCES = $(MIXLFSRC)
 libmixlf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libmixlf_la_includedir = $(includedir)/$(SRINCDIR)
+libmixlf_la_include_HEADERS = *.$(FC_MODEXT)
 
 clean-local: clean-modules
 clean-modules:

@@ -8,6 +8,8 @@ sftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 noinst_LTLIBRARIES = libsmallf.la
 libsmallf_la_SOURCES = $(SMALLFSRC)
 libsmallf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libsmallf_la_includedir = $(includedir)/$(SRINCDIR)
+libsmallf_la_include_HEADERS = *.$(FC_MODEXT)
 
 clean-local: clean-modules
 clean-modules:

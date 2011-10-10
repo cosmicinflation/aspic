@@ -8,6 +8,8 @@ lftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 noinst_LTLIBRARIES = liblargef.la
 liblargef_la_SOURCES = $(LARGEFSRC)
 liblargef_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+liblargef_la_includedir = $(includedir)/$(SRINCDIR)
+liblargef_la_include_HEADERS = *.$(FC_MODEXT)
 
 clean-local: clean-modules
 clean-modules:

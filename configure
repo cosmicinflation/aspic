@@ -646,6 +646,7 @@ INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
 FC_MODEXT
+SRINCDIR
 SRCOMMDIR
 OTOOL64
 OTOOL
@@ -9875,7 +9876,7 @@ fi
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 9878 "configure"' > conftest.$ac_ext
+    echo '#line 9879 "configure"' > conftest.$ac_ext
     if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -13429,7 +13430,7 @@ fi
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 13432 "configure"' > conftest.$ac_ext
+    echo '#line 13433 "configure"' > conftest.$ac_ext
     if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -13780,6 +13781,9 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 FCFLAGS="-O -fopenmp"
 
 SRCOMMDIR="common"
+
+
+SRINCDIR="srmodels"
 
 
 FC_MODEXT="mod"

@@ -9,6 +9,9 @@ libsrcommon_la_SOURCES = $(COMMONSRC)
 #avoids race condition on names
 libsrcommon_la_FCFLAGS = $(AM_FCFLAGS)
 
+libsrcommon_la_includedir = $(includedir)/$(SRINCDIR)
+libsrcommon_la_include_HEADERS = *.$(FC_MODEXT)
+
 #make clean does not remove modules by default
 clean-local: clean-modules
 clean-modules:
