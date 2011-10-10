@@ -218,6 +218,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MIXLFSRC = mixlfsrevol.f90 mixlfreheat.f90
+MIXLFMOD = mixlfsrevol.$(FC_MODEXT) mixlfreheat.$(FC_MODEXT)
 mixlftest_SOURCES = $(MIXLFSRC) mixlftest.f90
 mixlftest_FCFLAGS = -I../$(SRCOMMDIR)
 mixlftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
@@ -225,7 +226,7 @@ noinst_LTLIBRARIES = libmixlf.la
 libmixlf_la_SOURCES = $(MIXLFSRC)
 libmixlf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libmixlf_la_includedir = $(includedir)/$(SRINCDIR)
-libmixlf_la_include_HEADERS = *.$(FC_MODEXT)
+libmixlf_la_include_HEADERS = $(MIXLFMOD)
 all: all-am
 
 .SUFFIXES:

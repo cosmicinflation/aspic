@@ -217,6 +217,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 LARGEFSRC = lfsrevol.f90 lfreheat.f90
+LARGEFMOD = lfsrevol.$(FC_MODEXT) lfreheat.$(FC_MODEXT)
 lftest_SOURCES = $(LARGEFSRC) lftest.f90
 lftest_FCFLAGS = -I../$(SRCOMMDIR)
 lftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
@@ -224,7 +225,7 @@ noinst_LTLIBRARIES = liblargef.la
 liblargef_la_SOURCES = $(LARGEFSRC)
 liblargef_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 liblargef_la_includedir = $(includedir)/$(SRINCDIR)
-liblargef_la_include_HEADERS = *.$(FC_MODEXT)
+liblargef_la_include_HEADERS = $(LARGEFMOD)
 all: all-am
 
 .SUFFIXES:

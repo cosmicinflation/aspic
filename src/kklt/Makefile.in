@@ -218,6 +218,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 KKLTSRC = kkltsrevol.f90 kkltreheat.f90
+KKLTMOD = kkltsrevol.$(FC_MODEXT) kkltreheat.$(FC_MODEXT)
 kklttest_SOURCES = $(KKLTSRC) kklttest.f90
 kklttest_FCFLAGS = -I../$(SRCOMMDIR)
 kklttest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
@@ -225,7 +226,7 @@ noinst_LTLIBRARIES = libkklt.la
 libkklt_la_SOURCES = $(KKLTSRC)
 libkklt_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libkklt_la_includedir = $(includedir)/$(SRINCDIR)
-libkklt_la_include_HEADERS = *.$(FC_MODEXT)
+libkklt_la_include_HEADERS = $(KKLTMOD)
 all: all-am
 
 .SUFFIXES:

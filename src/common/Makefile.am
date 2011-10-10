@@ -1,6 +1,11 @@
 COMMONSRC = infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 \
             hyper2F1.f90 specialinf.f90 srreheat.f90
 
+COMMONMOD = cosmopar.$(FC_MODEXT) hyp_2f1_module.$(FC_MODEXT) \
+            infinout.$(FC_MODEXT) infprec.$(FC_MODEXT) inftools.$(FC_MODEXT) \
+            specialinf.$(FC_MODEXT) specialprec.$(FC_MODEXT) \
+            srreheat.$(FC_MODEXT)
+
 check_LIBRARIES = libsrcommon.a
 libsrcommon_a_SOURCES = $(COMMONSRC)
 
@@ -10,7 +15,7 @@ libsrcommon_la_SOURCES = $(COMMONSRC)
 libsrcommon_la_FCFLAGS = $(AM_FCFLAGS)
 
 libsrcommon_la_includedir = $(includedir)/$(SRINCDIR)
-libsrcommon_la_include_HEADERS = *.$(FC_MODEXT)
+libsrcommon_la_include_HEADERS = $(COMMONMOD)
 
 #make clean does not remove modules by default
 clean-local: clean-modules

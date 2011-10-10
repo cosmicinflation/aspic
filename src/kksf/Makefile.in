@@ -220,6 +220,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 KKSFSRC = kksfsrevol.f90 kksfreheat.f90
+KKSFMOD = kksfsrevol.$(FC_MODEXT) kksfreheat.$(FC_MODEXT)
 kksftest_SOURCES = $(KKSFSRC) kksftest.f90
 kksftest_FCFLAGS = -I../$(SRCOMMDIR) -I../smallf
 kksftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a \
@@ -229,7 +230,7 @@ noinst_LTLIBRARIES = libkksf.la
 libkksf_la_SOURCES = $(KKSFSRC)
 libkksf_la_FCFLAGS = -I../$(SRCOMMDIR) -I../smallf $(AM_FCFLAGS)
 libkksf_la_includedir = $(includedir)/$(SRINCDIR)
-libkksf_la_include_HEADERS = *.$(FC_MODEXT)
+libkksf_la_include_HEADERS = $(KKSFMOD)
 all: all-am
 
 .SUFFIXES:

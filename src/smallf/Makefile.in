@@ -217,6 +217,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SMALLFSRC = sfsrevol.f90 sfreheat.f90
+SMALLFMOD = sfsrevol.$(FC_MODEXT) sfreheat.$(FC_MODEXT)
 sftest_SOURCES = $(SMALLFSRC) sftest.f90
 sftest_FCFLAGS = -I../$(SRCOMMDIR)
 sftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
@@ -224,7 +225,7 @@ noinst_LTLIBRARIES = libsmallf.la
 libsmallf_la_SOURCES = $(SMALLFSRC)
 libsmallf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libsmallf_la_includedir = $(includedir)/$(SRINCDIR)
-libsmallf_la_include_HEADERS = *.$(FC_MODEXT)
+libsmallf_la_include_HEADERS = $(SMALLFMOD)
 all: all-am
 
 .SUFFIXES:

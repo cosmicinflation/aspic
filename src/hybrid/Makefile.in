@@ -217,6 +217,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 HYSRC = hysrevol.f90 hyreheat.f90
+HYMOD = hysrevol.$(FC_MODEXT) hyreheat.$(FC_MODEXT)
 hytest_SOURCES = $(HYSRC) hytest.f90
 hytest_FCFLAGS = -I../$(SRCOMMDIR)
 hytest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
@@ -224,7 +225,7 @@ noinst_LTLIBRARIES = libhybrid.la
 libhybrid_la_SOURCES = $(HYSRC)
 libhybrid_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libhybrid_la_includedir = $(includedir)/$(SRINCDIR)
-libhybrid_la_include_HEADERS = *.$(FC_MODEXT)
+libhybrid_la_include_HEADERS = $(HYMOD)
 all: all-am
 
 .SUFFIXES:

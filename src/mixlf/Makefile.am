@@ -1,4 +1,5 @@
 MIXLFSRC = mixlfsrevol.f90 mixlfreheat.f90
+MIXLFMOD = mixlfsrevol.$(FC_MODEXT) mixlfreheat.$(FC_MODEXT)
 
 check_PROGRAMS = mixlftest
 mixlftest_SOURCES = $(MIXLFSRC) mixlftest.f90
@@ -9,7 +10,7 @@ noinst_LTLIBRARIES = libmixlf.la
 libmixlf_la_SOURCES = $(MIXLFSRC)
 libmixlf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libmixlf_la_includedir = $(includedir)/$(SRINCDIR)
-libmixlf_la_include_HEADERS = *.$(FC_MODEXT)
+libmixlf_la_include_HEADERS = $(MIXLFMOD)
 
 clean-local: clean-modules
 clean-modules:

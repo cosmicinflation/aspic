@@ -1,4 +1,5 @@
 KKSFSRC = kksfsrevol.f90 kksfreheat.f90
+KKSFMOD = kksfsrevol.$(FC_MODEXT) kksfreheat.$(FC_MODEXT)
 
 check_PROGRAMS = kksftest
 kksftest_SOURCES = $(KKSFSRC) kksftest.f90
@@ -11,7 +12,7 @@ noinst_LTLIBRARIES = libkksf.la
 libkksf_la_SOURCES = $(KKSFSRC)
 libkksf_la_FCFLAGS = -I../$(SRCOMMDIR) -I../smallf $(AM_FCFLAGS)
 libkksf_la_includedir = $(includedir)/$(SRINCDIR)
-libkksf_la_include_HEADERS = *.$(FC_MODEXT)
+libkksf_la_include_HEADERS = $(KKSFMOD)
 
 clean-local: clean-modules
 clean-modules:
