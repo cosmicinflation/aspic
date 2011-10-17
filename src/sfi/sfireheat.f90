@@ -1,0 +1,252 @@
+!small field model reheating functions in the slow-roll approximations
+
+module sfireheat
+  use infprec, only : kp, tolkp, transfert
+  use inftools, only : zbrent
+  use srreheat, only : get_calfconst, find_reheat, slowroll_validity
+  use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
+  use sfisr, only : sfi_epsilon_one, sfi_epsilon_two, sfi_epsilon_three
+  use sfisr, only : sfi_norm_potential
+  use sfisr, only : sfi_x_endinf, sfi_efold_primitive
+  implicit none
+
+  private
+
+  public sfi_x_reheat, sfi_lnrhoend, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
+
+  public find_sfi_x_reheat
+
+contains
+
+!returns x given potential parameters, scalar power, wreh and
+!lnrhoreh. If present, returns the correspoding bfoldstar
+  function sfi_x_reheat(p,mu,w,lnRhoReh,Pstar,bfold)    
+    implicit none
+    real(kp) :: sfi_x_reheat
+    real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: sfiData
+    
+
+    if (w.eq.1._kp/3._kp) then
+       if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = sfi_x_endinf(p,mu)
+    epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
+
+    potEnd = sfi_norm_potential(xEnd,p)
+    primEnd = sfi_efold_primitive(xEnd,p,mu)
+   
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+
+    sfiData%real1 = p
+    sfiData%real2 = mu
+    sfiData%real3 = w
+    sfiData%real4 = calF + primEnd
+
+    mini = 0._kp
+    maxi = xEnd + epsilon(1._kp)
+
+    x = zbrent(find_sfi_x_reheat,mini,maxi,tolFind,sfiData)
+    sfi_x_reheat = x
+
+    if (present(bfold)) then
+       bfold = -(sfi_efold_primitive(x,p,mu) - primEnd)
+    endif
+
+    if (x.gt.1._kp) then
+       if (display) write(*,*) 'sfi_x_reheat: phi>mu!'
+    endif
+
+  end function sfi_x_reheat
+
+  function find_sfi_x_reheat(x,sfiData)   
+    implicit none
+    real(kp) :: find_sfi_x_reheat
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: sfiData
+
+    real(kp) :: primStar,p,mu,w,CalFplusPrimEnd,potStar,epsOneStar
+
+    p=sfiData%real1
+    mu = sfiData%real2
+    w = sfiData%real3
+    CalFplusPrimEnd = sfiData%real4
+
+    primStar = sfi_efold_primitive(x,p,mu)
+    epsOneStar = sfi_epsilon_one(x,p,mu)
+    potStar = sfi_norm_potential(x,p)
+
+
+    find_sfi_x_reheat = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
+
+!    sr_find_reheat_sf = nuStar - CalFPlusNuCalEnd &
+!         + 1._kp/(3._kp+3._kp*w) &
+!         * log( (9._kp-3._kp*epsStar)/( 9._kp*(2._kp*epsStar)**(0.5_kp+1.5_kp*w)*potStar) )
+
+  end function find_sfi_x_reheat
+
+
+  function sfi_lnrhoend(p,mu,Pstar) 
+    implicit none
+    real(kp) :: sfi_lnrhoend
+    real(kp), intent(in) :: p,mu,Pstar
+
+    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    real(kp), parameter :: wrad = 1._kp/3._kp
+    real(kp), parameter :: junk= 0._kp
+    real(kp) :: lnRhoEnd
+    
+    xEnd = sfi_x_endinf(p,mu)       
+    potEnd  = sfi_norm_potential(xEnd,p)
+    epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
+       
+    x = sfi_x_reheat(p,mu,wrad,junk,Pstar)    
+    potStar = sfi_norm_potential(x,p)
+    epsOneStar = sfi_epsilon_one(x,p,mu)
+    
+    if (.not.slowroll_validity(epsOneStar)) stop 'sfi_lnrhoend: slow-roll violated!'
+    
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+    sfi_lnrhoend = lnRhoEnd
+
+  end function sfi_lnrhoend
+
+  
+   
+!return the unique x,p,mu giving eps123 (and bfold if input)
+  function sfi_xpmu_fromepsilon(eps1,eps2,eps3,bfold)    
+    implicit none
+    real(kp), dimension(3) :: sfi_xpmu_fromepsilon
+    real(kp), intent(in) :: eps1,eps2,eps3
+    real(kp), intent(out), optional :: bfold
+
+    real(kp), parameter :: tolFind = tolkp   
+    type(transfert) :: sfiData
+    real(kp) :: p,mu
+    real(kp) :: x, xpowerp
+    real(kp) :: xEnd
+
+    if (.not.check_sfi_xpmu_fromepsilon(eps1,eps2,eps3)) then
+       stop 'sfi_xpmu_fromepsilon: eps123 do not defined an unique small field model!'
+    endif
+    
+    p = (2._kp/eps2)*( 8._kp*eps1**2 - 2._kp*eps1*eps2 + eps2**2 - eps2*eps3) &
+         /(4._kp*eps1 + eps2 - 2._kp*eps3)
+  
+    xpowerp = 2._kp*eps1*(eps2 - 4._kp*eps1)/(eps2*(eps2 - eps3))
+
+    x = xpowerp**(1._kp/p)
+
+    mu = p/sqrt(2._kp*eps1) * x**(p-1)/(1._kp - xpowerp)
+       
+
+    if (present(bfold)) then        
+       xEnd = sfi_x_endinf(p,mu)
+       bfold = -(sfi_efold_primitive(x,p,mu)-sfi_efold_primitive(xEnd,p,mu))
+    endif
+
+    sfi_xpmu_fromepsilon(1) = x
+    sfi_xpmu_fromepsilon(2) = p
+    sfi_xpmu_fromepsilon(3) = mu
+
+  end function sfi_xpmu_fromepsilon
+
+!check if eps123 uniquely define x,mu,p
+  function check_sfi_xpmu_fromepsilon(eps1,eps2,eps3)
+    real(kp), intent(in) :: eps1,eps2,eps3
+    logical :: check_sfi_xpmu_fromepsilon
+
+    real(kp) :: xpowerp, p
+
+    check_sfi_xpmu_fromepsilon = .false.
+    
+    if (eps2.lt.0._kp) return
+
+    if ((4._kp*eps1 + eps2 - 2._kp*eps3).eq.0._kp) then      
+       if (display) write(*,*)'check_sfi_xpmu_fromepsilon: p -> infty!'
+       return
+    endif
+
+    xpowerp = 2._kp*eps1*(eps2 - 4._kp*eps1)/(eps2*(eps2 - eps3))
+
+    if ((xpowerp.gt.1._kp).or.(xpowerp.lt.0._kp)) then
+       if (display) write(*,*)'check_sfi_xpmu_frompepsilon: x^p= ',xpowerp
+       return       
+    endif
+
+    p = (2._kp/eps2)*( 8._kp*eps1**2 - 2._kp*eps1*eps2 + eps2**2 - eps2*eps3) &
+         /(4._kp*eps1 + eps2 - 2._kp*eps3)
+
+    if (p.lt.1._kp) then
+       if (display) write(*,*)'check_sfi_xpmu_fromepsilon: p<1'
+       return
+    endif
+
+    check_sfi_xpmu_fromepsilon = .true.
+
+  end function check_sfi_xpmu_fromepsilon
+
+
+!returns lnrhoreh from eps123, wreh and Pstar (and bfoldstar if
+!present)
+  function sfi_lnrhoreh_fromepsilon(w,eps1,eps2,eps3,Pstar,bfoldstar)     
+    implicit none
+    real(kp) :: sfi_lnrhoreh_fromepsilon
+    real(kp), intent(in) :: w,eps1,eps2,eps3,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp) :: p, mu
+    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+    real(kp) :: deltaNstar
+    real(kp), dimension(3) :: sfistar
+
+    logical, parameter :: printTest = .false.
+
+    if (w.eq.1._kp/3._kp) then
+       write(*,*)'sfi_lnrhoreh_fromepsilon: w = 1/3!'
+       stop
+    end if
+    
+    sfistar = sfi_xpmu_fromepsilon(eps1,eps2,eps3,bfoldstar)
+
+    x = sfistar(1)
+    p = sfistar(2)
+    mu = sfistar(3)
+
+    xEnd = sfi_x_endinf(p,mu)       
+    potEnd  = sfi_norm_potential(xEnd,p)
+    epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
+    
+    potStar = sfi_norm_potential(x,p)
+    epsOneStar = sfi_epsilon_one(x,p,mu)
+
+    if (.not.slowroll_validity(epsOneStar)) stop 'sfi_lnrhoreh_fromepsilon: slow-roll violated!'
+
+   
+    deltaNstar = sfi_efold_primitive(x,p,mu) - sfi_efold_primitive(xEnd,p,mu)
+
+    if (printTest) then
+       write(*,*)'eps1in= eps1comp= ',eps1, epsOneStar
+       write(*,*)'eps2in= eps2comp= ',eps2,sfi_epsilon_two(x,p,mu)
+       write(*,*)'eps3in= eps3comp= ',eps3,sfi_epsilon_three(x,p,mu)
+    endif
+    
+    sfi_lnrhoreh_fromepsilon =  ln_rho_reheat(w,Pstar,epsOneStar,epsOneEnd,deltaNstar &
+         ,potEnd/potStar)
+
+  end function sfi_lnrhoreh_fromepsilon
+
+
+
+end module sfireheat

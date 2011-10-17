@@ -35,9 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = sftest$(EXEEXT)
-subdir = src/smallf
-DIST_COMMON = $(libsmallf_la_include_HEADERS) $(srcdir)/Makefile.am \
+check_PROGRAMS = rmimain$(EXEEXT)
+subdir = src/rmi
+DIST_COMMON = $(librmi_la_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -47,20 +47,20 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libsmallf_la_LIBADD =
-am__objects_1 = libsmallf_la-sfsrevol.lo libsmallf_la-sfreheat.lo
-am_libsmallf_la_OBJECTS = $(am__objects_1)
-libsmallf_la_OBJECTS = $(am_libsmallf_la_OBJECTS)
-libsmallf_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libsmallf_la_FCFLAGS) \
+librmi_la_LIBADD =
+am__objects_1 = librmi_la-rmisr.lo librmi_la-rmireheat.lo
+am_librmi_la_OBJECTS = $(am__objects_1)
+librmi_la_OBJECTS = $(am_librmi_la_OBJECTS)
+librmi_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(librmi_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = sftest-sfsrevol.$(OBJEXT) sftest-sfreheat.$(OBJEXT)
-am_sftest_OBJECTS = $(am__objects_2) sftest-sftest.$(OBJEXT)
-sftest_OBJECTS = $(am_sftest_OBJECTS)
-sftest_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
-sftest_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(FCLD) $(sftest_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+am__objects_2 = rmimain-rmisr.$(OBJEXT) rmimain-rmireheat.$(OBJEXT)
+am_rmimain_OBJECTS = $(am__objects_2) rmimain-rmimain.$(OBJEXT)
+rmimain_OBJECTS = $(am_rmimain_OBJECTS)
+rmimain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+rmimain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(rmimain_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -69,8 +69,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libsmallf_la_SOURCES) $(sftest_SOURCES)
-DIST_SOURCES = $(libsmallf_la_SOURCES) $(sftest_SOURCES)
+SOURCES = $(librmi_la_SOURCES) $(rmimain_SOURCES)
+DIST_SOURCES = $(librmi_la_SOURCES) $(rmimain_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -92,8 +92,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libsmallf_la_includedir)"
-HEADERS = $(libsmallf_la_include_HEADERS)
+am__installdirs = "$(DESTDIR)$(librmi_la_includedir)"
+HEADERS = $(librmi_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -216,16 +216,16 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SMALLFSRC = sfsrevol.f90 sfreheat.f90
-SMALLFMOD = sfsrevol.$(FC_MODEXT) sfreheat.$(FC_MODEXT)
-sftest_SOURCES = $(SMALLFSRC) sftest.f90
-sftest_FCFLAGS = -I../$(SRCOMMDIR)
-sftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-noinst_LTLIBRARIES = libsmallf.la
-libsmallf_la_SOURCES = $(SMALLFSRC)
-libsmallf_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-libsmallf_la_includedir = $(includedir)/$(SRINCDIR)
-libsmallf_la_include_HEADERS = $(SMALLFMOD)
+SRC = rmisr.f90 rmireheat.f90
+MOD = rmisr.$(FC_MODEXT) rmireheat.$(FC_MODEXT)
+rmimain_SOURCES = $(SRC) rmimain.f90
+rmimain_FCFLAGS = -I../$(SRCOMMDIR)
+rmimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+noinst_LTLIBRARIES = librmi.la
+librmi_la_SOURCES = $(SRC)
+librmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+librmi_la_includedir = $(includedir)/$(SRINCDIR)
+librmi_la_include_HEADERS = $(MOD)
 all: all-am
 
 .SUFFIXES:
@@ -239,9 +239,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/smallf/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/rmi/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/smallf/Makefile
+	  $(AUTOMAKE) --gnu src/rmi/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -269,8 +269,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libsmallf.la: $(libsmallf_la_OBJECTS) $(libsmallf_la_DEPENDENCIES) 
-	$(libsmallf_la_LINK)  $(libsmallf_la_OBJECTS) $(libsmallf_la_LIBADD) $(LIBS)
+librmi.la: $(librmi_la_OBJECTS) $(librmi_la_DEPENDENCIES) 
+	$(librmi_la_LINK)  $(librmi_la_OBJECTS) $(librmi_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -280,9 +280,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-sftest$(EXEEXT): $(sftest_OBJECTS) $(sftest_DEPENDENCIES) 
-	@rm -f sftest$(EXEEXT)
-	$(sftest_LINK) $(sftest_OBJECTS) $(sftest_LDADD) $(LIBS)
+rmimain$(EXEEXT): $(rmimain_OBJECTS) $(rmimain_DEPENDENCIES) 
+	@rm -f rmimain$(EXEEXT)
+	$(rmimain_LINK) $(rmimain_OBJECTS) $(rmimain_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -299,55 +299,55 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-libsmallf_la-sfsrevol.lo: sfsrevol.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsmallf_la_FCFLAGS) $(FCFLAGS) -c -o libsmallf_la-sfsrevol.lo `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
+librmi_la-rmisr.lo: rmisr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(librmi_la_FCFLAGS) $(FCFLAGS) -c -o librmi_la-rmisr.lo `test -f 'rmisr.f90' || echo '$(srcdir)/'`rmisr.f90
 
-libsmallf_la-sfreheat.lo: sfreheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsmallf_la_FCFLAGS) $(FCFLAGS) -c -o libsmallf_la-sfreheat.lo `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
+librmi_la-rmireheat.lo: rmireheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(librmi_la_FCFLAGS) $(FCFLAGS) -c -o librmi_la-rmireheat.lo `test -f 'rmireheat.f90' || echo '$(srcdir)/'`rmireheat.f90
 
-sftest-sfsrevol.o: sfsrevol.f90
-	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfsrevol.o `test -f 'sfsrevol.f90' || echo '$(srcdir)/'`sfsrevol.f90
+rmimain-rmisr.o: rmisr.f90
+	$(FC) $(rmimain_FCFLAGS) $(FCFLAGS) -c -o rmimain-rmisr.o `test -f 'rmisr.f90' || echo '$(srcdir)/'`rmisr.f90
 
-sftest-sfsrevol.obj: sfsrevol.f90
-	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfsrevol.obj `if test -f 'sfsrevol.f90'; then $(CYGPATH_W) 'sfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/sfsrevol.f90'; fi`
+rmimain-rmisr.obj: rmisr.f90
+	$(FC) $(rmimain_FCFLAGS) $(FCFLAGS) -c -o rmimain-rmisr.obj `if test -f 'rmisr.f90'; then $(CYGPATH_W) 'rmisr.f90'; else $(CYGPATH_W) '$(srcdir)/rmisr.f90'; fi`
 
-sftest-sfreheat.o: sfreheat.f90
-	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfreheat.o `test -f 'sfreheat.f90' || echo '$(srcdir)/'`sfreheat.f90
+rmimain-rmireheat.o: rmireheat.f90
+	$(FC) $(rmimain_FCFLAGS) $(FCFLAGS) -c -o rmimain-rmireheat.o `test -f 'rmireheat.f90' || echo '$(srcdir)/'`rmireheat.f90
 
-sftest-sfreheat.obj: sfreheat.f90
-	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sfreheat.obj `if test -f 'sfreheat.f90'; then $(CYGPATH_W) 'sfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/sfreheat.f90'; fi`
+rmimain-rmireheat.obj: rmireheat.f90
+	$(FC) $(rmimain_FCFLAGS) $(FCFLAGS) -c -o rmimain-rmireheat.obj `if test -f 'rmireheat.f90'; then $(CYGPATH_W) 'rmireheat.f90'; else $(CYGPATH_W) '$(srcdir)/rmireheat.f90'; fi`
 
-sftest-sftest.o: sftest.f90
-	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sftest.o `test -f 'sftest.f90' || echo '$(srcdir)/'`sftest.f90
+rmimain-rmimain.o: rmimain.f90
+	$(FC) $(rmimain_FCFLAGS) $(FCFLAGS) -c -o rmimain-rmimain.o `test -f 'rmimain.f90' || echo '$(srcdir)/'`rmimain.f90
 
-sftest-sftest.obj: sftest.f90
-	$(FC) $(sftest_FCFLAGS) $(FCFLAGS) -c -o sftest-sftest.obj `if test -f 'sftest.f90'; then $(CYGPATH_W) 'sftest.f90'; else $(CYGPATH_W) '$(srcdir)/sftest.f90'; fi`
+rmimain-rmimain.obj: rmimain.f90
+	$(FC) $(rmimain_FCFLAGS) $(FCFLAGS) -c -o rmimain-rmimain.obj `if test -f 'rmimain.f90'; then $(CYGPATH_W) 'rmimain.f90'; else $(CYGPATH_W) '$(srcdir)/rmimain.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-libsmallf_la_includeHEADERS: $(libsmallf_la_include_HEADERS)
+install-librmi_la_includeHEADERS: $(librmi_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libsmallf_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libsmallf_la_includedir)"
-	@list='$(libsmallf_la_include_HEADERS)'; test -n "$(libsmallf_la_includedir)" || list=; \
+	test -z "$(librmi_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(librmi_la_includedir)"
+	@list='$(librmi_la_include_HEADERS)'; test -n "$(librmi_la_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libsmallf_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libsmallf_la_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(librmi_la_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(librmi_la_includedir)" || exit $$?; \
 	done
 
-uninstall-libsmallf_la_includeHEADERS:
+uninstall-librmi_la_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libsmallf_la_include_HEADERS)'; test -n "$(libsmallf_la_includedir)" || list=; \
+	@list='$(librmi_la_include_HEADERS)'; test -n "$(librmi_la_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libsmallf_la_includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libsmallf_la_includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(librmi_la_includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(librmi_la_includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -436,7 +436,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libsmallf_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(librmi_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -486,7 +486,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libsmallf_la_includeHEADERS
+install-data-am: install-librmi_la_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -531,7 +531,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libsmallf_la_includeHEADERS
+uninstall-am: uninstall-librmi_la_includeHEADERS
 
 .MAKE: check-am install-am install-strip
 
@@ -542,14 +542,13 @@ uninstall-am: uninstall-libsmallf_la_includeHEADERS
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am \
-	install-libsmallf_la_includeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am \
-	uninstall-libsmallf_la_includeHEADERS
+	install-info install-info-am install-librmi_la_includeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-librmi_la_includeHEADERS
 
 
 clean-local: clean-modules

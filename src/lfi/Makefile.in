@@ -35,9 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = lftest$(EXEEXT)
-subdir = src/largef
-DIST_COMMON = $(liblargef_la_include_HEADERS) $(srcdir)/Makefile.am \
+check_PROGRAMS = lfimain$(EXEEXT)
+subdir = src/lfi
+DIST_COMMON = $(liblfi_la_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -47,20 +47,20 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-liblargef_la_LIBADD =
-am__objects_1 = liblargef_la-lfsrevol.lo liblargef_la-lfreheat.lo
-am_liblargef_la_OBJECTS = $(am__objects_1)
-liblargef_la_OBJECTS = $(am_liblargef_la_OBJECTS)
-liblargef_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(liblargef_la_FCFLAGS) \
+liblfi_la_LIBADD =
+am__objects_1 = liblfi_la-lfisr.lo liblfi_la-lfireheat.lo
+am_liblfi_la_OBJECTS = $(am__objects_1)
+liblfi_la_OBJECTS = $(am_liblfi_la_OBJECTS)
+liblfi_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(liblfi_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = lftest-lfsrevol.$(OBJEXT) lftest-lfreheat.$(OBJEXT)
-am_lftest_OBJECTS = $(am__objects_2) lftest-lftest.$(OBJEXT)
-lftest_OBJECTS = $(am_lftest_OBJECTS)
-lftest_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
-lftest_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(FCLD) $(lftest_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+am__objects_2 = lfimain-lfisr.$(OBJEXT) lfimain-lfireheat.$(OBJEXT)
+am_lfimain_OBJECTS = $(am__objects_2) lfimain-lfimain.$(OBJEXT)
+lfimain_OBJECTS = $(am_lfimain_OBJECTS)
+lfimain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+lfimain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(lfimain_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -69,8 +69,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(liblargef_la_SOURCES) $(lftest_SOURCES)
-DIST_SOURCES = $(liblargef_la_SOURCES) $(lftest_SOURCES)
+SOURCES = $(liblfi_la_SOURCES) $(lfimain_SOURCES)
+DIST_SOURCES = $(liblfi_la_SOURCES) $(lfimain_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -92,8 +92,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(liblargef_la_includedir)"
-HEADERS = $(liblargef_la_include_HEADERS)
+am__installdirs = "$(DESTDIR)$(liblfi_la_includedir)"
+HEADERS = $(liblfi_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -216,16 +216,16 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-LARGEFSRC = lfsrevol.f90 lfreheat.f90
-LARGEFMOD = lfsrevol.$(FC_MODEXT) lfreheat.$(FC_MODEXT)
-lftest_SOURCES = $(LARGEFSRC) lftest.f90
-lftest_FCFLAGS = -I../$(SRCOMMDIR)
-lftest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-noinst_LTLIBRARIES = liblargef.la
-liblargef_la_SOURCES = $(LARGEFSRC)
-liblargef_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-liblargef_la_includedir = $(includedir)/$(SRINCDIR)
-liblargef_la_include_HEADERS = $(LARGEFMOD)
+SRC = lfisr.f90 lfireheat.f90
+MOD = lfisr.$(FC_MODEXT) lfireheat.$(FC_MODEXT)
+lfimain_SOURCES = $(SRC) lfimain.f90
+lfimain_FCFLAGS = -I../$(SRCOMMDIR)
+lfimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+noinst_LTLIBRARIES = liblfi.la
+liblfi_la_SOURCES = $(SRC)
+liblfi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+liblfi_la_includedir = $(includedir)/$(SRINCDIR)
+liblfi_la_include_HEADERS = $(MOD)
 all: all-am
 
 .SUFFIXES:
@@ -239,9 +239,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/largef/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/lfi/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/largef/Makefile
+	  $(AUTOMAKE) --gnu src/lfi/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -269,8 +269,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-liblargef.la: $(liblargef_la_OBJECTS) $(liblargef_la_DEPENDENCIES) 
-	$(liblargef_la_LINK)  $(liblargef_la_OBJECTS) $(liblargef_la_LIBADD) $(LIBS)
+liblfi.la: $(liblfi_la_OBJECTS) $(liblfi_la_DEPENDENCIES) 
+	$(liblfi_la_LINK)  $(liblfi_la_OBJECTS) $(liblfi_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -280,9 +280,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-lftest$(EXEEXT): $(lftest_OBJECTS) $(lftest_DEPENDENCIES) 
-	@rm -f lftest$(EXEEXT)
-	$(lftest_LINK) $(lftest_OBJECTS) $(lftest_LDADD) $(LIBS)
+lfimain$(EXEEXT): $(lfimain_OBJECTS) $(lfimain_DEPENDENCIES) 
+	@rm -f lfimain$(EXEEXT)
+	$(lfimain_LINK) $(lfimain_OBJECTS) $(lfimain_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -299,55 +299,55 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-liblargef_la-lfsrevol.lo: lfsrevol.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblargef_la_FCFLAGS) $(FCFLAGS) -c -o liblargef_la-lfsrevol.lo `test -f 'lfsrevol.f90' || echo '$(srcdir)/'`lfsrevol.f90
+liblfi_la-lfisr.lo: lfisr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblfi_la_FCFLAGS) $(FCFLAGS) -c -o liblfi_la-lfisr.lo `test -f 'lfisr.f90' || echo '$(srcdir)/'`lfisr.f90
 
-liblargef_la-lfreheat.lo: lfreheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblargef_la_FCFLAGS) $(FCFLAGS) -c -o liblargef_la-lfreheat.lo `test -f 'lfreheat.f90' || echo '$(srcdir)/'`lfreheat.f90
+liblfi_la-lfireheat.lo: lfireheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblfi_la_FCFLAGS) $(FCFLAGS) -c -o liblfi_la-lfireheat.lo `test -f 'lfireheat.f90' || echo '$(srcdir)/'`lfireheat.f90
 
-lftest-lfsrevol.o: lfsrevol.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfsrevol.o `test -f 'lfsrevol.f90' || echo '$(srcdir)/'`lfsrevol.f90
+lfimain-lfisr.o: lfisr.f90
+	$(FC) $(lfimain_FCFLAGS) $(FCFLAGS) -c -o lfimain-lfisr.o `test -f 'lfisr.f90' || echo '$(srcdir)/'`lfisr.f90
 
-lftest-lfsrevol.obj: lfsrevol.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfsrevol.obj `if test -f 'lfsrevol.f90'; then $(CYGPATH_W) 'lfsrevol.f90'; else $(CYGPATH_W) '$(srcdir)/lfsrevol.f90'; fi`
+lfimain-lfisr.obj: lfisr.f90
+	$(FC) $(lfimain_FCFLAGS) $(FCFLAGS) -c -o lfimain-lfisr.obj `if test -f 'lfisr.f90'; then $(CYGPATH_W) 'lfisr.f90'; else $(CYGPATH_W) '$(srcdir)/lfisr.f90'; fi`
 
-lftest-lfreheat.o: lfreheat.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfreheat.o `test -f 'lfreheat.f90' || echo '$(srcdir)/'`lfreheat.f90
+lfimain-lfireheat.o: lfireheat.f90
+	$(FC) $(lfimain_FCFLAGS) $(FCFLAGS) -c -o lfimain-lfireheat.o `test -f 'lfireheat.f90' || echo '$(srcdir)/'`lfireheat.f90
 
-lftest-lfreheat.obj: lfreheat.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lfreheat.obj `if test -f 'lfreheat.f90'; then $(CYGPATH_W) 'lfreheat.f90'; else $(CYGPATH_W) '$(srcdir)/lfreheat.f90'; fi`
+lfimain-lfireheat.obj: lfireheat.f90
+	$(FC) $(lfimain_FCFLAGS) $(FCFLAGS) -c -o lfimain-lfireheat.obj `if test -f 'lfireheat.f90'; then $(CYGPATH_W) 'lfireheat.f90'; else $(CYGPATH_W) '$(srcdir)/lfireheat.f90'; fi`
 
-lftest-lftest.o: lftest.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lftest.o `test -f 'lftest.f90' || echo '$(srcdir)/'`lftest.f90
+lfimain-lfimain.o: lfimain.f90
+	$(FC) $(lfimain_FCFLAGS) $(FCFLAGS) -c -o lfimain-lfimain.o `test -f 'lfimain.f90' || echo '$(srcdir)/'`lfimain.f90
 
-lftest-lftest.obj: lftest.f90
-	$(FC) $(lftest_FCFLAGS) $(FCFLAGS) -c -o lftest-lftest.obj `if test -f 'lftest.f90'; then $(CYGPATH_W) 'lftest.f90'; else $(CYGPATH_W) '$(srcdir)/lftest.f90'; fi`
+lfimain-lfimain.obj: lfimain.f90
+	$(FC) $(lfimain_FCFLAGS) $(FCFLAGS) -c -o lfimain-lfimain.obj `if test -f 'lfimain.f90'; then $(CYGPATH_W) 'lfimain.f90'; else $(CYGPATH_W) '$(srcdir)/lfimain.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-liblargef_la_includeHEADERS: $(liblargef_la_include_HEADERS)
+install-liblfi_la_includeHEADERS: $(liblfi_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(liblargef_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblargef_la_includedir)"
-	@list='$(liblargef_la_include_HEADERS)'; test -n "$(liblargef_la_includedir)" || list=; \
+	test -z "$(liblfi_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblfi_la_includedir)"
+	@list='$(liblfi_la_include_HEADERS)'; test -n "$(liblfi_la_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblargef_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblargef_la_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblfi_la_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblfi_la_includedir)" || exit $$?; \
 	done
 
-uninstall-liblargef_la_includeHEADERS:
+uninstall-liblfi_la_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(liblargef_la_include_HEADERS)'; test -n "$(liblargef_la_includedir)" || list=; \
+	@list='$(liblfi_la_include_HEADERS)'; test -n "$(liblfi_la_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(liblargef_la_includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(liblargef_la_includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(liblfi_la_includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(liblfi_la_includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -436,7 +436,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(liblargef_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(liblfi_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -486,7 +486,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-liblargef_la_includeHEADERS
+install-data-am: install-liblfi_la_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -531,7 +531,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-liblargef_la_includeHEADERS
+uninstall-am: uninstall-liblfi_la_includeHEADERS
 
 .MAKE: check-am install-am install-strip
 
@@ -542,14 +542,13 @@ uninstall-am: uninstall-liblargef_la_includeHEADERS
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am \
-	install-liblargef_la_includeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am \
-	uninstall-liblargef_la_includeHEADERS
+	install-info install-info-am install-liblfi_la_includeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-liblfi_la_includeHEADERS
 
 
 clean-local: clean-modules

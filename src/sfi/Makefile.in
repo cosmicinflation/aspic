@@ -35,9 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = hytest$(EXEEXT)
-subdir = src/hybrid
-DIST_COMMON = $(libhybrid_la_include_HEADERS) $(srcdir)/Makefile.am \
+check_PROGRAMS = sfimain$(EXEEXT)
+subdir = src/sfi
+DIST_COMMON = $(libsfi_la_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -47,20 +47,20 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libhybrid_la_LIBADD =
-am__objects_1 = libhybrid_la-hysrevol.lo libhybrid_la-hyreheat.lo
-am_libhybrid_la_OBJECTS = $(am__objects_1)
-libhybrid_la_OBJECTS = $(am_libhybrid_la_OBJECTS)
-libhybrid_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libhybrid_la_FCFLAGS) \
+libsfi_la_LIBADD =
+am__objects_1 = libsfi_la-sfisr.lo libsfi_la-sfireheat.lo
+am_libsfi_la_OBJECTS = $(am__objects_1)
+libsfi_la_OBJECTS = $(am_libsfi_la_OBJECTS)
+libsfi_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libsfi_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = hytest-hysrevol.$(OBJEXT) hytest-hyreheat.$(OBJEXT)
-am_hytest_OBJECTS = $(am__objects_2) hytest-hytest.$(OBJEXT)
-hytest_OBJECTS = $(am_hytest_OBJECTS)
-hytest_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
-hytest_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(FCLD) $(hytest_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+am__objects_2 = sfimain-sfisr.$(OBJEXT) sfimain-sfireheat.$(OBJEXT)
+am_sfimain_OBJECTS = $(am__objects_2) sfimain-sfimain.$(OBJEXT)
+sfimain_OBJECTS = $(am_sfimain_OBJECTS)
+sfimain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+sfimain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(sfimain_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -69,8 +69,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libhybrid_la_SOURCES) $(hytest_SOURCES)
-DIST_SOURCES = $(libhybrid_la_SOURCES) $(hytest_SOURCES)
+SOURCES = $(libsfi_la_SOURCES) $(sfimain_SOURCES)
+DIST_SOURCES = $(libsfi_la_SOURCES) $(sfimain_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -92,8 +92,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libhybrid_la_includedir)"
-HEADERS = $(libhybrid_la_include_HEADERS)
+am__installdirs = "$(DESTDIR)$(libsfi_la_includedir)"
+HEADERS = $(libsfi_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -216,16 +216,16 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-HYSRC = hysrevol.f90 hyreheat.f90
-HYMOD = hysrevol.$(FC_MODEXT) hyreheat.$(FC_MODEXT)
-hytest_SOURCES = $(HYSRC) hytest.f90
-hytest_FCFLAGS = -I../$(SRCOMMDIR)
-hytest_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-noinst_LTLIBRARIES = libhybrid.la
-libhybrid_la_SOURCES = $(HYSRC)
-libhybrid_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-libhybrid_la_includedir = $(includedir)/$(SRINCDIR)
-libhybrid_la_include_HEADERS = $(HYMOD)
+SRC = sfisr.f90 sfireheat.f90
+MOD = sfisr.$(FC_MODEXT) sfireheat.$(FC_MODEXT)
+sfimain_SOURCES = $(SRC) sfimain.f90
+sfimain_FCFLAGS = -I../$(SRCOMMDIR)
+sfimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+noinst_LTLIBRARIES = libsfi.la
+libsfi_la_SOURCES = $(SRC)
+libsfi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libsfi_la_includedir = $(includedir)/$(SRINCDIR)
+libsfi_la_include_HEADERS = $(MOD)
 all: all-am
 
 .SUFFIXES:
@@ -239,9 +239,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/hybrid/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/sfi/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/hybrid/Makefile
+	  $(AUTOMAKE) --gnu src/sfi/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -269,8 +269,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libhybrid.la: $(libhybrid_la_OBJECTS) $(libhybrid_la_DEPENDENCIES) 
-	$(libhybrid_la_LINK)  $(libhybrid_la_OBJECTS) $(libhybrid_la_LIBADD) $(LIBS)
+libsfi.la: $(libsfi_la_OBJECTS) $(libsfi_la_DEPENDENCIES) 
+	$(libsfi_la_LINK)  $(libsfi_la_OBJECTS) $(libsfi_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -280,9 +280,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-hytest$(EXEEXT): $(hytest_OBJECTS) $(hytest_DEPENDENCIES) 
-	@rm -f hytest$(EXEEXT)
-	$(hytest_LINK) $(hytest_OBJECTS) $(hytest_LDADD) $(LIBS)
+sfimain$(EXEEXT): $(sfimain_OBJECTS) $(sfimain_DEPENDENCIES) 
+	@rm -f sfimain$(EXEEXT)
+	$(sfimain_LINK) $(sfimain_OBJECTS) $(sfimain_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -299,55 +299,55 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-libhybrid_la-hysrevol.lo: hysrevol.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libhybrid_la_FCFLAGS) $(FCFLAGS) -c -o libhybrid_la-hysrevol.lo `test -f 'hysrevol.f90' || echo '$(srcdir)/'`hysrevol.f90
+libsfi_la-sfisr.lo: sfisr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsfi_la_FCFLAGS) $(FCFLAGS) -c -o libsfi_la-sfisr.lo `test -f 'sfisr.f90' || echo '$(srcdir)/'`sfisr.f90
 
-libhybrid_la-hyreheat.lo: hyreheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libhybrid_la_FCFLAGS) $(FCFLAGS) -c -o libhybrid_la-hyreheat.lo `test -f 'hyreheat.f90' || echo '$(srcdir)/'`hyreheat.f90
+libsfi_la-sfireheat.lo: sfireheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsfi_la_FCFLAGS) $(FCFLAGS) -c -o libsfi_la-sfireheat.lo `test -f 'sfireheat.f90' || echo '$(srcdir)/'`sfireheat.f90
 
-hytest-hysrevol.o: hysrevol.f90
-	$(FC) $(hytest_FCFLAGS) $(FCFLAGS) -c -o hytest-hysrevol.o `test -f 'hysrevol.f90' || echo '$(srcdir)/'`hysrevol.f90
+sfimain-sfisr.o: sfisr.f90
+	$(FC) $(sfimain_FCFLAGS) $(FCFLAGS) -c -o sfimain-sfisr.o `test -f 'sfisr.f90' || echo '$(srcdir)/'`sfisr.f90
 
-hytest-hysrevol.obj: hysrevol.f90
-	$(FC) $(hytest_FCFLAGS) $(FCFLAGS) -c -o hytest-hysrevol.obj `if test -f 'hysrevol.f90'; then $(CYGPATH_W) 'hysrevol.f90'; else $(CYGPATH_W) '$(srcdir)/hysrevol.f90'; fi`
+sfimain-sfisr.obj: sfisr.f90
+	$(FC) $(sfimain_FCFLAGS) $(FCFLAGS) -c -o sfimain-sfisr.obj `if test -f 'sfisr.f90'; then $(CYGPATH_W) 'sfisr.f90'; else $(CYGPATH_W) '$(srcdir)/sfisr.f90'; fi`
 
-hytest-hyreheat.o: hyreheat.f90
-	$(FC) $(hytest_FCFLAGS) $(FCFLAGS) -c -o hytest-hyreheat.o `test -f 'hyreheat.f90' || echo '$(srcdir)/'`hyreheat.f90
+sfimain-sfireheat.o: sfireheat.f90
+	$(FC) $(sfimain_FCFLAGS) $(FCFLAGS) -c -o sfimain-sfireheat.o `test -f 'sfireheat.f90' || echo '$(srcdir)/'`sfireheat.f90
 
-hytest-hyreheat.obj: hyreheat.f90
-	$(FC) $(hytest_FCFLAGS) $(FCFLAGS) -c -o hytest-hyreheat.obj `if test -f 'hyreheat.f90'; then $(CYGPATH_W) 'hyreheat.f90'; else $(CYGPATH_W) '$(srcdir)/hyreheat.f90'; fi`
+sfimain-sfireheat.obj: sfireheat.f90
+	$(FC) $(sfimain_FCFLAGS) $(FCFLAGS) -c -o sfimain-sfireheat.obj `if test -f 'sfireheat.f90'; then $(CYGPATH_W) 'sfireheat.f90'; else $(CYGPATH_W) '$(srcdir)/sfireheat.f90'; fi`
 
-hytest-hytest.o: hytest.f90
-	$(FC) $(hytest_FCFLAGS) $(FCFLAGS) -c -o hytest-hytest.o `test -f 'hytest.f90' || echo '$(srcdir)/'`hytest.f90
+sfimain-sfimain.o: sfimain.f90
+	$(FC) $(sfimain_FCFLAGS) $(FCFLAGS) -c -o sfimain-sfimain.o `test -f 'sfimain.f90' || echo '$(srcdir)/'`sfimain.f90
 
-hytest-hytest.obj: hytest.f90
-	$(FC) $(hytest_FCFLAGS) $(FCFLAGS) -c -o hytest-hytest.obj `if test -f 'hytest.f90'; then $(CYGPATH_W) 'hytest.f90'; else $(CYGPATH_W) '$(srcdir)/hytest.f90'; fi`
+sfimain-sfimain.obj: sfimain.f90
+	$(FC) $(sfimain_FCFLAGS) $(FCFLAGS) -c -o sfimain-sfimain.obj `if test -f 'sfimain.f90'; then $(CYGPATH_W) 'sfimain.f90'; else $(CYGPATH_W) '$(srcdir)/sfimain.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-libhybrid_la_includeHEADERS: $(libhybrid_la_include_HEADERS)
+install-libsfi_la_includeHEADERS: $(libsfi_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libhybrid_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libhybrid_la_includedir)"
-	@list='$(libhybrid_la_include_HEADERS)'; test -n "$(libhybrid_la_includedir)" || list=; \
+	test -z "$(libsfi_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libsfi_la_includedir)"
+	@list='$(libsfi_la_include_HEADERS)'; test -n "$(libsfi_la_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libhybrid_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libhybrid_la_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libsfi_la_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libsfi_la_includedir)" || exit $$?; \
 	done
 
-uninstall-libhybrid_la_includeHEADERS:
+uninstall-libsfi_la_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libhybrid_la_include_HEADERS)'; test -n "$(libhybrid_la_includedir)" || list=; \
+	@list='$(libsfi_la_include_HEADERS)'; test -n "$(libsfi_la_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libhybrid_la_includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libhybrid_la_includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(libsfi_la_includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libsfi_la_includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -436,7 +436,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libhybrid_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(libsfi_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -486,7 +486,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libhybrid_la_includeHEADERS
+install-data-am: install-libsfi_la_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -531,7 +531,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libhybrid_la_includeHEADERS
+uninstall-am: uninstall-libsfi_la_includeHEADERS
 
 .MAKE: check-am install-am install-strip
 
@@ -542,14 +542,13 @@ uninstall-am: uninstall-libhybrid_la_includeHEADERS
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am \
-	install-libhybrid_la_includeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am \
-	uninstall-libhybrid_la_includeHEADERS
+	install-info install-info-am install-libsfi_la_includeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-libsfi_la_includeHEADERS
 
 
 clean-local: clean-modules

@@ -3,7 +3,7 @@
 module srreheat
   use infprec, only : kp
   use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf2OmegaRad
-  use cosmopar, only : QrmsOverT, powerAmpScalar
+  use cosmopar, only : QrmsOverT, powerAmpScalar, lnMpinGeV
   implicit none
 
   private
@@ -18,10 +18,10 @@ module srreheat
   
   logical, parameter :: display = .false.
     
-  public display, pi
+  public display, pi, Nzero
   public slowroll_validity, get_calfconst
   public quadrupole_to_primscalar, find_reheat
-  public ln_energy_endinf, Nzero
+  public ln_rho_endinf, ln_rho_reheat,log_energy_reheat_ingev
 
 contains
 
@@ -73,7 +73,8 @@ contains
 
   end function get_calfconst
 
- 
+
+
 
   function quadrupole_to_primscalar(QoverT)
     implicit none
@@ -105,22 +106,67 @@ contains
 
 
 
-
-  function ln_energy_endinf(Pstar,epsStar,epsEnd,VendOverVstar)
+  function ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,VendOverVstar)
     implicit none
-    real(kp) :: ln_energy_endinf
-    real(kp), intent(in) :: Pstar, epsStar, epsEnd
+    real(kp) :: ln_rho_endinf
+    real(kp), intent(in) :: Pstar, epsOneStar, epsOneEnd
     real(kp), intent(in) :: VendOverVstar
 
     real(kp) :: H2OverEps
 
     H2OverEps = Pstar*8*pi*pi
 
-    ln_energy_endinf = log(H2OverEps) + log(3._kp*epsStar*(3._kp - epsStar)/(3._kp - epsEnd)) &
-         + log(VendOverVstar)
+    ln_rho_endinf = log(H2OverEps) + log(3._kp*epsOneStar*(3._kp - epsOneStar) &
+         /(3._kp - epsOneEnd)) + log(VendOverVstar)
 
-  end function ln_energy_endinf
+  end function ln_rho_endinf
 
  
+  function ln_rho_reheat(w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
+    implicit none
+    real(kp) :: ln_rho_reheat
+    real(kp), intent(in) :: w, Pstar, epsOneStar, epsOneEnd, deltaNstar
+    real(kp), intent(in) :: VendOverVstar
+
+    real(kp) :: lnH2OverEps, oneMinusThreeWlnEreh
+
+     if (w.eq.1._kp/3._kp) then
+        write(*,*)'ln_rho_reheat: w = 1/3!'
+        stop
+     end if
+
+     lnH2OverEps = log(Pstar*8*pi*pi)
+
+
+     oneMinusThreeWlnEreh &
+         = (3._kp + 3._kp*w)*(Nzero + deltaNstar) - 0.5_kp*(1._kp+3._kp*w)*lnH2OverEps &
+         + 0.5_kp*(1._kp - 3._kp*w)*log(epsOneStar) &
+         + log(3._kp*(3._kp - epsOneStar)/(epsOneStar*(3._kp - epsOneEnd))) &
+         + log(VendOverVstar)
+
+     ln_rho_reheat = oneMinusThreeWlnEreh*4._kp/(1._kp - 3._kp*w)
+
+  end function ln_rho_reheat
+
+  function log_energy_reheat_ingev(lnRhoReh)
+
+    implicit none
+    real(kp) :: log_energy_reheat_ingev
+    real(kp), intent(in) :: lnRhoReh
+
+    log_energy_reheat_ingev=0.25_kp*(lnRhoReh + 4._kp*lnMpinGeV)/log(10._kp)
+
+  end function log_energy_reheat_ingev
+
+
+
+
+
+
+
+
+
+
+
 end module srreheat
 

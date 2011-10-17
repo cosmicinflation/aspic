@@ -1,4 +1,4 @@
-AC_INIT([slowroll], [0.1], [ringeval@gmail.com])
+AC_INIT([srmodels], [0.1], [ringeval@iap.fr])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -16,17 +16,17 @@ AC_SUBST([SRINCDIR])
 FC_MODEXT="mod"
 AC_SUBST([FC_MODEXT]) 
 
-AM_INIT_AUTOMAKE(slowroll, 0.1)
+AM_INIT_AUTOMAKE(srmodels, 0.1)
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/common/Makefile
-                 src/smallf/Makefile
-                 src/largef/Makefile
-                 src/kksf/Makefile
-                 src/kklt/Makefile
-                 src/mixlf/Makefile
-                 src/rmass/Makefile
-                 src/hybrid/Makefile
+                 src/sfi/Makefile
+                 src/lfi/Makefile
+                 src/sfbi/Makefile
+                 src/bi/Makefile
+                 src/mlfi/Makefile
+                 src/rmi/Makefile
+                 src/vhi/Makefile
                 ])
 AC_OUTPUT
