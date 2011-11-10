@@ -1,2 +1,72 @@
-2011-09-11 (v0.1)
-	Importing basic models: largef, smallf, kksf, kklt, rmass, mixlf
+commit 74cc5ed142c1a37c2f8c708046391b8945c94a3d
+Date:   Thu Nov 10 18:55:04 2011 +0100
+
+    Import of 6 models + fixing autoconf files
+
+ Makefile.in               |    1 +
+ configure                 |   41 +-
+ configure.ac              |   16 +-
+ src/Makefile.am           |   34 +-
+ src/Makefile.in           |   45 +-
+ src/bi/Makefile           |  560 ----------
+ src/common/Makefile.am    |   12 +-
+ src/common/Makefile.in    |   29 +-
+ src/common/cosmopar.f90   |   37 +-
+ src/common/hyper2F1.f90   |    1 -
+ src/common/infinout.f90   |  380 +++++++-
+ src/common/infprec.f90    |   35 +-
+ src/common/inftools.f90   | 1079 +++++++++++++++++++-
+ src/common/inftools.h     |   12 +-
+ src/common/nrutil.f90     | 1185 ++++++++++++++++++++
+ src/common/specialinf.f90 | 2628 ++++++++++++++++++++++++++++++++++++++++++++-
+ src/cwi/Makefile.am       |   21 +
+ src/dsi/Makefile.am       |   21 +
+ src/esi/Makefile.am       |   21 +
+ src/gmi/Makefile.am       |   21 +
+ src/hf1i/Makefile.am      |   21 +
+ src/hf2i/Makefile.am      |   21 +
+ src/ii/Makefile.am        |   21 +
+ src/kmii/Makefile.am      |   21 +
+ src/kmiii/Makefile.am     |   21 +
+ src/lfi/Makefile.in       |    1 +
+ src/lfi/lfimain.f90       |   47 +-
+ src/lfi/lfireheat.f90     |    1 +
+ src/li/Makefile.am        |   21 +
+ src/mlfi/Makefile         |  561 ----------
+ src/mlfi/Makefile.in      |    1 +
+ src/mlfi/mlfimain.f90     |   52 +-
+ src/mlfi/mlfireheat.f90   |  127 ++--
+ src/mlfi/mlfisr.f90       |  159 ++--
+ src/mni/Makefile.am       |   21 +
+ src/mni/Makefile.in       |  561 ++++++++++
+ src/mni/mnimain.f90       |   64 ++
+ src/mni/mnireheat.f90     |  118 ++
+ src/mni/mnisr.f90         |  100 ++
+ src/pli/Makefile.am       |   21 +
+ src/pni/Makefile.am       |   21 +
+ src/pni/Makefile.in       |  561 ++++++++++
+ src/pni/pnimain.f90       |   64 ++
+ src/pni/pnireheat.f90     |  118 ++
+ src/pni/pnisr.f90         |  100 ++
+ src/rcmi/Makefile.am      |   21 +
+ src/rcmi/Makefile.in      |  562 ++++++++++
+ src/rcmi/rcmimain.f90     |   63 ++
+ src/rcmi/rcmireheat.f90   |  120 ++
+ src/rcmi/rcmisr.f90       |  115 ++
+ src/rcqi/Makefile.am      |   21 +
+ src/rcqi/Makefile.in      |  562 ++++++++++
+ src/rcqi/rcqimain.f90     |   64 ++
+ src/rcqi/rcqireheat.f90   |  117 ++
+ src/rcqi/rcqisr.f90       |  161 +++
+ src/rmi/Makefile          |  560 ----------
+ src/sfbi/Makefile         |  563 ----------
+ src/sfbi/Makefile.in      |    1 +
+ src/sfi/Makefile.in       |    1 +
+ src/vhi/Makefile          |  560 ----------
+ src/vhi/Makefile.in       |    1 +
+ 61 files changed, 9437 insertions(+), 3058 deletions(-)
+
+commit a2cb15152cb184297e82b6946868b942322defdc
+Date:   Mon Oct 17 10:58:15 2011 +0200
+
+    Changing all naming conventions, cleaning sources, lfi and sfi cross-checked by JMVV
