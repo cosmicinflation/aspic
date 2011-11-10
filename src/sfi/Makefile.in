@@ -216,6 +216,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+version_info = @version_info@
 SRC = sfisr.f90 sfireheat.f90
 MOD = sfisr.$(FC_MODEXT) sfireheat.$(FC_MODEXT)
 sfimain_SOURCES = $(SRC) sfimain.f90

@@ -218,6 +218,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+version_info = @version_info@
 SRC = sfbisr.f90 sfbireheat.f90
 MOD = sfbisr.$(FC_MODEXT) sfbireheat.$(FC_MODEXT)
 sfbimain_SOURCES = $(SRC) sfbimain.f90

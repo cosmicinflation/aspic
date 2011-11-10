@@ -1,10 +1,10 @@
-!slow-roll functions for the large field mixed potential
+!slow-roll functions for the mixed large field potential
 !
-!V(phi) = M^4 [phi^p + alpha phi^q]
+!V(phi) = M^4 (phi/Mp)^p [1+alpha/q*(phi/Mp)^q]
 !
 !x = phi
 
-module mixlfsrevol
+module mlfisr
   use infprec, only : kp, tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : hypergeom_2F1
@@ -12,137 +12,152 @@ module mixlfsrevol
 
   private
 
-  public mixlf_norm_potential, mixlf_epsilon_one, mixlf_epsilon_two
-  public mixlf_x_endinf, mixlf_nufunc, mixlf_x_trajectory
+  public  mlfi_norm_potential, mlfi_epsilon_one, mlfi_epsilon_two, mlfi_epsilon_three
+  public  mlfi_x_endinf, mlfi_efold_primitive, mlfi_x_trajectory
  
 contains
 !returns V/M^4
-  function mixlf_norm_potential(x,p,q,alpha)
+  function mlfi_norm_potential(x,p,q,alpha)
     implicit none
-    real(kp) :: mixlf_norm_potential
+    real(kp) :: mlfi_norm_potential
     real(kp), intent(in) :: x,p,q,alpha
 
-    mixlf_norm_potential = x**p + alpha * x**q
+    mlfi_norm_potential = x**p*(1._kp+alpha/q*x**q)
 
-  end function mixlf_norm_potential
+  end function mlfi_norm_potential
 
 
-!epsilon1(x)
-  function mixlf_epsilon_one(x,p,q,alpha)    
+!epsilon_one(x)
+  function mlfi_epsilon_one(x,p,q,alpha)    
     implicit none
-    real(kp) :: mixlf_epsilon_one
+    real(kp) :: mlfi_epsilon_one
     real(kp), intent(in) :: x,p,q,alpha
     
-    mixlf_epsilon_one = 0.5_kp/x**2 &
-         *((p+alpha*q*x**(q-p))/(1+alpha*x**(q-p)))**2
+    mlfi_epsilon_one = 0.5_kp/(x**2) &
+         *((p+alpha*(1._kp+p/q)*x**q)/(1._kp+alpha/q*x**q))**2
     
-  end function mixlf_epsilon_one
+  end function mlfi_epsilon_one
 
 
-!epsilon2(x)
-  function mixlf_epsilon_two(x,p,q,alpha)
+!epsilon_two(x)
+  function mlfi_epsilon_two(x,p,q,alpha)
     implicit none
-    real(kp) :: mixlf_epsilon_two
+    real(kp) :: mlfi_epsilon_two
     real(kp), intent(in) :: x,p,q,alpha
     
-    mixlf_epsilon_two = 2_kp/x**2 &
-         * (p-alpha*(p*p+q*(q-1)-p*(2*q+1))*x**(q-p) &
-         + alpha*alpha*q*(x*x)**(q-p)) &
-         / (1+alpha*x**(q-p))**2
+    mlfi_epsilon_two = 2_kp/(x**2) &
+        *(p+alpha**2/(q**2)*(p+q)*x**(2._kp*q)+alpha/q*(2._kp*p+q-q**2)*x**q) &
+         /(1._kp+alpha/q*x**q)**2  
     
-  end function mixlf_epsilon_two
+  end function mlfi_epsilon_two
 
 
-
-!this is nu(x)=integral[V(phi)/V'(phi) dphi]
-  function mixlf_nufunc(x,p,q,alpha)
+!epsilon_three(x)
+  function mlfi_epsilon_three(x,p,q,alpha)
     implicit none
+    real(kp) :: mlfi_epsilon_three
     real(kp), intent(in) :: x,p,q,alpha
-    real(kp) :: mixlf_nufunc
     
-    mixlf_nufunc = 0.5_kp*x**2/(p*q)*(p + (q-p) &
-         *hypergeom_2F1(1._kp,2._kp/(q-p),1._kp + 2._kp/(q-p),-alpha*q*x**(q-p)/p))
-   
-  end function mixlf_nufunc
+    mlfi_epsilon_three = 1._kp/(x**2) &
+         *1._kp/(p*q**2+alpha**2*(p+q)*x**(2*q)+alpha*q*(2._kp*p+q-q**2)*x**q) &
+         *1._kp/(1._kp+alpha/q*x**q)**2 &
+         *(2._kp*p**2*q**2+2._kp*alpha**4*(1+p/q)**2*x**(4._kp*q) &
+         +alpha**2*(12._kp**2+6._kp*p*q*(2._kp-q)+(q-2._kp)*(q-1._kp)*q**2)*x**(2._kp*q) &
+         +alpha**3*(p+q)*(8._kp*p/q+(1._kp-q)*(4._kp+q))*x**(3._kp*q) &
+         +alpha*p*q*(8._kp*p+q*(4._kp+q**2-3._kp*q))*x**q)
+    
+  end function mlfi_epsilon_three
 
 
-  
-!returns x at the end of inflation defined as epsilon1=1 or epsilon2=1
-  function mixlf_x_endinf(p,q,alpha)
+!returns x at the end of inflation defined as epsilon1=1
+  function mlfi_x_endinf(p,q,alpha)
     implicit none
     real(kp), intent(in) :: p,q,alpha
-    real(kp) :: mixlf_x_endinf
+    real(kp) :: mlfi_x_endinf
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
-    type(transfert) :: mixlfData
+    type(transfert) :: mlfiData
 
     mini = epsilon(1._kp)
     maxi = 1._kp/epsilon(1._kp)
 
-    mixlfData%real1 = p
-    mixlfData%real2 = q
-    mixlfData%real3 = alpha
+    mlfiData%real1 = p
+    mlfiData%real2 = q
+    mlfiData%real3 = alpha
 
-    mixlf_x_endinf = zbrent(find_mixlfendinf,mini,maxi,tolFind,mixlfData)
+    mlfi_x_endinf = zbrent(find_mlfiendinf,mini,maxi,tolFind,mlfiData)
    
-  end function mixlf_x_endinf
-  
-  function find_mixlfendinf(x,mixlfData)
+  end function mlfi_x_endinf
+
+
+  function find_mlfiendinf(x,mlfiData)
     implicit none
     real(kp), intent(in) :: x    
-    type(transfert), optional, intent(inout) :: mixlfData
-    real(kp) :: find_mixlfendinf
+    type(transfert), optional, intent(inout) :: mlfiData
+    real(kp) :: find_mlfiendinf
     real(kp) :: p,q,alpha
     
-    p = mixlfData%real1
-    q = mixlfData%real2
-    alpha = mixlfData%real3
+    p = mlfiData%real1
+    q = mlfiData%real2
+    alpha = mlfiData%real3
     
-    find_mixlfendinf = alpha*sqrt(2._kp)*x**(q-p+1._kp) - alpha*q*x**(q-p) &
-         + sqrt(2._kp)*x - p
+    find_mlfiendinf = x*sqrt(2._kp)*(1._kp+alpha/q*x**q) &
+         -(p+alpha*(1._kp+p/q)*x**q)
     
-  end function find_mixlfendinf
- 
+  end function find_mlfiendinf
 
 
-!returns x at bfold=-efolds before the end of inflation
-  function mixlf_x_trajectory(bfold,xend,p,q,alpha)
+!this is integral[V(phi)/V'(phi) dphi]
+  function mlfi_efold_primitive(x,p,q,alpha)
+    implicit none
+    real(kp), intent(in) :: x,p,q,alpha
+    real(kp) :: mlfi_efold_primitive
+    
+    mlfi_efold_primitive = 0.5_kp/(p+q)*x**2*(1._kp+q/p &
+         *hypergeom_2F1(1._kp,2._kp/q,1._kp+2._kp/q,-alpha*(1._kp/p+1._kp/q)*x**q))
+         
+   
+  end function mlfi_efold_primitive
+
+
+!returns x at bfold=-efolds before the end of inflation, ie N-Nend
+  function mlfi_x_trajectory(bfold,xend,p,q,alpha)
     implicit none
     real(kp), intent(in) :: bfold, p, q, alpha, xend
-    real(kp) :: mixlf_x_trajectory
+    real(kp) :: mlfi_x_trajectory
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
-    type(transfert) :: mixlfData
+    type(transfert) :: mlfiData
 
   
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
   
     
-    mixlfData%real1 = p
-    mixlfData%real2 = q
-    mixlfData%real3 = alpha
-    mixlfData%real4 = -bfold + mixlf_nufunc(xend,p,q,alpha)
+    mlfiData%real1 = p
+    mlfiData%real2 = q
+    mlfiData%real3 = alpha
+    mlfiData%real4 = -bfold + mlfi_efold_primitive(xend,p,q,alpha)
     
-    mixlf_x_trajectory = zbrent(find_mixlftraj,mini,maxi,tolFind,mixlfData)
+    mlfi_x_trajectory = zbrent(find_mlfitraj,mini,maxi,tolFind,mlfiData)
        
-  end function mixlf_x_trajectory
+  end function mlfi_x_trajectory
 
-  function find_mixlftraj(x,mixlfData)    
+  function find_mlfitraj(x,mlfiData)    
     implicit none
     real(kp), intent(in) :: x   
-    type(transfert), optional, intent(inout) :: mixlfData
-    real(kp) :: find_mixlftraj
+    type(transfert), optional, intent(inout) :: mlfiData
+    real(kp) :: find_mlfitraj
     real(kp) :: p,q,alpha,NplusNuend
 
-    p=mixlfData%real1
-    q = mixlfData%real2
-    alpha = mixlfData%real3
-    NplusNuend = mixlfData%real4
+    p=mlfiData%real1
+    q = mlfiData%real2
+    alpha = mlfiData%real3
+    NplusNuend = mlfiData%real4
 
-    find_mixlftraj = mixlf_nufunc(x,p,q,alpha) - NplusNuend
+    find_mlfitraj = mlfi_efold_primitive(x,p,q,alpha) - NplusNuend
    
-  end function find_mixlftraj
+  end function find_mlfitraj
 
   
-end module mixlfsrevol
+end module mlfisr

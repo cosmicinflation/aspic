@@ -67,9 +67,13 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsrmodels_la_DEPENDENCIES = common/libsrcommon.la lfi/liblfi.la \
-	sfi/libsfi.la
+	mlfi/libmlfi.la rcmi/librcmi.la rcqi/librcqi.la pni/libpni.la \
+	mni/libmni.la
 am_libsrmodels_la_OBJECTS =
 libsrmodels_la_OBJECTS = $(am_libsrmodels_la_OBJECTS)
+libsrmodels_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) \
+	$(libsrmodels_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -241,8 +245,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+version_info = @version_info@
 lib_LTLIBRARIES = libsrmodels.la
 libsrmodels_la_SOURCES = 
+libsrmodels_la_LDFLAGS = -version-info @version_info@
 
 #forces the linker to use fortran linking
 nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
@@ -250,17 +256,32 @@ nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
 #while the real sources are already built libs
 libsrmodels_la_LIBADD = \
         common/libsrcommon.la          \
-        lfi/liblfi.la                  \
-        sfi/libsfi.la                  
+        lfi/liblfi.la \
+        mlfi/libmlfi.la \
+        rcmi/librcmi.la \
+	rcqi/librcqi.la \
+	pni/libpni.la \
+	mni/libmni.la	
 
-#        sfbi/libsfbi.la                \
-#        bi/libbi.la                    \
-#        mlfi/libmlfi.la                \
-#        rmi/librmi.la                  \
-#        vhi/libvhi.la                 
+#	esi/libesi.la \
+#	pli/libpli.la \
+#	kmii/libkmii.la \
+#	hf1i/libhf1i.la \
+#	sfi/libsfi.la \
+#	sfbi/libsfbi.la \
+#	bi/libbi.la \
+#	li/libli.la \
+#	ii/libii.la \
+#	kmiii/libkmiii.la \
+#	cwi/libcwi.la \
+#	hf2i/libhf2i.la \
+#	rmi/librmi.la \
+#	vhi/libvhi.la \
+#	dsi/libdsi.la \
+#	gmi/libgmi.la
 
 #to be build from there
-SUBDIRS = common lfi sfi
+SUBDIRS = common lfi mlfi rcmi rcqi pni mni
 all: all-recursive
 
 .SUFFIXES:
@@ -327,7 +348,7 @@ clean-libLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libsrmodels.la: $(libsrmodels_la_OBJECTS) $(libsrmodels_la_DEPENDENCIES) 
-	$(FCLINK) -rpath $(libdir) $(libsrmodels_la_OBJECTS) $(libsrmodels_la_LIBADD) $(LIBS)
+	$(libsrmodels_la_LINK) -rpath $(libdir) $(libsrmodels_la_OBJECTS) $(libsrmodels_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -664,7 +685,7 @@ uninstall-am: uninstall-libLTLIBRARIES
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES
 
-#sfi sfbi bi mlfi rmi vhi
+#esi pli kmii hf1i sfi sfbi bi li ii kmiii cwi hf2i rmi vhi dsi gmi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,121 +1,122 @@
 !Mixed large field reheating functions in the slow-roll
 
-module mixlfreheat
+module mlfireheat
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
-  use srreheat, only : display, pi, Nzero, ln_energy_endinf
-  use mixlfsrevol, only : mixlf_norm_potential
-  use mixlfsrevol, only : mixlf_epsilon_one, mixlf_epsilon_two
-  use mixlfsrevol, only : mixlf_x_endinf, mixlf_nufunc
+  use srreheat, only : display, pi, Nzero, ln_rho_endinf
+  use srreheat, only : ln_rho_reheat
+  use mlfisr, only : mlfi_epsilon_one, mlfi_epsilon_two
+  use mlfisr, only : mlfi_norm_potential
+  use mlfisr, only : mlfi_x_endinf, mlfi_efold_primitive
   implicit none
 
   private
 
-  public mixlf_x_reheat, mixlf_lnrhoend
-  public find_mixlfreheat
+  public mlfi_x_star, mlfi_lnrhoend 
 
 contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function mixlf_x_reheat(p,q,alpha,w,lnRhoReh,Pstar,bfold)    
+  function mlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: mixlf_x_reheat
+    real(kp) :: mlfi_x_star
     real(kp), intent(in) :: p,q,alpha,lnRhoReh,w,Pstar
-    real(kp), optional :: bfold
+    real(kp), optional :: bfoldstar
 
-    real(kp), parameter :: tolFind=tolkp
+    real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: nuEnd,epsEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
 
-    type(transfert) :: mixlfData
+    type(transfert) :: mlfiData
     
 
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = mixlf_x_endinf(p,q,alpha)
-    epsEnd = mixlf_epsilon_one(xEnd,p,q,alpha)
-
-    potEnd = mixlf_norm_potential(xEnd,p,q,alpha)
-    nuEnd = mixlf_nufunc(xEnd,p,q,alpha)
+    xEnd = mlfi_x_endinf(p,q,alpha)
+    epsOneEnd = mlfi_epsilon_one(xEnd,p,q,alpha)
+    potEnd = mlfi_norm_potential(xEnd,p,q,alpha)
+    primEnd = mlfi_efold_primitive(xEnd,p,q,alpha)
    
-!cobe normalised
-!    Pstar = quadrupole_to_primscalar(QrmsOverT)
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsEnd,potEnd)
+    mlfiData%real1 = p
+    mlfiData%real2 = q
+    mlfiData%real3 = alpha
+    mlfiData%real4 = w
+    mlfiData%real5 = calF + primEnd
 
-    mixlfData%real1 = p
-    mixlfData%real2 = q
-    mixlfData%real3 = alpha
-    mixlfData%real4 = w
-    mixlfData%real5 = calF + nuEnd
-
-    mini = xend
+    mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
-    x = zbrent(find_mixlfreheat,mini,maxi,tolFind,mixlfData)
-    mixlf_x_reheat = x
+    x = zbrent(find_mlfi_x_star,mini,maxi,tolzbrent,mlfiData)
+    mlfi_x_star = x
 
-    if (present(bfold)) then
-       bfold = -(mixlf_nufunc(x,p,q,alpha) - nuEnd)
+    if (present(bfoldstar)) then
+       bfoldstar = - (mlfi_efold_primitive(x,p,q,alpha) - primEnd)
     endif
     
-  end function mixlf_x_reheat
+  end function mlfi_x_star
 
-  function find_mixlfreheat(x,mixlfData)   
+  function find_mlfi_x_star(x,mlfiData)   
     implicit none
-    real(kp) :: find_mixlfreheat
+    real(kp) :: find_mlfi_x_star
     real(kp), intent(in) :: x
-    type(transfert), optional, intent(inout) :: mixlfData
+    type(transfert), optional, intent(inout) :: mlfiData
 
-    real(kp) :: nuStar,p,q,alpha,w,CalFplusNuEnd,potStar,epsStar
+    real(kp) :: primStar,alpha,p,q,w,CalFplusprimEnd,potStar,epsOneStar
 
-    p=mixlfData%real1
-    q = mixlfData%real2
-    alpha = mixlfData%real3
-    w = mixlfData%real4
-    CalFplusNuEnd = mixlfData%real5
+    p=mlfiData%real1
+    q = mlfiData%real2
+    alpha = mlfiData%real3
+    w = mlfiData%real4
+    CalFplusprimEnd = mlfiData%real5
 
-    nuStar = mixlf_nufunc(x,p,q,alpha)
-    epsStar = mixlf_epsilon_one(x,p,q,alpha)
-    potStar = mixlf_norm_potential(x,p,q,alpha)
+    primStar = mlfi_efold_primitive(x,p,q,alpha)
+    epsOneStar = mlfi_epsilon_one(x,p,q,alpha)
+    potStar = mlfi_norm_potential(x,p,q,alpha)
 
-    find_mixlfreheat = find_reheat(nuStar,calFplusNuEnd,w,epsStar,potStar)
+    find_mlfi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
 
-  end function find_mixlfreheat
+  end function find_mlfi_x_star
 
 
 
-  function mixlf_lnrhoend(p,q,alpha,Pstar) 
+  function mlfi_lnrhoend(p,q,alpha,Pstar) 
     implicit none
-    real(kp) :: mixlf_lnrhoend
+    real(kp) :: mlfi_lnrhoend
     real(kp), intent(in) :: p,q,alpha,Pstar
 
     real(kp) :: xEnd, potEnd, epsEnd
-    real(kp) :: x, potStar, epsStar
+    real(kp) :: x, potStar, epsOneStar
 
-    real(kp), parameter :: w = 1._kp/3._kp
-    real(kp), parameter :: lnRhoReh = 0._kp
+    real(kp), parameter :: wrad = 1._kp/3._kp
+    real(kp), parameter :: junk = 0._kp
+
     real(kp) :: lnRhoEnd
     
-    xEnd = mixlf_x_endinf(p,q,alpha)      
-    potEnd  = mixlf_norm_potential(xEnd,p,q,alpha)
-    epsEnd = mixlf_epsilon_one(xEnd,p,q,alpha)
+    xEnd = mlfi_x_endinf(p,q,alpha)      
+    potEnd  = mlfi_norm_potential(xEnd,p,q,alpha)
+    epsEnd = mlfi_epsilon_one(xEnd,p,q,alpha)
+
+!   Trick to return x such that rho_reh=rho_end
        
-    x = mixlf_x_reheat(p,q,alpha,w,lnRhoReh,Pstar)
-    potStar = mixlf_norm_potential(x,p,q,alpha)
-    epsStar = mixlf_epsilon_one(x,p,q,alpha)
+    x = mlfi_x_star(p,q,alpha,wrad,junk,Pstar)    
+    potStar = mlfi_norm_potential(x,p,q,alpha)
+    epsOneStar = mlfi_epsilon_one(x,p,q,alpha)
     
-    if (.not.slowroll_validity(epsStar)) stop 'mixlf_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'mlfi_lnrhoend: slow-roll violated!'
     
-    lnRhoEnd = ln_energy_endinf(Pstar,epsStar,epsEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsEnd,potEnd/potStar)
 
-    mixlf_lnrhoend = lnRhoEnd
+    mlfi_lnrhoend = lnRhoEnd
 
-  end function mixlf_lnrhoend
+  end function mlfi_lnrhoend
+
+  
 
     
-end module mixlfreheat
+end module mlfireheat

@@ -10,7 +10,7 @@ program lfimain
   implicit none
 
   
-  real(kp) :: Pstar, logErehGeV
+  real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i
   integer :: npts = 20
@@ -21,43 +21,46 @@ program lfimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  p = 2_kp 
-  w = (p-2)/(p+2)
- 
   Pstar = powerAmpScalar
 
   call delete_file('lfi_predic.dat')
   call delete_file('lfi_nsr.dat')
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lfi_lnrhoend(p,Pstar)
+  p = 0_kp 
+  do while (p<6_kp)
+    
+     p=p+1_kp
+     w = (p-2)/(p+2)
+ 
+    lnRhoRehMin = lnRhoNuc
+    lnRhoRehMax = lfi_lnrhoend(p,Pstar)
 
-  print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
+    print *,'p=',p,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  do i=1,npts
+    do i=1,npts
 
-     lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
 
-     print *,'lnRhoReh bfoldstar= ',lnRhoReh,bfoldstar
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
-     eps1 = lfi_epsilon_one(xstar,p)
-     eps2 = lfi_epsilon_two(xstar,p)
-     eps3 = lfi_epsilon_three(xstar,p)
+       eps1 = lfi_epsilon_one(xstar,p)
+       eps2 = lfi_epsilon_two(xstar,p)
+       eps3 = lfi_epsilon_three(xstar,p)
 
-     logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
 
-     ns = 1._kp - 2._kp*eps1 - eps2
-     r =16._kp*eps1
+       call livewrite('lfi_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
 
-     call livewrite('lfi_predic.dat',p,eps1,eps2,eps3,r,ns,logErehGeV)
-
-     call livewrite('lfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       call livewrite('lfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
-  end do
+    end do
 
-  
+  enddo
 
 end program lfimain

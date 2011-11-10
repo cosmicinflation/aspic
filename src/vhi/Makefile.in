@@ -216,6 +216,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+version_info = @version_info@
 SRC = vhisr.f90 vhireheat.f90
 MOD = vhisr.$(FC_MODEXT) vhireheat.$(FC_MODEXT)
 vhimain_SOURCES = $(SRC) vhimain.f90

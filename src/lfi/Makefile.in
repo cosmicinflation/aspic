@@ -216,6 +216,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+version_info = @version_info@
 SRC = lfisr.f90 lfireheat.f90
 MOD = lfisr.$(FC_MODEXT) lfireheat.$(FC_MODEXT)
 lfimain_SOURCES = $(SRC) lfimain.f90

@@ -77,6 +77,7 @@ contains
     potStar = lfi_norm_potential(x,p)
 
     find_lfi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
+  
   end function find_lfi_x_star
 
 
