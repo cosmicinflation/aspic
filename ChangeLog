@@ -1,4 +1,72 @@
+commit 3b7e335c0bef826d7b214726fafd9122b920a018
+Version: 0.0.3
+Date:   Thu Nov 17 11:00:12 2011 +0100
+
+    Fixing bugs in 0.0.2 + import of PLI, KMII, HF1I
+
+ Makefile.in               |    1 +
+ NEWS                      |    3 +
+ configure                 |   34 ++-
+ configure.ac              |    9 +-
+ src/Makefile.am           |   12 +-
+ src/Makefile.in           |   18 +-
+ src/bi/Makefile.am        |    4 +-
+ src/common/Makefile.in    |    1 +
+ src/common/inftools.f90   |    4 +-
+ src/common/specialinf.f90 |    2 +-
+ src/cwi/Makefile.am       |    5 +-
+ src/dsi/Makefile.am       |    5 +-
+ src/esi/Makefile.am       |    5 +-
+ src/esi/Makefile.in       |  564 ++++++++++++++++++++++++++++++++++++++++++++
+ src/esi/esimain.f90       |   65 +++++
+ src/esi/esireheat.f90     |  117 ++++++++++
+ src/esi/esisr.f90         |  130 +++++++++++
+ src/gmi/Makefile.am       |    5 +-
+ src/hf1i/Makefile.am      |    5 +-
+ src/hf1i/Makefile.in      |  565 +++++++++++++++++++++++++++++++++++++++++++++
+ src/hf1i/hf1imain.f90     |   64 +++++
+ src/hf1i/hf1ireheat.f90   |  117 ++++++++++
+ src/hf1i/hf1isr.f90       |  147 ++++++++++++
+ src/hf2i/Makefile.am      |    5 +-
+ src/ii/Makefile.am        |    5 +-
+ src/kmii/Makefile.am      |    5 +-
+ src/kmii/Makefile.in      |  565 +++++++++++++++++++++++++++++++++++++++++++++
+ src/kmii/kmiimain.f90     |   64 +++++
+ src/kmii/kmiireheat.f90   |  121 ++++++++++
+ src/kmii/kmiisr.f90       |  183 +++++++++++++++
+ src/kmiii/Makefile.am     |    5 +-
+ src/lfi/Makefile.am       |    6 +-
+ src/lfi/Makefile.in       |    5 +-
+ src/lfi/lfisr.f90         |   24 ++
+ src/li/Makefile.am        |    5 +-
+ src/mlfi/Makefile.am      |    4 +-
+ src/mlfi/Makefile.in      |    5 +-
+ src/mlfi/mlfisr.f90       |   62 ++++--
+ src/mni/Makefile.am       |    5 +-
+ src/mni/Makefile.in       |    5 +-
+ src/mni/mnisr.f90         |   25 ++
+ src/pli/Makefile.am       |    5 +-
+ src/pli/Makefile.in       |  564 ++++++++++++++++++++++++++++++++++++++++++++
+ src/pli/plimain.f90       |   69 ++++++
+ src/pli/plireheat.f90     |  123 ++++++++++
+ src/pli/plisr.f90         |  112 +++++++++
+ src/pni/Makefile.am       |    5 +-
+ src/pni/Makefile.in       |    5 +-
+ src/pni/pnisr.f90         |   25 ++-
+ src/rcmi/Makefile.am      |    5 +-
+ src/rcmi/Makefile.in      |    5 +-
+ src/rcmi/rcmisr.f90       |   26 ++
+ src/rcqi/Makefile.am      |    5 +-
+ src/rcqi/Makefile.in      |    5 +-
+ src/rcqi/rcqisr.f90       |   28 +++
+ src/sfbi/Makefile.am      |    4 +-
+ src/sfi/Makefile.am       |    4 +-
+ src/vhi/Makefile.am       |    4 +-
+ 58 files changed, 3881 insertions(+), 94 deletions(-)
+
+
 commit 74cc5ed142c1a37c2f8c708046391b8945c94a3d
+Version: 0.0.2
 Date:   Thu Nov 10 18:55:04 2011 +0100
 
     Import of 6 models + fixing autoconf files
@@ -66,6 +134,7 @@ Date:   Thu Nov 10 18:55:04 2011 +0100
  src/vhi/Makefile.in       |    1 +
  61 files changed, 9437 insertions(+), 3058 deletions(-)
 
+	
 commit a2cb15152cb184297e82b6946868b942322defdc
 Date:   Mon Oct 17 10:58:15 2011 +0200
 
