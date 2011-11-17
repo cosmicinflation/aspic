@@ -14,6 +14,8 @@ libsfbi_la_FCFLAGS = -I../$(SRCOMMDIR) -I../sfi $(AM_FCFLAGS)
 libsfbi_la_includedir = $(includedir)/$(SRINCDIR)
 libsfbi_la_include_HEADERS = $(MOD)
 
-clean-local: clean-modules
+clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
+clean-outfiles:
+	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)

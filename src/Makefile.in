@@ -68,7 +68,8 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsrmodels_la_DEPENDENCIES = common/libsrcommon.la lfi/liblfi.la \
 	mlfi/libmlfi.la rcmi/librcmi.la rcqi/librcqi.la pni/libpni.la \
-	mni/libmni.la
+	mni/libmni.la esi/libesi.la pli/libpli.la kmii/libkmii.la \
+	hf1i/libhf1i.la
 am_libsrmodels_la_OBJECTS =
 libsrmodels_la_OBJECTS = $(am_libsrmodels_la_OBJECTS)
 libsrmodels_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
@@ -139,6 +140,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATEXT = @DATEXT@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -261,12 +263,12 @@ libsrmodels_la_LIBADD = \
         rcmi/librcmi.la \
 	rcqi/librcqi.la \
 	pni/libpni.la \
-	mni/libmni.la	
+	mni/libmni.la \
+	esi/libesi.la \
+	pli/libpli.la \
+	kmii/libkmii.la \
+	hf1i/libhf1i.la 
 
-#	esi/libesi.la \
-#	pli/libpli.la \
-#	kmii/libkmii.la \
-#	hf1i/libhf1i.la \
 #	sfi/libsfi.la \
 #	sfbi/libsfbi.la \
 #	bi/libbi.la \
@@ -281,7 +283,7 @@ libsrmodels_la_LIBADD = \
 #	gmi/libgmi.la
 
 #to be build from there
-SUBDIRS = common lfi mlfi rcmi rcqi pni mni
+SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i
 all: all-recursive
 
 .SUFFIXES:
@@ -685,7 +687,7 @@ uninstall-am: uninstall-libLTLIBRARIES
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES
 
-#esi pli kmii hf1i sfi sfbi bi li ii kmiii cwi hf2i rmi vhi dsi gmi
+#  sfi sfbi bi li ii kmiii cwi hf2i rmi vhi dsi gmi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

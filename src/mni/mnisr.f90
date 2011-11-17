@@ -12,6 +12,7 @@ module mnisr
 
   public  mni_norm_potential, mni_epsilon_one, mni_epsilon_two, mni_epsilon_three
   public  mni_x_endinf, mni_efold_primitive, mni_x_trajectory
+  public  mni_norm_deriv_potential, mni_norm_deriv_second_potential
  
 contains
 !returns V/M^4
@@ -23,6 +24,30 @@ contains
     mni_norm_potential = 1._kp-cos(x/f)
 
   end function mni_norm_potential
+
+
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function mni_norm_deriv_potential(x,f)
+    implicit none
+    real(kp) :: mni_norm_deriv_potential
+    real(kp), intent(in) :: x,f
+
+   mni_norm_deriv_potential = sin(x/f)/f
+
+  end function mni_norm_deriv_potential
+
+
+
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function mni_norm_deriv_second_potential(x,f)
+    implicit none
+    real(kp) :: mni_norm_deriv_second_potential
+    real(kp), intent(in) :: x,f
+
+    mni_norm_deriv_second_potential =  cos(x/f)/(f**2)
+
+  end function mni_norm_deriv_second_potential
+
 
 
 !epsilon_one(x)

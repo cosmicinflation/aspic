@@ -111,6 +111,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATEXT = @DATEXT@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -553,9 +554,11 @@ uninstall-am: uninstall-librcqi_la_includeHEADERS
 	uninstall-am uninstall-librcqi_la_includeHEADERS
 
 
-clean-local: clean-modules
+clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
+clean-outfiles:
+	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

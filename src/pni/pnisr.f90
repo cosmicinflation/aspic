@@ -12,6 +12,7 @@ module pnisr
 
   public  pni_norm_potential, pni_epsilon_one, pni_epsilon_two, pni_epsilon_three
   public  pni_x_endinf, pni_efold_primitive, pni_x_trajectory
+  public  pni_norm_deriv_potential, pni_norm_deriv_second_potential
  
 contains
 !returns V/M^4
@@ -23,6 +24,28 @@ contains
     pni_norm_potential = 1._kp+cos(x/f)
 
   end function pni_norm_potential
+
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function pni_norm_deriv_potential(x,f)
+    implicit none
+    real(kp) :: pni_norm_deriv_potential
+    real(kp), intent(in) :: x,f
+
+    pni_norm_deriv_potential = -sin(x/f)/f
+
+  end function pni_norm_deriv_potential
+
+
+
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function pni_norm_deriv_second_potential(x,f)
+    implicit none
+    real(kp) :: pni_norm_deriv_second_potential
+    real(kp), intent(in) :: x,f
+
+    pni_norm_deriv_second_potential = -cos(x/f)/(f**2)
+
+  end function pni_norm_deriv_second_potential
 
 
 !epsilon_one(x)
@@ -91,7 +114,7 @@ contains
     real(kp), intent(in) :: bfold,f,xend
     real(kp) :: pni_x_trajectory
     
-    pni_x_trajectory = f*acos(1._kp-(1._kp*cos(xend/f))*exp(bfold/(f**2)))
+    pni_x_trajectory = f*acos(1._kp-(1._kp-cos(xend/f))*exp(bfold/(f**2)))
        
   end function pni_x_trajectory
 

@@ -13,12 +13,12 @@ libsrmodels_la_LIBADD =                \
         rcmi/librcmi.la \
 	rcqi/librcqi.la \
 	pni/libpni.la \
-	mni/libmni.la	
-#	esi/libesi.la \
+	mni/libmni.la \
+	esi/libesi.la \
 	pli/libpli.la \
 	kmii/libkmii.la \
-	hf1i/libhf1i.la \
-	sfi/libsfi.la \
+	hf1i/libhf1i.la 
+#	sfi/libsfi.la \
 	sfbi/libsfbi.la \
 	bi/libbi.la \
 	li/libli.la \
@@ -32,6 +32,6 @@ libsrmodels_la_LIBADD =                \
 	gmi/libgmi.la
 
 #to be build from there
-SUBDIRS = common lfi mlfi rcmi rcqi pni mni
-#esi pli kmii hf1i sfi sfbi bi li ii kmiii cwi hf2i rmi vhi dsi gmi
+SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i
+#  sfi sfbi bi li ii kmiii cwi hf2i rmi vhi dsi gmi
 

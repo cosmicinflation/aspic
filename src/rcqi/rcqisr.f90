@@ -14,6 +14,7 @@ module rcqisr
 
   public  rcqi_norm_potential, rcqi_epsilon_one, rcqi_epsilon_two, rcqi_epsilon_three
   public  rcqi_x_endinf, rcqi_efold_primitive, rcqi_x_trajectory
+  public  rcqi_norm_deriv_potential, rcqi_norm_deriv_second_potential
  
 contains
 !returns V/M^4
@@ -25,6 +26,33 @@ contains
     rcqi_norm_potential = x**4*(1._kp-alpha*log(x))
 
   end function rcqi_norm_potential
+
+
+
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function rcqi_norm_deriv_potential(x,alpha)
+    implicit none
+    real(kp) :: rcqi_norm_deriv_potential
+    real(kp), intent(in) :: x,alpha
+
+   rcqi_norm_deriv_potential = 4._kp*x**3*(1._kp-alpha*log(x)) &
+         -alpha*x**3
+
+  end function rcqi_norm_deriv_potential
+
+
+
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function rcqi_norm_deriv_second_potential(x,alpha)
+    implicit none
+    real(kp) :: rcqi_norm_deriv_second_potential
+    real(kp), intent(in) :: x,alpha
+
+    rcqi_norm_deriv_second_potential = 12._kp*x**2*(1._kp-alpha*log(x)) &
+         -7._kp*alpha*x**2
+
+  end function rcqi_norm_deriv_second_potential
+
 
 
 !epsilon_one(x)

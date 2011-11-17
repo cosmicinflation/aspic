@@ -13,6 +13,7 @@ module lfisr
   public  lfi_norm_potential, lfi_epsilon_one, lfi_epsilon_two
   public  lfi_epsilon_three
   public  lfi_x_endinf, lfi_efold_primitive, lfi_x_trajectory
+  public  lfi_norm_deriv_potential, lfi_norm_deriv_second_potential
  
 contains
 !returns V/M^4
@@ -24,6 +25,29 @@ contains
     lfi_norm_potential = x**p
 
   end function lfi_norm_potential
+
+
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function lfi_norm_deriv_potential(x,p)
+    implicit none
+    real(kp) :: lfi_norm_deriv_potential
+    real(kp), intent(in) :: x,p
+
+   lfi_norm_deriv_potential = p*x**(p-1._kp)
+
+  end function lfi_norm_deriv_potential
+
+
+
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function lfi_norm_deriv_second_potential(x,p)
+    implicit none
+    real(kp) :: lfi_norm_deriv_second_potential
+    real(kp), intent(in) :: x,p
+
+    lfi_norm_deriv_second_potential =  p*(p-1._kp)*x**(p-2._kp)
+
+  end function lfi_norm_deriv_second_potential
 
 
 !epsilon_one(x)

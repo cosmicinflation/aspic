@@ -1,4 +1,4 @@
-AC_INIT([srmodels], [0.0.2], [ringeval@iap.fr])
+AC_INIT([srmodels], [0.0.3], [ringeval@iap.fr])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -19,6 +19,9 @@ AC_SUBST([SRINCDIR])
 FC_MODEXT="mod"
 AC_SUBST([FC_MODEXT]) 
 
+DATEXT="dat"
+AC_SUBST([DATEXT]) 
+
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile
@@ -30,5 +33,9 @@ AC_CONFIG_FILES([Makefile
                  src/rcqi/Makefile
                  src/pni/Makefile
                  src/mni/Makefile
+                 src/esi/Makefile
+                 src/pli/Makefile
+                 src/kmii/Makefile
+                 src/hf1i/Makefile
                 ])
 AC_OUTPUT

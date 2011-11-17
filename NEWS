@@ -1,0 +1,3 @@
+* v0.0.3
+- make clean delete also the "*.dat" files
+- Makefile.am accordingly modified, check the lines "clean-outfiles"

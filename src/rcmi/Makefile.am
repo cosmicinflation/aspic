@@ -12,10 +12,11 @@ librcmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 librcmi_la_includedir = $(includedir)/$(SRINCDIR)
 librcmi_la_include_HEADERS = $(MOD)
 
-clean-local: clean-modules
+clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
-
+clean-outfiles:
+	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
 
 
 

@@ -35,8 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = src/common
-DIST_COMMON = $(libsrcommon_la_include_HEADERS) $(srcdir)/Makefile.am \
+check_PROGRAMS = kmiimain$(EXEEXT)
+subdir = src/kmii
+DIST_COMMON = $(libkmii_la_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -45,25 +46,22 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-ARFLAGS = cru
-libsrcommon_a_AR = $(AR) $(ARFLAGS)
-libsrcommon_a_LIBADD =
-am__objects_1 = nrutil.$(OBJEXT) infprec.$(OBJEXT) cosmopar.$(OBJEXT) \
-	infinout.$(OBJEXT) inftools.$(OBJEXT) specialinf.$(OBJEXT) \
-	srreheat.$(OBJEXT)
-am_libsrcommon_a_OBJECTS = $(am__objects_1)
-libsrcommon_a_OBJECTS = $(am_libsrcommon_a_OBJECTS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-libsrcommon_la_LIBADD =
-am__objects_2 = libsrcommon_la-nrutil.lo libsrcommon_la-infprec.lo \
-	libsrcommon_la-cosmopar.lo libsrcommon_la-infinout.lo \
-	libsrcommon_la-inftools.lo libsrcommon_la-specialinf.lo \
-	libsrcommon_la-srreheat.lo
-am_libsrcommon_la_OBJECTS = $(am__objects_2)
-libsrcommon_la_OBJECTS = $(am_libsrcommon_la_OBJECTS)
-libsrcommon_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libsrcommon_la_FCFLAGS) \
+libkmii_la_LIBADD =
+am__objects_1 = libkmii_la-kmiisr.lo libkmii_la-kmiireheat.lo
+am_libkmii_la_OBJECTS = $(am__objects_1)
+libkmii_la_OBJECTS = $(am_libkmii_la_OBJECTS)
+libkmii_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libkmii_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_2 = kmiimain-kmiisr.$(OBJEXT) \
+	kmiimain-kmiireheat.$(OBJEXT)
+am_kmiimain_OBJECTS = $(am__objects_2) kmiimain-kmiimain.$(OBJEXT)
+kmiimain_OBJECTS = $(am_kmiimain_OBJECTS)
+kmiimain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+kmiimain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(kmiimain_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -72,8 +70,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libsrcommon_a_SOURCES) $(libsrcommon_la_SOURCES)
-DIST_SOURCES = $(libsrcommon_a_SOURCES) $(libsrcommon_la_SOURCES)
+SOURCES = $(libkmii_la_SOURCES) $(kmiimain_SOURCES)
+DIST_SOURCES = $(libkmii_la_SOURCES) $(kmiimain_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -95,8 +93,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libsrcommon_la_includedir)"
-HEADERS = $(libsrcommon_la_include_HEADERS)
+am__installdirs = "$(DESTDIR)$(libkmii_la_includedir)"
+HEADERS = $(libkmii_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -221,22 +219,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 version_info = @version_info@
-COMMONSRC = nrutil.f90 infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 \
-            specialinf.f90 srreheat.f90 
-
-COMMONMOD = nrutil.$(FC_MODEXT) cosmopar.$(FC_MODEXT) \
-            infinout.$(FC_MODEXT) infprec.$(FC_MODEXT) inftools.$(FC_MODEXT) \
-            hyp_2f1_module.$(FC_MODEXT) specialinf.$(FC_MODEXT) \
-            specialprec.$(FC_MODEXT) srreheat.$(FC_MODEXT)  
-
-check_LIBRARIES = libsrcommon.a
-libsrcommon_a_SOURCES = $(COMMONSRC)
-noinst_LTLIBRARIES = libsrcommon.la
-libsrcommon_la_SOURCES = $(COMMONSRC)
-#avoids race condition on names
-libsrcommon_la_FCFLAGS = $(AM_FCFLAGS)
-libsrcommon_la_includedir = $(includedir)/$(SRINCDIR)
-libsrcommon_la_include_HEADERS = $(COMMONMOD)
+SRC = kmiisr.f90 kmiireheat.f90
+MOD = kmiisr.$(FC_MODEXT) kmiireheat.$(FC_MODEXT)
+kmiimain_SOURCES = $(SRC) kmiimain.f90
+kmiimain_FCFLAGS = -I../$(SRCOMMDIR)
+kmiimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+noinst_LTLIBRARIES = libkmii.la
+libkmii_la_SOURCES = $(SRC)
+libkmii_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libkmii_la_includedir = $(includedir)/$(SRINCDIR)
+libkmii_la_include_HEADERS = $(MOD)
 all: all-am
 
 .SUFFIXES:
@@ -250,9 +242,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/common/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/kmii/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/common/Makefile
+	  $(AUTOMAKE) --gnu src/kmii/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -272,13 +264,6 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
-clean-checkLIBRARIES:
-	-test -z "$(check_LIBRARIES)" || rm -f $(check_LIBRARIES)
-libsrcommon.a: $(libsrcommon_a_OBJECTS) $(libsrcommon_a_DEPENDENCIES) 
-	-rm -f libsrcommon.a
-	$(libsrcommon_a_AR) libsrcommon.a $(libsrcommon_a_OBJECTS) $(libsrcommon_a_LIBADD)
-	$(RANLIB) libsrcommon.a
-
 clean-noinstLTLIBRARIES:
 	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
@@ -287,8 +272,20 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libsrcommon.la: $(libsrcommon_la_OBJECTS) $(libsrcommon_la_DEPENDENCIES) 
-	$(libsrcommon_la_LINK)  $(libsrcommon_la_OBJECTS) $(libsrcommon_la_LIBADD) $(LIBS)
+libkmii.la: $(libkmii_la_OBJECTS) $(libkmii_la_DEPENDENCIES) 
+	$(libkmii_la_LINK)  $(libkmii_la_OBJECTS) $(libkmii_la_LIBADD) $(LIBS)
+
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+kmiimain$(EXEEXT): $(kmiimain_OBJECTS) $(kmiimain_DEPENDENCIES) 
+	@rm -f kmiimain$(EXEEXT)
+	$(kmiimain_LINK) $(kmiimain_OBJECTS) $(kmiimain_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -305,52 +302,55 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-libsrcommon_la-nrutil.lo: nrutil.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-nrutil.lo `test -f 'nrutil.f90' || echo '$(srcdir)/'`nrutil.f90
+libkmii_la-kmiisr.lo: kmiisr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libkmii_la_FCFLAGS) $(FCFLAGS) -c -o libkmii_la-kmiisr.lo `test -f 'kmiisr.f90' || echo '$(srcdir)/'`kmiisr.f90
 
-libsrcommon_la-infprec.lo: infprec.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-infprec.lo `test -f 'infprec.f90' || echo '$(srcdir)/'`infprec.f90
+libkmii_la-kmiireheat.lo: kmiireheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libkmii_la_FCFLAGS) $(FCFLAGS) -c -o libkmii_la-kmiireheat.lo `test -f 'kmiireheat.f90' || echo '$(srcdir)/'`kmiireheat.f90
 
-libsrcommon_la-cosmopar.lo: cosmopar.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-cosmopar.lo `test -f 'cosmopar.f90' || echo '$(srcdir)/'`cosmopar.f90
+kmiimain-kmiisr.o: kmiisr.f90
+	$(FC) $(kmiimain_FCFLAGS) $(FCFLAGS) -c -o kmiimain-kmiisr.o `test -f 'kmiisr.f90' || echo '$(srcdir)/'`kmiisr.f90
 
-libsrcommon_la-infinout.lo: infinout.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-infinout.lo `test -f 'infinout.f90' || echo '$(srcdir)/'`infinout.f90
+kmiimain-kmiisr.obj: kmiisr.f90
+	$(FC) $(kmiimain_FCFLAGS) $(FCFLAGS) -c -o kmiimain-kmiisr.obj `if test -f 'kmiisr.f90'; then $(CYGPATH_W) 'kmiisr.f90'; else $(CYGPATH_W) '$(srcdir)/kmiisr.f90'; fi`
 
-libsrcommon_la-inftools.lo: inftools.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-inftools.lo `test -f 'inftools.f90' || echo '$(srcdir)/'`inftools.f90
+kmiimain-kmiireheat.o: kmiireheat.f90
+	$(FC) $(kmiimain_FCFLAGS) $(FCFLAGS) -c -o kmiimain-kmiireheat.o `test -f 'kmiireheat.f90' || echo '$(srcdir)/'`kmiireheat.f90
 
-libsrcommon_la-specialinf.lo: specialinf.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-specialinf.lo `test -f 'specialinf.f90' || echo '$(srcdir)/'`specialinf.f90
+kmiimain-kmiireheat.obj: kmiireheat.f90
+	$(FC) $(kmiimain_FCFLAGS) $(FCFLAGS) -c -o kmiimain-kmiireheat.obj `if test -f 'kmiireheat.f90'; then $(CYGPATH_W) 'kmiireheat.f90'; else $(CYGPATH_W) '$(srcdir)/kmiireheat.f90'; fi`
 
-libsrcommon_la-srreheat.lo: srreheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libsrcommon_la_FCFLAGS) $(FCFLAGS) -c -o libsrcommon_la-srreheat.lo `test -f 'srreheat.f90' || echo '$(srcdir)/'`srreheat.f90
+kmiimain-kmiimain.o: kmiimain.f90
+	$(FC) $(kmiimain_FCFLAGS) $(FCFLAGS) -c -o kmiimain-kmiimain.o `test -f 'kmiimain.f90' || echo '$(srcdir)/'`kmiimain.f90
+
+kmiimain-kmiimain.obj: kmiimain.f90
+	$(FC) $(kmiimain_FCFLAGS) $(FCFLAGS) -c -o kmiimain-kmiimain.obj `if test -f 'kmiimain.f90'; then $(CYGPATH_W) 'kmiimain.f90'; else $(CYGPATH_W) '$(srcdir)/kmiimain.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-libsrcommon_la_includeHEADERS: $(libsrcommon_la_include_HEADERS)
+install-libkmii_la_includeHEADERS: $(libkmii_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libsrcommon_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libsrcommon_la_includedir)"
-	@list='$(libsrcommon_la_include_HEADERS)'; test -n "$(libsrcommon_la_includedir)" || list=; \
+	test -z "$(libkmii_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libkmii_la_includedir)"
+	@list='$(libkmii_la_include_HEADERS)'; test -n "$(libkmii_la_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libsrcommon_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libsrcommon_la_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libkmii_la_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libkmii_la_includedir)" || exit $$?; \
 	done
 
-uninstall-libsrcommon_la_includeHEADERS:
+uninstall-libkmii_la_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libsrcommon_la_include_HEADERS)'; test -n "$(libsrcommon_la_includedir)" || list=; \
+	@list='$(libkmii_la_include_HEADERS)'; test -n "$(libkmii_la_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libsrcommon_la_includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libsrcommon_la_includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(libkmii_la_includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libkmii_la_includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -435,11 +435,11 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) $(check_LIBRARIES)
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libsrcommon_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(libkmii_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -469,7 +469,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-checkLIBRARIES clean-generic clean-libtool clean-local \
+clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
@@ -489,7 +489,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libsrcommon_la_includeHEADERS
+install-data-am: install-libkmii_la_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -534,31 +534,31 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libsrcommon_la_includeHEADERS
+uninstall-am: uninstall-libkmii_la_includeHEADERS
 
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean \
-	clean-checkLIBRARIES clean-generic clean-libtool clean-local \
+	clean-checkPROGRAMS clean-generic clean-libtool clean-local \
 	clean-noinstLTLIBRARIES ctags distclean distclean-compile \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am \
-	install-libsrcommon_la_includeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am \
-	uninstall-libsrcommon_la_includeHEADERS
+	install-info install-info-am install-libkmii_la_includeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-libkmii_la_includeHEADERS
 
 
-#make clean does not remove modules by default
-clean-local: clean-modules
+clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
+clean-outfiles:
+	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

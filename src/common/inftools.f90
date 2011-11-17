@@ -992,8 +992,8 @@ contains
          fa=func(a,extradata)
          fb=func(b,extradata)
          if((fa.gt.0..and.fb.gt.0.).or.(fa.lt.0..and.fb.lt.0.)) then
-            write(*,*)'x1= fa= ',a,fa
-            write(*,*)'x2= fb= ',b,fb            
+            write(*,*)'x1=',a,'f(x1)=',fa
+            write(*,*)'x2=',b,'f(x2)=',fb            
             write(*,*)'zbrent: expanding interval!'
             a = a - abs(a)*tolExpand
             b = b + abs(b)*tolExpand

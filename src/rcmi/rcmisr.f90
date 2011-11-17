@@ -13,6 +13,7 @@ module rcmisr
   public  rcmi_norm_potential, rcmi_epsilon_one, rcmi_epsilon_two
   public  rcmi_epsilon_three
   public  rcmi_x_endinf, rcmi_efold_primitive, rcmi_x_trajectory
+  public  rcmi_norm_deriv_potential, rcmi_norm_deriv_second_potential
  
 contains
 !returns V/M^4
@@ -24,6 +25,31 @@ contains
     rcmi_norm_potential = x**2*(1._kp-2._kp*alpha*x**2*log(x))
 
   end function rcmi_norm_potential
+
+
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function rcmi_norm_deriv_potential(x,alpha)
+    implicit none
+    real(kp) :: rcmi_norm_deriv_potential
+    real(kp), intent(in) :: x,alpha
+
+
+   rcmi_norm_deriv_potential = 2._kp*x-8._kp*alpha*x**3*log(x) &
+         -2._kp*alpha*x**3
+
+  end function rcmi_norm_deriv_potential
+
+
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function rcmi_norm_deriv_second_potential(x,alpha)
+    implicit none
+    real(kp) :: rcmi_norm_deriv_second_potential
+    real(kp), intent(in) :: x,alpha
+
+    rcmi_norm_deriv_second_potential = 2._kp-14._kp*alpha*x**2 &
+         -24._kp*alpha*x**2*log(x)
+
+  end function rcmi_norm_deriv_second_potential
 
 
 !epsilon_one(x)

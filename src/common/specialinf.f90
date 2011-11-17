@@ -159,7 +159,7 @@ contains
 			END IF
 		END DO
 	END IF
-	IF(n==1) THEN
+	IF(n==-1) THEN
 		IF(x>0.d0) THEN
 			WRITE(*,*) 'Impossible to evaluate lambert-1 Function: x>0'
 		END IF
