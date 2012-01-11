@@ -28,6 +28,28 @@ contains
   end function sfi_norm_potential
 
 
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function sfi_norm_deriv_potential(x,p)
+    implicit none
+    real(kp) :: sfi_norm_deriv_potential
+    real(kp), intent(in) :: x,p
+
+   sfi_norm_deriv_potential = -p*x**(p-1._kp)
+
+  end function sfi_norm_deriv_potential
+
+
+
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function sfi_norm_deriv_second_potential(x,p)
+    implicit none
+    real(kp) :: sfi_norm_deriv_second_potential
+    real(kp), intent(in) :: x,p
+
+    sfi_norm_deriv_second_potential = -p*(p-1._kp)*x**(p-2._kp)
+
+  end function sfi_norm_deriv_second_potential
+
 !epsilon1(x)
   function sfi_epsilon_one(x,p,mu)    
     implicit none

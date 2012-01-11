@@ -35,9 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = rcmimain$(EXEEXT)
-subdir = src/rcmi
-DIST_COMMON = $(librcmi_la_include_HEADERS) $(srcdir)/Makefile.am \
+check_PROGRAMS = kmiiimain$(EXEEXT)
+subdir = src/kmiii
+DIST_COMMON = $(libkmiii_la_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -47,21 +47,21 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-librcmi_la_LIBADD =
-am__objects_1 = librcmi_la-rcmisr.lo librcmi_la-rcmireheat.lo
-am_librcmi_la_OBJECTS = $(am__objects_1)
-librcmi_la_OBJECTS = $(am_librcmi_la_OBJECTS)
-librcmi_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(librcmi_la_FCFLAGS) \
+libkmiii_la_LIBADD =
+am__objects_1 = libkmiii_la-kmiiisr.lo libkmiii_la-kmiiireheat.lo
+am_libkmiii_la_OBJECTS = $(am__objects_1)
+libkmiii_la_OBJECTS = $(am_libkmiii_la_OBJECTS)
+libkmiii_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(libkmiii_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = rcmimain-rcmisr.$(OBJEXT) \
-	rcmimain-rcmireheat.$(OBJEXT)
-am_rcmimain_OBJECTS = $(am__objects_2) rcmimain-rcmimain.$(OBJEXT)
-rcmimain_OBJECTS = $(am_rcmimain_OBJECTS)
-rcmimain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
-rcmimain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(FCLD) $(rcmimain_FCFLAGS) $(FCFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_2 = kmiiimain-kmiiisr.$(OBJEXT) \
+	kmiiimain-kmiiireheat.$(OBJEXT)
+am_kmiiimain_OBJECTS = $(am__objects_2) kmiiimain-kmiiimain.$(OBJEXT)
+kmiiimain_OBJECTS = $(am_kmiiimain_OBJECTS)
+kmiiimain_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+kmiiimain_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(kmiiimain_FCFLAGS) \
+	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -70,8 +70,8 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(librcmi_la_SOURCES) $(rcmimain_SOURCES)
-DIST_SOURCES = $(librcmi_la_SOURCES) $(rcmimain_SOURCES)
+SOURCES = $(libkmiii_la_SOURCES) $(kmiiimain_SOURCES)
+DIST_SOURCES = $(libkmiii_la_SOURCES) $(kmiiimain_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -99,8 +99,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(librcmi_la_includedir)"
-HEADERS = $(librcmi_la_include_HEADERS)
+am__installdirs = "$(DESTDIR)$(libkmiii_la_includedir)"
+HEADERS = $(libkmiii_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -225,16 +225,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 version_info = @version_info@
-SRC = rcmisr.f90 rcmireheat.f90
-MOD = rcmisr.$(FC_MODEXT) rcmireheat.$(FC_MODEXT)
-rcmimain_SOURCES = $(SRC) rcmimain.f90
-rcmimain_FCFLAGS = -I../$(SRCOMMDIR)
-rcmimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-noinst_LTLIBRARIES = librcmi.la
-librcmi_la_SOURCES = $(SRC)
-librcmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-librcmi_la_includedir = $(includedir)/$(SRINCDIR)
-librcmi_la_include_HEADERS = $(MOD)
+SRC = kmiiisr.f90 kmiiireheat.f90
+MOD = kmiiisr.$(FC_MODEXT) kmiiireheat.$(FC_MODEXT)
+kmiiimain_SOURCES = $(SRC) kmiiimain.f90
+kmiiimain_FCFLAGS = -I../$(SRCOMMDIR)
+kmiiimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+noinst_LTLIBRARIES = libkmiii.la
+libkmiii_la_SOURCES = $(SRC)
+libkmiii_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libkmiii_la_includedir = $(includedir)/$(SRINCDIR)
+libkmiii_la_include_HEADERS = $(MOD)
 all: all-am
 
 .SUFFIXES:
@@ -248,9 +248,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/rcmi/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/kmiii/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/rcmi/Makefile
+	  $(AUTOMAKE) --gnu src/kmiii/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -278,8 +278,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-librcmi.la: $(librcmi_la_OBJECTS) $(librcmi_la_DEPENDENCIES) 
-	$(librcmi_la_LINK)  $(librcmi_la_OBJECTS) $(librcmi_la_LIBADD) $(LIBS)
+libkmiii.la: $(libkmiii_la_OBJECTS) $(libkmiii_la_DEPENDENCIES) 
+	$(libkmiii_la_LINK)  $(libkmiii_la_OBJECTS) $(libkmiii_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -289,9 +289,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-rcmimain$(EXEEXT): $(rcmimain_OBJECTS) $(rcmimain_DEPENDENCIES) 
-	@rm -f rcmimain$(EXEEXT)
-	$(rcmimain_LINK) $(rcmimain_OBJECTS) $(rcmimain_LDADD) $(LIBS)
+kmiiimain$(EXEEXT): $(kmiiimain_OBJECTS) $(kmiiimain_DEPENDENCIES) 
+	@rm -f kmiiimain$(EXEEXT)
+	$(kmiiimain_LINK) $(kmiiimain_OBJECTS) $(kmiiimain_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -308,53 +308,53 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-librcmi_la-rcmisr.lo: rcmisr.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(librcmi_la_FCFLAGS) $(FCFLAGS) -c -o librcmi_la-rcmisr.lo `test -f 'rcmisr.f90' || echo '$(srcdir)/'`rcmisr.f90
+libkmiii_la-kmiiisr.lo: kmiiisr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libkmiii_la_FCFLAGS) $(FCFLAGS) -c -o libkmiii_la-kmiiisr.lo `test -f 'kmiiisr.f90' || echo '$(srcdir)/'`kmiiisr.f90
 
-librcmi_la-rcmireheat.lo: rcmireheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(librcmi_la_FCFLAGS) $(FCFLAGS) -c -o librcmi_la-rcmireheat.lo `test -f 'rcmireheat.f90' || echo '$(srcdir)/'`rcmireheat.f90
+libkmiii_la-kmiiireheat.lo: kmiiireheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(libkmiii_la_FCFLAGS) $(FCFLAGS) -c -o libkmiii_la-kmiiireheat.lo `test -f 'kmiiireheat.f90' || echo '$(srcdir)/'`kmiiireheat.f90
 
-rcmimain-rcmisr.o: rcmisr.f90
-	$(FC) $(rcmimain_FCFLAGS) $(FCFLAGS) -c -o rcmimain-rcmisr.o `test -f 'rcmisr.f90' || echo '$(srcdir)/'`rcmisr.f90
+kmiiimain-kmiiisr.o: kmiiisr.f90
+	$(FC) $(kmiiimain_FCFLAGS) $(FCFLAGS) -c -o kmiiimain-kmiiisr.o `test -f 'kmiiisr.f90' || echo '$(srcdir)/'`kmiiisr.f90
 
-rcmimain-rcmisr.obj: rcmisr.f90
-	$(FC) $(rcmimain_FCFLAGS) $(FCFLAGS) -c -o rcmimain-rcmisr.obj `if test -f 'rcmisr.f90'; then $(CYGPATH_W) 'rcmisr.f90'; else $(CYGPATH_W) '$(srcdir)/rcmisr.f90'; fi`
+kmiiimain-kmiiisr.obj: kmiiisr.f90
+	$(FC) $(kmiiimain_FCFLAGS) $(FCFLAGS) -c -o kmiiimain-kmiiisr.obj `if test -f 'kmiiisr.f90'; then $(CYGPATH_W) 'kmiiisr.f90'; else $(CYGPATH_W) '$(srcdir)/kmiiisr.f90'; fi`
 
-rcmimain-rcmireheat.o: rcmireheat.f90
-	$(FC) $(rcmimain_FCFLAGS) $(FCFLAGS) -c -o rcmimain-rcmireheat.o `test -f 'rcmireheat.f90' || echo '$(srcdir)/'`rcmireheat.f90
+kmiiimain-kmiiireheat.o: kmiiireheat.f90
+	$(FC) $(kmiiimain_FCFLAGS) $(FCFLAGS) -c -o kmiiimain-kmiiireheat.o `test -f 'kmiiireheat.f90' || echo '$(srcdir)/'`kmiiireheat.f90
 
-rcmimain-rcmireheat.obj: rcmireheat.f90
-	$(FC) $(rcmimain_FCFLAGS) $(FCFLAGS) -c -o rcmimain-rcmireheat.obj `if test -f 'rcmireheat.f90'; then $(CYGPATH_W) 'rcmireheat.f90'; else $(CYGPATH_W) '$(srcdir)/rcmireheat.f90'; fi`
+kmiiimain-kmiiireheat.obj: kmiiireheat.f90
+	$(FC) $(kmiiimain_FCFLAGS) $(FCFLAGS) -c -o kmiiimain-kmiiireheat.obj `if test -f 'kmiiireheat.f90'; then $(CYGPATH_W) 'kmiiireheat.f90'; else $(CYGPATH_W) '$(srcdir)/kmiiireheat.f90'; fi`
 
-rcmimain-rcmimain.o: rcmimain.f90
-	$(FC) $(rcmimain_FCFLAGS) $(FCFLAGS) -c -o rcmimain-rcmimain.o `test -f 'rcmimain.f90' || echo '$(srcdir)/'`rcmimain.f90
+kmiiimain-kmiiimain.o: kmiiimain.f90
+	$(FC) $(kmiiimain_FCFLAGS) $(FCFLAGS) -c -o kmiiimain-kmiiimain.o `test -f 'kmiiimain.f90' || echo '$(srcdir)/'`kmiiimain.f90
 
-rcmimain-rcmimain.obj: rcmimain.f90
-	$(FC) $(rcmimain_FCFLAGS) $(FCFLAGS) -c -o rcmimain-rcmimain.obj `if test -f 'rcmimain.f90'; then $(CYGPATH_W) 'rcmimain.f90'; else $(CYGPATH_W) '$(srcdir)/rcmimain.f90'; fi`
+kmiiimain-kmiiimain.obj: kmiiimain.f90
+	$(FC) $(kmiiimain_FCFLAGS) $(FCFLAGS) -c -o kmiiimain-kmiiimain.obj `if test -f 'kmiiimain.f90'; then $(CYGPATH_W) 'kmiiimain.f90'; else $(CYGPATH_W) '$(srcdir)/kmiiimain.f90'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-librcmi_la_includeHEADERS: $(librcmi_la_include_HEADERS)
+install-libkmiii_la_includeHEADERS: $(libkmiii_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(librcmi_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(librcmi_la_includedir)"
-	@list='$(librcmi_la_include_HEADERS)'; test -n "$(librcmi_la_includedir)" || list=; \
+	test -z "$(libkmiii_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libkmiii_la_includedir)"
+	@list='$(libkmiii_la_include_HEADERS)'; test -n "$(libkmiii_la_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(librcmi_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(librcmi_la_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libkmiii_la_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libkmiii_la_includedir)" || exit $$?; \
 	done
 
-uninstall-librcmi_la_includeHEADERS:
+uninstall-libkmiii_la_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(librcmi_la_include_HEADERS)'; test -n "$(librcmi_la_includedir)" || list=; \
+	@list='$(libkmiii_la_include_HEADERS)'; test -n "$(libkmiii_la_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(librcmi_la_includedir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(libkmiii_la_includedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -443,7 +443,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(librcmi_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(libkmiii_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -498,7 +498,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-librcmi_la_includeHEADERS
+install-data-am: install-libkmiii_la_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -543,7 +543,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-librcmi_la_includeHEADERS
+uninstall-am: uninstall-libkmiii_la_includeHEADERS
 
 .MAKE: check-am install-am install-strip
 
@@ -554,13 +554,14 @@ uninstall-am: uninstall-librcmi_la_includeHEADERS
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-librcmi_la_includeHEADERS \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-librcmi_la_includeHEADERS
+	install-info install-info-am \
+	install-libkmiii_la_includeHEADERS install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am \
+	uninstall-libkmiii_la_includeHEADERS
 
 
 clean-local: clean-modules clean-outfiles

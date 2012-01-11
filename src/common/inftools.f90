@@ -963,7 +963,7 @@ contains
       
       !real(kp) :: func
 !      EXTERNAL func
-      PARAMETER (ITMAX=1000,EPS=1d-15)
+      PARAMETER (ITMAX=1000000,EPS=1d-15)
       INTEGER iter
       real(kp) a,b,c,d,e,fa,fb,fc,p,q,r,s,tol1,xm      
       
@@ -1062,7 +1062,8 @@ contains
         endif
         fb=func(b,extradata)
      enddo
-     stop 'zbrent exceeding maximum iterations'
+     !stop 'zbrent exceeding maximum iterations'
+     write(*,*) 'zbrent exceeding maximum iterations'
      zbrent=b
      return
    end function zbrent

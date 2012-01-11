@@ -16,7 +16,7 @@ program sfimain
   integer :: npts = 20
 
   real(kp) :: mu,p,w,bfoldstar
-  real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
+  real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r,Treh
   real(kp) :: logErehGeV
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -26,8 +26,8 @@ program sfimain
   logical, parameter :: inversion = .true.
 
   p = 2._kp
-  mu = 8_kp
-  w = -0.3_kp
+  mu = 1000._kp*10._kp**(0._kp)
+  w = 0._kp
 
   sfiData%real1 = p
   sfiData%real2 = mu
@@ -35,8 +35,8 @@ program sfimain
 
   Pstar = powerAmpScalar
 
-  call delete_file('sfi_predic.dat')
-  call delete_file('sfi_nsr.dat')
+!  call delete_file('sfi_predic.dat')
+!  call delete_file('sfi_nsr.dat')
 
 !xstar stands for phistar/mu
  
@@ -58,11 +58,12 @@ program sfimain
 
 
      logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+     Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
      ns = 1._kp - 2._kp*eps1 - eps2
      r =16._kp*eps1
 
-     call livewrite('sfi_predic.dat',p,mu,eps1,eps2,eps3,r,ns,logErehGeV)
+     call livewrite('sfi_predic.dat',p,mu,eps1,eps2,eps3,r,ns,Treh)
 
      call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 

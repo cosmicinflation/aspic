@@ -1,4 +1,4 @@
-AC_INIT([srmodels], [0.0.3], [ringeval@iap.fr])
+AC_INIT([srmodels], [0.0.4], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -37,5 +37,10 @@ AC_CONFIG_FILES([Makefile
                  src/pli/Makefile
                  src/kmii/Makefile
                  src/hf1i/Makefile
+                 src/sfi/Makefile
+                 src/li/Makefile
+                 src/ii/Makefile
+                 src/cwi/Makefile
+                 src/kmiii/Makefile
                 ])
 AC_OUTPUT
