@@ -15,13 +15,13 @@ program limain
   integer :: i,j,k
   integer :: npts = 20
 
-  real(kp) :: alpha,mu,w,bfoldstar
+  real(kp) :: alpha,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
   
-  real(kp) ::alphamin,alphamax,mumin,mumax
+  real(kp) ::alphamin,alphamax
 
   Pstar = powerAmpScalar
 
@@ -30,49 +30,45 @@ program limain
 
   alphamin=0.002
   alphamax=100000._kp
-  mumin=0.0000001
-  mumax=100._kp
 
 !  w = 1._kp/3._kp
   w=0._kp
 
-  do j=0,20
-    mu=mumin*(mumax/mumin)**(real(j,kp)/real(20,kp))
-    do k=0,20
-      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(20,kp))
+  do k=0,20
+     alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(20,kp))
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = li_lnrhoend(alpha,mu,Pstar)
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = li_lnrhoend(alpha,Pstar)
 
-  print *,'mu=',mu,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  do i=1,npts
+     do i=1,npts
+        
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-       xstar = li_x_star(alpha,mu,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
 
        !print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-       eps1 = li_epsilon_one(xstar,alpha,mu)
-       eps2 = li_epsilon_two(xstar,alpha,mu)
-       eps3 = li_epsilon_three(xstar,alpha,mu)
+        eps1 = li_epsilon_one(xstar,alpha)
+        eps2 = li_epsilon_two(xstar,alpha)
+        eps3 = li_epsilon_three(xstar,alpha)
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
 
-       call livewrite('li_predic.dat',alpha,mu,eps1,eps2,eps3,r,ns,Treh)
+        call livewrite('li_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+        call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
-    end do
+     end do
 
   end do
 
- end do
+
 
 
 

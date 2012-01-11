@@ -19,10 +19,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function li_x_star(alpha,mu,w,lnRhoReh,Pstar,bfoldstar)    
+  function li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: li_x_star
-    real(kp), intent(in) :: alpha,mu,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -36,17 +36,16 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = li_x_endinf(alpha,mu)
-    epsOneEnd = li_epsilon_one(xEnd,alpha,mu)
-    potEnd = li_norm_potential(xEnd,alpha,mu)
-    primEnd = li_efold_primitive(xEnd,alpha,mu)
+    xEnd = li_x_endinf(alpha)
+    epsOneEnd = li_epsilon_one(xEnd,alpha)
+    potEnd = li_norm_potential(xEnd,alpha)
+    primEnd = li_efold_primitive(xEnd,alpha)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
     liData%real1 = alpha
-    liData%real2=mu   
-    liData%real3 = w
-    liData%real4 = calF + primEnd
+    liData%real2 = w
+    liData%real3 = calF + primEnd
 
     mini = xEnd
     maxi = xEnd*1000._kp
@@ -55,7 +54,7 @@ contains
     li_x_star = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (li_efold_primitive(x,alpha,mu) - primEnd)
+       bfoldstar = - (li_efold_primitive(x,alpha) - primEnd)
     endif
 
   end function li_x_star
@@ -66,16 +65,15 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: liData
 
-    real(kp) :: primStar,alpha,mu,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,alpha,w,CalFplusprimEnd,potStar,epsOneStar
 
     alpha=liData%real1
-    mu=liData%real2
-    w = liData%real3
-    CalFplusprimEnd = liData%real4
+    w = liData%real2
+    CalFplusprimEnd = liData%real3
 
-    primStar = li_efold_primitive(x,alpha,mu)
-    epsOneStar = li_epsilon_one(x,alpha,mu)
-    potStar = li_norm_potential(x,alpha,mu)
+    primStar = li_efold_primitive(x,alpha)
+    epsOneStar = li_epsilon_one(x,alpha)
+    potStar = li_norm_potential(x,alpha)
 
     find_li_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -83,10 +81,10 @@ contains
 
 
 
-  function li_lnrhoend(alpha,mu,Pstar) 
+  function li_lnrhoend(alpha,Pstar) 
     implicit none
     real(kp) :: li_lnrhoend
-    real(kp), intent(in) :: alpha,mu,Pstar
+    real(kp), intent(in) :: alpha,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
@@ -96,16 +94,16 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = li_x_endinf(alpha,mu)
-    potEnd  = li_norm_potential(xEnd,alpha,mu)
-    epsOneEnd = li_epsilon_one(xEnd,alpha,mu)
+    xEnd = li_x_endinf(alpha)
+    potEnd  = li_norm_potential(xEnd,alpha)
+    epsOneEnd = li_epsilon_one(xEnd,alpha)
     
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = li_x_star(alpha,mu,wrad,junk,Pstar)    
-    potStar = li_norm_potential(x,alpha,mu)
-    epsOneStar = li_epsilon_one(x,alpha,mu)
+    x = li_x_star(alpha,wrad,junk,Pstar)    
+    potStar = li_norm_potential(x,alpha)
+    epsOneStar = li_epsilon_one(x,alpha)
 
     
     if (.not.slowroll_validity(epsOneStar)) stop 'li_lnrhoend: slow-roll violated!'
