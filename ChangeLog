@@ -1,3 +1,55 @@
+commit 2e7b88289017f5d07d3a266228a6af710006e364
+Version: 0.0.4
+Author: chris <chris@ringeval.com>
+Date:   Wed Jan 11 14:35:26 2012 +0100
+
+    Importing SFI, LI, II, KMIII, CWI, HF2I
+
+ INSTALL                   |    9 +-
+ Makefile.in               |   40 +++-
+ aclocal.m4                |  346 +++++++++++++++++++++-------
+ config.guess              |  235 ++++++++++---------
+ config.sub                |  184 ++++++++++-----
+ configure                 |  300 ++++++++++++++----------
+ configure.ac              |    7 +-
+ install-sh                |   29 ++-
+ ltmain.sh                 |   95 +++++---
+ src/Makefile.am           |   14 +-
+ src/Makefile.in           |   44 +++--
+ src/common/Makefile.in    |   29 ++-
+ src/common/inftools.f90   |    5 +-
+ src/cwi/Makefile.in       |  573 ++++++++++++++++++++++++++++++++++++++++++++
+ src/cwi/cwimain.f90       |   86 +++++++
+ src/cwi/cwireheat.f90     |  128 ++++++++++
+ src/cwi/cwisr.f90         |  231 ++++++++++++++++++
+ src/esi/Makefile.in       |   29 ++-
+ src/hf1i/Makefile.in      |   29 ++-
+ src/ii/Makefile.in        |  573 ++++++++++++++++++++++++++++++++++++++++++++
+ src/ii/iimain.f90         |   96 ++++++++
+ src/ii/iireheat.f90       |  122 ++++++++++
+ src/ii/iisr.f90           |  189 +++++++++++++++
+ src/kmii/Makefile.in      |   29 ++-
+ src/kmiii/Makefile.in     |  575 +++++++++++++++++++++++++++++++++++++++++++++
+ src/kmiii/kmiiimain.f90   |   98 ++++++++
+ src/kmiii/kmiiireheat.f90 |  120 ++++++++++
+ src/kmiii/kmiiisr.f90     |  299 +++++++++++++++++++++++
+ src/lfi/Makefile.in       |   29 ++-
+ src/li/Makefile.in        |  573 ++++++++++++++++++++++++++++++++++++++++++++
+ src/li/limain.f90         |   79 ++++++
+ src/li/lireheat.f90       |  120 ++++++++++
+ src/li/lisr.f90           |  166 +++++++++++++
+ src/mlfi/Makefile.in      |   29 ++-
+ src/mni/Makefile.in       |   29 ++-
+ src/pli/Makefile.in       |   29 ++-
+ src/pni/Makefile.in       |   29 ++-
+ src/rcmi/Makefile.in      |   29 ++-
+ src/rcqi/Makefile.in      |   29 ++-
+ src/sfi/Makefile.in       |   34 ++-
+ src/sfi/sfimain.f90       |   13 +-
+ src/sfi/sfisr.f90         |   22 ++
+ 42 files changed, 5140 insertions(+), 584 deletions(-)
+
+
 commit 3b7e335c0bef826d7b214726fafd9122b920a018
 Version: 0.0.3
 Date:   Thu Nov 17 11:00:12 2011 +0100
@@ -134,7 +186,7 @@ Date:   Thu Nov 10 18:55:04 2011 +0100
  src/vhi/Makefile.in       |    1 +
  61 files changed, 9437 insertions(+), 3058 deletions(-)
 
-	
+
 commit a2cb15152cb184297e82b6946868b942322defdc
 Date:   Mon Oct 17 10:58:15 2011 +0200
 
