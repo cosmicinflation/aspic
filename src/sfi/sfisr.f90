@@ -11,7 +11,8 @@ module sfisr
 
   private
 
-  public sfi_norm_potential, sfi_epsilon_one, sfi_epsilon_two,sfi_epsilon_three
+  public sfi_norm_potential, sfi_norm_deriv_potential, sfi_norm_deriv_second_potential
+  public sfi_epsilon_one, sfi_epsilon_two,sfi_epsilon_three
   public sfi_x_endinf, sfi_efold_primitive, sfi_x_trajectory
 
   public sfi_x_fromepstwo, find_sfi_x_fromepstwo, find_sfi_x_trajectory
