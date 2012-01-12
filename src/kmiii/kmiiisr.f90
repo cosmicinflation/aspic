@@ -220,7 +220,7 @@ contains
 
     if (alpha.eq.0._kp.and.beta.eq.0._kp) stop 'kmiii_efold_primitive: alpha=0 or beta=0!'
 
-    kmiii_efold_primitive = 9._kp/(16._kp*alpha*beta**2)*exp(beta*x**(4._kp/3._kp))/x**2
+    kmiii_efold_primitive = 9._kp/(16._kp*alpha*beta**2)*exp(beta*x**(4._kp/3._kp) - 2._kp*log(x))
 
   end function kmiii_efold_primitive
 
