@@ -1,12 +1,7 @@
-commit 2e7b88289017f5d07d3a266228a6af710006e364
-Version: 0.0.4
-Author: chris <chris@ringeval.com>
-Date:   Wed Jan 11 14:35:26 2012 +0100
-
-    Importing SFI, LI, II, KMIII, CWI, HF2I
 
  INSTALL                   |    9 +-
  Makefile.in               |   40 +++-
+ NEWS                      |    5 +-
  aclocal.m4                |  346 +++++++++++++++++++++-------
  config.guess              |  235 ++++++++++---------
  config.sub                |  184 ++++++++++-----
@@ -32,12 +27,12 @@ Date:   Wed Jan 11 14:35:26 2012 +0100
  src/kmiii/Makefile.in     |  575 +++++++++++++++++++++++++++++++++++++++++++++
  src/kmiii/kmiiimain.f90   |   98 ++++++++
  src/kmiii/kmiiireheat.f90 |  120 ++++++++++
- src/kmiii/kmiiisr.f90     |  299 +++++++++++++++++++++++
+ src/kmiii/kmiiisr.f90     |  301 +++++++++++++++++++++++
  src/lfi/Makefile.in       |   29 ++-
  src/li/Makefile.in        |  573 ++++++++++++++++++++++++++++++++++++++++++++
- src/li/limain.f90         |   79 ++++++
- src/li/lireheat.f90       |  120 ++++++++++
- src/li/lisr.f90           |  166 +++++++++++++
+ src/li/limain.f90         |   75 ++++++
+ src/li/lireheat.f90       |  118 +++++++++
+ src/li/lisr.f90           |  164 +++++++++++++
  src/mlfi/Makefile.in      |   29 ++-
  src/mni/Makefile.in       |   29 ++-
  src/pli/Makefile.in       |   29 ++-
@@ -46,8 +41,9 @@ Date:   Wed Jan 11 14:35:26 2012 +0100
  src/rcqi/Makefile.in      |   29 ++-
  src/sfi/Makefile.in       |   34 ++-
  src/sfi/sfimain.f90       |   13 +-
- src/sfi/sfisr.f90         |   22 ++
- 42 files changed, 5140 insertions(+), 584 deletions(-)
+ src/sfi/sfisr.f90         |   25 ++-
+ 44 files changed, 5191 insertions(+), 589 deletions(-)
+
 
 
 commit 3b7e335c0bef826d7b214726fafd9122b920a018
