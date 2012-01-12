@@ -1,6 +1,5 @@
 commit 21242f3aa7e4c0e15f0673d4652b3cff1456bf49
 Version: 0.0.4
-Author: chris <chris@ringeval.com>
 Date:   Thu Jan 12 16:19:31 2012 +0100
 
     Importing and fixing bugs in SFI, LI, II, KMIII, CWI
