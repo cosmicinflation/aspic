@@ -34,42 +34,41 @@ program limain
 !  w = 1._kp/3._kp
   w=0._kp
 
-  do k=0,20
-     alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(20,kp))
+    do k=0,20
+      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(20,kp))
 
-     lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = li_lnrhoend(alpha,Pstar)
+  lnRhoRehMin = lnRhoNuc
+  lnRhoRehMax = li_lnrhoend(alpha,Pstar)
 
-     print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+  print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     do i=1,npts
-        
-        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+  do i=1,npts
 
-        xstar = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       !print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+       xstar = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
 
-        eps1 = li_epsilon_one(xstar,alpha)
-        eps2 = li_epsilon_two(xstar,alpha)
-        eps3 = li_epsilon_three(xstar,alpha)
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+       eps1 = li_epsilon_one(xstar,alpha)
+       eps2 = li_epsilon_two(xstar,alpha)
+       eps3 = li_epsilon_three(xstar,alpha)
 
-        ns = 1._kp - 2._kp*eps1 - eps2
-        r =16._kp*eps1
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1*=',eps1
 
-        call livewrite('li_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-        call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('li_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
-     end do
+    end do
 
   end do
-
-
-
 
 
 end program limain

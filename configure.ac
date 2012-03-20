@@ -42,5 +42,19 @@ AC_CONFIG_FILES([Makefile
                  src/ii/Makefile
                  src/cwi/Makefile
                  src/kmiii/Makefile
+                 src/hi/Makefile
+                 src/twi/Makefile
+                 src/mhi/Makefile
+                 src/rpi/Makefile
+                 src/dwi/Makefile
+                 src/mssmi/Makefile
+                 src/bsusybi/Makefile
+                 src/ti/Makefile
+                 src/bei/Makefile
+                 src/psni/Makefile
+                 src/ncki/Makefile
+                 src/lmi1/Makefile
+                 src/lmi2/Makefile
+                 src/lmi3/Makefile
                 ])
 AC_OUTPUT

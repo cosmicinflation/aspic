@@ -219,7 +219,7 @@ contains
     real(kp) :: kmiii_efold_primitive
 
     if (alpha.eq.0._kp.and.beta.eq.0._kp) stop 'kmiii_efold_primitive: alpha=0 or beta=0!'
-!1/x^2 -> -2 log(x) to prevent overflowing the exponential
+!1/x^2 -> -2 log(x) in exp to prevent overflowing the exponential
     kmiii_efold_primitive = 9._kp/(16._kp*alpha*beta**2)*exp(beta*x**(4._kp/3._kp) - 2._kp*log(x))
 
   end function kmiii_efold_primitive
@@ -270,8 +270,7 @@ contains
     type(transfert) :: kmiiiData
 
     alphamini=epsilon(1._kp)
-    alphamaxi=beta*exp(1._kp) - epsilon(1._kp) !maximum allowed value such that the potential is positive everywhere (with a numerical safety)
-          
+    alphamaxi=(beta*exp(1._kp) - epsilon(1._kp))*(1._kp- epsilon(1._kp)) !maximum allowed value such that the potential is positive everywhere (with a numerical safety)
 
     if(kmiii_epsilon_one(kmiii_xplus_eps1max(alphamaxi,beta),alphamaxi,beta) .lt. 1._kp) then !in that case the prior space in empty
          kmiii_alphamin=beta*exp(1._kp)

@@ -2584,7 +2584,7 @@ RETURN
 END FUNCTION dei
 
 
-function lambertw(x)
+  function lambertw(x)
     implicit none
     real(kp) :: lambertw
     real(kp), intent(in) :: x
@@ -2622,6 +2622,77 @@ function lambertw(x)
     lambertw = w
     
   end function lambertw
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                        !
+!           CIRCULAR AND HYPERBOLIC FUNCTIONS            !
+!                                                        !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  function acosh(x)
+  USE nrutil, ONLY : nrerror
+    implicit none
+    real(kp) ::acosh
+    real(kp), intent(in) ::x
+	if (x<1.) call nrerror('specialinf/acosh: bad argument x<1. gives non real value for acosh(x)')
+	acosh=log(x+sqrt(x**2-1._kp))
+  end function acosh
+
+  function asinh(x)
+    implicit none
+    real(kp) ::asinh
+    real(kp), intent(in) ::x
+	asinh=log(x+sqrt(x**2+1._kp))
+  end function asinh
+
+  function atanh(x)
+  USE nrutil, ONLY : nrerror
+    implicit none
+    real(kp) ::atanh
+    real(kp), intent(in) ::x
+	if (abs(x)>1.) call nrerror('specialinf/acosh: bad argument x<1. gives non real value for acosh(x)')
+	atanh=0.5_kp*log((1._kp+x)/(1._kp-x))
+  end function atanh
+
+  function atan_ito_log(x) !ArcTan function expressed in terms of logarithmic functions
+    implicit none
+    complex(kp), intent(in) :: x
+    complex(kp) :: atan_ito_log
+    atan_ito_log=0.5_kp*(0._kp,1._kp)*log((1._kp-x*(0._kp,1._kp))/(1._kp+x*(0._kp,1._kp)))
+  end function atan_ito_log
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                        !
+!                      POLYLOGARITHM                     !
+!                                                        !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  function polylog(z,s) !polylogarithm functions
+    implicit none
+    complex(kp), intent(in) :: z,s
+    complex(kp) :: polylog
+    integer ::i,Nsum
+    polylog=0._kp
+    Nsum=1000
+
+    !Uses inversion formulas for dilogarithms
+    if (s.eq.2._kp.and.real(z,kp).gt.1._kp) then
+       do i=1,Nsum
+          polylog=polylog+(1._kp/z)**(real(i,kp))/(real(i,kp)**2)
+       enddo
+       polylog=acos(-1._kp)**2/3._kp-0.5_kp*log(z)**2-complex(0._kp,1._kp)*acos(-1._kp)*log(z)-polylog
+    elseif (s.eq.2._kp.and.real(z,kp).lt.-1._kp) then
+       do i=1,Nsum
+          polylog=polylog+(1._kp/z)**(real(i,kp))/(real(i,kp)**2)
+       enddo
+       polylog=-acos(-1._kp)**2/3._kp-0.5_kp*(log(-z))**2-polylog
+    else
+    do i=1,Nsum
+      polylog=polylog+z**(real(i,kp))/(real(i,kp)**s)
+    enddo
+    endif
+  end function polylog
 
 
 end module specialinf

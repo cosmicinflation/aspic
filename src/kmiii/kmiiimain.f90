@@ -81,7 +81,7 @@ program kmiiimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-!       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'r=',r,'ns=',ns
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'r=',r,'ns=',ns
 
        call livewrite('kmiii_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 

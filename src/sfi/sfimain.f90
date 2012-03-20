@@ -12,8 +12,8 @@ program sfimain
   type(transfert) :: sfiData
   real(kp) :: Pstar,calF
 
-  integer :: i
-  integer :: npts = 20
+  integer :: i,j
+  integer :: npts = 20,nmu=30.
 
   real(kp) :: mu,p,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r,Treh
@@ -22,21 +22,41 @@ program sfimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(3) :: vecbuffer
 
+  real(kp) ::mumin,mumax
+
   logical, parameter :: display = .true.
   logical, parameter :: inversion = .true.
 
-  p = 2._kp
-  mu = 1000._kp*10._kp**(0._kp)
-  w = 0._kp
 
-  sfiData%real1 = p
-  sfiData%real2 = mu
-  sfiData%real3 = w
+!For p=2
+  mumin=0.7
+  mumax=10._kp**(3.)
+  p = 2._kp
+
+  
+!For p=1
+  mumin=12.
+  mumax=10._kp**(3.)
+  p = 1._kp
+
+!For p=4
+  mumin=0.7
+  mumax=10._kp**(3.)
+  p = 4._kp
+
+  w = 0._kp
 
   Pstar = powerAmpScalar
 
-!  call delete_file('sfi_predic.dat')
-!  call delete_file('sfi_nsr.dat')
+  call delete_file('sfi_predic.dat')
+  call delete_file('sfi_nsr.dat')
+
+  do j=0,nmu
+
+ 
+   ! Ultralogarithmic step
+   mu=mumin/exp(1._kp)*exp(exp(real(j,kp)/real(nmu,kp)*log(1._kp+log(mumax/mumin))))
+
 
 !xstar stands for phistar/mu
  
@@ -68,6 +88,8 @@ program sfimain
      call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
   end do
+
+ end do
 
 
 end program sfimain

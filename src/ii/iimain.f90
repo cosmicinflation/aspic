@@ -49,8 +49,11 @@ program iimain
   betamin=0.1_kp
   betamax=10._kp
 
-  do j=1,10
-    beta=betamin*(betamax/betamin)**(real(j,kp)/real(10,kp))
+  betamin=1._kp
+  betamax=70._kp
+
+  do j=0,3
+    beta=betamin*(betamax/betamin)**(real(j,kp)/real(3,kp))
 
     xendmin=ii_prior_xendmin(beta,-60._kp)
     xendmax=100._kp*xendmin

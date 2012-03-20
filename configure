@@ -14346,11 +14346,11 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.
+# Always define AMTAR for backward compatibility.  Yes, it's still used
+# in the wild :-(  We should find a proper way to deprecate it ...
+AMTAR='$${TAR-tar}'
 
-AMTAR=${AMTAR-"${am_missing_run}tar"}
-
-am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
+am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
@@ -14485,7 +14485,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/common/Makefile src/lfi/Makefile src/mlfi/Makefile src/rcmi/Makefile src/rcqi/Makefile src/pni/Makefile src/mni/Makefile src/esi/Makefile src/pli/Makefile src/kmii/Makefile src/hf1i/Makefile src/sfi/Makefile src/li/Makefile src/ii/Makefile src/cwi/Makefile src/kmiii/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/common/Makefile src/lfi/Makefile src/mlfi/Makefile src/rcmi/Makefile src/rcqi/Makefile src/pni/Makefile src/mni/Makefile src/esi/Makefile src/pli/Makefile src/kmii/Makefile src/hf1i/Makefile src/sfi/Makefile src/li/Makefile src/ii/Makefile src/cwi/Makefile src/kmiii/Makefile src/hi/Makefile src/twi/Makefile src/mhi/Makefile src/rpi/Makefile src/dwi/Makefile src/mssmi/Makefile src/bsusybi/Makefile src/ti/Makefile src/bei/Makefile src/psni/Makefile src/ncki/Makefile src/lmi1/Makefile src/lmi2/Makefile src/lmi3/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15627,6 +15627,20 @@ do
     "src/ii/Makefile") CONFIG_FILES="$CONFIG_FILES src/ii/Makefile" ;;
     "src/cwi/Makefile") CONFIG_FILES="$CONFIG_FILES src/cwi/Makefile" ;;
     "src/kmiii/Makefile") CONFIG_FILES="$CONFIG_FILES src/kmiii/Makefile" ;;
+    "src/hi/Makefile") CONFIG_FILES="$CONFIG_FILES src/hi/Makefile" ;;
+    "src/twi/Makefile") CONFIG_FILES="$CONFIG_FILES src/twi/Makefile" ;;
+    "src/mhi/Makefile") CONFIG_FILES="$CONFIG_FILES src/mhi/Makefile" ;;
+    "src/rpi/Makefile") CONFIG_FILES="$CONFIG_FILES src/rpi/Makefile" ;;
+    "src/dwi/Makefile") CONFIG_FILES="$CONFIG_FILES src/dwi/Makefile" ;;
+    "src/mssmi/Makefile") CONFIG_FILES="$CONFIG_FILES src/mssmi/Makefile" ;;
+    "src/bsusybi/Makefile") CONFIG_FILES="$CONFIG_FILES src/bsusybi/Makefile" ;;
+    "src/ti/Makefile") CONFIG_FILES="$CONFIG_FILES src/ti/Makefile" ;;
+    "src/bei/Makefile") CONFIG_FILES="$CONFIG_FILES src/bei/Makefile" ;;
+    "src/psni/Makefile") CONFIG_FILES="$CONFIG_FILES src/psni/Makefile" ;;
+    "src/ncki/Makefile") CONFIG_FILES="$CONFIG_FILES src/ncki/Makefile" ;;
+    "src/lmi1/Makefile") CONFIG_FILES="$CONFIG_FILES src/lmi1/Makefile" ;;
+    "src/lmi2/Makefile") CONFIG_FILES="$CONFIG_FILES src/lmi2/Makefile" ;;
+    "src/lmi3/Makefile") CONFIG_FILES="$CONFIG_FILES src/lmi3/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

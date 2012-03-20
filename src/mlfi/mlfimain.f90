@@ -12,24 +12,35 @@ program mlfimain
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
+  integer :: i,j
   integer :: npts = 20
 
   real(kp) :: p,q,alpha,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
-  real(kp), dimension(2) :: vecbuffer
+!  real(kp), dimension(2) :: vecbuffer
+
+  real(kp), dimension(1:6) ::alphavalues
 
   Pstar = powerAmpScalar
 
-!  call delete_file('mlfi_predic.dat')
-!  call delete_file('mlfi_nsr.dat')
+  alphavalues(1)=(10._kp)**(-5.)
+  alphavalues(2)=(10._kp)**(-3.5)
+  alphavalues(3)=(10._kp)**(-3.)
+  alphavalues(4)=(10._kp)**(-2.8)
+  alphavalues(5)=(10._kp)**(-2.)
+  alphavalues(6)=(10._kp)**(0.)
+
+  call delete_file('mlfi_predic.dat')
+  call delete_file('mlfi_nsr.dat')
 
   p = 2._kp 
   q = 2._kp
-  alpha =2._kp*(10._kp)**(-0._kp)
   w = 0._kp
+
+  do j=1,size(alphavalues)
+   alpha=alphavalues(j)
  
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = mlfi_lnrhoend(p,q,alpha,Pstar)
@@ -60,6 +71,8 @@ program mlfimain
      call livewrite('mlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
   end do
+
+ end do
 
   
 

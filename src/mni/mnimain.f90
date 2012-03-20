@@ -12,7 +12,7 @@ program mnimain
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
+  integer :: i,j
   integer :: npts = 20
 
   real(kp) :: f,w,bfoldstar
@@ -21,13 +21,25 @@ program mnimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp), dimension(1:6) ::fvalues
+
+  fvalues(1)=3.5_kp
+  fvalues(2)=4._kp
+  fvalues(3)=5._kp
+  fvalues(4)=7._kp
+  fvalues(5)=10._kp
+  fvalues(6)=100._kp
+
   Pstar = powerAmpScalar
 
-!  call delete_file('mni_predic.dat')
-!  call delete_file('mni_nsr.dat')
+  call delete_file('mni_predic.dat')
+  call delete_file('mni_nsr.dat')
 
-  f =100._kp*10._kp**(0)
+  do j=1,size(fvalues)
+   
+  f=fvalues(j)
   w = 0._kp
+
 
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = mni_lnrhoend(f,Pstar)
@@ -58,6 +70,8 @@ program mnimain
      call livewrite('mni_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
   end do
+
+ end do
 
   
 

@@ -12,7 +12,7 @@ program esimain
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
+  integer :: i,j
   integer :: npts = 20
 
   real(kp) :: q,w,bfoldstar
@@ -21,14 +21,29 @@ program esimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp), dimension(1:9) ::qvalues
+
+  qvalues(1)=10._kp**(-3.)
+  qvalues(2)=5._kp*10._kp**(-2.)
+  qvalues(3)=10._kp**(-1.)
+  qvalues(4)=2.5_kp*10._kp**(-1.)
+  qvalues(5)=5._kp*10._kp**(-1.)
+  qvalues(6)=10._kp**(-1.)
+  qvalues(7)=1._kp
+  qvalues(8)=1.5_kp
+  qvalues(9)=3.5_kp
+
   Pstar = powerAmpScalar
 
-!  call delete_file('esi_predic.dat')
-!  call delete_file('esi_nsr.dat')
+  call delete_file('esi_predic.dat')
+  call delete_file('esi_nsr.dat')
 
-  q = 3.5_kp*10._kp**(0.) 
-!  w = 1._kp/3._kp
+  do j=1,size(qvalues)
+   
+  q=qvalues(j)
+
   w=0._kp
+!  w = -1._kp/3._kp
  
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = esi_lnrhoend(q,Pstar)
@@ -59,6 +74,7 @@ program esimain
        call livewrite('esi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
     end do
+ end do
 
 
 
