@@ -1,8 +1,9 @@
 !slow-roll functions for the Twisted inflation potential
 !
-!V(phi) = M**4 * [1 - A (phi/phi0)**2 exp(-x/phi0) ]
+!V(phi) = M**4 * [1 - A (x/phi0)**2 exp(-x/phi0) ]
 !
 !x = phi/Mp
+!y = phi/phi0
 !A=32/(92 ζ(5))=0.33183220315845589991447280462623125031833134154035
 
 module twisr
@@ -18,6 +19,9 @@ module twisr
   public  twi_norm_deriv_potential, twi_norm_deriv_second_potential
 
   real(kp), parameter ::A=0.33183220315845589991447280462623125031833134154035_kp
+
+!if bigger numerical errors
+  real(kp), parameter :: ymax = 100._kp
  
 contains
 
@@ -100,7 +104,7 @@ contains
   end function twi_epsilon_three
 
 
-!returns x at the end of inflation defined as epsilon1=1
+!returns x at the end of slow-roll epsilon2=2
   function twi_x_endinf(phi0)
     implicit none
     real(kp), intent(in) :: phi0
@@ -108,10 +112,10 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: twiData
+    
+    if (phi0.gt.0.04228_kp) stop 'twi_x_endinf: no slow roll solution for this value of phi0!'
 
-    if (phi0.gt.0.04228_kp) stop 'twi_x_endinf: inflation does not stop by violation of slow roll for this value of phi0!'
-
-    maxi=100._kp*phi0 !if bigger, <numaccuracy errors
+    maxi=ymax*phi0 !if bigger, <numaccuracy errors
     mini = twi_x_eps1max(phi0) !second maximum of eps1
 
     twiData%real1 = phi0
@@ -133,7 +137,7 @@ contains
     phi0 = twiData%real1
     
     find_twiendinf = twi_epsilon_one(x,phi0) - 1._kp
-   
+  
   end function find_twiendinf
 
 
@@ -146,7 +150,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: twiData
 
-    maxi=100._kp*phi0 !if bigger, <numaccuracy errors
+    maxi=ymax*phi0 !if bigger, <numaccuracy errors
     mini = 2._kp*phi0*(1._kp+epsilon(1._kp)) !minimum of the potential (where eps1=0)
 
     twiData%real1 = phi0
@@ -197,8 +201,8 @@ contains
     type(transfert) :: twiData
 
   
-    mini = twi_x_endinf(phi0)
-    maxi=100._kp*phi0 !if bigger, <numaccuracy errors
+    mini = xend
+    maxi=ymax*phi0 !if bigger, <numaccuracy errors
 
     twiData%real1 = phi0
     twiData%real2 = -bfold + twi_efold_primitive(xend,phi0)

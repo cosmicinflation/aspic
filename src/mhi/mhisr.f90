@@ -19,35 +19,35 @@ module mhisr
  
 contains
 !returns V/M^4
-  function mhi_norm_potential(x,mu)
+  function mhi_norm_potential(x)
     implicit none
     real(kp) :: mhi_norm_potential
-    real(kp), intent(in) :: x,mu
+    real(kp), intent(in) :: x
 
-    mhi_norm_potential = 1.-1./cosh(x)
+    mhi_norm_potential = 1._kp-1._kp/cosh(x)
 
   end function mhi_norm_potential
 
 
-!returns the first derivative of the potential with respect to phi/Mp, divided by M^4
-  function mhi_norm_deriv_potential(x,mu)
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function mhi_norm_deriv_potential(x)
     implicit none
     real(kp) :: mhi_norm_deriv_potential
-    real(kp), intent(in) :: x,mu
+    real(kp), intent(in) :: x
 
-   mhi_norm_deriv_potential = tanh(x)/cosh(x)/mu
+   mhi_norm_deriv_potential = tanh(x)/cosh(x)
 
   end function mhi_norm_deriv_potential
 
 
 
-!returns the second derivative of the potential with respect to phi/Mp, divided by M^4
-  function mhi_norm_deriv_second_potential(x,mu)
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function mhi_norm_deriv_second_potential(x)
     implicit none
     real(kp) :: mhi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,mu
+    real(kp), intent(in) :: x
 
-    mhi_norm_deriv_second_potential = (cosh(x)**(-3)-tanh(x)**2/cosh(x))/(mu**2)
+    mhi_norm_deriv_second_potential = (cosh(x)**(-3)-tanh(x)**2/cosh(x))
 
   end function mhi_norm_deriv_second_potential
 

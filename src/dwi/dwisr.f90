@@ -1,6 +1,6 @@
 !slow-roll functions for the double well inflation potential
 !
-!V(phi) = M^4 * [(phi/pi0)^2 - 1]^2
+!V(phi) = M^4 * [(phi/phi0)^2 - 1]^2
 !
 !x=phi/phi0
 !phi0=phi0/Mp
@@ -19,10 +19,10 @@ module dwisr
  
 contains
 !returns V/M^4
-  function dwi_norm_potential(x,phi0)
+  function dwi_norm_potential(x)
     implicit none
     real(kp) :: dwi_norm_potential
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x
 
     dwi_norm_potential = (x**2-1._kp)**2
 
@@ -30,25 +30,25 @@ contains
 
 
 
-!returns the first derivative of the potential with respect to phi, divided by M^4
-  function dwi_norm_deriv_potential(x,phi0)
+!returns the first derivative of the potential with respect to x, divided by M^4
+  function dwi_norm_deriv_potential(x)
     implicit none
     real(kp) :: dwi_norm_deriv_potential
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x
 
-   dwi_norm_deriv_potential = (4._kp*x*(-1._kp+x**2))/phi0
+   dwi_norm_deriv_potential = 4._kp*x*(-1._kp+x**2)
 
   end function dwi_norm_deriv_potential
 
 
 
-!returns the second derivative of the potential with respect to phi, divided by M^4
-  function dwi_norm_deriv_second_potential(x,phi0)
+!returns the second derivative of the potential with respect to x, divided by M^4
+  function dwi_norm_deriv_second_potential(x)
     implicit none
     real(kp) :: dwi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x
 
-    dwi_norm_deriv_second_potential = (4._kp*(-1._kp+3._kp*x**2))/phi0**2
+    dwi_norm_deriv_second_potential = 4._kp*(-1._kp+3._kp*x**2)
 
   end function dwi_norm_deriv_second_potential
 
@@ -111,7 +111,7 @@ contains
     real(kp) :: dwi_efold_primitive
 
 
-        dwi_efold_primitive = 0.25_kp*phi0**2*(0.5_kp*x**2-log(x))
+    dwi_efold_primitive = 0.25_kp*phi0**2*(0.5_kp*x**2-log(x))
 
 
   end function dwi_efold_primitive
@@ -122,9 +122,12 @@ contains
     implicit none
     real(kp), intent(in) :: bfold, phi0, xend
     real(kp) :: dwi_x_trajectory
+    real(kp) :: arglamb
 
+    arglamb = -lambert(-xend**2*exp(-xend**2+8._kp*bfold/phi0**2),0)
+    if (arglamb.lt.0._kp) stop 'dwi_x_trajectory: incorrect branch!'
 
-    dwi_x_trajectory = sqrt(-lambert(-xend**2*exp(-xend**2+8._kp*bfold/phi0**2),0))
+    dwi_x_trajectory = sqrt(arglamb)
 
        
   end function dwi_x_trajectory

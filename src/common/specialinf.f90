@@ -14,6 +14,7 @@ end module specialprec
 
 
 MODULE HYP_2F1_MODULE
+  use specialprec, only : dp
   !--------------------------------------------------------------------
   IMPLICIT NONE
   INTEGER, PARAMETER :: PR=KIND(1.0D0),IPR=KIND(1)
@@ -119,8 +120,8 @@ contains
 
   function hypergeom_2F1(a,b,c,z)
     implicit none
-    real(dp), intent(in) :: a,b,c,z
-    real(dp) :: hypergeom_2F1
+    real(kp), intent(in) :: a,b,c,z
+    real(kp) :: hypergeom_2F1
     complex(dp) :: ac,bc,cc,zc
     complex(dp) :: res
 
@@ -131,7 +132,7 @@ contains
 
     res = HYP_2F1(ac,bc,cc,zc)
 
-    hypergeom_2F1  = real(res,dp)
+    hypergeom_2F1  = real(res,kp)
 
 
   end function hypergeom_2F1
@@ -141,7 +142,7 @@ contains
 	REAL(kp), INTENT(IN)::x
 	INTEGER, INTENT(IN)::n
 	REAL(kp) ::y1,y2,y
-	IF(x<-1.d0/dexp(1.d0)) THEN
+	IF(x<-1.d0/exp(1.d0)) THEN
 		WRITE(*,*) 'Impossible to evaluate lambert Function: arg < -1/e'
 	END IF
 	IF(n==0) THEN
@@ -170,7 +171,7 @@ contains
 		END IF
 		DO WHILE(abs(y1-y2)>1.d-6)
 			y=(y1+y2)/2.d0
-			IF((y1*exp(y1)-x)*(y*dexp(y)-x)<0.d0) THEN
+			IF((y1*exp(y1)-x)*(y*exp(y)-x)<0.d0) THEN
 				y2=y
 			ELSE
 				y1=y
@@ -248,7 +249,7 @@ contains
 	IMPLICIT NONE
 	REAL(kp), INTENT(IN) :: x
 	REAL(kp) :: ei
-	INTEGER(I4B), PARAMETER :: MAXIT=100
+	INTEGER(I4B), PARAMETER :: MAXIT=1000
 	REAL(kp), PARAMETER :: EPS=epsilon(x),FPMIN=tiny(x)/EPS
 	INTEGER(I4B) :: k
 	REAL(kp) :: fact,prev,sm,term
@@ -265,8 +266,8 @@ contains
 		if (x < FPMIN) then !Special case: avoid failure of convergence test
 			ei=log(x)+EULER !because of underflow.
 		else if (x <= -log(EPS)) then !Use power series.
-			sm=0.0
-			fact=1.0
+			sm=0.0_kp
+			fact=1.0_kp
 			do k=1,MAXIT
 				fact=fact*x/k
 				term=fact/k
@@ -829,7 +830,7 @@ FUNCTION LOG_A_SUM_INIT(M,EPS)
   ELSE
      LOG_FACT=ZERO
      DO N=2,M-1
-        LOG_FACT=LOG_FACT + LOG(DBLE(N))
+        LOG_FACT=LOG_FACT + LOG(real(N,pr))
      ENDDO
      IF(MOD(M,2).EQ.0) THEN
         LOG_A_SUM_INIT=LOG_FACT
@@ -1394,7 +1395,7 @@ FUNCTION HYP_PS_ZERO(A,B,C,Z)
         HYP_PS_ZERO = HYP_PS_ZERO + TERM
         IF(POSSIBLE_FALSE_CV.AND.(N.GT.MIN_N)) THEN
            POSSIBLE_FALSE_CV = &
-                (CV_POLY_DER_CALC (CV_POLY_DER_TAB,DBLE(N)).GT.ZERO)
+                (CV_POLY_DER_CALC (CV_POLY_DER_TAB,real(N,pr)).GT.ZERO)
         ENDIF
         N=N+1 
      ENDDO
@@ -1534,7 +1535,7 @@ FUNCTION HYP_PS_ONE(A,B,C,MZP1)
      PROD_B = PROD_B*RATIO
   ENDDO
   IF(M.GT.0) THEN
-     PROD_B = PROD_B*(A+M-ONE)*(B+M-ONE)/DBLE(M)
+     PROD_B = PROD_B*(A+M-ONE)*(B+M-ONE)/real(M,pr)
   ENDIF
   B_EXTRA_TERM = PROD_B*GAMMA_PROD*GAMMA_INV_ONE_MEPS; B_SUM=B_TERM
   B_PREC=EPS15*INF_NORM(B_TERM)
@@ -1557,8 +1558,8 @@ FUNCTION HYP_PS_ONE(A,B,C,MZP1)
      B_EXTRA_TERM=B_EXTRA_TERM*MZP1*PROD3/(N_PM_P1*N_P1_MEPS)
      IF(POSSIBLE_FALSE_CV.AND.(N.GT.MIN_N)) THEN
         POSSIBLE_FALSE_CV = &
-             (CV_POLY_DER_CALC(CV_POLY1_DER_TAB,DBLE(N)).GT.ZERO).OR. &
-             (CV_POLY_DER_CALC(CV_POLY2_DER_TAB,DBLE(N)).GT.ZERO)
+             (CV_POLY_DER_CALC(CV_POLY1_DER_TAB,real(N,pr)).GT.ZERO).OR. &
+             (CV_POLY_DER_CALC(CV_POLY2_DER_TAB,real(N,pr)).GT.ZERO)
      ENDIF
      N=N+1
   ENDDO
@@ -1705,7 +1706,7 @@ FUNCTION HYP_PS_INFINITY(A,B,C,Z)
      PROD_B = PROD_B*RATIO
   ENDDO
   IF (M.GT.0) THEN
-     PROD_B=PROD_B*(A+M-ONE)*(A_MC_P1+M-ONE)/DBLE(M)
+     PROD_B=PROD_B*(A+M-ONE)*(A_MC_P1+M-ONE)/real(M,pr)
   ENDIF
   B_EXTRA_TERM = PROD_B*GAMMA_PROD*GAMMA_INV_ONE_MEPS
   B_SUM=B_TERM
@@ -1730,8 +1731,8 @@ FUNCTION HYP_PS_INFINITY(A,B,C,Z)
      B_EXTRA_TERM=B_EXTRA_TERM*Z_INV*PROD3/(N_PM_P1*N_P1_MEPS)
      IF(POSSIBLE_FALSE_CV.AND.(N.GT.MIN_N)) THEN
         POSSIBLE_FALSE_CV = (CV_POLY_DER_CALC( &
-             CV_POLY1_DER_TAB,DBLE(N)).GT.ZERO).OR.(&
-             CV_POLY_DER_CALC(CV_POLY2_DER_TAB,DBLE(N)).GT.ZERO)
+             CV_POLY1_DER_TAB,real(N,pr)).GT.ZERO).OR.(&
+             CV_POLY_DER_CALC(CV_POLY2_DER_TAB,real(N,pr)).GT.ZERO)
      ENDIF
      N=N+1
   ENDDO
