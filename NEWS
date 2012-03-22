@@ -1,2 +1,4 @@
-* v0.0.4
-- 5 new models imported, check ChangeLog
+* v0.0.5
+- 4 new models imported, check ChangeLog
+- Supports for quadruple precision [kp = kind(1._16)]
+

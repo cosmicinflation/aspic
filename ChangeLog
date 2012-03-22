@@ -1,3 +1,136 @@
+commit 2925e7bee1c570b9ca79c653952b66d55a348692
+Author: chris <chris@ringeval.com>
+Date:   Thu Mar 22 18:38:23 2012 +0100
+
+    allowing kp to be quadprec, dwi and mhi potential in terms of x only
+
+ src/common/specialinf.f90 |   33 +++++++++++++++++----------------
+ src/dwi/dwireheat.f90     |    8 ++++----
+ src/dwi/dwisr.f90         |   29 ++++++++++++++++-------------
+ src/mhi/mhireheat.f90     |    8 ++++----
+ src/mhi/mhisr.f90         |   22 +++++++++++-----------
+ src/twi/twisr.f90         |   22 +++++++++++++---------
+ 6 files changed, 65 insertions(+), 57 deletions(-)
+
+
+commit ba34952822fd3c3f4eacb71d561135ce92ec958a
+Author: chris <chris@ringeval.com>
+Date:   Tue Mar 20 18:17:46 2012 +0100
+
+    importing HI, TWI, DWI, MHI from JMVV
+
+ Makefile.in                   |   40 +--
+ aclocal.m4                    |   15 +-
+ config.guess                  |   22 +-
+ config.sub                    |   13 +-
+ configure                     |   24 +-
+ configure.ac                  |   14 +
+ missing                       |   53 +---
+ src/Makefile.am               |   19 +-
+ src/Makefile.in               |   29 ++-
+ src/bei/Makefile.am           |   19 ++
+ src/bei/Makefile.in           |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/bei/beimain.f90           |  101 ++++++++
+ src/bei/beireheat.f90         |  133 ++++++++++
+ src/bei/beisr.f90             |  123 +++++++++
+ src/bsusybi/Makefile.am       |   19 ++
+ src/bsusybi/Makefile.in       |  577 +++++++++++++++++++++++++++++++++++++++++
+ src/bsusybi/bsusybimain.f90   |  118 +++++++++
+ src/bsusybi/bsusybireheat.f90 |  118 +++++++++
+ src/bsusybi/bsusybisr.f90     |  182 +++++++++++++
+ src/common/Makefile.in        |    6 +-
+ src/common/specialinf.f90     |   73 +++++-
+ src/cwi/Makefile.in           |    6 +-
+ src/dwi/Makefile.am           |   22 ++
+ src/dwi/Makefile.in           |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/dwi/dwimain.f90           |   90 +++++++
+ src/dwi/dwireheat.f90         |  130 ++++++++++
+ src/dwi/dwisr.f90             |  133 ++++++++++
+ src/esi/Makefile.in           |    6 +-
+ src/esi/esimain.f90           |   26 +-
+ src/hf1i/Makefile.in          |    6 +-
+ src/hf1i/hf1imain.f90         |   22 +-
+ src/hi/Makefile.am            |   22 ++
+ src/hi/Makefile.in            |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/hi/himain.f90             |   76 ++++++
+ src/hi/hireheat.f90           |  125 +++++++++
+ src/hi/hisr.f90               |  130 ++++++++++
+ src/ii/Makefile.in            |    6 +-
+ src/ii/iimain.f90             |    7 +-
+ src/kmii/Makefile.in          |    6 +-
+ src/kmii/kmiimain.f90         |   21 +-
+ src/kmiii/Makefile.in         |    6 +-
+ src/kmiii/kmiiimain.f90       |    2 +-
+ src/kmiii/kmiiisr.f90         |    5 +-
+ src/lfi/Makefile.in           |    6 +-
+ src/li/Makefile.in            |    6 +-
+ src/li/limain.f90             |   45 ++--
+ src/lmi1/Makefile.am          |   22 ++
+ src/lmi1/Makefile.in          |  574 ++++++++++++++++++++++++++++++++++++++++
+ src/lmi1/lmi1main.f90         |   88 +++++++
+ src/lmi1/lmi1reheat.f90       |  173 ++++++++++++
+ src/lmi1/lmi1sr.f90           |  249 ++++++++++++++++++
+ src/lmi2/Makefile.am          |   22 ++
+ src/lmi2/Makefile.in          |  574 ++++++++++++++++++++++++++++++++++++++++
+ src/lmi2/lmi2main.f90         |   94 +++++++
+ src/lmi2/lmi2reheat.f90       |  208 +++++++++++++++
+ src/lmi2/lmi2sr.f90           |  249 ++++++++++++++++++
+ src/lmi3/Makefile.am          |   22 ++
+ src/lmi3/Makefile.in          |  574 ++++++++++++++++++++++++++++++++++++++++
+ src/lmi3/lmi3main.f90         |  102 ++++++++
+ src/lmi3/lmi3reheat.f90       |  198 ++++++++++++++
+ src/lmi3/lmi3sr.f90           |  210 +++++++++++++++
+ src/mhi/Makefile.am           |   22 ++
+ src/mhi/Makefile.in           |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/mhi/mhimain.f90           |   85 ++++++
+ src/mhi/mhireheat.f90         |  128 +++++++++
+ src/mhi/mhisr.f90             |  162 ++++++++++++
+ src/mlfi/Makefile.in          |    6 +-
+ src/mlfi/mlfimain.f90         |   23 +-
+ src/mni/Makefile.in           |    6 +-
+ src/mni/mnimain.f90           |   22 +-
+ src/mssmi/Makefile.am         |   22 ++
+ src/mssmi/Makefile.in         |  575 ++++++++++++++++++++++++++++++++++++++++
+ src/mssmi/mssmimain.f90       |  156 +++++++++++
+ src/mssmi/mssmireheat.f90     |  130 ++++++++++
+ src/mssmi/mssmisr.f90         |  279 ++++++++++++++++++++
+ src/ncki/Makefile.am          |   22 ++
+ src/ncki/Makefile.in          |  574 ++++++++++++++++++++++++++++++++++++++++
+ src/ncki/nckimain.f90         |  167 ++++++++++++
+ src/ncki/nckireheat.f90       |  143 ++++++++++
+ src/ncki/nckisr.f90           |  190 ++++++++++++++
+ src/pli/Makefile.in           |    6 +-
+ src/pni/Makefile.in           |    6 +-
+ src/pni/pnimain.f90           |   23 +-
+ src/psni/Makefile.am          |   22 ++
+ src/psni/Makefile.in          |  574 ++++++++++++++++++++++++++++++++++++++++
+ src/psni/psnimain.f90         |  102 ++++++++
+ src/psni/psnireheat.f90       |  125 +++++++++
+ src/psni/psnisr.f90           |  183 +++++++++++++
+ src/rcmi/Makefile.in          |    6 +-
+ src/rcmi/rcmimain.f90         |   25 +-
+ src/rcqi/Makefile.in          |    6 +-
+ src/rcqi/rcqimain.f90         |   36 ++-
+ src/rpi/Makefile.am           |   22 ++
+ src/rpi/Makefile.in           |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/rpi/rpimain.f90           |   86 ++++++
+ src/rpi/rpireheat.f90         |  140 ++++++++++
+ src/rpi/rpisr.f90             |  169 ++++++++++++
+ src/sfi/Makefile.in           |    6 +-
+ src/sfi/sfimain.f90           |   40 ++-
+ src/ti/Makefile.am            |   19 ++
+ src/ti/Makefile.in            |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/ti/timain.f90             |  104 ++++++++
+ src/ti/tireheat.f90           |  123 +++++++++
+ src/ti/tisr.f90               |  167 ++++++++++++
+ src/twi/Makefile.am           |   22 ++
+ src/twi/Makefile.in           |  573 ++++++++++++++++++++++++++++++++++++++++
+ src/twi/twimain.f90           |   80 ++++++
+ src/twi/twireheat.f90         |  126 +++++++++
+ src/twi/twisr.f90             |  226 ++++++++++++++++
+ 109 files changed, 14893 insertions(+), 235 deletions(-)
+
+
 commit 21242f3aa7e4c0e15f0673d4652b3cff1456bf49
 Version: 0.0.4
 Date:   Thu Jan 12 16:19:31 2012 +0100
@@ -48,7 +181,6 @@ Date:   Thu Jan 12 16:19:31 2012 +0100
  src/sfi/sfimain.f90       |   13 +-
  src/sfi/sfisr.f90         |   25 ++-
  44 files changed, 5191 insertions(+), 589 deletions(-)
-
 
 
 commit 3b7e335c0bef826d7b214726fafd9122b920a018
