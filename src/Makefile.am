@@ -2,6 +2,9 @@ lib_LTLIBRARIES = libaspic.la
 libaspic_la_SOURCES =
 libascpi_la_LDFLAGS = -version-info @version_info@
 
+libaspic_la_includedir = $(includedir)/$(SRINCDIR)
+libaspic_la_include_HEADERS = '../include/aspic.h'
+
 #forces the linker to use fortran linking
 nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
 
