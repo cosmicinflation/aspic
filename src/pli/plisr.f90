@@ -1,6 +1,6 @@
 !slow-roll functions for the rpower law inflation potential
 !
-!V(phi) = M^4 exp(- alpha phi/Mp )
+!V(phi) = M^4 exp(- alpha x )
 !
 !x = phi/Mp
 

@@ -1,6 +1,6 @@
 !slow-roll functions for the one field effective hybrid potential
 !
-!V(phi) = M^4 [1 + (phi/mu)^p]
+!V(phi) = M^4 [1 + x^p]
 !
 !x = phi/mu
 

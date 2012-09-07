@@ -12,6 +12,8 @@ librcqi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 librcqi_la_includedir = $(includedir)/$(SRINCDIR)
 librcqi_la_include_HEADERS = $(MOD)
 
+librcqi.3
+
 clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)

@@ -3,7 +3,7 @@
 !V(phi) = M^4 * [1 + alpha x^4 ln(x/Q) ]
 !
 !x = phi/Mp
-!Q/Mp= (4e/alpha)^(1/4) in order to set the potential minimum to 0.
+!Q = (4e/alpha)^(1/4) in order to set the potential minimum to 0.
 
 module cwisr
   use infprec, only : kp,tolkp,transfert

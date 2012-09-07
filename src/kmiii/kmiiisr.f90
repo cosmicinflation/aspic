@@ -1,6 +1,6 @@
 !slow-roll functions for the Kähler moduli inflation II potential
 !
-!V(phi) = M^4 [1-alpha x^(4/3) exp(-beta x^(4/3) ) ]
+!V(phi) = M^4 [ 1-alpha x^(4/3) exp(-beta x^(4/3) ) ]
 !
 !x = phi/Mp
 

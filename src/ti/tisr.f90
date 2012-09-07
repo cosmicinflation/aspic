@@ -1,6 +1,6 @@
 !slow-roll functions for the Tip inflation potential
 !
-!V(phi) = M**4 [ 1 + cos(phi/mu) + alpha sin**2(phi/mu) ]
+!V(phi) = M^4 [ 1 + cos(x) + alpha sin^2(x) ]
 !
 !x = phi/mu
 

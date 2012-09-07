@@ -1,8 +1,9 @@
 !slow-roll functions for the small field potential
 !
-!V(phi) = M^4 [1 - (phi/mu)^p]
+!V(phi) = M^4 [1 - x^p]
 !
 !x = phi/mu
+!mu = mu/Mp
 
 module sfisr
   use infprec, only : kp, tolkp,transfert

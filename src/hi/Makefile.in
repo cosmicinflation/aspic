@@ -98,7 +98,11 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libhi_la_includedir)"
+man3dir = $(mandir)/man3
+am__installdirs = "$(DESTDIR)$(man3dir)" \
+	"$(DESTDIR)$(libhi_la_includedir)"
+NROFF = nroff
+MANS = $(man_MANS)
 HEADERS = $(libhi_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -234,6 +238,7 @@ libhi_la_SOURCES = $(SRC)
 libhi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libhi_la_includedir = $(includedir)/$(SRINCDIR)
 libhi_la_include_HEADERS = $(MOD)
+man_MANS = libhi.3
 all: all-am
 
 .SUFFIXES:
@@ -336,6 +341,42 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-man3: $(man_MANS)
+	@$(NORMAL_INSTALL)
+	test -z "$(man3dir)" || $(MKDIR_P) "$(DESTDIR)$(man3dir)"
+	@list=''; test -n "$(man3dir)" || exit 0; \
+	{ for i in $$list; do echo "$$i"; done; \
+	l2='$(man_MANS)'; for i in $$l2; do echo "$$i"; done | \
+	  sed -n '/\.3[a-z]*$$/p'; \
+	} | while read p; do \
+	  if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; echo "$$p"; \
+	done | \
+	sed -e 'n;s,.*/,,;p;h;s,.*\.,,;s,^[^3][0-9a-z]*$$,3,;x' \
+	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,' | \
+	sed 'N;N;s,\n, ,g' | { \
+	list=; while read file base inst; do \
+	  if test "$$base" = "$$inst"; then list="$$list $$file"; else \
+	    echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man3dir)/$$inst'"; \
+	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man3dir)/$$inst" || exit $$?; \
+	  fi; \
+	done; \
+	for i in $$list; do echo "$$i"; done | $(am__base_list) | \
+	while read files; do \
+	  test -z "$$files" || { \
+	    echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(man3dir)'"; \
+	    $(INSTALL_DATA) $$files "$(DESTDIR)$(man3dir)" || exit $$?; }; \
+	done; }
+
+uninstall-man3:
+	@$(NORMAL_UNINSTALL)
+	@list=''; test -n "$(man3dir)" || exit 0; \
+	files=`{ for i in $$list; do echo "$$i"; done; \
+	l2='$(man_MANS)'; for i in $$l2; do echo "$$i"; done | \
+	  sed -n '/\.3[a-z]*$$/p'; \
+	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^3][0-9a-z]*$$,3,;x' \
+	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
+	dir='$(DESTDIR)$(man3dir)'; $(am__uninstall_files_from_dir)
 install-libhi_la_includeHEADERS: $(libhi_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libhi_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libhi_la_includedir)"
@@ -408,6 +449,19 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	@list='$(MANS)'; if test -n "$$list"; then \
+	  list=`for p in $$list; do \
+	    if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
+	    if test -f "$$d$$p"; then echo "$$d$$p"; else :; fi; done`; \
+	  if test -n "$$list" && \
+	    grep 'ab help2man is required to generate this page' $$list >/dev/null; then \
+	    echo "error: found man pages containing the \`missing help2man' replacement text:" >&2; \
+	    grep -l 'ab help2man is required to generate this page' $$list | sed 's/^/         /' >&2; \
+	    echo "       to fix them, install help2man, remove and regenerate the man pages;" >&2; \
+	    echo "       typically \`make maintainer-clean' will remove them" >&2; \
+	    exit 1; \
+	  else :; fi; \
+	else :; fi
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
 	list='$(DISTFILES)'; \
@@ -440,9 +494,9 @@ distdir: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(MANS) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libhi_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(libhi_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -497,7 +551,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libhi_la_includeHEADERS
+install-data-am: install-libhi_la_includeHEADERS install-man
 
 install-dvi: install-dvi-am
 
@@ -513,7 +567,7 @@ install-info: install-info-am
 
 install-info-am:
 
-install-man:
+install-man: install-man3
 
 install-pdf: install-pdf-am
 
@@ -542,7 +596,9 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libhi_la_includeHEADERS
+uninstall-am: uninstall-libhi_la_includeHEADERS uninstall-man
+
+uninstall-man: uninstall-man3
 
 .MAKE: check-am install-am install-strip
 
@@ -554,12 +610,13 @@ uninstall-am: uninstall-libhi_la_includeHEADERS
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-libhi_la_includeHEADERS \
-	install-man install-pdf install-pdf-am install-ps \
+	install-man install-man3 install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libhi_la_includeHEADERS
+	uninstall-am uninstall-libhi_la_includeHEADERS uninstall-man \
+	uninstall-man3
 
 
 clean-local: clean-modules clean-outfiles

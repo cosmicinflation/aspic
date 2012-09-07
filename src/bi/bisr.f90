@@ -1,7 +1,7 @@
 !slow-roll functions for the KKLT potential in the minimal kinetic
 !term approximation
 !
-!V(phi) = M^4 / [1 + (phi/mu)^(-p)]
+!V(phi) = M^4 / [1 + x^(-p)]
 !
 !x = phi/mu
 

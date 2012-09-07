@@ -1,6 +1,6 @@
 !slow-roll functions for the mutated hilltop potential
 !
-!V(pmhi) = M^4 * [1 - sech(phi/mu)]
+!V(phi) = M^4 * [1 - sech(x)]
 !
 !x = phi/mu
 !mu=mu/Mp

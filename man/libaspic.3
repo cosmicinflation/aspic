@@ -1,0 +1,760 @@
+.\"   $Id$
+.\"
+.\"   Man page for the aspic project.
+.\"
+.\"   $Log$
+.\"
+
+.TH libaspic 3 "September 5, 2012" "version 0.0.5" "IAP / CP3, Louvain U."
+
+.SH NAME
+libaspic - a scientific
+.I
+fortran
+library dedicated to (a)ccurate (s)low-roll (p)redictions for
+(i)nflationary (c)osmology.
+
+.SH SYNOPSIS
+.I
+libaspic
+is a collection of fortran modules, distributed as a shared and static
+library, which provides various computational functions associated
+with well known models of inflation. The list of models, modules and
+available functions, as well as their usage, are detailled below.
+.P
+In order to access the library, it has to be linked to your code
+by using the
+.I -l
+flag during compilation, i.e. by appending the command
+.B -laspic
+to the others flags. Inside your source code, all modules and their
+associated routines can be imported from a global include file that is
+accessible in fortran by the command:
+.IP
+.B include 'aspic.h'
+.P
+Both the library and the global include file are installed in the
+standard directory of your system such that compiling your own source
+should only require:
+.IP
+gfortran -c myfile.f90
+.B -laspic
+.P
+In case you have installed the library in a non-standard location,
+since most modern fortran compilers support the
+.I -I
+command line flag, you should not try to copy the include
+files inside your working directory. Rather, tells the compiler where
+to find '.h' files. The same remark holds for the path to the library
+itself, which can be specified from the
+.I -L
+command line flag. For instance, compiling your own source with
+gfortran would read:
+.IP
+gfortran -c myfile.f90 -I/usr/include/aspic -L/usr/lib64
+.B -laspic
+.P
+Alternatively, you can decide to only import one (or more) specific
+module with a subset of its associated routines with the fortran
+instruction 'use'. As an example, accessing the first and second Hubble flow
+functions for the models 'foo' reads:
+
+.IP
+.B use foosr, only : foo_epsilon_one, foo_epsilon_two
+
+
+
+.SH DESCRIPTION
+.I libaspic
+is a library for computing various 
+.I observable
+quantities used in Cosmology from definite single field inflationary
+models.  It aims at providing an efficient, modulable and accurate way
+of comparing theoretical predictions with cosmological data. As the
+list of inflationary models is always increasing, you are encouraged
+to add support for any model that would not yet be implemented; see
+section
+.B ADDING A MODEL.
+.P
+By observable quantities, we refer to as the Hubble flow functions, up
+to second order in the slow-roll approximation, which are in direct
+correspondance with the spectral index, tensor-to-scalar ratio and the
+running of the primordial power spectrum. The library also provides
+the field potential, its first and second derivatives, the total
+energy density at the end of inflation, at the end of reheating, and
+the field value (or e-fold value) at which the pivot scale crossed the
+Hubble radius during inflation. All these quantities are computed in a
+way which is consistent with the existence of a reheating phase. Some
+functions may therefore requires as an input both the amplitude of the
+scalar perturbations and the mean equation of state during reheating.
+
+.SH EXAMPLES
+
+For each all the models implemented, assuming its acronym to be 'foo',
+the source tarball contains a worked out example, 'foomain.f90', which
+calls the library to extract the spectral index and tensor-to-scalar
+ratio scanning all possible reheating energy scales. These example
+codes are not compiled by default as they are for debugging and
+pedagogical purposes only. Their compilation can be forced by using
+.IP
+make check
+.P
+when building libaspic from the tarball source file.
+
+.SH LIST OF MODULES AND ROUTINES
+
+For a given inflationary model, let's say 'foo' inflation, 
+.I libaspic
+provides two modules
+.B foosr
+and
+.B fooreheat
+respectively dedicated to slow-roll and reheating related
+functions. These modules make use of common modules that you should
+not need for standard usage but that you must call if you decide to
+add a new model.
+
+.SS SLOW-ROLL MODULE
+
+The
+.B foosr
+module exposes the following
+.I public functions
+of kind
+.I real(kp)
+.IP
+.B foo_norm_potential
+(x,...)
+.RS
+.B foo_norm_deriv_potential
+(x,...)
+.RE
+.RS
+.B foo_norm_deriv_second_potential
+(x,...)
+.RE
+.RS
+.B foo_epsilon_one
+(x,...)
+.RE
+.RS
+.B foo_epsilon_two
+(x,...)
+.RE
+.RS
+.B foo_epsilon_three
+(x,...)
+.RE
+.RS
+.B foo_x_endinf
+(...)
+.RE
+.RS
+.B foo_efold_primitive
+(x,...)
+.RE
+.RS
+.B foo_x_trajectory
+(N-Nend,xend,...)
+.RE
+.P
+All these functions take as an input the dimensionless field value
+.B 'x'
+and/or a relative e-fold number
+.B 'N'
+and some extra model parameter values, all of the kind
+.I real(kp).
+The field values
+.B 'x'
+are usually assumed to be in reduced Planck mass units. For some
+specific models, the unit may however be in another more relevant
+energy scale. Please check out the explicit list of models below,
+their respective man pages (man libfoo) or the header of the module
+file 'foosr.f90' for more detail. Each of these functions usually
+require some additional input, referred to as '...'  above, which are
+the (dimensionless) potential parameter values. Again, their number,
+units and kind can be either found in the list below or in the header
+of the module file 'foosr.f90'.
+
+The first three functions return the field potential and its
+derivatives and are normalized. They do not include any multiplicative
+factor (such as M^4) because it is always uniquely determined by the
+amplitude of the cosmological perturbations. As such, the
+normalization is never counted as a model parameter in the
+classification below.  The next three functions, the ones containing the
+wording
+.B 'epsilon'
+in their name, return the value of the three first Hubble flow
+functions.
+.P
+Finally, the last three functions allows to determine
+uniquely the slow-roll trajectory. Calling
+.B foo_x_endinf()
+returns the field value
+.B 'xend'
+at the end of inflation. For most models, this happens when the first
+Hubble flow function equals unity but it can also be given by more
+specific mechanisms. Notice that for some models, the end of inflation
+is an extra model parameter. For those, this function is obsviously
+not provided. The function
+.B foo_efold_primitive()
+returns, up to a constant, the value of the integral
+.B SUM{V(x)/V'(x)dx}
+from which the slow-roll trajectory can be calculated. This is
+precisely the output of
+.B foo_x_trajectory()
+which returns the field value
+.B 'x'
+from the input of
+.B 'xend'
+and the number of e-folds 
+.B 'N-Nend'
+before the end of inflation at which you want this value.
+
+
+.SS REHEATING MODULES
+
+The
+.B fooreheat
+module exposes the following
+.I public functions
+of kind
+.I real(kp)
+.IP
+.B foo_lnrhoend
+(...,Pstar)
+.RS
+.B foo_x_star
+(...,w,lnRhoReh,Pstar)
+.RE
+.RS
+.B foo_x_star
+(...,w,lnRhoReh,Pstar,
+.B deltaNstar)
+.RE
+
+.P
+These functions take as first arguments the dimensionless potential
+parameters '...' as specified in the header of the module
+files 'foosr.f90' and 'fooreheat.f90'.
+.P
+The function
+.B foo_lnrhoend()
+return the logarithm of the total energy density of the universe at
+the end of inflation. This number depending on the physical
+normalisation of the potential, you need to input
+.B 'Pstar'
+the measured amplitude of the scalar power spectrum evaluated at 
+.B 'kstar'
+the pivot wavenumber. Its default value has been set to 0.05 Mpc^-1
+(see below for specifing another value).
+
+The function
+.B foo_x_star()
+returns the field value
+.B 'xstar'
+at which the pivot wavenumber
+.B 'kstar'
+crossed the Hubble radius during inflation. Plugging this field value
+into the Hubble flow functions immediately gives the
+.I observable
+slow-roll parameters, spectral index, running, tensor-to-scalar
+ratio. As an input, this function requires some assumptions on how the
+reheating proceeded. It needs the mean equation of state parameter
+.B 'w'
+during (pre)reheating, together with the logarithm of total energy density
+.B 'lnRhoReh'
+of the universe when the reheating ends. Finally, in order to
+determine the correct normalisation of the inflationary potential, you
+have to input
+.B 'Pstar'
+again. The same routine can be called with an additional 
+.I real(kp), optional, intent(out)
+argument
+.B 'deltaNstar'
+which contains on return the value of 'Nstar-Nend', the number of
+e-folds before the end of inflation at which the pivot wavenumber
+crossed the Hubble radius (negative).
+
+The
+.B srreheat
+module is not model specific and its source files are located under
+the directory 'src/common/'. When not specified, this module exposes
+.I functions
+of kind
+.I real(kp)
+which are called by all the above-described modules. As such their
+usage should be necessary only if you decide to add a new model:
+.IP
+.B quadrupole_to_primscalar
+(QoverT)
+.RE
+.RS
+.B log_energy_reheat_ingev
+(lnRhoReh)
+.RE
+.RS
+.I logical ::
+.B slowroll_validity
+(epsOne,epsTwo)
+.RE
+.RS
+.B ln_rho_endinf
+(Pstar,epsOneStar,epsOneEnd,VendOverVstar)
+.RE
+.RS
+.B find_reheat
+(nuStar,calFplusNuEnd,w,epsStar,Vstar)
+.RE
+.RS
+.B get_calfconst
+(lnRhoReh,Pstar,w,epsEnd,potEnd)
+.RE
+.RS
+.B ln_rho_reheat
+(w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
+.RE
+.P
+All of these functions take as input
+.I real(kp)
+kind arguments. The first function
+.B quadrupole_to_primscalar()
+returns an estimation of the amplitude of the scalar primordial power
+spectrum 'Pstar' from
+.B QoverT
+the quadrupole moment (.i.e. the COBE normalization). The second function
+.B log_energy_reheat_ingev()
+is for convenieance and simply returns the logarithm in base 10 of the
+energy density at the end of reheating from the its Neper logarithmic
+value (used elsewhere). The third,
+.B slowroll_validity()
+returns
+.I .true.
+or
+.I .false.
+according to the values of the first and second Hubble flow functions
+to assess the validity of the slow-roll approximation and numerical
+precision.
+
+The last four functions are at the root of the reheating related
+calculations and are fully model independent. The function
+.B ln_rho_endinf()
+returns the logarithm of the energy density at the end of inflation,
+.B ln_rho_reheat()
+returns the logarithm of the energy density at the end of reheating,
+while
+.B find_reheat()
+and
+.B get_calfconst()
+solve algebraic equations necessary to get the reheating parameter
+assuming slow-roll. For more details on what are these quantities,
+check out the original paper
+.UR
+http://arxiv.org/abs/1004.5525
+
+
+
+.P
+These functions are valid for any slow-roll inflationary model and
+take as arguments 'Pstar', the primordial power spectrum amplitude at
+the pivot, 'w' the mean equation of state during
+(pre)reheating, 'epsOneStar' and 'epsOneEnd' are the first Hubble flow
+function respectively evaluated at the time of pivot hubble crossing
+and the end of inflation. The argument 'VendOverVstar' is the ratio
+between the field potential, evaluated at those two times. All those
+arguments are of
+.I real(kp)
+kind.
+
+.SS COSMOPARAMS MODULE
+
+The
+.B cosmopar
+module exposes some
+.I public parameters
+of the kind
+.I real(kp)
+which encodes some measured cosmological parameters today, or
+observational choice such as the pivot scale. More explictly, they are
+.IP
+.B HubbleSquareRootOf3OmegaRad
+.RE
+.RS
+.B HubbleSquareRootOf2OmegaRad
+.RE
+.RS
+.B lnRhoNuc                   
+.RE
+.RS
+.B lnMpcToKappa
+.RE
+.RS
+.B lnMpinGeV
+.RE
+.RS
+.B QrmsOverT
+.RE
+.RS
+.B kpivot
+.RE
+.RS
+.B PowerAmpScalar
+.RE
+
+.P
+The first two are the Hubble parameter today times the square root of
+the double (or triple) density parameter of radiation today. The
+constant
+.B lnRhoNuc
+stands for the logarithm of the energy density of the universe just
+before Big-Bang Nucleosynthesis. Next
+.B lnMpcToKappa
+is the logarithm of the Einstein equation coupling (8piG/c^4) expressed in megaparsecs.
+The parameter
+.B lnMpinGev
+is the reduced Planck mass in GeV,
+.B QrmsOverT
+stands for the COBE quadrupole moment,
+.B kpivot
+is the pivot scale at which the amplitude of the scalar primordial
+power spectrum is measured. A default amplitude is stored in the parameter
+.B PowerAmpScalar
+(best fit from WMAP7), that very same quantity has been referred to
+as 'Pstar' in some functional arguments above.
+.P
+Notice that changing any of these constants requires edition of the source
+file 'src/common/cosmopar.f90' and a recompilation of the whole
+library.
+
+
+
+.SS UTILITY MODULES
+
+Finally,
+.I libaspic
+comes with some utility modules that you may find usefull in performing some
+specific computations.
+.P
+The
+.B inftools
+module exposes some
+.I public subroutines
+which are various modified Runge-Kutta numerical integrators based on the
+subroutine dverk().
+The
+.B specialinf
+module exposes some special functions arising by analytically
+integrating some slow-roll trajectories.
+The
+.B hyp_2f1_module
+module exposes various
+.I functions
+and
+.I subroutines
+dedicated to the computation of the Gauss hypergeometric function. All
+source files are located under the 'src/common/' directory.
+
+
+.SH LIST OF MODELS
+At the time of this writing,
+.I libaspic
+deals with inflationary models listed below. Their respective
+potential parameters, conventions for field units are described in
+their man pages (man libfoo).
+.SS ZERO PARAMETER MODELS
+.TP 20
+.B
+Acronym
+.B
+Model name
+.TQ
+.I hi
+Higgs inflation
+
+.SS ONE PARAMETER MODELS
+.TP 20
+.B
+Acronym
+.B
+Model name
+.TQ
+.I lfi
+large field inflation
+.TQ
+.I mlfi
+mixed large field inflation
+.TQ
+.I rcmi
+radiatively corrected massive inflation
+.TQ
+.I rcqi
+radiatively corrected quartic inflation
+.TQ
+.I pni
+natural inflation with the plus sign
+.TQ
+.I mni
+natural inflation with the minus sign
+.TQ
+.I esi
+exponential SUSY inflation
+.TQ
+.I pli
+power law inflation
+.TQ
+.I kmii
+Kahler moduli inflation I
+.TQ
+.I hf1i
+horizon flow inflation at first order
+.TQ
+.I cwi
+Coleman-Weinberg inflation
+.TQ
+.I li
+global SUSY with loop inflation
+.TQ
+.I twi
+twisted inflation
+.TQ
+.I rpi
+R + R^p inflation
+.TQ
+.I dwi
+double well inflation
+.TQ
+.I mhi
+mutated hilltop inflation
+.TQ
+.I ri
+radion inflation
+
+
+.SS TWO PARAMETERS MODELS
+.TP 20
+.B Acronym
+.B Model name
+.TQ
+.I sfi
+small field inflation
+.TQ
+.I ii
+intermediate inflation
+.TQ
+.I kmiii
+Kahler moduli inflation II
+.TQ
+.I lmi1
+logamediate inflation I
+.TQ
+.I lmi2
+logamediate inflation II
+.TQ
+.I lmi3
+logamediate inflation III
+.TQ
+.I hf2i
+horizon flow inflation at second order
+.TQ
+.I mssmi
+MSSM inflation
+.TQ
+.I bsusybi
+brane SUSY breaking inflation
+.TQ
+.I ti
+tip inflation
+.TQ
+.I bei
+beta exponential inflation
+.TQ
+.I psni
+pseudo natural inflation
+.TQ
+.I ncki
+non-canonical Kahler inflation
+.TQ
+.I bi
+brane inflation
+
+.SS THREE PARAMETERS MODELS
+.TP 20
+.B Acronym
+.B Model name
+.TQ
+.I rmi
+running mass inflation
+.TQ
+.I vhi
+valley hybrid inflation
+.TQ
+.I dsi
+dynamical supersymmetric inflation
+.TQ
+.I gmi
+generalized mixed inflation
+.TQ
+.I shi
+super hilltop inflation
+.TQ
+.I mhi
+more hilltop inflation
+.TQ
+.I su5i
+SU(5) inflation
+
+
+
+.SH ADDING A MODEL
+Before deciding to add a model, you should first check that its
+potential is not already encoded within the existing modules. From our
+experience, it is frequent in the literature that different
+theoretical motivations lead to exactly the same effective
+potential. As a result, identical models often share different
+names. If you encounter such a situation, please let us know, or even
+better, send us an updated man page for the relevant module by adding
+the alternative names under which this potential is known.
+
+.P
+In the opposite situation, importing a new model, let's say 'convoluted wow
+loop inflation', of acronym
+.I wowi
+is equivalent to write the source codes of the two modules
+.B wowisr
+and
+.B wowireheat
+as well as updating various autoconf
+files 'Makefile.am', 'configure.ac' and writing a very short
+documentation.
+
+
+
+This can be done step by step along the following
+lines:
+
+.IP \(bu
+Create the sub-directory 'src/wooi' containing five new
+files, 'wooimain.f90', 'wooisr.f90', 'wooireheat.f90', 'libwooi.3'
+and 'Makefile.am'.
+
+.IP \(bu
+Edit the file 'Makefile.am' such as it now reads
+.HP 20
+.EX
+SRC = wooisr.f90 wooireheat.f90
+MOD = wooisr.$(FC_MODEXT) wooireheat.$(FC_MODEXT)
+
+check_PROGRAMS = wooimain
+wooimain_SOURCES = $(SRC) wooimain.f90
+wooimain_FCFLAGS = -I../$(SRCOMMDIR)
+wooimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+
+noinst_LTLIBRARIES = libwooi.la
+libwooi_la_SOURCES = $(SRC)
+libwooi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libwooi_la_includedir = $(includedir)/$(SRINCDIR)
+libwooi_la_include_HEADERS = $(MOD)
+
+man_MANS = libwooi.3
+
+clean-local: clean-modules clean-outfiles
+clean-modules:
+        test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
+clean-outfiles:
+        test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
+.EE
+.RE
+
+.IP \(bu
+Edit the files 'wooisr.f90' and 'wooireheat.f90' such that they
+respectively provide the
+.B wooisr
+and
+.B wooireheat
+modules and their respective
+.I public functions
+starting with the
+.I wowi
+acronym. The best way to do this is to copy-paste the files of one of
+the existing model and modify them accordingly. You must use the
+already common routines for this, such as
+.B zbrent()
+is you need to solve algebraic equations or
+.B get_calfconst()
+and
+.B find_reheat()
+to solve for the reheating. You may also need some special functions
+that are already encoded in the
+.B specialinf
+module. In the unlikely situation in which you would need a special
+function or another solver, you should add it into the relevant
+modules (located in 'src/common') and render
+.I public
+those new functions.
+
+.IP \(bu
+Write the test program 'wooimain.f90' to check that your code is
+actually working and produce sensible results. Again you may be
+inspired by the already encoded models.
+
+.IP \(bu
+Document your model, i.e. write the mini man page in the
+file 'libwooi.3' summarizing the potential functional shape, the
+number and kind of the parameters, as well as in which physical units
+they should be input.
+
+.IP \(bu
+Add your model to the library by editing the parent
+Makefile 'src/Makefile.am'. Add to the environment variable
+libaspic_la_LIBADD, the line 'wooi/libwooi.la' and add to SUBDIRS the
+name of the new sub-directory 'wooi'.
+
+.IP \(bu
+Finally, edit the global 'configure.ac' file and run the command
+.I autoreconf
+such that the autoconf tool can automatically generate the various
+Makefiles.
+.P
+And send us your code, we will be happy to add it, as your name, in
+the next release of
+.I libaspic
+
+
+.SH NOTES
+.P
+Please help us to maintain this library readable. As such, we strongly
+encourage the use of
+.I modern fortran
+and will not accept routines written in f66 or f77. The only exception
+might be for the fantastic and uneditable two-century old hyper fast
+routines, under the condition that you provide them enclosed into a
+module box with a maximal amount of
+.I private
+routines. If you are not (yet) familiar with
+.I fortran 90/95/03
+and later revisions, check out the tutorial from the IDRIS:
+.UR
+http://www.idris.fr/data/cours/lang/fortran
+
+
+.SH AUTHORS
+.I libaspic
+has been written by:
+.TP 30
+.B Name
+.B Affiliation
+.TQ
+Jerome Martin
+Institut d'Astrophysique de Paris (France)
+.TQ
+Christophe Ringeval
+Centre for Cosmology, Particle Physics and Phenomenology, Louvain
+University (Belgium)
+.TQ
+Vincent Vennin
+Institut d'Astrophysique de Paris (France)
+
+.SH REPORTING BUGS
+Don't hesitate to contact us in case of bugs.
+.SH COPYRIGHT
+GNU GENERAL PUBLIC LICENSE Version 3

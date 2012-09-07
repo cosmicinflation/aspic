@@ -1,6 +1,6 @@
 !slow-roll functions for the beta exponential inflation potential
 !
-!V(phi) = M**4 [ 1 - beta lambda phi/Mp ] ^ ( 1/beta )
+!V(phi) = M^4 [ 1 - beta lambda x ] ^ ( 1/beta )
 !
 !x = phi/Mp
 

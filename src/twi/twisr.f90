@@ -1,6 +1,6 @@
 !slow-roll functions for the Twisted inflation potential
 !
-!V(phi) = M**4 * [1 - A (x/phi0)**2 exp(-x/phi0) ]
+!V(phi) = M^4 [ 1 - A (x/phi0)**2 exp(-x/phi0) ]
 !
 !x = phi/Mp
 !y = phi/phi0

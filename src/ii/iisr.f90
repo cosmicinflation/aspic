@@ -1,6 +1,6 @@
 !slow-roll functions for the intermediate inflation potential
 !
-!V(phi) = M^4 [ x^(-beta) - beta^2/6 x^(-beta-2)
+!V(phi) = M^4 [ x^(-beta) - beta^2/6 x^(-beta-2) ]
 !
 !x = (phi-phi0)/Mp
 

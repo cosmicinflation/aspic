@@ -1,12 +1,12 @@
-lib_LTLIBRARIES = libsrmodels.la
-libsrmodels_la_SOURCES =
-libsrmodels_la_LDFLAGS = -version-info @version_info@
+lib_LTLIBRARIES = libaspic.la
+libaspic_la_SOURCES =
+libascpi_la_LDFLAGS = -version-info @version_info@
 
 #forces the linker to use fortran linking
 nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
 
 #while the real sources are already built libs
-libsrmodels_la_LIBADD =                \
+libaspic_la_LIBADD =                \
         common/libsrcommon.la          \
         lfi/liblfi.la \
         mlfi/libmlfi.la \

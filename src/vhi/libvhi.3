@@ -1,0 +1,46 @@
+.TH libvhi 3 "September 7, 2012" "libaspic" "Module convention" 
+
+.SH NAME
+.I vhi
+- the valley hybrid inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ 1 + x^p ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/mu
+.TP
+Parameters
+.I real(kp)
+::
+.B p
+.RS
+.I real(kp)
+::
+.B mu
+(in Mp units)
+.RE
+.RS
+.I real(kp)
+::
+.B xend
+
+.SH NOTES
+The end of inflation is an additional model parameter encoded in the
+dimensionless field value xend at which this occurs. The potential
+routines therefore take only the
+.B p
+argument on entry whereas the Hubble flow routines requires
+.B p
+and
+.B
+mu
+as arguments.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

@@ -1,6 +1,6 @@
 !slow-roll functions for the running mass potential
 !
-!V(phi) = M^4 { 1 + nu [1/p - ln(phi/mu)](phi)^p }
+!V(phi) = M^4 { 1 + nu [1/p - ln(x)](mu*x)^p }
 !
 !x = phi/mu
 !

@@ -1,6 +1,6 @@
 !slow-roll functions for the pseudo natural inflation potential
 !
-!V(phi) = M**4 ( 1 - alpha ln(cos(phi/mu)) )
+!V(phi) = M^4 [ 1 - alpha ln(cos x) ]
 !
 !x = phi/mu
 

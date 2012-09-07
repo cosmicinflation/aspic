@@ -1,4 +1,4 @@
-AC_INIT([srmodels], [0.0.4], [chris@ringeval.com])
+AC_INIT([aspic], [0.0.5], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -13,7 +13,7 @@ FCFLAGS="-O -fopenmp"
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
 
-SRINCDIR="srmodels"
+SRINCDIR="aspic"
 AC_SUBST([SRINCDIR])
 
 FC_MODEXT="mod"
@@ -26,6 +26,7 @@ AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+                 man/Makefile
                  src/common/Makefile
                  src/lfi/Makefile
                  src/mlfi/Makefile

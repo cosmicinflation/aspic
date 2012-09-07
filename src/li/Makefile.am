@@ -12,6 +12,8 @@ libli_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libli_la_includedir = $(includedir)/$(SRINCDIR)
 libli_la_include_HEADERS = $(MOD)
 
+man_MANS = libli.3
+
 clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)

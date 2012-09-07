@@ -1,6 +1,6 @@
 !slow-roll functions for the MSSM inflation potential
 !
-!V(phi) = M**4 [ x**2 - alpha x**6 + alpha,beta x**10 ]
+!V(phi) = M^4 [ x^2 - alpha x^6 + beta x^10 ]
 !
 !x = phi/Mp
 

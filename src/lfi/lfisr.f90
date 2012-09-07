@@ -1,6 +1,6 @@
 !slow-roll functions for the large field potential
 !
-!V(phi) = M^4 (phi/Mp)^p
+!V(phi) = M^4 x^p
 !
 !x = phi/Mp
 

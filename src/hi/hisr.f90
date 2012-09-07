@@ -1,6 +1,6 @@
 !slow-roll functions for the Higgs inflation potential
 !
-!V(phi) = M^4 * [1 - exp(-sqrt(2/3) phi/Mp )]^2
+!V(phi) = M^4 * [1 - exp(-sqrt(2/3) x)]^2
 !
 !x = phi/Mp
 

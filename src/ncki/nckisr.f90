@@ -1,6 +1,6 @@
 !slow-roll functions for the non canonical Kahler inflation potential
 !
-!V(phi) = M**4 ( 1 + alpha ln(phi/Mp) + beta (phi/Mp)² )
+!V(phi) = M^4 [ 1 + alpha ln(x) + beta (x)^2 ]
 !
 !x = phi/Mp
 

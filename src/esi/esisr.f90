@@ -1,6 +1,6 @@
 !slow-roll functions for the exponential SUSY inflation potential
 !
-!V(phi) = M^4 * [1- exp(-q * phi/Mp) ]
+!V(phi) = M^4 * [1- exp(-q * x) ]
 !
 !x = phi/Mp
 

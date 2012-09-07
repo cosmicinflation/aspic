@@ -1,6 +1,6 @@
 !slow-roll functions for the Logamediate inflation potential, 2nd regime
 !
-!V(phi) = M^4 * (phi/Mp)^alpha * exp[-beta * (phi/Mp)^gamma_lmi ]
+!V(phi) = M^4 x^alpha exp[ -beta x^gamma_lmi ]
 !
 !x = phi/Mp
 

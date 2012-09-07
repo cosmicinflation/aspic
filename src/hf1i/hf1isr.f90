@@ -1,6 +1,6 @@
 !slow-roll functions for the horizon flow inflation at first order potential
 !
-!V(phi) = M^4 (1 + A1 phi)^2 * [1 - 2/3 Mp^2 (A1/(1+A1 phi))^2 ]
+!V(phi) = M^4 (1 + A1 x)^2 * [1 - 2/3 Mp^2 (A1/(1+A1 x))^2 ]
 !
 !x = phi/Mp
 

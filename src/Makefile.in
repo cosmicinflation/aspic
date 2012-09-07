@@ -72,7 +72,7 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libsrmodels_la_DEPENDENCIES = common/libsrcommon.la lfi/liblfi.la \
+libaspic_la_DEPENDENCIES = common/libsrcommon.la lfi/liblfi.la \
 	mlfi/libmlfi.la rcmi/librcmi.la rcqi/librcqi.la pni/libpni.la \
 	mni/libmni.la esi/libesi.la pli/libpli.la kmii/libkmii.la \
 	hf1i/libhf1i.la sfi/libsfi.la li/libli.la ii/libii.la \
@@ -81,22 +81,20 @@ libsrmodels_la_DEPENDENCIES = common/libsrcommon.la lfi/liblfi.la \
 	bsusybi/libbsusybi.la ti/libti.la bei/libbei.la \
 	psni/libpsni.la ncki/libncki.la lmi1/liblmi1.la \
 	lmi2/liblmi2.la lmi3/liblmi3.la
-am_libsrmodels_la_OBJECTS =
-libsrmodels_la_OBJECTS = $(am_libsrmodels_la_OBJECTS)
-libsrmodels_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) \
-	$(libsrmodels_la_LDFLAGS) $(LDFLAGS) -o $@
+am_libaspic_la_OBJECTS =
+libaspic_la_OBJECTS = $(am_libaspic_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
-FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
-LTFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(FC) $(AM_FCFLAGS) $(FCFLAGS)
-FCLD = $(FC)
-FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libsrmodels_la_SOURCES) \
-	$(nodist_EXTRA_libsrmodels_la_SOURCES)
-DIST_SOURCES = $(libsrmodels_la_SOURCES)
+SOURCES = $(libaspic_la_SOURCES)
+DIST_SOURCES = $(libaspic_la_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -259,15 +257,15 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 version_info = @version_info@
-lib_LTLIBRARIES = libsrmodels.la
-libsrmodels_la_SOURCES = 
-libsrmodels_la_LDFLAGS = -version-info @version_info@
+lib_LTLIBRARIES = libaspic.la
+libaspic_la_SOURCES = 
+libascpi_la_LDFLAGS = -version-info @version_info@
 
 #forces the linker to use fortran linking
 nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
 
 #while the real sources are already built libs
-libsrmodels_la_LIBADD = \
+libaspic_la_LIBADD = \
         common/libsrcommon.la          \
         lfi/liblfi.la \
         mlfi/libmlfi.la \
@@ -314,7 +312,6 @@ SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmii
 all: all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .f90 .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -376,23 +373,14 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libsrmodels.la: $(libsrmodels_la_OBJECTS) $(libsrmodels_la_DEPENDENCIES) $(EXTRA_libsrmodels_la_DEPENDENCIES) 
-	$(libsrmodels_la_LINK) -rpath $(libdir) $(libsrmodels_la_OBJECTS) $(libsrmodels_la_LIBADD) $(LIBS)
+libaspic.la: $(libaspic_la_OBJECTS) $(libaspic_la_DEPENDENCIES) $(EXTRA_libaspic_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libaspic_la_OBJECTS) $(libaspic_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
-
-.f90.o:
-	$(FCCOMPILE) -c -o $@ $<
-
-.f90.obj:
-	$(FCCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-.f90.lo:
-	$(LTFCCOMPILE) -c -o $@ $<
 
 mostlyclean-libtool:
 	-rm -f *.lo

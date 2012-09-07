@@ -1,8 +1,8 @@
 !slow-roll functions for the natural inflation with the minus sign potential
 !
-!V(phi) = M^4 [ 1 - cos(phi/f) ]
+!V(phi) = M^4 [ 1 - cos(x/f) ]
 !
-!x = phi/Mp ; f=f/Mp
+!x = phi/Mp
 
 module mnisr
   use infprec, only : kp

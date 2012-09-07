@@ -12,6 +12,8 @@ libsfi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libsfi_la_includedir = $(includedir)/$(SRINCDIR)
 libsfi_la_include_HEADERS = $(MOD)
 
+man_MANS = libsfi.3
+
 clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)

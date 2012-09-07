@@ -226,7 +226,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 version_info = @version_info@
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = src
+SUBDIRS = src man
 all: all-recursive
 
 .SUFFIXES:
@@ -535,7 +535,7 @@ distcheck: dist
 	*.zip*) \
 	  unzip $(distdir).zip ;;\
 	esac
-	chmod -R a-w $(distdir); chmod a+w $(distdir)
+	chmod -R a-w $(distdir); chmod u+w $(distdir)
 	mkdir $(distdir)/_build
 	mkdir $(distdir)/_inst
 	chmod a-w $(distdir)

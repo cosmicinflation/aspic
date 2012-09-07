@@ -1,8 +1,8 @@
 !slow-roll functions for the mixed large field potential
 !
-!V(phi) = M^4 (phi/Mp)^p [1+alpha*(phi/Mp)^q]
+!V(phi) = M^4 x^p [1+alpha*x^q]
 !
-!x = phi
+!x = phi/Mp
 
 module mlfisr
   use infprec, only : kp, tolkp,transfert
