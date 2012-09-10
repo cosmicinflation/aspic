@@ -12,7 +12,7 @@ libbsusybi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libbsusybi_la_includedir = $(includedir)/$(SRINCDIR)
 libbsusybi_la_include_HEADERS = $(MOD)
 
-man_MANS = libbsusybi.3
+man_MANS = aspic_bsusybi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

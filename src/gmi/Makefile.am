@@ -12,7 +12,7 @@ libgmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libgmi_la_includedir = $(includedir)/$(SRINCDIR)
 libgmi_la_include_HEADERS = $(MOD)
 
-man_MANS = libgmi.3
+man_MANS = aspic_gmi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

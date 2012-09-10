@@ -12,7 +12,7 @@ libtwi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libtwi_la_includedir = $(includedir)/$(SRINCDIR)
 libtwi_la_include_HEADERS = $(MOD)
 
-man_MANS = libtwi.3
+man_MANS = aspic_twi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

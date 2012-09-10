@@ -12,7 +12,7 @@ libdsi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libdsi_la_includedir = $(includedir)/$(SRINCDIR)
 libdsi_la_include_HEADERS = $(MOD)
 
-man_MANS = libdsi.3
+man_MANS = aspic_dsi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

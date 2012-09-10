@@ -20,7 +20,7 @@ libaspic
 is a collection of fortran modules, distributed as a shared and static
 library, which provides various computational functions associated
 with well known models of inflation. The list of models, modules and
-available functions, as well as their usage, are detailled below.
+available functions, as well as their usage, are detailed below.
 .P
 In order to access the library, it has to be linked to your code
 by using the
@@ -34,8 +34,8 @@ accessible in fortran by the command:
 .B include 'aspic.h'
 .P
 Both the library and the global include file are installed in the
-standard directory of your system such that compiling your own source
-should only require:
+standard directory of your system.  Compiling your own source file
+with, for instance, gfortran should only require:
 .IP
 gfortran -c myfile.f90
 .B -laspic
@@ -46,10 +46,10 @@ since most modern fortran compilers support the
 command line flag, you should not try to copy the include
 files inside your working directory. Rather, tells the compiler where
 to find '.h' files. The same remark holds for the path to the library
-itself, which can be specified from the
+itself, which can be specified with the
 .I -L
-command line flag. For instance, compiling your own source with
-gfortran would read:
+command line flag. Compiling with
+gfortran would now read:
 .IP
 gfortran -c myfile.f90 -I/usr/include/aspic -L/usr/lib64
 .B -laspic
@@ -69,24 +69,25 @@ functions for the models 'foo' reads:
 is a library for computing various 
 .I observable
 quantities used in Cosmology from definite single field inflationary
-models.  It aims at providing an efficient, modulable and accurate way
+models.  It aims at providing an efficient, extendable and accurate way
 of comparing theoretical predictions with cosmological data. As the
 list of inflationary models is always increasing, you are encouraged
 to add support for any model that would not yet be implemented; see
 section
 .B ADDING A MODEL.
 .P
-By observable quantities, we refer to as the Hubble flow functions, up
-to second order in the slow-roll approximation, which are in direct
-correspondance with the spectral index, tensor-to-scalar ratio and the
-running of the primordial power spectrum. The library also provides
-the field potential, its first and second derivatives, the total
-energy density at the end of inflation, at the end of reheating, and
-the field value (or e-fold value) at which the pivot scale crossed the
-Hubble radius during inflation. All these quantities are computed in a
-way which is consistent with the existence of a reheating phase. Some
-functions may therefore requires as an input both the amplitude of the
-scalar perturbations and the mean equation of state during reheating.
+By observable quantities, we currently refer to as the Hubble flow
+functions, up to second order in the slow-roll approximation, which
+are in direct correspondence with the spectral index, tensor-to-scalar
+ratio and the running of the primordial power spectrum. The library
+also provides the field potential, its first and second derivatives,
+the energy density at the end of inflation, the energy density at the
+end of reheating, and the field value (or e-fold value) at which the
+pivot scale crossed the Hubble radius during inflation. All these
+quantities are computed in a way which is consistent with the
+existence of a reheating phase. Some functions may therefore requires
+as an input both the amplitude of the scalar perturbations and the
+mean equation of state during reheating.
 
 .SH EXAMPLES
 
@@ -169,15 +170,19 @@ The field values
 are usually assumed to be in reduced Planck mass units. For some
 specific models, the unit may however be in another more relevant
 energy scale. Please check out the explicit list of models below,
-their respective man pages (man libfoo) or the header of the module
-file 'foosr.f90' for more detail. Each of these functions usually
-require some additional input, referred to as '...'  above, which are
+their respective man pages (man aspic_foo) or the header of the module
+file 'foosr.f90' for more details. Each of these functions usually
+requires some additional input, referred to as '...'  above, which are
 the (dimensionless) potential parameter values. Again, their number,
-units and kind can be either found in the list below or in the header
+units and kind can be either found in the man pages or in the header
 of the module file 'foosr.f90'.
 
-The first three functions return the field potential and its
-derivatives and are normalized. They do not include any multiplicative
+The first three functions return the
+.I normalized
+field potential and its
+derivatives. They
+.I do not
+include any multiplicative
 factor (such as M^4) because it is always uniquely determined by the
 amplitude of the cosmological perturbations. As such, the
 normalization is never counted as a model parameter in the
@@ -194,9 +199,9 @@ returns the field value
 .B 'xend'
 at the end of inflation. For most models, this happens when the first
 Hubble flow function equals unity but it can also be given by more
-specific mechanisms. Notice that for some models, the end of inflation
-is an extra model parameter. For those, this function is obsviously
-not provided. The function
+specific mechanisms. Notice that, for some models, the end of
+inflation may be an extra model parameter. For those models, this
+function is obviously not provided. The function
 .B foo_efold_primitive()
 returns, up to a constant, the value of the integral
 .B SUM{V(x)/V'(x)dx}
@@ -235,25 +240,26 @@ of kind
 
 .P
 These functions take as first arguments the dimensionless potential
-parameters '...' as specified in the header of the module
-files 'foosr.f90' and 'fooreheat.f90'.
+parameters '...' as specified in the man pages
+.I aspic_foo(3)
+and in the header of the module files 'foosr.f90' and 'fooreheat.f90'.
 .P
 The function
 .B foo_lnrhoend()
-return the logarithm of the total energy density of the universe at
-the end of inflation. This number depending on the physical
-normalisation of the potential, you need to input
+return the natural logarithm of the total energy density of the
+universe at the end of inflation. This number depending on the
+physical normalization of the potential, you need to input
 .B 'Pstar'
 the measured amplitude of the scalar power spectrum evaluated at 
 .B 'kstar'
-the pivot wavenumber. Its default value has been set to 0.05 Mpc^-1
-(see below for specifing another value).
+the pivot wave-number. Its default value has been set to 0.05 Mpc^-1
+(see below for specifying another value).
 
 The function
 .B foo_x_star()
 returns the field value
 .B 'xstar'
-at which the pivot wavenumber
+at which the pivot wave-number
 .B 'kstar'
 crossed the Hubble radius during inflation. Plugging this field value
 into the Hubble flow functions immediately gives the
@@ -265,7 +271,7 @@ reheating proceeded. It needs the mean equation of state parameter
 during (pre)reheating, together with the logarithm of total energy density
 .B 'lnRhoReh'
 of the universe when the reheating ends. Finally, in order to
-determine the correct normalisation of the inflationary potential, you
+determine the correct normalization of the inflationary potential, you
 have to input
 .B 'Pstar'
 again. The same routine can be called with an additional 
@@ -273,7 +279,7 @@ again. The same routine can be called with an additional
 argument
 .B 'deltaNstar'
 which contains on return the value of 'Nstar-Nend', the number of
-e-folds before the end of inflation at which the pivot wavenumber
+e-folds before the end of inflation at which the pivot wave-number
 crossed the Hubble radius (negative).
 
 The
@@ -324,8 +330,8 @@ spectrum 'Pstar' from
 .B QoverT
 the quadrupole moment (.i.e. the COBE normalization). The second function
 .B log_energy_reheat_ingev()
-is for convenieance and simply returns the logarithm in base 10 of the
-energy density at the end of reheating from the its Neper logarithmic
+is for convenience and simply returns the logarithm in base 10 of the
+energy density at the end of reheating from the its natural logarithmic
 value (used elsewhere). The third,
 .B slowroll_validity()
 returns
@@ -359,14 +365,14 @@ These functions are valid for any slow-roll inflationary model and
 take as arguments 'Pstar', the primordial power spectrum amplitude at
 the pivot, 'w' the mean equation of state during
 (pre)reheating, 'epsOneStar' and 'epsOneEnd' are the first Hubble flow
-function respectively evaluated at the time of pivot hubble crossing
+function respectively evaluated at the time of pivot Hubble crossing
 and the end of inflation. The argument 'VendOverVstar' is the ratio
 between the field potential, evaluated at those two times. All those
 arguments are of
 .I real(kp)
 kind.
 
-.SS COSMOPARAMS MODULE
+.SS COSMOPAR MODULE
 
 The
 .B cosmopar
@@ -375,7 +381,7 @@ module exposes some
 of the kind
 .I real(kp)
 which encodes some measured cosmological parameters today, or
-observational choice such as the pivot scale. More explictly, they are
+observational choices such as the pivot scale. More explicitly, they are
 .IP
 .B HubbleSquareRootOf3OmegaRad
 .RE
@@ -403,13 +409,14 @@ observational choice such as the pivot scale. More explictly, they are
 
 .P
 The first two are the Hubble parameter today times the square root of
-the double (or triple) density parameter of radiation today. The
-constant
+the double (or triple) density parameter of radiation today
+(eventually renormalized by the ratio between the number of entropic
+relativistic species at the end of reheating and today). The constant
 .B lnRhoNuc
-stands for the logarithm of the energy density of the universe just
-before Big-Bang Nucleosynthesis. Next
+stands for the natural logarithm of the energy density of the universe
+just before Big-Bang Nucleosynthesis. Next
 .B lnMpcToKappa
-is the logarithm of the Einstein equation coupling (8piG/c^4) expressed in megaparsecs.
+is the logarithm of the Einstein equation coupling (8piG/c^4) expressed in mega-parsecs.
 The parameter
 .B lnMpinGev
 is the reduced Planck mass in GeV,
@@ -432,7 +439,7 @@ library.
 
 Finally,
 .I libaspic
-comes with some utility modules that you may find usefull in performing some
+comes with some utility modules that you may find useful in performing some
 specific computations.
 .P
 The
@@ -451,16 +458,16 @@ module exposes various
 .I functions
 and
 .I subroutines
-dedicated to the computation of the Gauss hypergeometric function. All
+dedicated to the computation of the Gauss hyper-geometric function. All
 source files are located under the 'src/common/' directory.
 
 
 .SH LIST OF MODELS
 At the time of this writing,
 .I libaspic
-deals with inflationary models listed below. Their respective
-potential parameters, conventions for field units are described in
-their man pages (man libfoo).
+deals with the inflationary models listed below. Their respective
+potential parameters, conventions for field units and so on, are
+described in their man pages aspic_foo(3).
 .SS ZERO PARAMETER MODELS
 .TP 20
 .B
@@ -623,9 +630,8 @@ is equivalent to write the source codes of the two modules
 .B wowisr
 and
 .B wowireheat
-as well as updating various autoconf
-files 'Makefile.am', 'configure.ac' and writing a very short
-documentation.
+as well as updating various autoconf files, namely 'Makefile.am'
+and 'configure.ac', and finally writing a very short documentation.
 
 
 
@@ -634,7 +640,7 @@ lines:
 
 .IP \(bu
 Create the sub-directory 'src/wooi' containing five new
-files, 'wooimain.f90', 'wooisr.f90', 'wooireheat.f90', 'libwooi.3'
+files, 'wooimain.f90', 'wooisr.f90', 'wooireheat.f90', 'aspic_wooi.3'
 and 'Makefile.am'.
 
 .IP \(bu
@@ -655,7 +661,7 @@ libwooi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libwooi_la_includedir = $(includedir)/$(SRINCDIR)
 libwooi_la_include_HEADERS = $(MOD)
 
-man_MANS = libwooi.3
+man_MANS = aspic_wooi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:
@@ -699,21 +705,21 @@ inspired by the already encoded models.
 
 .IP \(bu
 Document your model, i.e. write the mini man page in the
-file 'libwooi.3' summarizing the potential functional shape, the
-number and kind of the parameters, as well as in which physical units
-they should be input.
+file 'aspic_wooi.3' summarizing the potential functional shape, the
+number and kind of the parameters, as well as the physical units
+used.
 
 .IP \(bu
 Add your model to the library by editing the parent
-Makefile 'src/Makefile.am'. Add to the environment variable
-libaspic_la_LIBADD, the line 'wooi/libwooi.la' and add to SUBDIRS the
-name of the new sub-directory 'wooi'.
+Makefile 'src/Makefile.am'. Update the environment variable
+libaspic_la_LIBADD by adding the line 'wooi/libwooi.la' and append to
+SUBDIRS the name of the new sub-directory 'wooi'.
 
 .IP \(bu
 Finally, edit the global 'configure.ac' file and run the command
 .I autoreconf
-such that the autoconf tool can automatically generate the various
-Makefiles.
+such that the autoconf tools can automatically generate the various
+makefiles.
 .P
 And send us your code, we will be happy to add it, as your name, in
 the next release of
@@ -726,9 +732,9 @@ Please help us to maintain this library readable. As such, we strongly
 encourage the use of
 .I modern fortran
 and will not accept routines written in f66 or f77. The only exception
-might be for the fantastic and uneditable two-century old hyper fast
-routines, under the condition that you provide them enclosed into a
-module box with a maximal amount of
+might be for the fantastic two-century old hyper fast routines, under
+the condition that you provide them enclosed into a module box with a
+maximal amount of
 .I private
 routines. If you are not (yet) familiar with
 .I fortran 90/95/03
@@ -755,6 +761,48 @@ Vincent Vennin
 Institut d'Astrophysique de Paris (France)
 
 .SH REPORTING BUGS
-Don't hesitate to contact us in case of bugs.
+Please contact us in case of bugs.
 .SH COPYRIGHT
 GNU GENERAL PUBLIC LICENSE Version 3
+
+.SH SEE ALSO
+.BR aspic_hi (3),
+.BR aspic_lfi (3),
+.BR aspic_mlfi (3),
+.BR aspic_rcmi (3),
+.BR aspic_rcqi (3),
+.BR aspic_pni (3),
+.BR aspic_mni (3),
+.BR aspic_esi (3),
+.BR aspic_pli (3),
+.BR aspic_kmii (3),
+.BR aspic_hf1i (3),
+.BR aspic_cwi (3),
+.BR aspic_li (3),
+.BR aspic_twi (3),
+.BR aspic_rpi (3),
+.BR aspic_dwi (3),
+.BR aspic_mhi (3),
+.BR aspic_ri (3).
+.P
+.BR aspic_sfi (3),
+.BR aspic_ii (3),
+.BR aspic_kmiii (3),
+.BR aspic_lmi1 (3),
+.BR aspic_lmi2 (3),
+.BR aspic_lmi3 (3),
+.BR aspic_hf2i (3),
+.BR aspic_mssmi (3),
+.BR aspic_bsusybi (3),
+.BR aspic_ti (3),
+.BR aspic_bei (3),
+.BR aspic_psni (3),
+.BR aspic_ncki (3),
+.BR aspic_bi (3).
+.P
+.BR aspic_rmi (3),
+.BR aspic_vhi (3),
+.BR aspic_dsi (3),
+.BR aspic_gmi (3),
+.BR aspic_shi (3),
+.BR aspic_su5i(3).

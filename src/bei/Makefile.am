@@ -12,7 +12,7 @@ libbei_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libbei_la_includedir = $(includedir)/$(SRINCDIR)
 libbei_la_include_HEADERS = $(MOD)
 
-man_MANS = libbei.3
+man_MANS = aspic_bei.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

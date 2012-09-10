@@ -12,7 +12,7 @@ libmni_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libmni_la_includedir = $(includedir)/$(SRINCDIR)
 libmni_la_include_HEADERS = $(MOD)
 
-man_MANS = libmni.3
+man_MANS = aspic_mni.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

@@ -12,7 +12,7 @@ libpli_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libpli_la_includedir = $(includedir)/$(SRINCDIR)
 libpli_la_include_HEADERS = $(MOD)
 
-man_MANS = libpli.3
+man_MANS = aspic_pli.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

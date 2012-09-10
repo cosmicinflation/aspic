@@ -12,7 +12,7 @@ libhi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libhi_la_includedir = $(includedir)/$(SRINCDIR)
 libhi_la_include_HEADERS = $(MOD)
 
-man_MANS = libhi.3
+man_MANS = aspic_hi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

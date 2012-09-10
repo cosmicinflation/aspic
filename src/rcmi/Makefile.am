@@ -12,7 +12,7 @@ librcmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 librcmi_la_includedir = $(includedir)/$(SRINCDIR)
 librcmi_la_include_HEADERS = $(MOD)
 
-man_MANS = librcmi.3
+man_MANS = aspic_rcmi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

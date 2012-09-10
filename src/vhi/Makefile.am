@@ -12,7 +12,7 @@ libvhi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libvhi_la_includedir = $(includedir)/$(SRINCDIR)
 libvhi_la_include_HEADERS = $(MOD)
 
-man_MANS = libvhi.3
+man_MANS = aspic_vhi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

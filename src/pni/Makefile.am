@@ -12,7 +12,7 @@ libpni_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libpni_la_includedir = $(includedir)/$(SRINCDIR)
 libpni_la_include_HEADERS = $(MOD)
 
-man_MANS = libpni.3
+man_MANS = aspic_pni.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

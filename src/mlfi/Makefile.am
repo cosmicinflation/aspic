@@ -12,7 +12,7 @@ libmlfi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libmlfi_la_includedir = $(includedir)/$(SRINCDIR)
 libmlfi_la_include_HEADERS = $(MOD)
 
-man_MANS = libmlfi.3
+man_MANS = aspic_mlfi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

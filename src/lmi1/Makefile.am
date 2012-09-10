@@ -12,7 +12,7 @@ liblmi1_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 liblmi1_la_includedir = $(includedir)/$(SRINCDIR)
 liblmi1_la_include_HEADERS = $(MOD)
 
-man_MANS = liblmi1.3
+man_MANS = aspic_lmi1.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

@@ -12,7 +12,7 @@ libhf1i_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libhf1i_la_includedir = $(includedir)/$(SRINCDIR)
 libhf1i_la_include_HEADERS = $(MOD)
 
-man_MANS = libhf1i.3
+man_MANS = aspic_hf1i.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

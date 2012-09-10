@@ -12,7 +12,7 @@ librpi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 librpi_la_includedir = $(includedir)/$(SRINCDIR)
 librpi_la_include_HEADERS = $(MOD)
 
-man_MANS = librpi.3
+man_MANS = aspic_rpi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

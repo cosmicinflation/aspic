@@ -12,7 +12,7 @@ libkmiii_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libkmiii_la_includedir = $(includedir)/$(SRINCDIR)
 libkmiii_la_include_HEADERS = $(MOD)
 
-man_MANS = libkmiii.3
+man_MANS = aspic_kmiii.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

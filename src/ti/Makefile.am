@@ -12,7 +12,7 @@ libti_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libti_la_includedir = $(includedir)/$(SRINCDIR)
 libti_la_include_HEADERS = $(MOD)
 
-man_MANS = libti.3
+man_MANS = aspic_ti.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:
