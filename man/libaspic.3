@@ -170,7 +170,8 @@ The field values
 are usually assumed to be in reduced Planck mass units. For some
 specific models, the unit may however be in another more relevant
 energy scale. Please check out the explicit list of models below,
-their respective man pages (man aspic_foo) or the header of the module
+their respective man pages (man
+.BR aspic_foo (3)) or the header of the module
 file 'foosr.f90' for more details. Each of these functions usually
 requires some additional input, referred to as '...'  above, which are
 the (dimensionless) potential parameter values. Again, their number,
@@ -241,7 +242,7 @@ of kind
 .P
 These functions take as first arguments the dimensionless potential
 parameters '...' as specified in the man pages
-.I aspic_foo(3)
+.BR aspic_foo (3)
 and in the header of the module files 'foosr.f90' and 'fooreheat.f90'.
 .P
 The function
@@ -354,10 +355,11 @@ and
 .B get_calfconst()
 solve algebraic equations necessary to get the reheating parameter
 assuming slow-roll. For more details on what are these quantities,
-check out the original paper
-.UR
-http://arxiv.org/abs/1004.5525
-
+check out
+.UR http://arxiv.org/abs/1004.5525
+arXiv:1004.5525
+.UE
+for the original paper.
 
 
 .P
@@ -467,7 +469,8 @@ At the time of this writing,
 .I libaspic
 deals with the inflationary models listed below. Their respective
 potential parameters, conventions for field units and so on, are
-described in their man pages aspic_foo(3).
+described in their man pages
+.BR aspic_foo(3).
 .SS ZERO PARAMETER MODELS
 .TP 20
 .B
@@ -738,10 +741,11 @@ maximal amount of
 .I private
 routines. If you are not (yet) familiar with
 .I fortran 90/95/03
-and later revisions, check out the tutorial from the IDRIS:
-.UR
-http://www.idris.fr/data/cours/lang/fortran
-
+and later revisions, check out the
+.UR http://www.idris.fr/data/cours/lang/fortran
+tutorials
+.UE
+from the IDRIS.
 
 .SH AUTHORS
 .I libaspic
