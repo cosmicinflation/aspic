@@ -1,20 +1,17 @@
 !generic reheating functions assuming slow-roll evolution and a
 !mean values for wreh
 module srreheat
-  use infprec, only : kp
+  use infprec, only : kp,pi
   use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf2OmegaRad
   use cosmopar, only : QrmsOverT, powerAmpScalar, lnMpinGeV
   implicit none
 
   private
   
-  real(kp), parameter :: kstar = 0.05_kp !Mpc^-1
 
   real(kp), parameter :: Nzero = log(kstar) - lnMpcToKappa &
        - 0.5_kp*log(sqrt(1.5_kp)*HubbleSquareRootOf2OmegaRad)
    
-  real(kp), parameter :: pi = 3.141592653589793238_kp
-
   
   logical, parameter :: display = .false.
     

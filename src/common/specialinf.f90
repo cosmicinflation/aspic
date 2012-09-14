@@ -16,8 +16,7 @@ end module specialprec
 
 
 MODULE HYP_2F1_MODULE
-  use specialprec, only : dp
-  use infprec, only : kp
+  use specialprec, only : dp,kp
   !--------------------------------------------------------------------
   IMPLICIT NONE
   INTEGER, PARAMETER :: PR=kp,IPR=KIND(1)

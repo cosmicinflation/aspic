@@ -30,6 +30,10 @@ module cosmopar
 !only used for reheating using slow-roll (libslowroll)
 !COBE quadrupole moment
   real(kp), parameter :: QrmsOverT = 6e-6
+
+!pivot scale in Mpc^-1
+  real(kp), parameter :: kstar = 0.05_kp !Mpc^-1
+
 !Best scalar amp for slow-roll (update with new constraints)
   real(kp), parameter :: powerAmpScalar = 2.165e-9
 
