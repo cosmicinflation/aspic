@@ -1,4 +1,6 @@
-* v0.0.5
+* v0.0.6
+- adding global include file 'aspic.h'
+- man files added, for both the library and each modules (*.3 files)
+- move kstar from srreheat to cosmopar
+- move pi from srrehat to infpref 
 - 4 new models imported, check ChangeLog
-- Supports for quadruple precision [kp = kind(1._16)]
-

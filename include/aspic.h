@@ -29,16 +29,14 @@ use cwisr
 use cwireheat
 use lisr
 use lireheat
-use twisr
-use twireheat
 use rpisr
 use rpireheat
 use dwisr
 use dwireheat
 use mhisr
 use mhireheat
-use risr
-use rireheat
+use rgisr
+use rgireheat
 
 !two parameters models
 use sfisr
@@ -51,8 +49,8 @@ use lmi1sr
 use lmi1reheat
 use lmi2sr
 use lmi2reheat
-use lmi3sr
-use lmi3reheat
+use twisr
+use twireheat
 use hf2isr
 use hf2ireheat
 use mssmisr
@@ -67,17 +65,21 @@ use pcnisr
 use pcnireheat
 use nckisr
 use nckireheat
+!use bisr
+!use bireheat
+!use lpisr
+!use lpireheat
 
 !three parameter models
 use rmisr
 use rmireheat
 use vhisr
 use vhireheat
-use dsisr
-use dsireheat
-use gmisr
-use gmireheat
-use shisr
-use shireheat
-use su5isr
-use su5ireheat
+!use dsisr
+!use dsireheat
+!use gmisr
+!use gmireheat
+!use shisr
+!use shireheat
+!use su5isr
+!use su5ireheat

@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "September 5, 2012" "version 0.0.5" "Aspic usage"
+.TH libaspic 3 "September 14, 2012" "version 0.0.6" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -524,9 +524,6 @@ Coleman-Weinberg inflation
 .I li
 global SUSY with loop inflation
 .TQ
-.I twi
-twisted inflation
-.TQ
 .I rpi
 R + R^p inflation
 .TQ
@@ -536,8 +533,8 @@ double well inflation
 .I mhi
 mutated hilltop inflation
 .TQ
-.I ri
-radion inflation
+.I rgi
+radion gauge inflation
 
 
 .SS TWO PARAMETERS MODELS
@@ -560,8 +557,8 @@ logamediate inflation I
 .I lmi2
 logamediate inflation II
 .TQ
-.I lmi3
-logamediate inflation III
+.I twi
+twisted inflation
 .TQ
 .I hf2i
 horizon flow inflation at second order
@@ -586,6 +583,9 @@ non-canonical Kahler inflation
 .TQ
 .I bi
 brane inflation
+.TQ
+.I lpi
+Logarithmic potential inflation
 
 .SS THREE PARAMETERS MODELS
 .TP 20
@@ -783,18 +783,17 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_hf1i (3),
 .BR aspic_cwi (3),
 .BR aspic_li (3),
-.BR aspic_twi (3),
 .BR aspic_rpi (3),
 .BR aspic_dwi (3),
 .BR aspic_mhi (3),
-.BR aspic_ri (3).
+.BR aspic_rgi (3).
 .P
 .BR aspic_sfi (3),
 .BR aspic_ii (3),
 .BR aspic_kmiii (3),
 .BR aspic_lmi1 (3),
 .BR aspic_lmi2 (3),
-.BR aspic_lmi3 (3),
+.BR aspic_twi (3),
 .BR aspic_hf2i (3),
 .BR aspic_mssmi (3),
 .BR aspic_bsusybi (3),
@@ -802,7 +801,8 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_bei (3),
 .BR aspic_psni (3),
 .BR aspic_ncki (3),
-.BR aspic_bi (3).
+.BR aspic_bi (3),
+.BR aspic_lpi (3).
 .P
 .BR aspic_rmi (3),
 .BR aspic_vhi (3),

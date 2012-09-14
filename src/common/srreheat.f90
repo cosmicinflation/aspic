@@ -3,7 +3,7 @@
 module srreheat
   use infprec, only : kp,pi
   use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf2OmegaRad
-  use cosmopar, only : QrmsOverT, powerAmpScalar, lnMpinGeV
+  use cosmopar, only : QrmsOverT, kstar, powerAmpScalar, lnMpinGeV
   implicit none
 
   private
