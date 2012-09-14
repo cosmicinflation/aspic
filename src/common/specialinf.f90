@@ -1,7 +1,9 @@
 module specialprec
   use infprec, only : kp
   implicit none
-  integer, parameter :: dp = selected_real_kind(12,60)
+  !integer, parameter :: dp = selected_real_kind(12,60)
+  integer, parameter :: dp = kp
+
 end module specialprec
 
 
@@ -15,9 +17,10 @@ end module specialprec
 
 MODULE HYP_2F1_MODULE
   use specialprec, only : dp
+  use infprec, only : kp
   !--------------------------------------------------------------------
   IMPLICIT NONE
-  INTEGER, PARAMETER :: PR=KIND(1.0D0),IPR=KIND(1)
+  INTEGER, PARAMETER :: PR=kp,IPR=KIND(1)
   REAL(PR)     :: EPS15=1.0D-15
   REAL(PR)     :: ZERO=0.0D0,ONE=1.0D0,TWO=2.0D0,HALF=0.50D0
   REAL(PR)     :: M_PI=3.14159265358979323846D0

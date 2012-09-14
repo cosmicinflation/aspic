@@ -15,6 +15,9 @@ module infprec
 !default integration accuracy
   real(kp), parameter :: tolkp = 1.d-12
 
+!increased integration accuracy
+!  real(kp), parameter :: tolkp = 1.d-36
+
 !workaround for passing argument to old f77 functions. Only pointer
 !can be deferred shape in derived data type.
 !Allows to stop integration from conditions coming from called

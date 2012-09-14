@@ -56,6 +56,7 @@ AC_CONFIG_FILES([Makefile
                  src/ncki/Makefile
                  src/lmi1/Makefile
                  src/lmi2/Makefile
-                 src/lmi3/Makefile
+                 src/rgi/Makefile
+                 src/vhi/Makefile
                 ])
 AC_OUTPUT

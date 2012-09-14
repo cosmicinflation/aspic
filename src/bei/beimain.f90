@@ -53,6 +53,7 @@ program beimain
   do j=1,nbeta
         beta=betamin*(betamax/betamin)**(real(j,kp)/real(nbeta,kp))
 
+
     do k=1,nlambda
         lambda=lambdamin*(lambdamax/lambdamin)**(real(k,kp)/real(nlambda,kp))
      

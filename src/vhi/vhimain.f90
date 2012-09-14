@@ -1,60 +1,134 @@
 !test the reheating derivation from slow-roll
-program hytest
+program vhimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use hyreheat, only : hy_x_reheat, hy_lnrhoend
-  use hysrevol, only : hy_x_endinf, hy_epsilon_one, hy_epsilon_two
+  use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three,vhi_xend_max,vhi_xend_min
+  use vhireheat, only : vhi_lnrhoend, vhi_x_star
   use infinout, only : delete_file, livewrite
-  implicit none
- 
-  real(kp) :: Pstar
+  use srreheat, only : log_energy_reheat_ingev
 
-  integer :: i
+  implicit none
+
+  
+  real(kp) :: Pstar, logErehGeV, Treh
+
+  integer :: i,j,k
   integer :: npts = 20
 
-  real(kp) :: p,mu,xstop,wreh,bfold
-  real(kp) :: lnRhoReh,phi,eps1,eps2,ns,r
+  integer :: Nmu
+  real(kp) :: mumin
+  real(kp) :: mumax
+
+  integer :: NxEnd
+  real(kp) :: xEndmin
+  real(kp) :: xEndmax
+
+  real(kp) :: p,mu,xEnd,w,bfoldstar
+  real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  p = 5._kp 
-  mu = 0.6_kp  
-  xstop = 1e-3
 
-  wreh = 0.
- 
+
   Pstar = powerAmpScalar
 
-  call delete_file('hybrid_eps2eps1.dat')
-  call delete_file('hybrid_nsr.dat')
+  call delete_file('vhi_predic.dat')
+  call delete_file('vhi_nsr.dat')
 
- 
+
+!  w = 1._kp/3._kp
+  w=0._kp
+
+!p=2._kp
+!p=1._kp
+!p=0.5_kp
+!p=3._kp
+p=1.5_kp
+
+if (p .eq. 2._kp) then
+Nmu=20
+mumin=0.8_kp
+mumax=1000._kp
+NxEnd=100
+endif
+
+
+if (p .eq. 1._kp) then
+Nmu=20
+mumin=0.001_kp
+mumax=1000._kp
+NxEnd=100
+endif
+
+if (p .eq. 0.5_kp) then
+Nmu=10
+mumin=0.001_kp
+mumax=1000000._kp
+NxEnd=50
+endif
+
+if (p .eq. 3._kp) then
+Nmu=20
+mumin=0.8_kp
+mumax=1000._kp
+NxEnd=200
+endif
+
+if (p .eq. 1.5_kp) then
+Nmu=20
+mumin=0.8_kp
+mumax=1000._kp
+NxEnd=50
+endif
+
+ do j=0,Nmu
+ mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+ xEndmin=vhi_xend_min(p,mu)
+ xEndmax=vhi_xend_max(p,mu)
+
+ do k=0,NxEnd
+ xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd)*(1.+epsilon(1._kp)) !logarithmic step
+! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
+
+
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = hy_lnrhoend(p,mu,xstop,Pstar)
-  
-  print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
+  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+
+  print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
   do i=1,npts
 
-     lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     phi = hy_x_reheat(p,mu,xstop,wreh,lnRhoReh,Pstar,bfold)
+	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
 
-     print *,'lnRhoReh bfold= ',lnRhoReh,bfold
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
+ 
 
-     eps1 = hy_epsilon_one(phi,p,mu)
-     eps2 = hy_epsilon_two(phi,p,mu)
+       eps1 = vhi_epsilon_one(xstar,p,mu)
+       eps2 = vhi_epsilon_two(xstar,p,mu)
+       eps3 = vhi_epsilon_three(xstar,p,mu)
 
-     call livewrite('hybrid_eps2eps1.dat',eps2,eps1,abs(bfold),lnRhoReh)
 
-     ns = 1._kp - 2._kp*eps1 - eps2
-     r =16._kp*eps1
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
-     call livewrite('hybrid_nsr.dat',ns,r,abs(bfold),lnRhoReh)
+
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
-  end do
+    end do
 
-  
+ end do
 
-end program hytest
+end do
+
+
+end program vhimain
