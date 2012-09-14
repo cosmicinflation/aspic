@@ -1,236 +1,272 @@
-!slow-roll functions for the one field effective hybrid potential
+!slow-roll functions for the effective one field valley hybrid inflation potential
 !
-!V(phi) = M^4 [1 + (phi/mu)^p]
+!V(phi) = M^4 * [1 + (phi/mu)^p ]
 !
 !x = phi/mu
+!mu = mu/Mp
 
 
-module hysrevol
-  use infprec, only : kp, tolkp,transfert
+module vhisr
+  use infprec, only : kp,tolkp,transfert
+  use specialinf, only : lambert
   use inftools, only : zbrent
   implicit none
 
   private
 
-  public hy_norm_potential, hy_epsilon_one, hy_epsilon_two
-  public hy_x_endinf, hy_nufunc, hy_x_trajectory, hy_check_slowroll
-  public hy_x_epsoneismax, hy_mu_connex, hy_x_epsoneisone
- 
+  public  vhi_norm_potential, vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
+  public  vhi_efold_primitive, vhi_x_trajectory
+  public  vhi_norm_deriv_potential, vhi_norm_deriv_second_potential
+  public  vhi_xend_max,vhi_xend_min
+
 
 contains
-!returns V/M^4
-  function hy_norm_potential(x,p)
+
+
+
+!returns V/M**4
+  function vhi_norm_potential(x,p)
     implicit none
-    real(kp) :: hy_norm_potential
+    real(kp) :: vhi_norm_potential
     real(kp), intent(in) :: x,p
-    
-    hy_norm_potential = 1._kp + x**p
 
- end function hy_norm_potential
+    vhi_norm_potential = 1._kp+x**p
 
 
-!epsilon1(x)
-  function hy_epsilon_one(x,p,mu)
+  end function vhi_norm_potential
+
+
+!returns the first derivative of the potential with respect to x, divided by M**4
+  function vhi_norm_deriv_potential(x,p)
     implicit none
-    real(kp) :: hy_epsilon_one
-    real(kp), intent(in) :: x,p,mu
-    
-    hy_epsilon_one = 0.5_kp*((p/mu)*x**(p-1._kp)/(1._kp+x**p))**2
-    
-  end function hy_epsilon_one
+    real(kp) :: vhi_norm_deriv_potential
+    real(kp), intent(in) :: x,p
+
+   vhi_norm_deriv_potential = p*x**(p-1._kp)
+
+  end function vhi_norm_deriv_potential
 
 
-!epsilon2(x)
-  function hy_epsilon_two(x,p,mu)
+
+!returns the second derivative of the potential with respect to x, divided by M**4
+  function vhi_norm_deriv_second_potential(x,p)
     implicit none
-    real(kp) :: hy_epsilon_two
-    real(kp), intent(in) :: x,p,mu
-       
-    hy_epsilon_two = 2._kp*p*x**(p-2._kp)*(1._kp-p+x**p) &
-         /(mu*(1._kp+x**p))**2
-    
-  end function hy_epsilon_two
+    real(kp) :: vhi_norm_deriv_second_potential
+    real(kp), intent(in) :: x,p
+
+    vhi_norm_deriv_second_potential = p*(p-1._kp)*x**(p-2._kp)
+
+  end function vhi_norm_deriv_second_potential
 
 
 
-!this is nu(x)=integral[V(phi)/V'(phi) dphi]
-  function hy_nufunc(x,p,mu)
+!epsilon_one(x)
+  function vhi_epsilon_one(x,p,mu)    
     implicit none
+    real(kp) :: vhi_epsilon_one
     real(kp), intent(in) :: x,p,mu
-    real(kp) :: hy_nufunc
-
-    if (p == 2._kp) then
-       hy_nufunc = x**2 + 2._kp * log(x)
-    else
-       hy_nufunc = x**2 + 2._kp/(2._kp-p) * x**(2._kp-p)
-    endif
-
-    if (p.eq.0._kp) stop 'hy_nufunc: p=0 is singular'
-
-    hy_nufunc = 0.5_kp*hy_nufunc*mu*mu/p
-      
-  end function hy_nufunc
 
   
+    vhi_epsilon_one = p**2/(2._kp*mu**2)*x**(2._kp*p-2._kp)/&
+                      ((1._kp+x**p)**2)
 
-!return xstop or x such as eps1(x)=1
-  function hy_x_endinf(p,mu,xstop)
+    
+  end function vhi_epsilon_one
+
+
+!epsilon_two(x)
+  function vhi_epsilon_two(x,p,mu)    
     implicit none
-    real(kp) :: hy_x_endinf
-    real(kp), intent(in) :: p,mu,xstop
-    real(kp) :: xtrans, xend
-    real(kp), dimension(2) :: xeps
-
-!no solution for eps1=1
-    if (mu.gt.hy_mu_connex(p)) then
-       hy_x_endinf = xstop
-       return
-    endif
-
-!otherwise, we could be in the large field or small field regime
-    xeps = hy_x_epsoneisone(p,mu)
-   
-    if ((xstop.gt.xeps(1)).and.(xstop.lt.xeps(2))) then
-       write(*,*)'hy_x_endinf: xstop violates slow-roll!'
-       write(*,*)'xstop= xeps= ',xstop,xeps
-       write(*,*)'xend set at ',xeps(2)
-       xend = xeps(2)
-    else
-       xend = xstop
-    endif
-       
-    hy_x_endinf = xend
-
-  end function hy_x_endinf
+    real(kp) :: vhi_epsilon_two
+    real(kp), intent(in) :: x,p,mu
+    
+    vhi_epsilon_two = 2._kp*p/(mu**2)*x**(p-2._kp)*(x**p-p+1._kp)/&
+                      ((1._kp+x**p)**2)
+    
+  end function vhi_epsilon_two
 
 
-
-!returns x when eps1 is maximal, i.e. eps2=0
-  function hy_x_epsoneismax(p)
+!epsilon_three(x)
+  function vhi_epsilon_three(x,p,mu)    
     implicit none
-    real(kp) :: hy_x_epsoneismax
-    real(kp), intent(in) :: p
+    real(kp) :: vhi_epsilon_three
+    real(kp), intent(in) :: x,p,mu
+    
+    vhi_epsilon_three = p/(mu**2)*x**(p-2._kp)/((1._kp+x**p)**2*(x**p-p+1._kp))*&
+                        (2._kp*x**(2._kp*p)-(p-1._kp)*(p+4._kp)*x**p &
+                        +(p-1._kp)*(p-2._kp))
+    
+  end function vhi_epsilon_three
 
-    hy_x_epsoneismax = (p - 1._kp)**(1._kp/p)
-
-  end function hy_x_epsoneismax
 
 
-!returns x when eps1=1, if it exists. This is not the end of inflation
-!in general and there are two roots: large field and small field 
-  function hy_x_epsoneisone(p,mu)
+!returns the minimum value for xend as a function of p and mu, so that xend should vary between vhi_xend_min and vhi_xend_max if inflation stops by critical instability.
+  function vhi_xend_min(p,mu)
     implicit none
     real(kp), intent(in) :: p,mu
-    real(kp), dimension(2) :: hy_x_epsoneisone
+    real(kp) :: vhi_xend_min
     real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi, xtrans
-    type(transfert) :: hyData
-
-    if (mu.gt.hy_mu_connex(p)) stop 'hy_x_epsoneisone: mu > mu_connex'
+    real(kp) :: mini,maxi
+    type(transfert) :: vhiData
     
-    xtrans = hy_x_epsoneismax(p)
+    if (p .gt. 1._kp) then
 
-    hyData%real1 = p
-    hyData%real2 = mu
-
-    mini = 0._kp
-    maxi = xtrans
-    hy_x_epsoneisone(1) = zbrent(find_hyepsoneisone,mini,maxi,tolFind,hyData)
-
-    mini = xtrans
-    maxi = 1._kp/epsilon(1._kp)
-    hy_x_epsoneisone(2) = zbrent(find_hyepsoneisone,mini,maxi,tolFind,hyData)
-
-  end function hy_x_epsoneisone
-
-   
-
-  function hy_mu_connex(p)
-    implicit none
-    real(kp) :: hy_mu_connex
-    real(kp), intent(in) :: p
-
-    hy_mu_connex = p/sqrt(8._kp)
-
-  end function hy_mu_connex
-
-
-
-  function find_hyepsoneisone(x,hyData)
-!vanishes for eps1=1
-    implicit none
-    real(kp), intent(in) :: x 
-    type(transfert), optional, intent(inout) :: hyData
-    real(kp) :: find_hyepsoneisone
-    real(kp) :: p,mu
-
-    p=hyData%real1
-    mu=hyData%real2    
-    
-    find_hyepsoneisone = x**(p-1._kp) - sqrt(2._kp)*mu/p * (x**p + 1._kp)
-        
-  end function find_hyepsoneisone
-
-
-!informs about some potential problem 
-  subroutine hy_check_slowroll(x,xend,p,mu)
-    implicit none
-    real(kp), intent(in) :: x,xend,p,mu
-    real(kp), dimension(2) :: xeps
-
-    if (mu.gt.hy_mu_connex(p)) return
-
-    xeps = hy_x_epsoneisone(p,mu)
-
-    if ((xend.gt.xeps(1)).and.(xend.lt.xeps(2))) then
-       stop 'hy_check_slowroll: eps(xend) > 1!'
-    endif
-    
-    if ((xend.le.xeps(1)).and.(x.gt.xeps(1))) then
-       write(*,*)'hy_check_slowroll: slow-roll will be violated:'
-       write(*,*)'x= xend= xeps= ',x,xend,xeps
-    endif
-
-  end subroutine hy_check_slowroll
+      vhi_xend_min=epsilon(1._kp)
   
+    else if (p .eq. 1._kp) then
 
-!returns x at bfold=-efolds before the end of inflation
-  function hy_x_trajectory(bfold,xend,p,mu)
+      if (sqrt(2._kp)*mu .lt. 1._kp) then !eps1>1 at x=0. Return x_eps.
+
+        vhi_xend_min = 1._kp/(sqrt(2._kp)*mu)-1._kp
+
+      else !eps<1 everywhere
+
+        vhi_xend_min = epsilon(1._kp)
+
+      endif
+
+    else if (p .lt. 1._kp) then
+
+        maxi= 10000._kp*p/mu
+        mini=epsilon(1._kp)
+        vhiData%real1 = p
+        vhiData%real2 = mu
+        vhi_xend_min = zbrent(find_vhi_xend_bound,mini,maxi,tolFind,vhiData)
+
+    endif
+
+  end function vhi_xend_min
+
+
+
+!returns the maximum value for xend as a function of p and mu, so that xend should vary between vhi_xend_min and vhi_xend_max if inflation stops by critical instability.
+  function vhi_xend_max(p,mu)
     implicit none
-    real(kp), intent(in) :: bfold, p, mu, xend
-    real(kp) :: hy_x_trajectory
+    real(kp), intent(in) :: p,mu
+    real(kp) :: vhi_xend_max
     real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi, x
-    real(kp), dimension(2) :: xeps
-    type(transfert) :: hyData
+    real(kp) :: mini,maxi
+    type(transfert) :: vhiData
     
-    hyData%real1 = p
-    hyData%real2 = mu   
-    hyData%real4 = -bfold + hy_nufunc(xend,p,mu)
-    
-    x = zbrent(find_hytraj,mini,maxi,tolFind,hyData)
-    
-    call hy_check_slowroll(x,xend,p,mu)
-    
-    hy_x_trajectory = x
+    if (p .gt. 1._kp) then
 
-  end function hy_x_trajectory
+      if (mu*sqrt(2._kp) .lt. (p-1._kp)**((p-1._kp)/p)) then !eps1>1 for some values of x. Return x_eps^-.
+
+        if (p .eq. 2._kp) then
+          vhi_xend_max=1._kp/(sqrt(2._kp)*mu)*(1._kp-sqrt(1._kp-2._kp*mu**2))
+        else
+      
+        maxi= (p-1._kp)**(1._kp/p) !value of x such that epsilon1 is maximum
+        mini=0._kp
+        vhiData%real1 = p
+        vhiData%real2 = mu
+        vhi_xend_max = zbrent(find_vhi_xend_bound,mini,maxi,tolFind,vhiData)
+
+        endif
+
+      else !eps1<1 everywhere
+       
+        vhi_xend_max = 10000._kp*p/mu
+      
+      endif
 
 
-  function find_hytraj(x,hyData)    
+    else if (p .le. 1._kp) then
+
+        vhi_xend_max = 10000._kp*p/mu
+
+    endif
+
+  end function vhi_xend_max
+
+  function find_vhi_xend_bound(x,vhiData)    
     implicit none
     real(kp), intent(in) :: x   
-    type(transfert), optional, intent(inout) :: hyData
-    real(kp) :: find_hytraj
+    type(transfert), optional, intent(inout) :: vhiData
+    real(kp) :: find_vhi_xend_bound
+    real(kp) :: p,mu
+
+    p = vhiData%real1
+    mu = vhiData%real2
+    
+    find_vhi_xend_bound = vhi_epsilon_one(x,p,mu) - 1._kp
+  
+  end function find_vhi_xend_bound
+
+
+
+!this is integral[V(phi)/V'(phi) dphi]
+  function vhi_efold_primitive(x,p,mu)
+    implicit none
+    real(kp), intent(in) :: x,p,mu
+    real(kp) :: vhi_efold_primitive
+
+    if (p .eq. 2._kp) then
+
+      vhi_efold_primitive = mu**2/4._kp*(x**2+2._kp*log(x))
+
+    else
+
+      vhi_efold_primitive = mu**2/(2._kp*p)*(x**2-2._kp/(p-2._kp)*x**(2._kp-p))
+
+    endif
+
+  end function vhi_efold_primitive
+
+
+!returns x at bfold=-efolds before the end of inflation, ie N-Nend
+  function vhi_x_trajectory(bfold,xend,p,mu)
+    implicit none
+    real(kp), intent(in) :: bfold, p,mu, xend
+    real(kp) :: vhi_x_trajectory
+    real(kp), parameter :: tolFind = tolkp
+    real(kp) :: mini,maxi
+    logical :: approx = .false. !set to true if one wants to use the approximate phi/mu << 1 formula
+    type(transfert) :: vhiData
+
+    if (p .eq. 1._kp) then
+
+      vhi_x_trajectory=-1._kp+sqrt(1._kp-2._kp/(mu**2)*bfold+xend**2+2._kp*xend)
+
+    else if (p .eq. 2._kp) then 
+
+      vhi_x_trajectory=sqrt(lambert(xend**2*exp(xend**2-4._kp*bfold/(mu**2)),0))
+
+    else if (approx .eqv. .true.) then
+
+      vhi_x_trajectory=(xend**(2._kp-p)+p*(p-2._kp)*bfold/(mu**2))**(1._kp/(2._kp-p))
+
+    else
+
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi= vhi_xend_max(p,mu)*(1._kp-epsilon(1._kp))
+
+    vhiData%real1 = p
+    vhiData%real2 = mu
+    vhiData%real3 = -bfold + vhi_efold_primitive(xend,p,mu)
+    
+    vhi_x_trajectory = zbrent(find_vhitraj,mini,maxi,tolFind,vhiData)
+
+    end if
+       
+  end function vhi_x_trajectory
+
+
+  function find_vhitraj(x,vhiData)    
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: vhiData
+    real(kp) :: find_vhitraj
     real(kp) :: p,mu,NplusNuend
 
-    p=hyData%real1
-    mu = hyData%real2
-    NplusNuend = hyData%real4
+    p= vhiData%real1
+    mu= vhiData%real2
+    NplusNuend = vhiData%real3
 
-    find_hytraj = hy_nufunc(x,p,mu) - NplusNuend
+    find_vhitraj = vhi_efold_primitive(x,p,mu) - NplusNuend
    
-  end function find_hytraj
+  end function find_vhitraj
 
-  
-end module hysrevol
+
+
+end module vhisr

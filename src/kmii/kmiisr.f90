@@ -98,7 +98,7 @@ contains
     implicit none
     real(kp), intent(in) :: alpha
     real(kp) :: kmii_x_endinf
-    real(kp) :: alpha1,alpha2 !delimitation if the different regimes
+    real(kp) :: alpha1,alpha2 !delimitation in the different regimes
     
     alpha1=sqrt(2._kp)/(sqrt(2._kp)-1._kp) &
          *exp((2._kp-sqrt(2._kp))/(1._kp-sqrt(2._kp)))

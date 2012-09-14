@@ -8,7 +8,7 @@ module twireheat
   use srreheat, only : ln_rho_reheat
   use twisr, only : twi_epsilon_one, twi_epsilon_two, twi_epsilon_three
   use twisr, only : twi_norm_potential
-  use twisr, only : twi_x_endinf, twi_efold_primitive
+  use twisr, only : twi_efold_primitive
   implicit none
 
   private
@@ -19,15 +19,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function twi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)    
+  function twi_x_star(phi0,xEnd,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: twi_x_star
-    real(kp), intent(in) :: phi0,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: phi0,xEnd,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: twiData
     
@@ -36,7 +36,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = twi_x_endinf(phi0)
 
     epsOneEnd = twi_epsilon_one(xEnd,phi0)
     potEnd = twi_norm_potential(xEnd,phi0)
@@ -49,7 +48,7 @@ contains
     twiData%real2 = w
     twiData%real3 = calF + primEnd
 
-    mini = twi_x_endinf(phi0)
+    mini = xEnd
     maxi=100._kp*phi0 !if bigger, <numaccuracy errors
 
     x = zbrent(find_twi_x_star,mini,maxi,tolzbrent,twiData)
@@ -83,20 +82,18 @@ contains
 
 
 
-  function twi_lnrhoend(phi0,Pstar) 
+  function twi_lnrhoend(phi0,xEnd,Pstar) 
     implicit none
     real(kp) :: twi_lnrhoend
-    real(kp), intent(in) :: phi0,Pstar
+    real(kp), intent(in) :: phi0,xEnd,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1_kp/3_kp
     real(kp),parameter :: junk=0_kp
 
     real(kp) :: lnRhoEnd
-    
-    xEnd = twi_x_endinf(phi0)
 
 
     potEnd  = twi_norm_potential(xEnd,phi0)
@@ -107,7 +104,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = twi_x_star(phi0,wrad,junk,Pstar)  
+    x = twi_x_star(phi0,xEnd,wrad,junk,Pstar)  
 
  
     potStar = twi_norm_potential(x,phi0)

@@ -1,123 +1,122 @@
-!running mass reheating functions in the slow-roll
+!Valley Hybrid inflation reheating functions in the slow-roll approximations
 
-module hyreheat
+module vhireheat
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
-  use srreheat, only : display, pi, Nzero, ln_energy_endinf
-  use hysrevol, only : hy_norm_potential, hy_check_slowroll
-  use hysrevol, only : hy_epsilon_one, hy_epsilon_two
-  use hysrevol, only : hy_x_endinf, hy_nufunc
+  use srreheat, only : display, pi, Nzero, ln_rho_endinf
+  use srreheat, only : ln_rho_reheat
+  use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
+  use vhisr, only : vhi_norm_potential,vhi_efold_primitive,vhi_xend_max,vhi_xend_min
   implicit none
 
   private
 
-  public hy_x_reheat, hy_lnrhoend
-  public find_hyreheat
+  public vhi_x_star, vhi_lnrhoend 
 
 contains
 
-!returns x given potential parameters, scalar power, wreh and
-!lnrhoreh. If present, returns the correspoding bfoldstar
-  function hy_x_reheat(p,mu,xstop,w,lnRhoReh,Pstar,bfold)    
+!returns x such given potential parameters, scalar power, wreh and
+!lnrhoreh. If present, returns the corresponding bfoldstar
+  function vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: hy_x_reheat
-    real(kp), intent(in) :: p,mu,xstop,lnRhoReh,w,Pstar
-    real(kp), optional :: bfold
+    real(kp) :: vhi_x_star
+    real(kp), intent(in) :: p,mu,xEnd,lnRhoReh,w,Pstar
+    real(kp), intent(out), optional :: bfoldstar
 
-    real(kp), parameter :: tolFind=tolkp
+    real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: nuEnd,epsEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
-    type(transfert) :: hyData
+    type(transfert) :: vhiData
     
 
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xend = hy_x_endinf(p,mu,xstop)
 
-    epsEnd = hy_epsilon_one(xEnd,p,mu)
+    epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
+    potEnd = vhi_norm_potential(xEnd,p)
 
-    potEnd = hy_norm_potential(xEnd,p)
-    nuEnd = hy_nufunc(xEnd,p,mu)
-    
-!cobe normalised
-!    Pstar = quadrupole_to_primscalar(QhysOverT)
+    primEnd = vhi_efold_primitive(xEnd,p,mu)
+   
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsEnd,potEnd)
+    vhiData%real1 = p
+    vhiData%real2 = mu
+    vhiData%real3 = w
+    vhiData%real4 = calF + primEnd
 
-    hyData%real1 = p
-    hyData%real2 = mu
-    hyData%real3 = w
-    hyData%real4 = calF + nuEnd
+    mini = xEnd*(1._kp+epsilon(1._kp))
+    maxi= vhi_xend_max(p,mu)*(1._kp-epsilon(1._kp))
 
-    mini = xend
-    maxi = 1._kp/epsilon(1._kp)
-       
-    x = zbrent(find_hyreheat,mini,maxi,tolFind,hyData)
+    x = zbrent(find_vhi_x_star,mini,maxi,tolzbrent,vhiData)
+    vhi_x_star = x
 
-    call hy_check_slowroll(x,xend,p,mu)
-
-    hy_x_reheat = x
-    
-    if (present(bfold)) then
-       bfold = -(hy_nufunc(x,p,mu) - nuEnd)
+    if (present(bfoldstar)) then
+       bfoldstar = - (vhi_efold_primitive(x,p,mu) - primEnd)
     endif
-    
-  end function hy_x_reheat
 
-  function find_hyreheat(x,hyData)   
+  end function vhi_x_star
+
+  function find_vhi_x_star(x,vhiData)   
     implicit none
-    real(kp) :: find_hyreheat
+    real(kp) :: find_vhi_x_star
     real(kp), intent(in) :: x
-    type(transfert), optional, intent(inout) :: hyData
+    type(transfert), optional, intent(inout) :: vhiData
 
-    real(kp) :: nuStar,p,mu,w,CalFplusNuEnd,potStar,epsStar
+    real(kp) :: primStar,p,mu,w,CalFplusprimEnd,potStar,epsOneStar
 
-    p=hyData%real1
-    mu = hyData%real2
-    w = hyData%real3
-    CalFplusNuEnd = hyData%real4
+    p=vhiData%real1
+    mu=vhiData%real2
+    w = vhiData%real3
+    CalFplusprimEnd = vhiData%real4
 
-    nuStar = hy_nufunc(x,p,mu)
-    epsStar = hy_epsilon_one(x,p,mu)
-    potStar = hy_norm_potential(x,p)
+    primStar = vhi_efold_primitive(x,p,mu)
+    epsOneStar = vhi_epsilon_one(x,p,mu)
+    potStar = vhi_norm_potential(x,p)
 
-    find_hyreheat = find_reheat(nuStar,calFplusNuEnd,w,epsStar,potStar)
+    find_vhi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
+  
+  end function find_vhi_x_star
 
-  end function find_hyreheat
 
 
-
-  function hy_lnrhoend(p,mu,xstop,Pstar) 
+  function vhi_lnrhoend(p,mu,xEnd,Pstar) 
     implicit none
-    real(kp) :: hy_lnrhoend
-    real(kp), intent(in) :: p,mu,xstop,Pstar
+    real(kp) :: vhi_lnrhoend
+    real(kp), intent(in) :: p,mu,xEnd,Pstar
 
-    real(kp) :: xEnd, potEnd, epsEnd
-    real(kp) :: x, potStar, epsStar
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
 
-    real(kp), parameter :: w = 1._kp/3._kp
-    real(kp), parameter :: lnRhoReh = 0._kp
+    real(kp),parameter :: wrad=1_kp/3_kp
+    real(kp),parameter :: junk=0_kp
+
     real(kp) :: lnRhoEnd
-    
-    xEnd = hy_x_endinf(p,mu,xstop)  
-    potEnd  = hy_norm_potential(xEnd,p)
-    epsEnd = hy_epsilon_one(xEnd,p,mu)
-    
-    x = hy_x_reheat(p,mu,xstop,w,lnRhoReh,Pstar)
-    potStar = hy_norm_potential(x,p)
-    epsStar = hy_epsilon_one(x,p,mu)
-    
-    if (.not.slowroll_validity(epsStar)) stop 'hy_lnrhoend: slow-roll violated!'
-    
-    lnRhoEnd = ln_energy_endinf(Pstar,epsStar,epsEnd,potEnd/potStar)
 
-    hy_lnrhoend = lnRhoEnd
 
-  end function hy_lnrhoend
+    potEnd  = vhi_norm_potential(xEnd,p)
+
+    epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
+
+!   Trick to return x such that rho_reh=rho_end
+
+    x = vhi_x_star(p,mu,xEnd,wrad,junk,Pstar)  
+
+ 
+    potStar = vhi_norm_potential(x,p)
+    epsOneStar = vhi_epsilon_one(x,p,mu)
 
     
-end module hyreheat
+    if (.not.slowroll_validity(epsOneStar)) stop 'vhi_lnrhoend: slow-roll violated!'
+    
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+    vhi_lnrhoend = lnRhoEnd
+
+  end function vhi_lnrhoend
+
+  
+end module vhireheat

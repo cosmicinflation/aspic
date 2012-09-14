@@ -36,17 +36,17 @@ libsrmodels_la_LIBADD =                \
         ncki/libncki.la \
         lmi1/liblmi1.la \
         lmi2/liblmi2.la \
-        lmi3/liblmi3.la
+        rgi/librgi.la \
+	vhi/libvhi.la 
 #	bi/libbi.la \
 	sfbi/libsfbi.la \
 	kmiii/libkmiii.la \
 	cwi/libcwi.la \
 	hf2i/libhf2i.la \
 	rmi/librmi.la \
-	vhi/libvhi.la \
 	dsi/libdsi.la \
 	gmi/libgmi.la
 
 #to be build from there
-SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi1 lmi2 lmi3
+SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi1 lmi2 rgi vhi
 
