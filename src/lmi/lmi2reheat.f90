@@ -8,7 +8,7 @@ module lmi2reheat
   use srreheat, only : ln_rho_reheat
   use lmi2sr, only : lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three
   use lmi2sr, only : lmi2_norm_potential
-  use lmi2sr, only : lmi2_xin_min, lmi2_efold_primitive
+  use lmi2sr, only : lmi2_xini_min, lmi2_efold_primitive
   use cosmopar, only : QrmsOverT
   implicit none
 
@@ -31,9 +31,6 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: lmi2Data
 
-    real(kp) ::alpha
-    alpha=4.*(1.-gamma)
-
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
@@ -50,7 +47,7 @@ contains
     lmi2Data%real3 = w
     lmi2Data%real4 = calF + primEnd
 
-    mini = lmi2_xin_min(gamma,beta)
+    mini = lmi2_xini_min(gamma,beta)
     maxi = xEnd*(1._kp-epsilon(1._kp))
 
 

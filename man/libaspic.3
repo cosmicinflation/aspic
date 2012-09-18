@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "September 14, 2012" "version 0.0.6" "Aspic usage"
+.TH libaspic 3 "September 18, 2012" "version 0.0.6" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -124,39 +124,30 @@ module exposes the following
 of kind
 .I real(kp)
 .IP
-.B foo_norm_potential
-(x,...)
+.BR foo_norm_potential (x,...)
 .RS
-.B foo_norm_deriv_potential
-(x,...)
+.BR foo_norm_deriv_potential (x,...)
 .RE
 .RS
-.B foo_norm_deriv_second_potential
-(x,...)
+.BR foo_norm_deriv_second_potential (x,...)
 .RE
 .RS
-.B foo_epsilon_one
-(x,...)
+.BR foo_epsilon_one (x,...)
 .RE
 .RS
-.B foo_epsilon_two
-(x,...)
+.BR foo_epsilon_two (x,...)
 .RE
 .RS
-.B foo_epsilon_three
-(x,...)
+.BR foo_epsilon_three (x,...)
 .RE
 .RS
-.B foo_x_endinf
-(...)
+.BR foo_x_endinf (...)
 .RE
 .RS
-.B foo_efold_primitive
-(x,...)
+.BR foo_efold_primitive (x,...)
 .RE
 .RS
-.B foo_x_trajectory
-(N-Nend,xend,...)
+.BR foo_x_trajectory (N-Nend,xend,...)
 .RE
 .P
 All these functions take as an input the dimensionless field value
@@ -195,7 +186,7 @@ functions.
 .P
 Finally, the last three functions allows to determine
 uniquely the slow-roll trajectory. Calling
-.B foo_x_endinf()
+.BR foo_x_endinf ()
 returns the field value
 .B 'xend'
 at the end of inflation. For most models, this happens when the first
@@ -203,12 +194,12 @@ Hubble flow function equals unity but it can also be given by more
 specific mechanisms. Notice that, for some models, the end of
 inflation may be an extra model parameter. For those models, this
 function is obviously not provided. The function
-.B foo_efold_primitive()
+.BR foo_efold_primitive ()
 returns, up to a constant, the value of the integral
 .B SUM{V(x)/V'(x)dx}
 from which the slow-roll trajectory can be calculated. This is
 precisely the output of
-.B foo_x_trajectory()
+.BR foo_x_trajectory ()
 which returns the field value
 .B 'x'
 from the input of
@@ -227,15 +218,12 @@ module exposes the following
 of kind
 .I real(kp)
 .IP
-.B foo_lnrhoend
-(...,Pstar)
+.BR foo_lnrhoend (...,Pstar)
 .RS
-.B foo_x_star
-(...,w,lnRhoReh,Pstar)
+.BR foo_x_star (...,w,lnRhoReh,Pstar)
 .RE
 .RS
-.B foo_x_star
-(...,w,lnRhoReh,Pstar,
+.BR foo_x_star (...,w,lnRhoReh,Pstar,
 .B deltaNstar)
 .RE
 
@@ -246,7 +234,7 @@ parameters '...' as specified in the man pages
 and in the header of the module files 'foosr.f90' and 'fooreheat.f90'.
 .P
 The function
-.B foo_lnrhoend()
+.BR foo_lnrhoend ()
 return the natural logarithm of the total energy density of the
 universe at the end of inflation. This number depending on the
 physical normalization of the potential, you need to input
@@ -257,7 +245,7 @@ the pivot wave-number. Its default value has been set to 0.05 Mpc^-1
 (see below for specifying another value).
 
 The function
-.B foo_x_star()
+.BR foo_x_star ()
 returns the field value
 .B 'xstar'
 at which the pivot wave-number
@@ -293,33 +281,26 @@ of kind
 which are called by all the above-described modules. As such their
 usage should be necessary only if you decide to add a new model:
 .IP
-.B quadrupole_to_primscalar
-(QoverT)
+.BR quadrupole_to_primscalar (QoverT)
 .RE
 .RS
-.B log_energy_reheat_ingev
-(lnRhoReh)
+.BR log_energy_reheat_ingev (lnRhoReh)
 .RE
 .RS
 .I logical ::
-.B slowroll_validity
-(epsOne,epsTwo)
+.BR slowroll_validity (epsOne,epsTwo)
 .RE
 .RS
-.B ln_rho_endinf
-(Pstar,epsOneStar,epsOneEnd,VendOverVstar)
+.BR ln_rho_endinf (Pstar,epsOneStar,epsOneEnd,VendOverVstar)
 .RE
 .RS
-.B find_reheat
-(nuStar,calFplusNuEnd,w,epsStar,Vstar)
+.BR find_reheat (nuStar,calFplusNuEnd,w,epsStar,Vstar)
 .RE
 .RS
-.B get_calfconst
-(lnRhoReh,Pstar,w,epsEnd,potEnd)
+.BR get_calfconst (lnRhoReh,Pstar,w,epsEnd,potEnd)
 .RE
 .RS
-.B ln_rho_reheat
-(w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
+.BR ln_rho_reheat (w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
 .RE
 .P
 All of these functions take as input
@@ -330,11 +311,11 @@ returns an estimation of the amplitude of the scalar primordial power
 spectrum 'Pstar' from
 .B QoverT
 the quadrupole moment (.i.e. the COBE normalization). The second function
-.B log_energy_reheat_ingev()
+.BR log_energy_reheat_ingev ()
 is for convenience and simply returns the logarithm in base 10 of the
 energy density at the end of reheating from the its natural logarithmic
 value (used elsewhere). The third,
-.B slowroll_validity()
+.BR slowroll_validity ()
 returns
 .I .true.
 or
@@ -345,14 +326,14 @@ precision.
 
 The last four functions are at the root of the reheating related
 calculations and are fully model independent. The function
-.B ln_rho_endinf()
+.BR ln_rho_endinf ()
 returns the logarithm of the energy density at the end of inflation,
 .B ln_rho_reheat()
 returns the logarithm of the energy density at the end of reheating,
 while
-.B find_reheat()
+.BR find_reheat ()
 and
-.B get_calfconst()
+.BR get_calfconst ()
 solve algebraic equations necessary to get the reheating parameter
 assuming slow-roll. For more details on what are these quantities,
 check out
@@ -449,7 +430,8 @@ The
 module exposes some
 .I public subroutines
 which are various modified Runge-Kutta numerical integrators based on the
-subroutine dverk().
+subroutine
+.BR dverk ().
 The
 .B specialinf
 module exposes some special functions arising by analytically
@@ -470,7 +452,7 @@ At the time of this writing,
 deals with the inflationary models listed below. Their respective
 potential parameters, conventions for field units and so on, are
 described in their man pages
-.BR aspic_foo(3).
+.BR aspic_foo (3).
 .SS ZERO PARAMETER MODELS
 .TP 20
 .B
@@ -554,9 +536,6 @@ Kahler moduli inflation II
 .I lmi1
 logamediate inflation I
 .TQ
-.I lmi2
-logamediate inflation II
-.TQ
 .I twi
 twisted inflation
 .TQ
@@ -591,6 +570,9 @@ Logarithmic potential inflation
 .TP 20
 .B Acronym
 .B Model name
+.TQ
+.I lmi2
+logamediate inflation II
 .TQ
 .I rmi
 running mass inflation

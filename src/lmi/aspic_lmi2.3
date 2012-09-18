@@ -38,30 +38,48 @@ function
 .IP
 .BR lmi2_xini_min (gamma,beta)
 .P
-which always returns the value of 'xiniMin'.
+which always returns the value of 'xiniMin'. If it exists, the value
+of 'xeps1' can be directly obtained from the
+.I
+real(kp)
+function
+.IP
+.BR lmi2_x_epsoneunity (gamma,beta)
+.P
+which will returns an error message if it does not.
 
-In this regime, inflation never ends and the field
+.P
+In this regime, logamediate inflation never ends and the field
 value 'xend' is an extra model parameter that has to be specified. As
 the result, the function
 .BR lmi2_x_endinf ()
-is not provided.
-
-This model shares a few peculiar functions with
+is not provided. This model shares a few peculiar functions with
 .I lmi1
 in a module named
-.BR lmicommon .
-The value of 'xvMax' is returned by
-.BR lmi_x_max_potential (gamma,beta)
-accessible through
+.B lmicommon
+which are
 .IP
-.B use lmicommon, only : lmi_x_max_potential
+.BR lmi_x_potmax (gamma,beta)
+.RS
+.BR lmi_epsilon_one_max (gamma,beta)
+.RS
+.RE
+.BR lmi_x_epsonemax (gamma,beta)
+.RE
+
+.P
+The first returns 'xVmax' defined above, the second gives the maximal
+value of the first Hubble flow function over the domain 'x > xVmax'
+while the last one returns the field value at which the first Hubble
+flow function is maximal (this is not 'xeps1').
+
 
 .SH NOTES
 For the model parameter values such that 'xeps1' exists, logamediate
 inflation exhibits a third domain, 'xVmax < x < xeps1', in which
 inflation could occur and would naturally ends at 'x=xeps1'. However,
 this domain requires an extreme fine tuning of the initial field value
-to get the required number of e-folds and is infinitely closed to a
+to get the required number of e-folds and is infinitely close to a
 pure de-Sitter model. This case has not been numerically implemented
 but a discussion can be found in
 .UR http://arxiv.org/abs/1004.5525

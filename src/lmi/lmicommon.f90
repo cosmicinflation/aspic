@@ -14,14 +14,24 @@ module lmicommon
 
   private
 
-  public lmi_norm_potential
-  public lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
-  public lmi_efold_primitive, lmi1_x_trajectory
+  public lmi_alpha, lmi_norm_potential
   public lmi_norm_deriv_potential, lmi_norm_deriv_second_potential
-  public lmi_epsilon_one_max, lmi_x_max_potential
-  public lmi_efold_primitive, lmi_x_trajectory
+  public lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
+  public lmi_epsilon_one_max, lmi_x_epsonemax, lmi_x_potmax
+  public lmi_efold_primitive, find_lmitraj
 
 contains
+
+
+  function lmi_alpha(gamma)
+    implicit none
+    real(kp), intent(in) :: gamma
+    real(kp) :: lmi_alpha
+
+    lmi_alpha = 4._kp*(1._kp-gamma)
+
+  end function lmi_alpha
+
 
 !returns V/M^4
   function lmi_norm_potential(x,gamma,beta)
@@ -30,7 +40,7 @@ contains
     real(kp), intent(in) :: x,gamma,beta
     real(kp) :: alpha
 
-    alpha = 4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
     lmi_norm_potential = x**alpha*exp(-beta*x**gamma)
 
@@ -45,9 +55,9 @@ contains
     real(kp), intent(in) :: x,gamma,beta
     real(kp) :: alpha
 
-    alpha = 4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
-    lmi1_norm_deriv_potential = (alpha*x**(alpha-1._kp)- &
+    lmi_norm_deriv_potential = (alpha*x**(alpha-1._kp)- &
          beta*gamma*x**(alpha+gamma-1._kp))*exp(-beta*x**gamma)
 
   end function lmi_norm_deriv_potential
@@ -62,9 +72,9 @@ contains
     real(kp), intent(in) :: x,gamma,beta
     real(kp) :: alpha
 
-    alpha = 4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
    
-    lmi1_norm_deriv_second_potential = (x**(-2 + alpha)*((-1 + alpha)*alpha &
+    lmi_norm_deriv_second_potential = (x**(-2 + alpha)*((-1 + alpha)*alpha &
          - beta*gamma*(-1 + 2*alpha + gamma)*x**gamma &
          + beta**2*gamma**2*x**(2*gamma)))*exp(-beta*x**gamma)
     
@@ -80,7 +90,7 @@ contains
     real(kp), intent(in) :: x,gamma,beta
 
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
     lmi_epsilon_one = (alpha-beta*gamma*x**gamma)**2/(2._kp*x**2)
     
@@ -94,9 +104,9 @@ contains
     real(kp), intent(in) :: x,gamma,beta
 
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
     
-    lmi1_epsilon_two = 2._kp*(alpha+beta*(-1._kp+gamma) &
+    lmi_epsilon_two = 2._kp*(alpha+beta*(-1._kp+gamma) &
          *gamma*x**gamma)/(x**2)
     
   end function lmi_epsilon_two
@@ -109,7 +119,8 @@ contains
     real(kp), intent(in) :: x,gamma,beta
 
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
+
+    alpha = lmi_alpha(gamma)
     
     lmi_epsilon_three = ((alpha-beta*gamma*x**gamma)*(2._kp*alpha- & 
          beta*(-2._kp+gamma)*(-1._kp+gamma)*gamma* &
@@ -118,14 +129,14 @@ contains
     
   end function lmi_epsilon_three
 
-
+!the maximal value of eps1 in the domain x>xvmax
   function lmi_epsilon_one_max(gamma,beta)
     implicit none
     real(kp) :: lmi_epsilon_one_max
     real(kp), intent(in) :: gamma,beta
     real(kp) :: alpha
 
-    alpha = 4._kp*(1._kp - gamma)
+    alpha = lmi_alpha(gamma)
 
     lmi_epsilon_one_max= 0.5_kp*(alpha*gamma/(1._kp-gamma))**2 &
          *(beta*gamma*(1._kp-gamma)/alpha)**(2._kp/gamma)
@@ -133,17 +144,32 @@ contains
   end function lmi_epsilon_one_max
 
 
-  function lmi_x_max_potential(gamma,beta)
+!the x value at which eps1 is maximal in the domain x > xvmax
+  function lmi_x_epsonemax(gamma,beta)
     implicit none
-    real(kp) :: lmi1_x_max_potential
+    real(kp) :: lmi_x_epsonemax
     real(kp), intent(in) :: gamma,beta
     real(kp) :: alpha
 
-    alpha = .4_kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
-    lmi_x_max_potential = alpha/(beta*gamma)**(1._kp/gamma)
+    lmi_x_epsonemax = (alpha/(beta*gamma)/(1._kp-gamma))**(1._kp/gamma)
 
-  end function lmi_x_max_potential
+  end function lmi_x_epsonemax
+
+
+!xvmax, the x value at which the potential is maximal
+  function lmi_x_potmax(gamma,beta)
+    implicit none
+    real(kp) :: lmi_x_potmax
+    real(kp), intent(in) :: gamma,beta
+    real(kp) :: alpha
+
+    alpha = lmi_alpha(gamma)
+
+    lmi_x_potmax = (alpha/(beta*gamma))**(1._kp/gamma)
+
+  end function lmi_x_potmax
 
 
 
@@ -155,7 +181,7 @@ contains
     real(kp) :: lmi_efold_primitive
 
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
     if (alpha.eq.0._kp) stop 'lmi_efold_primitive: gamma=1!  (PLI)'
     if (gamma.eq.0._kp) stop 'lmi_efold_primitive: gamma=0!'
@@ -166,42 +192,19 @@ contains
   end function lmi_efold_primitive
 
 
-!returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function lmi_x_trajectory(bfold,xend,gamma,beta)
-    implicit none
-    real(kp), intent(in) :: bfold, gamma, xend,beta
-    real(kp) :: lmi_x_trajectory
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: lmiData
-
-    real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
-
-    maxi = (alpha/(beta*gamma))**(1._kp/gamma)*(1._kp-epsilon(1._kp))
-    mini = lmi1_x_endinf(gamma,beta)*(1._kp+epsilon(1._kp))
-  
-
-    lmiData%real1 = gamma
-    lmiData%real2 = beta
-    lmiData%real3 = -bfold + lmi1_efold_primitive(xend,gamma,beta)
-    
-    lmi_x_trajectory = zbrent(find_lmi1traj,mini,maxi,tolFind,lmi1Data)
-       
-  end function lmi_x_trajectory
 
   function find_lmitraj(x,lmiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lmiData
-    real(kp) :: find_lmi1traj
+    real(kp) :: find_lmitraj
     real(kp) :: gamma,beta,NplusNuend
 
     gamma = lmiData%real1
     beta = lmiData%real2
     NplusNuend = lmiData%real3
 
-    find_lmi1traj = lmi_efold_primitive(x,gamma,beta) - NplusNuend
+    find_lmitraj = lmi_efold_primitive(x,gamma,beta) - NplusNuend
    
   end function find_lmitraj
 

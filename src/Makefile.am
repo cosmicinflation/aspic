@@ -37,8 +37,7 @@ libaspic_la_LIBADD =                \
         bei/libbei.la \
         psni/libpsni.la \
         ncki/libncki.la \
-        lmi1/liblmi1.la \
-        lmi2/liblmi2.la \
+        lmi/liblmi.la \
         rgi/librgi.la \
 	vhi/libvhi.la 
 #	bi/libbi.la \
@@ -51,5 +50,5 @@ libaspic_la_LIBADD =                \
 	gmi/libgmi.la
 
 #to be build from there
-SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi1 lmi2 rgi vhi
+SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi rgi vhi
 

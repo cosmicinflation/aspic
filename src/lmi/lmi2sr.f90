@@ -10,11 +10,12 @@ module lmi2sr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : hypergeom_2F1
   use inftools, only : zbrent
+  use lmicommon, only : lmi_alpha
   use lmicommon, only : lmi_norm_potential, lmi_norm_deriv_potential
-  use lmicommon, only : lmi_norm_deriv_second,potential
-  use lmicommon, only : lmi_epsilon_one_max, lmi_x_max_potential
+  use lmicommon, only : lmi_norm_deriv_second_potential
+  use lmicommon, only : lmi_epsilon_one_max, lmi_x_potmax, lmi_x_epsonemax
   use lmicommon, only : lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
-  use lmicommon, only : lmi_x_trajectory, lmi_efold_primitive, find_lmitraj
+  use lmicommon, only : lmi_efold_primitive, find_lmitraj
   implicit none
 
   private
@@ -23,7 +24,7 @@ module lmi2sr
   public lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three
   public lmi2_efold_primitive, lmi2_x_trajectory
   public lmi2_norm_deriv_potential, lmi2_norm_deriv_second_potential
-  public lmi2_xin_min
+  public lmi2_xini_min
  
 contains
 
@@ -104,56 +105,86 @@ contains
 !returns the minimum value for xin: if eps1<1 in the whole x>xVmax
 !interval, returns xVmax, otherwise, returns the highest solution for
 !eps1=1
-  function lmi2_xin_min(gamma,beta)
+  function lmi2_xini_min(gamma,beta)
     implicit none
     real(kp), intent(in) :: gamma,beta
-    real(kp) :: lmi2_xin_min
+    real(kp) :: lmi2_xini_min
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: lmi2Data
 
-    real(kp) ::alpha
+    real(kp) ::alpha,xVmax,xeps1max
 
-    alpha=4._kp*(1._kp-gamma)  
+    alpha = lmi_alpha(gamma)
 
-    if(beta.lt.sqrt(2._kp).or.gamma.lt.lmi2_gammamin(beta)) then
-       lmi2_xin_min=(alpha/(beta*gamma))**(1._kp/gamma) &
-            *(1._kp+epsilon(1._kp))
-    
+    xVmax = lmi_x_potmax(gamma,beta)
+    xeps1max = lmi_x_epsonemax(gamma,beta)
+
+    if (lmi_epsilon_one_max(gamma,beta).lt.1._kp) then
+       lmi2_xini_min = xVmax * (1._kp+epsilon(1._kp))
+
+!debug:
+       if (.not.(beta.lt.sqrt(2._kp).or.gamma.lt.lmi2_gammamin(beta))) then
+          stop 'lmi2_xini_min: conditional tests WRONG!'
+       endif
+              
     else
 
-       mini = ((alpha/(beta*gamma*(1._kp-gamma)))**(1./gamma)) &
-            *(1._kp+epsilon(1._kp))
-       maxi = 100._kp * max(alpha,(beta*gamma)**(1._kp/(1._kp-gamma)) &
-            ,(alpha*beta*gamma)**(1._kp/(2._kp-gamma)))
-       
-       lmi2Data%real1 = gamma
-       lmi2Data%real2 = beta
-       
-       lmi2_xin_min = zbrent(find_lmi2xinmin,mini,maxi,tolFind,lmi2Data)
-       
-       lmi2_xin_min = lmi2_xin_min*(1._kp+epsilon(1._kp))
+      lmi2_xini_min = lmi2_x_epsoneunity(gamma,beta) &
+           * (1._kp+epsilon(1._kp))
 
     endif
 
-  end function lmi2_xin_min
+  end function lmi2_xini_min
 
 
 
-  function find_lmi2xinmin(x,lmi2Data)    
+!returns the value xeps1 at which eps1=1 in the domain x>xvmax (if it
+!exists, otherwise stop)
+  function lmi2_x_epsoneunity(gamma,beta)
+    implicit none
+    real(kp), intent(in) :: gamma, beta
+    real(kp) :: lmi2_x_epsoneunity
+    real(kp) :: alpha, xeps1max
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: lmi2Data
+
+    
+    if (lmi_epsilon_one_max(gamma,beta).lt.1._kp) then
+       stop 'lmi2_x_epsoneunity: no solution for eps1=1'
+    endif
+
+    xeps1max = lmi_x_epsonemax(gamma,beta)
+    alpha = lmi_alpha(gamma)
+
+    mini = xeps1max * (1._kp+epsilon(1._kp))
+    maxi = 100._kp * max(alpha,(beta*gamma)**(1._kp/(1._kp-gamma)) &
+         ,(alpha*beta*gamma)**(1._kp/(2._kp-gamma)))
+       
+    lmi2Data%real1 = gamma
+    lmi2Data%real2 = beta
+    
+    lmi2_x_epsoneunity &
+         = zbrent(find_lmi2xepsoneunity,mini,maxi,tolFind,lmi2Data)
+        
+  end function lmi2_x_epsoneunity
+
+
+
+  function find_lmi2xepsoneunity(x,lmi2Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lmi2Data
-    real(kp) :: find_lmi2xinmin
+    real(kp) :: find_lmi2xepsoneunity
     real(kp) :: gamma,beta
 
     gamma = lmi2Data%real1
     beta = lmi2Data%real2
     
-    find_lmi2xinmin = lmi2_epsilon_one(x,gamma,beta) - 1._kp
+    find_lmi2xepsoneunity = lmi2_epsilon_one(x,gamma,beta) - 1._kp
    
-  end function find_lmi2xinmin
-
+  end function find_lmi2xepsoneunity
 
 
 
@@ -175,7 +206,7 @@ contains
     real(kp) :: lmi2_efold_primitive_approximated
 
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
     if (gamma.eq.0._kp) stop 'lmi2_efold_primitive: gamma=0!'
 
@@ -195,8 +226,9 @@ contains
     type(transfert) :: lmiData
 
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
-    xiniMin = lmi2_xin_min(gamma,beta)
+
+    alpha = lmi_alpha(gamma)
+    xiniMin = lmi2_xini_min(gamma,beta)
 
     if (xend.le.xiniMin) then
        write(*,*)'xiniMin= xend= ',xiniMin, xend
@@ -214,6 +246,8 @@ contains
        
   end function lmi2_x_trajectory
 
+
+
  
 ! Returns the minimum value for beta in order to end inflation with
 ! slow roll violation ( beta>betamin(gamma) <=> epsOneMax>1 )
@@ -222,7 +256,8 @@ contains
     real(kp), intent(in) :: gamma
     real(kp) :: lmi2_betamin
     real(kp) ::alpha
-    alpha=4._kp*(1._kp-gamma)
+
+    alpha = lmi_alpha(gamma)
 
     lmi2_betamin=(sqrt(2._kp)*(1._kp-gamma)/(alpha*gamma))**gamma &
          *alpha/(gamma*(1._kp-gamma))

@@ -1,5 +1,5 @@
 SRC = lmicommon.f90 lmi1sr.f90 lmi1reheat.f90 lmi2sr.f90 lmi2reheat.f90
-MOD = lmi1sr.$(FC_MODEXT) lmi1reheat.$(FC_MODEXT) \
+MOD = lmicommon.$(FC_MODEXT) lmi1sr.$(FC_MODEXT) lmi1reheat.$(FC_MODEXT) \
 	lmi2sr.$(FC_MODEXT) lmi2reheat.$(FC_MODEXT)
 
 check_PROGRAMS = lmi1main lmi2main

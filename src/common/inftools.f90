@@ -982,6 +982,11 @@ contains
          end function func
       end interface
 
+      if (x1.gt.x2) then
+         stop 'zbrent: min > max on input!'
+      endif
+      
+
       notbracketed = .true.
       iex = 0
 

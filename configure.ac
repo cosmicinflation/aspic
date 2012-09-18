@@ -54,8 +54,7 @@ AC_CONFIG_FILES([Makefile
                  src/bei/Makefile
                  src/psni/Makefile
                  src/ncki/Makefile
-                 src/lmi1/Makefile
-                 src/lmi2/Makefile
+		 src/lmi/Makefile
                  src/rgi/Makefile
                  src/vhi/Makefile
                 ])

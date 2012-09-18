@@ -14,9 +14,11 @@ module twisr
 
   private
 
-  public  twi_norm_potential, twi_epsilon_one, twi_epsilon_two, twi_epsilon_three
-  public  twi_efold_primitive, twi_x_trajectory
-  public  twi_norm_deriv_potential, twi_norm_deriv_second_potential
+  public twi_norm_potential, twi_epsilon_one, twi_epsilon_two, twi_epsilon_three
+  public twi_efold_primitive, twi_x_trajectory
+  public twi_norm_deriv_potential, twi_norm_deriv_second_potential
+
+  public twi_x_endsr
 
   real(kp), parameter ::A=0.33183220315845589991447280462623125031833134154035_kp
 
@@ -104,31 +106,33 @@ contains
   end function twi_epsilon_three
 
 
-!returns the value x at which epsilon1SR=1
-!Integrating the full EOM (without slow roll approximation), it turns out that eps1 never takes >1 values and that inflation does not stop by slow roll violation. An extra parameter xend thus has to be introduced.
-  function twi_x_epsOneEqualsOne(phi0)
+!returns the value x at which epsilon1SR=1 Integrating the full EOM
+!(without slow roll approximation), it turns out that eps1 never takes
+!>1 values and that inflation does not stop by slow roll violation. An
+!extra parameter xend thus has to be introduced.
+  function twi_x_epsoneequalsone(phi0)
     implicit none
     real(kp), intent(in) :: phi0
-    real(kp) :: twi_x_epsOneEqualsOne
+    real(kp) :: twi_x_epsoneequalsone
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: twiData
     
-    if (phi0.gt.0.04228_kp) stop 'twi_x_epsOneEqualsOne: no slow roll solution for this value of phi0!'
+    if (phi0.gt.0.04228_kp) stop 'twi_x_epsoneequalsone: no slow roll solution for this value of phi0!'
 
     maxi=ymax*phi0 !if bigger, <numaccuracy errors
     mini = twi_x_eps1max(phi0) !second maximum of eps1
 
     twiData%real1 = phi0
     
-    twi_x_epsOneEqualsOne = zbrent(find_twi_x_epsOneEqualsOne,mini,maxi,tolFind,twiData)
+    twi_x_epsoneequalsone = zbrent(find_twi_x_epsoneequalsone,mini,maxi,tolFind,twiData)
 
 
-  end function twi_x_epsOneEqualsOne
+  end function twi_x_epsoneequalsone
 
 
 
-  function find_twi_x_epsOneEqualsOne(x,twiData)    
+  function find_twi_x_epsoneequalsone(x,twiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: twiData
@@ -139,7 +143,44 @@ contains
     
     find_twi_x_epsOneEqualsOne = twi_epsilon_one(x,phi0) - 1._kp
   
-  end function find_twi_x_epsOneEqualsOne
+  end function find_twi_x_epsoneequalsone
+
+
+
+  function twi_x_endsr(phi0)
+    implicit none
+    real(kp), intent(in) :: phi0
+    real(kp) :: twi_x_endsr
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: twiData
+    
+    if (phi0.gt.0.04228_kp) stop 'twi_x_endsr: no slow roll solution for this value of phi0!'
+
+    maxi=ymax*phi0 !if bigger, <numaccuracy errors
+    mini = twi_x_eps1max(phi0) !second maximum of eps1
+
+    twiData%real1 = phi0
+    
+    twi_x_endsr = zbrent(find_twi_x_endsr,mini,maxi,tolFind,twiData)
+
+
+  end function twi_x_endsr
+
+
+
+  function find_twi_x_endsr(x,twiData)    
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: twiData
+    real(kp) :: find_twi_x_endsr
+    real(kp) :: phi0
+
+    phi0 = twiData%real1
+    
+    find_twi_x_endsr = twi_epsilon_two(x,phi0) - 1._kp
+  
+  end function find_twi_x_endsr
 
 
 !returns the position x of the second maximum of epsilon1

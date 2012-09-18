@@ -35,9 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = lmi2main$(EXEEXT)
-subdir = src/lmi2
-DIST_COMMON = $(liblmi2_la_include_HEADERS) $(srcdir)/Makefile.am \
+check_PROGRAMS = lmi1main$(EXEEXT) lmi2main$(EXEEXT)
+subdir = src/lmi
+DIST_COMMON = $(liblmi_la_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -47,16 +47,28 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
-liblmi2_la_LIBADD =
-am__objects_1 = liblmi2_la-lmi2sr.lo liblmi2_la-lmi2reheat.lo
-am_liblmi2_la_OBJECTS = $(am__objects_1)
-liblmi2_la_OBJECTS = $(am_liblmi2_la_OBJECTS)
-liblmi2_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(liblmi2_la_FCFLAGS) \
+liblmi_la_LIBADD =
+am__objects_1 = liblmi_la-lmicommon.lo liblmi_la-lmi1sr.lo \
+	liblmi_la-lmi1reheat.lo liblmi_la-lmi2sr.lo \
+	liblmi_la-lmi2reheat.lo
+am_liblmi_la_OBJECTS = $(am__objects_1)
+liblmi_la_OBJECTS = $(am_liblmi_la_OBJECTS)
+liblmi_la_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(liblmi_la_FCFLAGS) \
 	$(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_2 = lmi2main-lmi2sr.$(OBJEXT) \
+am__objects_2 = lmi1main-lmicommon.$(OBJEXT) lmi1main-lmi1sr.$(OBJEXT) \
+	lmi1main-lmi1reheat.$(OBJEXT) lmi1main-lmi2sr.$(OBJEXT) \
+	lmi1main-lmi2reheat.$(OBJEXT)
+am_lmi1main_OBJECTS = $(am__objects_2) lmi1main-lmi1main.$(OBJEXT)
+lmi1main_OBJECTS = $(am_lmi1main_OBJECTS)
+lmi1main_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
+lmi1main_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(FCLD) $(lmi1main_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_3 = lmi2main-lmicommon.$(OBJEXT) lmi2main-lmi1sr.$(OBJEXT) \
+	lmi2main-lmi1reheat.$(OBJEXT) lmi2main-lmi2sr.$(OBJEXT) \
 	lmi2main-lmi2reheat.$(OBJEXT)
-am_lmi2main_OBJECTS = $(am__objects_2) lmi2main-lmi2main.$(OBJEXT)
+am_lmi2main_OBJECTS = $(am__objects_3) lmi2main-lmi2main.$(OBJEXT)
 lmi2main_OBJECTS = $(am_lmi2main_OBJECTS)
 lmi2main_DEPENDENCIES = ../$(SRCOMMDIR)/libsrcommon.a
 lmi2main_LINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -70,8 +82,9 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(liblmi2_la_SOURCES) $(lmi2main_SOURCES)
-DIST_SOURCES = $(liblmi2_la_SOURCES) $(lmi2main_SOURCES)
+SOURCES = $(liblmi_la_SOURCES) $(lmi1main_SOURCES) $(lmi2main_SOURCES)
+DIST_SOURCES = $(liblmi_la_SOURCES) $(lmi1main_SOURCES) \
+	$(lmi2main_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -101,10 +114,10 @@ am__uninstall_files_from_dir = { \
   }
 man3dir = $(mandir)/man3
 am__installdirs = "$(DESTDIR)$(man3dir)" \
-	"$(DESTDIR)$(liblmi2_la_includedir)"
+	"$(DESTDIR)$(liblmi_la_includedir)"
 NROFF = nroff
 MANS = $(man_MANS)
-HEADERS = $(liblmi2_la_include_HEADERS)
+HEADERS = $(liblmi_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -229,17 +242,22 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 version_info = @version_info@
-SRC = lmi2sr.f90 lmi2reheat.f90
-MOD = lmi2sr.$(FC_MODEXT) lmi2reheat.$(FC_MODEXT)
+SRC = lmicommon.f90 lmi1sr.f90 lmi1reheat.f90 lmi2sr.f90 lmi2reheat.f90
+MOD = lmicommon.$(FC_MODEXT) lmi1sr.$(FC_MODEXT) lmi1reheat.$(FC_MODEXT) \
+	lmi2sr.$(FC_MODEXT) lmi2reheat.$(FC_MODEXT)
+
+lmi1main_SOURCES = $(SRC) lmi1main.f90
+lmi1main_FCFLAGS = -I../$(SRCOMMDIR)
+lmi1main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 lmi2main_SOURCES = $(SRC) lmi2main.f90
 lmi2main_FCFLAGS = -I../$(SRCOMMDIR)
 lmi2main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-noinst_LTLIBRARIES = liblmi2.la
-liblmi2_la_SOURCES = $(SRC)
-liblmi2_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-liblmi2_la_includedir = $(includedir)/$(SRINCDIR)
-liblmi2_la_include_HEADERS = $(MOD)
-man_MANS = aspic_lmi2.3
+noinst_LTLIBRARIES = liblmi.la
+liblmi_la_SOURCES = $(SRC)
+liblmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+liblmi_la_includedir = $(includedir)/$(SRINCDIR)
+liblmi_la_include_HEADERS = $(MOD)
+man_MANS = aspic_lmi1.3 aspic_lmi2.3
 all: all-am
 
 .SUFFIXES:
@@ -253,9 +271,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/lmi2/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/lmi/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/lmi2/Makefile
+	  $(AUTOMAKE) --gnu src/lmi/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -283,8 +301,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-liblmi2.la: $(liblmi2_la_OBJECTS) $(liblmi2_la_DEPENDENCIES) $(EXTRA_liblmi2_la_DEPENDENCIES) 
-	$(liblmi2_la_LINK)  $(liblmi2_la_OBJECTS) $(liblmi2_la_LIBADD) $(LIBS)
+liblmi.la: $(liblmi_la_OBJECTS) $(liblmi_la_DEPENDENCIES) $(EXTRA_liblmi_la_DEPENDENCIES) 
+	$(liblmi_la_LINK)  $(liblmi_la_OBJECTS) $(liblmi_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -294,6 +312,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+lmi1main$(EXEEXT): $(lmi1main_OBJECTS) $(lmi1main_DEPENDENCIES) $(EXTRA_lmi1main_DEPENDENCIES) 
+	@rm -f lmi1main$(EXEEXT)
+	$(lmi1main_LINK) $(lmi1main_OBJECTS) $(lmi1main_LDADD) $(LIBS)
 lmi2main$(EXEEXT): $(lmi2main_OBJECTS) $(lmi2main_DEPENDENCIES) $(EXTRA_lmi2main_DEPENDENCIES) 
 	@rm -f lmi2main$(EXEEXT)
 	$(lmi2main_LINK) $(lmi2main_OBJECTS) $(lmi2main_LDADD) $(LIBS)
@@ -313,11 +334,74 @@ distclean-compile:
 .f90.lo:
 	$(LTFCCOMPILE) -c -o $@ $<
 
-liblmi2_la-lmi2sr.lo: lmi2sr.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi2_la_FCFLAGS) $(FCFLAGS) -c -o liblmi2_la-lmi2sr.lo `test -f 'lmi2sr.f90' || echo '$(srcdir)/'`lmi2sr.f90
+liblmi_la-lmicommon.lo: lmicommon.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi_la_FCFLAGS) $(FCFLAGS) -c -o liblmi_la-lmicommon.lo `test -f 'lmicommon.f90' || echo '$(srcdir)/'`lmicommon.f90
 
-liblmi2_la-lmi2reheat.lo: lmi2reheat.f90
-	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi2_la_FCFLAGS) $(FCFLAGS) -c -o liblmi2_la-lmi2reheat.lo `test -f 'lmi2reheat.f90' || echo '$(srcdir)/'`lmi2reheat.f90
+liblmi_la-lmi1sr.lo: lmi1sr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi_la_FCFLAGS) $(FCFLAGS) -c -o liblmi_la-lmi1sr.lo `test -f 'lmi1sr.f90' || echo '$(srcdir)/'`lmi1sr.f90
+
+liblmi_la-lmi1reheat.lo: lmi1reheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi_la_FCFLAGS) $(FCFLAGS) -c -o liblmi_la-lmi1reheat.lo `test -f 'lmi1reheat.f90' || echo '$(srcdir)/'`lmi1reheat.f90
+
+liblmi_la-lmi2sr.lo: lmi2sr.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi_la_FCFLAGS) $(FCFLAGS) -c -o liblmi_la-lmi2sr.lo `test -f 'lmi2sr.f90' || echo '$(srcdir)/'`lmi2sr.f90
+
+liblmi_la-lmi2reheat.lo: lmi2reheat.f90
+	$(LIBTOOL)  --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(liblmi_la_FCFLAGS) $(FCFLAGS) -c -o liblmi_la-lmi2reheat.lo `test -f 'lmi2reheat.f90' || echo '$(srcdir)/'`lmi2reheat.f90
+
+lmi1main-lmicommon.o: lmicommon.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmicommon.o `test -f 'lmicommon.f90' || echo '$(srcdir)/'`lmicommon.f90
+
+lmi1main-lmicommon.obj: lmicommon.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmicommon.obj `if test -f 'lmicommon.f90'; then $(CYGPATH_W) 'lmicommon.f90'; else $(CYGPATH_W) '$(srcdir)/lmicommon.f90'; fi`
+
+lmi1main-lmi1sr.o: lmi1sr.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi1sr.o `test -f 'lmi1sr.f90' || echo '$(srcdir)/'`lmi1sr.f90
+
+lmi1main-lmi1sr.obj: lmi1sr.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi1sr.obj `if test -f 'lmi1sr.f90'; then $(CYGPATH_W) 'lmi1sr.f90'; else $(CYGPATH_W) '$(srcdir)/lmi1sr.f90'; fi`
+
+lmi1main-lmi1reheat.o: lmi1reheat.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi1reheat.o `test -f 'lmi1reheat.f90' || echo '$(srcdir)/'`lmi1reheat.f90
+
+lmi1main-lmi1reheat.obj: lmi1reheat.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi1reheat.obj `if test -f 'lmi1reheat.f90'; then $(CYGPATH_W) 'lmi1reheat.f90'; else $(CYGPATH_W) '$(srcdir)/lmi1reheat.f90'; fi`
+
+lmi1main-lmi2sr.o: lmi2sr.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi2sr.o `test -f 'lmi2sr.f90' || echo '$(srcdir)/'`lmi2sr.f90
+
+lmi1main-lmi2sr.obj: lmi2sr.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi2sr.obj `if test -f 'lmi2sr.f90'; then $(CYGPATH_W) 'lmi2sr.f90'; else $(CYGPATH_W) '$(srcdir)/lmi2sr.f90'; fi`
+
+lmi1main-lmi2reheat.o: lmi2reheat.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi2reheat.o `test -f 'lmi2reheat.f90' || echo '$(srcdir)/'`lmi2reheat.f90
+
+lmi1main-lmi2reheat.obj: lmi2reheat.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi2reheat.obj `if test -f 'lmi2reheat.f90'; then $(CYGPATH_W) 'lmi2reheat.f90'; else $(CYGPATH_W) '$(srcdir)/lmi2reheat.f90'; fi`
+
+lmi1main-lmi1main.o: lmi1main.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi1main.o `test -f 'lmi1main.f90' || echo '$(srcdir)/'`lmi1main.f90
+
+lmi1main-lmi1main.obj: lmi1main.f90
+	$(FC) $(lmi1main_FCFLAGS) $(FCFLAGS) -c -o lmi1main-lmi1main.obj `if test -f 'lmi1main.f90'; then $(CYGPATH_W) 'lmi1main.f90'; else $(CYGPATH_W) '$(srcdir)/lmi1main.f90'; fi`
+
+lmi2main-lmicommon.o: lmicommon.f90
+	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmicommon.o `test -f 'lmicommon.f90' || echo '$(srcdir)/'`lmicommon.f90
+
+lmi2main-lmicommon.obj: lmicommon.f90
+	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmicommon.obj `if test -f 'lmicommon.f90'; then $(CYGPATH_W) 'lmicommon.f90'; else $(CYGPATH_W) '$(srcdir)/lmicommon.f90'; fi`
+
+lmi2main-lmi1sr.o: lmi1sr.f90
+	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmi1sr.o `test -f 'lmi1sr.f90' || echo '$(srcdir)/'`lmi1sr.f90
+
+lmi2main-lmi1sr.obj: lmi1sr.f90
+	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmi1sr.obj `if test -f 'lmi1sr.f90'; then $(CYGPATH_W) 'lmi1sr.f90'; else $(CYGPATH_W) '$(srcdir)/lmi1sr.f90'; fi`
+
+lmi2main-lmi1reheat.o: lmi1reheat.f90
+	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmi1reheat.o `test -f 'lmi1reheat.f90' || echo '$(srcdir)/'`lmi1reheat.f90
+
+lmi2main-lmi1reheat.obj: lmi1reheat.f90
+	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmi1reheat.obj `if test -f 'lmi1reheat.f90'; then $(CYGPATH_W) 'lmi1reheat.f90'; else $(CYGPATH_W) '$(srcdir)/lmi1reheat.f90'; fi`
 
 lmi2main-lmi2sr.o: lmi2sr.f90
 	$(FC) $(lmi2main_FCFLAGS) $(FCFLAGS) -c -o lmi2main-lmi2sr.o `test -f 'lmi2sr.f90' || echo '$(srcdir)/'`lmi2sr.f90
@@ -378,24 +462,24 @@ uninstall-man3:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^3][0-9a-z]*$$,3,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man3dir)'; $(am__uninstall_files_from_dir)
-install-liblmi2_la_includeHEADERS: $(liblmi2_la_include_HEADERS)
+install-liblmi_la_includeHEADERS: $(liblmi_la_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(liblmi2_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblmi2_la_includedir)"
-	@list='$(liblmi2_la_include_HEADERS)'; test -n "$(liblmi2_la_includedir)" || list=; \
+	test -z "$(liblmi_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblmi_la_includedir)"
+	@list='$(liblmi_la_include_HEADERS)'; test -n "$(liblmi_la_includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblmi2_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblmi2_la_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblmi_la_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblmi_la_includedir)" || exit $$?; \
 	done
 
-uninstall-liblmi2_la_includeHEADERS:
+uninstall-liblmi_la_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(liblmi2_la_include_HEADERS)'; test -n "$(liblmi2_la_includedir)" || list=; \
+	@list='$(liblmi_la_include_HEADERS)'; test -n "$(liblmi_la_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(liblmi2_la_includedir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(liblmi_la_includedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -497,7 +581,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(MANS) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(liblmi2_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(liblmi_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -552,7 +636,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-liblmi2_la_includeHEADERS install-man
+install-data-am: install-liblmi_la_includeHEADERS install-man
 
 install-dvi: install-dvi-am
 
@@ -597,7 +681,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-liblmi2_la_includeHEADERS uninstall-man
+uninstall-am: uninstall-liblmi_la_includeHEADERS uninstall-man
 
 uninstall-man: uninstall-man3
 
@@ -610,13 +694,13 @@ uninstall-man: uninstall-man3
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-liblmi2_la_includeHEADERS \
+	install-info install-info-am install-liblmi_la_includeHEADERS \
 	install-man install-man3 install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-liblmi2_la_includeHEADERS uninstall-man \
+	uninstall-am uninstall-liblmi_la_includeHEADERS uninstall-man \
 	uninstall-man3
 
 

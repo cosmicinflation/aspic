@@ -6,6 +6,7 @@ module lmi1reheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use lmicommon, only : lmi_x_potmax
   use lmi1sr, only : lmi1_epsilon_one, lmi1_epsilon_two, lmi1_epsilon_three
   use lmi1sr, only : lmi1_norm_potential
   use lmi1sr, only : lmi1_x_endinf, lmi1_efold_primitive
@@ -27,19 +28,17 @@ contains
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,xVmax
+    real(kp) :: mini,maxi,calF,x,xVmax
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
     type(transfert) :: lmi1Data
 
-    real(kp) ::alpha
-    alpha=4.*(1.-gamma)
-
+  
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
     xEnd = lmi1_x_endinf(gamma,beta)
-    xVmax = lmi_x_max_potential(gamma,beta)
+    xVmax = lmi_x_potmax(gamma,beta)
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gamma,beta)
     potEnd = lmi1_norm_potential(xEnd,gamma,beta)

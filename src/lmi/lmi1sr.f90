@@ -10,11 +10,12 @@ module lmi1sr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : hypergeom_2F1
   use inftools, only : zbrent
+  use lmicommon, only : lmi_alpha
   use lmicommon, only : lmi_norm_potential, lmi_norm_deriv_potential
-  use lmicommon, only : lmi_norm_deriv_second,potential
-  use lmicommon, only : lmi_epsilon_one_max, lmi_x_max_potential
+  use lmicommon, only : lmi_norm_deriv_second_potential
+  use lmicommon, only : lmi_epsilon_one_max, lmi_x_potmax
   use lmicommon, only : lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
-  use lmicommon, only : lmi_x_trajectory, lmi_efold_primitive, find_lmitraj
+  use lmicommon, only : lmi_efold_primitive, find_lmitraj
 
 
   implicit none
@@ -112,9 +113,9 @@ contains
 
     real(kp) ::xVmax, alpha
 
-    alpha=4._kp*(1._kp-gamma)
+    alpha = lmi_alpha(gamma)
 
-    xVmax = lmi_x_max_potential(gamma,beta)
+    xVmax = lmi_x_potmax(gamma,beta)
 
 !    maxi = (alpha/(beta*gamma))**(1._kp/gamma)*(1._kp-epsilon(1._kp))
     maxi = xVmax*(1._kp-epsilon(1._kp))
@@ -164,9 +165,9 @@ contains
     type(transfert) :: lmiData
 
     real(kp) ::alpha, xVmax
-    alpha=4._kp*(1._kp-gamma)
 
-    xVmax = lmi_x_max_potential(gamma,beta)
+    alpha = lmi_alpha(gamma)
+    xVmax = lmi_x_potmax(gamma,beta)
 !    maxi = (alpha/(beta*gamma))**(1._kp/gamma)*(1._kp-epsilon(1._kp))
 
     maxi = xVmax*(1._kp-epsilon(1._kp))

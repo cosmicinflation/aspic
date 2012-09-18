@@ -132,9 +132,9 @@ contains
     real(kp), intent(in) :: gamma,beta
     real(kp) :: alpha
 
-    alpha = .4_kp*(1._kp-gamma)
+    alpha = 4._kp*(1._kp-gamma)
 
-    lmi2_x_max_potential = alpha/(beta*gamma)**(1._kp/gamma)
+    lmi2_x_max_potential = (alpha/(beta*gamma))**(1._kp/gamma)
 
   end function lmi2_x_max_potential
 
