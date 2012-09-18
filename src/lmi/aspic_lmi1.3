@@ -1,0 +1,44 @@
+.TH liblmi1 3 "September 14, 2012" "libaspic" "Module convention" 
+
+.SH NAME
+.I lmi1
+- the logamediate inflation I module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 x^[4(1-gamma)] exp[-beta x^gamma]
+
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B gamma, beta
+
+.SH DESCRIPTION
+The
+.I lmi1
+module is used for the logamediate inflation at small field values,
+namely in the region for which 'x < xVmax', the field value at which the
+potential is maximal. In this regime, inflation naturally ends at a
+field value 'xend' returned by the function
+.BR lmi1_x_endinf (gamma,beta).
+
+This model shares a few peculiar functions with
+.I lmi2
+in a module named
+.BR lmicommon .
+The value of 'xvMax' is returned by
+.BR lmi_x_max_potential(gamma,beta)
+accessible through
+.IP
+.B use lmicommon, only : lmi_x_max_potential
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

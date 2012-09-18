@@ -27,7 +27,7 @@ contains
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x
+    real(kp) :: mini,maxi,calF,xVmax
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
     type(transfert) :: lmi1Data
 
@@ -39,6 +39,7 @@ contains
     endif
     
     xEnd = lmi1_x_endinf(gamma,beta)
+    xVmax = lmi_x_max_potential(gamma,beta)
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gamma,beta)
     potEnd = lmi1_norm_potential(xEnd,gamma,beta)
@@ -52,8 +53,8 @@ contains
     lmi1Data%real3 = w
     lmi1Data%real4 = calF + primEnd
 
-    maxi = (alpha/(beta*gamma))**(1._kp/gamma)*(1._kp-100._kp*epsilon(1._kp))
-    mini = lmi1_x_endinf(gamma,beta)*(1._kp+100._kp*epsilon(1._kp))
+    maxi = xvMax*(1._kp-100._kp*epsilon(1._kp))
+    mini = xEnd*(1._kp+100._kp*epsilon(1._kp))
 
     x = zbrent(find_lmi1_x_star,mini,maxi,tolzbrent,lmi1Data)
     lmi1_x_star = x

@@ -1,0 +1,73 @@
+.TH liblmi2 3 "September 18, 2012" "libaspic" "Module convention" 
+
+.SH NAME
+.I lmi2
+- the logamediate inflation II module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 x^[4(1-gamma)] exp[-beta x^gamma]
+
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B gamma, beta
+
+.SH DESCRIPTION
+The
+.I lmi2
+module is used for the logamediate inflation at large field values,
+namely in the region for which 'x > xiniMin=max(xVmax,xeps1)'. As for the
+.I lmi1
+module, 'xVmax' is the field value at which the potential is maximal
+while 'xeps1' is the field value at which the first Hubble flow
+function may equal unity in the large field region ('x >
+xVmax'). Notice that since the later does not exist for all
+parameter values, we provide a
+.I
+real(kp)
+function
+.IP
+.BR lmi2_xini_min (gamma,beta)
+.P
+which always returns the value of 'xiniMin'.
+
+In this regime, inflation never ends and the field
+value 'xend' is an extra model parameter that has to be specified. As
+the result, the function
+.BR lmi2_x_endinf ()
+is not provided.
+
+This model shares a few peculiar functions with
+.I lmi1
+in a module named
+.BR lmicommon .
+The value of 'xvMax' is returned by
+.BR lmi_x_max_potential (gamma,beta)
+accessible through
+.IP
+.B use lmicommon, only : lmi_x_max_potential
+
+.SH NOTES
+For the model parameter values such that 'xeps1' exists, logamediate
+inflation exhibits a third domain, 'xVmax < x < xeps1', in which
+inflation could occur and would naturally ends at 'x=xeps1'. However,
+this domain requires an extreme fine tuning of the initial field value
+to get the required number of e-folds and is infinitely closed to a
+pure de-Sitter model. This case has not been numerically implemented
+but a discussion can be found in
+.UR http://arxiv.org/abs/1004.5525
+arXiv:1004.5525
+.UE
+under the logamediate inflation section.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
