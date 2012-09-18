@@ -1,5 +1,4 @@
 commit 2925e7bee1c570b9ca79c653952b66d55a348692
-Author: chris <chris@ringeval.com>
 Date:   Thu Mar 22 18:38:23 2012 +0100
 
     allowing kp to be quadprec, dwi and mhi potential in terms of x only
@@ -14,7 +13,6 @@ Date:   Thu Mar 22 18:38:23 2012 +0100
 
 
 commit ba34952822fd3c3f4eacb71d561135ce92ec958a
-Author: chris <chris@ringeval.com>
 Date:   Tue Mar 20 18:17:46 2012 +0100
 
     importing HI, TWI, DWI, MHI from JMVV

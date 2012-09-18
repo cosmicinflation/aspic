@@ -1,6 +1,9 @@
 * v0.0.6
+- 4 new models imported, check ChangeLog
 - adding global include file 'aspic.h'
 - man files added, for both the library and each modules (*.3 files)
 - move kstar from srreheat to cosmopar
 - move pi from srrehat to infpref 
-- 4 new models imported, check ChangeLog
+- adding test in zbrent to ensure x1<x2
+- unifying lmi1 and lmi2 models under lmi directory, adding lmicommon
+modules (some bugs fixed)

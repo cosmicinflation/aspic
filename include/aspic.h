@@ -47,8 +47,6 @@ use kmiiisr
 use kmiiireheat
 use lmi1sr
 use lmi1reheat
-use lmi2sr
-use lmi2reheat
 use twisr
 use twireheat
 use hf2isr
@@ -71,6 +69,8 @@ use nckireheat
 !use lpireheat
 
 !three parameter models
+use lmi2sr
+use lmi2reheat
 use rmisr
 use rmireheat
 use vhisr
