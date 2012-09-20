@@ -33,7 +33,7 @@ contains
 
 
 
-  !returns the first derivative of the potential with respect to x=phi/Mp, divided by M^4
+  !returns the first derivative of the potential with respect to y, divided by M^4
   function rpi1_norm_deriv_potential(y,p)
     implicit none
     real(kp) :: rpi1_norm_deriv_potential
@@ -45,7 +45,7 @@ contains
 
 
 
-  !returns the second derivative of the potential with respect to x=phi/Mp, divided by M^4
+  !returns the second derivative of the potential with respect to y, divided by M^4
   function rpi1_norm_deriv_second_potential(y,p)
     implicit none
     real(kp) :: rpi1_norm_deriv_second_potential

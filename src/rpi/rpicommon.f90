@@ -29,13 +29,13 @@ contains
 
 
 
-  !returns the first derivative of the potential with respect to x=phi/Mp, divided by M^4
+!returns the first derivative of the potential with respect to y, divided by M^4
   function rpi_norm_deriv_potential(y,p)
     implicit none
     real(kp) :: rpi_norm_deriv_potential
     real(kp), intent(in) :: y,p
 
-    rpi_norm_deriv_potential = (2._kp*sqrt(2._kp/3._kp)*exp(-2._kp*y)* & 
+    rpi_norm_deriv_potential = (2._kp*exp(-2._kp*y)* & 
          (-1._kp+exp(y))**(1._kp/(-1._kp+2._kp*p)) * &
          (1._kp+exp(y)*(-1._kp+p)-2._kp*p))/(1._kp-2._kp*p)
 
@@ -43,17 +43,17 @@ contains
 
 
 
-  !returns the second derivative of the potential with respect to x=phi/Mp, divided by M^4
+  !returns the second derivative of the potential with respect to y, divided by M^4
   function rpi_norm_deriv_second_potential(y,p)
     implicit none
     real(kp) :: rpi_norm_deriv_second_potential
     real(kp), intent(in) :: y,p
 
-    rpi_norm_deriv_second_potential = 2._kp/((1._kp-2._kp*p)**2)*sqrt(2._kp/3._kp)* &
+    rpi_norm_deriv_second_potential = 2._kp/((1._kp-2._kp*p)**2)* &
          exp(-y)*(-1._kp+exp(y))**(-1._kp+1._kp/(-1._kp+2._kp*p))* &
          (-4._kp+(13._kp-10._kp*p)*p+2._kp*(2._kp+p*(-6._kp+5._kp*p))* &
          cosh(y)+2._kp*(2._kp-3._kp*p)*p*sinh(y))
-
+  
   end function rpi_norm_deriv_second_potential
 
 
