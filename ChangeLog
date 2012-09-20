@@ -1,3 +1,23 @@
+commit 8acd67c111d3d80e4bfc13edb89bc04b4c72a16f
+Date:   Thu Sep 20 20:06:13 2012 +0200
+
+    Removing old lmi12 directory, updating logs
+
+ ChangeLog               |  639 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS                    |    2 +-
+ src/lmi1/Makefile.am    |   24 ---
+ src/lmi1/aspic_lmi1.3   |   26 ----
+ src/lmi1/lmi1main.f90   |  101 ------------
+ src/lmi1/lmi1reheat.f90 |  127 ---------------
+ src/lmi1/lmi1sr.f90     |  248 ------------------------------
+ src/lmi2/Makefile.am    |   21 ---
+ src/lmi2/aspic_lmi2.3   |   25 ---
+ src/lmi2/lmi2main.f90   |  160 -------------------
+ src/lmi2/lmi2reheat.f90 |  123 ---------------
+ src/lmi2/lmi2sr.f90     |  315 -------------------------------------
+ 12 files changed, 640 insertions(+), 1171 deletions(-)
+
+
 commit bb5e330649fac977fbcb434ce46b7fd32c3fcb1b
 Date:   Thu Sep 20 19:33:09 2012 +0200
 
