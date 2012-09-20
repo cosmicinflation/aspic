@@ -7,27 +7,29 @@ module rpireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use rpisr, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
-  use rpisr, only : rpi_norm_potential
-  use rpisr, only : rpi_y_endinf, rpi_efold_primitive
+  use rpisr, only : rpi_norm_potential, rpi_x_potmax
+  use rpisr, only : rpi_x_endinf, rpi_efold_primitive
   implicit none
 
   private
 
-  public rpi_y_star, rpi_lnrhoend 
+  public rpi_x_star, rpi_lnrhoend 
 
 contains
 
 !returns y =phi/Mp * sqrt(2/3) such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function rpi_y_star(p,w,lnRhoReh,Pstar,bfoldstar)    
+  function rpi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: rpi_y_star
+    real(kp) :: rpi_x_star
     real(kp), intent(in) :: p,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
-    real(kp), parameter :: tolzbrent=tolkp/1000000._kp
-    real(kp) :: mini,maxi,calF,y
+    real(kp), parameter :: tolzbrent=epsilon(1._kp)
+    real(kp) :: mini,maxi,calF,y,yVmax
     real(kp) :: primEnd,epsOneEnd,yend,potEnd
+
+    real(kp), parameter :: maxiMax = 100._kp
 
     type(transfert) :: rpiData
     
@@ -36,7 +38,7 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    yEnd = rpi_y_endinf(p)
+    yEnd = rpi_x_endinf(p)
 
     epsOneEnd = rpi_epsilon_one(yEnd,p)
     potEnd = rpi_norm_potential(yEnd,p)
@@ -48,35 +50,54 @@ contains
     rpiData%real1 = p
     rpiData%real2 = w
     rpiData%real3 = calF + primEnd
-
-    mini = yEnd
+    
 
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
-	maxi=100._kp !to avoid numerical explosion
+       mini = yEnd
+       maxi=maxiMax !to avoid numerical explosion
 
     else
 
-    maxi = log((2._kp*p-1._kp)/(p-1._kp))*(1._kp-1._kp*epsilon(1._kp)) !local maximum of the potential, numerical safety if inflation proceeds from the right to the left
+       yVmax = rpi_x_potmax(p)
 
-    maxi = log((2._kp*p-1._kp)/(p-1._kp))*(1._kp+1._kp*epsilon(1._kp)) !local maximum of the potential, numerical safety if inflation proceeds from the left to the right
+       if (yend.lt.yVmax) then
+
+          mini = yEnd
+!local maximum of the potential, numerical safety if inflation proceeds from the right to the left
+          maxi = yVmax - epsilon(1._kp)
+!*(1._kp-1._kp*epsilon(1._kp))
+
+       else
+!local maximum of the potential, numerical safety if inflation proceeds from the left to the right
+          mini = yVmax + epsilon(1._kp)
+!*(1._kp+1._kp*epsilon(1._kp))
+          maxi = maxiMax
+
+          stop 'rpi_x_star: not implemented'
+
+       endif
 
     endif
 
 
-    y = zbrent(find_rpi_y_star,mini,maxi,tolzbrent,rpiData)
-    rpi_y_star = y
+    y = zbrent(find_rpi_x_star,mini,maxi,tolzbrent,rpiData)
+
+!consistency check
+    if ((p.ne.1._kp).and.(yend.lt.yVmax).and.(y.le.yend)) stop 'rpi_x_star: out of numerical accuracy!'
+
+    rpi_x_star = y
 
     if (present(bfoldstar)) then
        bfoldstar = - (rpi_efold_primitive(y,p) - primEnd)
     endif
 
-  end function rpi_y_star
+  end function rpi_x_star
 
 
-  function find_rpi_y_star(y,rpiData)   
+  function find_rpi_x_star(y,rpiData)   
     implicit none
-    real(kp) :: find_rpi_y_star
+    real(kp) :: find_rpi_x_star
     real(kp), intent(in) :: y
     type(transfert), optional, intent(inout) :: rpiData
 
@@ -90,9 +111,9 @@ contains
     epsOneStar = rpi_epsilon_one(y,p)
     potStar = rpi_norm_potential(y,p)
 
-    find_rpi_y_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
+    find_rpi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
-  end function find_rpi_y_star
+  end function find_rpi_x_star
 
 
 
@@ -109,21 +130,22 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    yEnd = rpi_y_endinf(p)
+    yEnd = rpi_x_endinf(p)
 
 
     potEnd  = rpi_norm_potential(yEnd,p)
 
     epsOneEnd = rpi_epsilon_one(yEnd,p)
 
-
 !   Trick to return y such that rho_reh=rho_end
 
-    y = rpi_y_star(p,wrad,junk,Pstar)  
-
- 
+    y = rpi_x_star(p,wrad,junk,Pstar)  
+     
     potStar = rpi_norm_potential(y,p)
     epsOneStar = rpi_epsilon_one(y,p)
+
+    print *,'y yend',y,yend
+    print *,'eps', rpi_epsilon_one(y,p),rpi_epsilon_one(yend,p)
 
     PRINT*,'rpi_lnrhoend   :ystar=',y,'  potStar=',potStar,'  epsOneStar=',epsOneStar
 

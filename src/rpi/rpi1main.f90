@@ -1,9 +1,9 @@
 !test the reheating derivation from slow-roll
-program rpimain
+program rpi1main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use rpisr, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
-  use rpireheat, only : rpi_lnrhoend, rpi_x_star
+  use rpi1sr, only : rpi1_epsilon_one, rpi1_epsilon_two, rpi1_epsilon_three
+  use rpi1reheat, only : rpi1_lnrhoend, rpi1_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -15,9 +15,9 @@ program rpimain
   integer :: i,j
   integer :: npts = 20
 
-  integer :: Np=10
+  integer :: Np=5
   real(kp) :: pmin=1._kp
-  real(kp) :: pmax=2._kp
+  real(kp) :: pmax=1.5_kp
 
   real(kp) :: p,w,bfoldstar
   real(kp) :: lnRhoReh,ystar,eps1,eps2,eps3,ns,r
@@ -29,8 +29,8 @@ program rpimain
 
   Pstar = powerAmpScalar
 
-  call delete_file('rpi_predic.dat')
-  call delete_file('rpi_nsr.dat')
+  call delete_file('rpi1_predic.dat')
+  call delete_file('rpi1_nsr.dat')
 
 
 !  w = 1._kp/3._kp
@@ -43,7 +43,7 @@ program rpimain
     print *,'p= ',p
 
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = rpi_lnrhoend(p,Pstar)
+    lnRhoRehMax = rpi1_lnrhoend(p,Pstar)
 
     print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -53,15 +53,15 @@ program rpimain
 
      
 
-	ystar = rpi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+       ystar = rpi1_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
 
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'ystar=',ystar
  
 
-       eps1 = rpi_epsilon_one(ystar,p)
-       eps2 = rpi_epsilon_two(ystar,p)
-       eps3 = rpi_epsilon_three(ystar,p)
+       eps1 = rpi1_epsilon_one(ystar,p)
+       eps2 = rpi1_epsilon_two(ystar,p)
+       eps3 = rpi1_epsilon_three(ystar,p)
 
 
        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -73,9 +73,9 @@ program rpimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('rpi_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('rpi1_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('rpi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       call livewrite('rpi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
     end do
 
@@ -83,4 +83,4 @@ program rpimain
 
  
 
-end program rpimain
+end program rpi1main

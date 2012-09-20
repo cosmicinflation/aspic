@@ -5,17 +5,16 @@
 !y = phi/Mp * sqrt(2/3)
 
 
-module rpisr
-  use infprec, only : kp,tolkp,transfert
+module rpicommon
+  use infprec, only : kp,tolkp
   use specialinf, only : lambert
   implicit none
 
   private
 
   public rpi_norm_potential, rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
-  public rpi_x_endinf, rpi_efold_primitive, rpi_x_trajectory
   public rpi_norm_deriv_potential, rpi_norm_deriv_second_potential
-  public rpi_x_potmax
+  public rpih_x_trajectory, rpih_efold_primitive, rpi_x_potmax
 
 contains
   !returns V/M^4
@@ -96,18 +95,7 @@ contains
   end function rpi_epsilon_three
 
 
-  !returns y at the end of inflation defined as epsilon1=1
-  function rpi_x_endinf(p)
-    implicit none
-    real(kp), intent(in) :: p
-    real(kp) :: rpi_x_endinf
-
-
-    rpi_x_endinf = log((1._kp+sqrt(3._kp)/2._kp)/ &
-         ((p-1._kp)/(2._kp*p-1._kp)+sqrt(3._kp)/2._kp))
-  
-  end function rpi_x_endinf
-
+ 
 
   !field value at which the potential is maximal
   function rpi_x_potmax(p)
@@ -122,80 +110,33 @@ contains
   end function rpi_x_potmax
 
 
-
-  !this is integral[V(phi)/V'(phi) dphi]
-  function rpi_efold_primitive(y,p)
+!Higgs Inflation Model (HI)
+  function rpih_efold_primitive(y,p)
     implicit none
     real(kp), intent(in) :: y,p
-    real(kp) :: rpi_efold_primitive
+    real(kp) :: rpih_efold_primitive
 
-    real(kp) :: yVmax
+    if (p.ne.1._kp) stop 'rpih_efold_primitive: p is not unity!'
+   
 
-    if (p.eq.1._kp) then
+    rpih_efold_primitive = 3._kp/4._kp*(exp(y)-y) 
 
-       rpi_efold_primitive = 3._kp/4._kp*(exp(y)-y) !Higgs Inflation Model (HI)
-
-       return
-
-    endif
+  end function rpih_efold_primitive
 
 
-    yVmax = rpi_x_potmax(p)
 
-    if (y.gt.yVmax) then
-
-       ! inflation proceeds from the left to the right
-       rpi_efold_primitive = 3._kp/4._kp*(-p/(p-1._kp)*log(exp(y)+ &
-            (1._kp-2._kp*p)/(p-1._kp))-y)
-
-    else
-
-       ! inflation proceeds from the right to the left
-       rpi_efold_primitive = 3._kp/4._kp*(-p/(p-1._kp)*log(-exp(y)- &
-            (1._kp-2._kp*p)/(p-1._kp))-y)
-
-    endif
-
-  end function rpi_efold_primitive
-
-
-  !returns y at bfold=-efolds before the end of inflation, ie N-Nend
-  function rpi_x_trajectory(bfold,yend,p)
+  
+  function rpih_x_trajectory(bfold,yend,p)
     implicit none
     real(kp), intent(in) :: bfold, p, yend
-    real(kp) :: rpi_x_trajectory
-    real(kp) :: yVmax
+    real(kp) :: rpih_x_trajectory
+
+    if (p.ne.1._kp) stop 'rpih_x_trajectory: p is not unity!'
+
+    rpih_x_trajectory = (4._kp/3._kp*bfold+yend-exp(yend)- &
+         lambert(-exp(4._kp/3._kp*bfold+yend-exp(yend)),-1))
+      
+  end function rpih_x_trajectory
 
 
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
-
-       rpi_x_trajectory = (4._kp/3._kp*bfold+yend-exp(yend)- &
-            lambert(-exp(4._kp/3._kp*bfold+yend-exp(yend)),-1))
-
-       return
-
-    endif
-
-
-    yVmax = rpi_x_potmax(p)
-
-    ! Inflation proceeds from the left to the right 
-    if (yend.gt.yVmax) then
-
-       rpi_x_trajectory = log(p/(p-1._kp)*(lambert(((1._kp-2._kp*p)/p+(p-1._kp)*exp(yend)/p)* &
-            exp((1._kp-2._kp)/p-(p-1._kp)/p*exp(yend)+3._kp/4._kp*(p-1._kp)/p*bfold),0) &
-            +(2._kp-1._kp)/p))
-
-    else
-
-       ! Inflation proceeds from the right to the left 
-       rpi_x_trajectory = log(-p/(p-1._kp)*(lambert(-((1._kp-2._kp*p)/p+(p-1._kp)*exp(yend)/p)* &
-            exp(-(1._kp-2._kp)/p-(p-1._kp)/p*exp(yend)+3._kp/4._kp*(p-1._kp)/p*bfold),0) &
-            -(2._kp-1._kp)/p))
-
-    endif
-
-  end function rpi_x_trajectory
-
-
-end module rpisr
+end module rpicommon

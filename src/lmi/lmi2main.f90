@@ -16,7 +16,7 @@ program lmi2main
   integer :: i,j,k,NxEnd
   integer :: npts = 20
          
-  real(kp), dimension(1:6) :: gammaValues
+  real(kp), dimension(1:6) :: gamValues
 
   integer, dimension(1:6) :: NxEndValues              
 
@@ -27,7 +27,7 @@ program lmi2main
   real(kp) :: betamin=0.1
   real(kp) :: betamax=10.
 
-  real(kp) :: gamma,beta,xEnd,w,bfoldstar,alpha
+  real(kp) :: gam,beta,xEnd,w,bfoldstar,alpha
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -50,65 +50,65 @@ beta=1.
 
 
 if (beta.eq.1) then
-gammaValues(1)=0.45_kp
+gamValues(1)=0.45_kp
 NxEndValues(1)=100
-gammaValues(2)=0.5_kp
+gamValues(2)=0.5_kp
 NxEndValues(2)=50
-gammaValues(3)=0.55_kp
+gamValues(3)=0.55_kp
 NxEndValues(3)=30
-gammaValues(4)=0.6_kp
+gamValues(4)=0.6_kp
 NxEndValues(4)=20
-gammaValues(5)=0.63_kp
+gamValues(5)=0.63_kp
 NxEndValues(5)=15
-gammaValues(6)=0.68_kp
+gamValues(6)=0.68_kp
 NxEndValues(6)=15
 endif
 
 if (beta.eq.10) then
-gammaValues(1)=0.18_kp
+gamValues(1)=0.18_kp
 NxEndValues(1)=100
-gammaValues(2)=0.2_kp
+gamValues(2)=0.2_kp
 NxEndValues(2)=50
-gammaValues(3)=0.22_kp
+gamValues(3)=0.22_kp
 NxEndValues(3)=20
-gammaValues(4)=0.235_kp
+gamValues(4)=0.235_kp
 NxEndValues(4)=20
-gammaValues(5)=0.25_kp
+gamValues(5)=0.25_kp
 NxEndValues(5)=20
-gammaValues(6)=0.27_kp
+gamValues(6)=0.27_kp
 NxEndValues(6)=20
 endif
 
 if (beta.eq.0.01) then
-gammaValues(1)=0.1_kp
+gamValues(1)=0.1_kp
 NxEndValues(1)=300
-gammaValues(2)=0.7_kp
+gamValues(2)=0.7_kp
 NxEndValues(2)=25
-gammaValues(3)=0.85_kp
+gamValues(3)=0.85_kp
 NxEndValues(3)=20
-gammaValues(4)=0.95_kp
+gamValues(4)=0.95_kp
 NxEndValues(4)=15
-gammaValues(5)=0.985_kp
+gamValues(5)=0.985_kp
 NxEndValues(5)=20
-gammaValues(6)=0.995_kp
+gamValues(6)=0.995_kp
 NxEndValues(6)=20
 endif
 
 
 
 
- do j=1,size(gammaValues) 
- gamma=gammaValues(j)
+ do j=1,size(gamValues) 
+ gam=gamValues(j)
  NxEnd=nxEndValues(j)
 
-alpha=4._kp*(1._kp-gamma)
-xEndMin=lmi2_xini_min(gamma,beta)*1.1
-xEndMax=100._kp*max(alpha,(beta*gamma)**(1._kp/(1._kp-gamma)),(alpha*beta*gamma)**(1._kp/(2._kp-gamma)))
+alpha=4._kp*(1._kp-gam)
+xEndMin=lmi2_xini_min(gam,beta)*1.1
+xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
 
 if (beta.eq.0.01) then
-xEndMax=1._kp*max(sqrt(alpha),alpha,(beta*gamma)**(1._kp/(1._kp-gamma)), &
-        (alpha*beta*gamma)**(1._kp/(2._kp-gamma)))
+xEndMax=1._kp*max(sqrt(alpha),alpha,(beta*gam)**(1._kp/(1._kp-gam)), &
+        (alpha*beta*gam)**(1._kp/(2._kp-gam)))
 endif
 
  do k=0,NxEnd
@@ -116,25 +116,25 @@ endif
 ! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi2_lnrhoend(gamma,beta,xEnd,Pstar)
+  lnRhoRehMax = lmi2_lnrhoend(gam,beta,xEnd,Pstar)
 
-  print *,'gamma=',gamma,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+  print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
   do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
 
-       xstar = lmi2_x_star(gamma,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
 
-       eps1 = lmi2_epsilon_one(xstar,gamma,beta)
-       eps2 = lmi2_epsilon_two(xstar,gamma,beta)
-       eps3 = lmi2_epsilon_three(xstar,gamma,beta)
+       eps1 = lmi2_epsilon_one(xstar,gam,beta)
+       eps2 = lmi2_epsilon_two(xstar,gam,beta)
+       eps3 = lmi2_epsilon_three(xstar,gam,beta)
    
 
        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -144,7 +144,7 @@ endif
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('lmi2_predic.dat',gamma,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   

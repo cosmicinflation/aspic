@@ -21,10 +21,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function lmi1_x_star(gamma,beta,w,lnRhoReh,Pstar,bfoldstar)    
+  function lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: lmi1_x_star
-    real(kp), intent(in) :: gamma,beta,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: gam,beta,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -37,17 +37,17 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = lmi1_x_endinf(gamma,beta)
-    xVmax = lmi_x_potmax(gamma,beta)
+    xEnd = lmi1_x_endinf(gam,beta)
+    xVmax = lmi_x_potmax(gam,beta)
 
-    epsOneEnd = lmi1_epsilon_one(xEnd,gamma,beta)
-    potEnd = lmi1_norm_potential(xEnd,gamma,beta)
+    epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
+    potEnd = lmi1_norm_potential(xEnd,gam,beta)
 
-    primEnd = lmi1_efold_primitive(xEnd,gamma,beta)
+    primEnd = lmi1_efold_primitive(xEnd,gam,beta)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
-    lmi1Data%real1 = gamma
+    lmi1Data%real1 = gam
     lmi1Data%real2 = beta
     lmi1Data%real3 = w
     lmi1Data%real4 = calF + primEnd
@@ -59,7 +59,7 @@ contains
     lmi1_x_star = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (lmi1_efold_primitive(x,gamma,beta) - primEnd)
+       bfoldstar = - (lmi1_efold_primitive(x,gam,beta) - primEnd)
     endif
 
   end function lmi1_x_star
@@ -70,16 +70,16 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: lmi1Data
 
-    real(kp) :: primStar,gamma,beta,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,gam,beta,w,CalFplusprimEnd,potStar,epsOneStar
 
-    gamma=lmi1Data%real1
+    gam=lmi1Data%real1
     beta=lmi1Data%real2
     w = lmi1Data%real3
     CalFplusprimEnd = lmi1Data%real4
 
-    primStar = lmi1_efold_primitive(x,gamma,beta)
-    epsOneStar = lmi1_epsilon_one(x,gamma,beta)
-    potStar = lmi1_norm_potential(x,gamma,beta)
+    primStar = lmi1_efold_primitive(x,gam,beta)
+    epsOneStar = lmi1_epsilon_one(x,gam,beta)
+    potStar = lmi1_norm_potential(x,gam,beta)
 
     find_lmi1_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -87,10 +87,10 @@ contains
 
 
 
-  function lmi1_lnrhoend(gamma,beta,Pstar) 
+  function lmi1_lnrhoend(gam,beta,Pstar) 
     implicit none
     real(kp) :: lmi1_lnrhoend
-    real(kp), intent(in) :: gamma,beta,Pstar
+    real(kp), intent(in) :: gam,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
@@ -100,20 +100,20 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = lmi1_x_endinf(gamma,beta)
+    xEnd = lmi1_x_endinf(gam,beta)
 
-    potEnd  = lmi1_norm_potential(xEnd,gamma,beta)
+    potEnd  = lmi1_norm_potential(xEnd,gam,beta)
 
-    epsOneEnd = lmi1_epsilon_one(xEnd,gamma,beta)
+    epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
 
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = lmi1_x_star(gamma,beta,wrad,junk,Pstar)  
+    x = lmi1_x_star(gam,beta,wrad,junk,Pstar)  
 
 
-    potStar = lmi1_norm_potential(x,gamma,beta)
-    epsOneStar = lmi1_epsilon_one(x,gamma,beta)
+    potStar = lmi1_norm_potential(x,gam,beta)
+    epsOneStar = lmi1_epsilon_one(x,gam,beta)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'lmi1_lnrhoend: slow-roll violated!'
     

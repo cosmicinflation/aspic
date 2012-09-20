@@ -16,21 +16,21 @@ program lmi1main
   integer :: i,j,k
   integer :: npts = 20
 
-  integer :: Ngamma=1000         !for beta=0.001: Ngamma=20
-                                   !for beta=1: Ngamma=50
-                                   !for beta=50: Ngamma=1000
-  real(kp) :: gammamin=0.00005   !for beta = 0.001:  gammamin=0.004
-                                   !for beta=1: gammamin=0.001
-                                   !for beta=50: gammamin=0.00005
-  real(kp) :: gammamax=0.1    !for beta=0.001: gammamax=0.99
-                                   !for beta=1: gammamax=0.99
-                                   !for beta=50: gammamax=0.1
+  integer :: Ngam=1000         !for beta=0.001: Ngam=20
+                                   !for beta=1: Ngam=50
+                                   !for beta=50: Ngam=1000
+  real(kp) :: gammin=0.00005   !for beta = 0.001:  gammin=0.004
+                                   !for beta=1: gammin=0.001
+                                   !for beta=50: gammin=0.00005
+  real(kp) :: gammax=0.1    !for beta=0.001: gammax=0.99
+                                   !for beta=1: gammax=0.99
+                                   !for beta=50: gammax=0.1
 
   integer :: Nbeta=10
   real(kp) :: betamin=0.1
   real(kp) :: betamax=10.
 
-  real(kp) :: gamma,alpha,beta,w,bfoldstar
+  real(kp) :: gam,alpha,beta,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -51,33 +51,33 @@ beta=0.001
 beta=1.
 beta=50.
 
- do j=0,Ngamma 
- gamma=gammamin*(gammamax/gammamin)**(real(j,kp)/Ngamma)  !logarithmic step
- gamma=gammamin+(gammamax-gammamin)*(real(j,kp)/Ngamma)  !arithmetic step
- gamma=sqrt(gammamin+(gammamax-gammamin)*(real(j,kp)/Ngamma))  !square root step
+ do j=0,Ngam 
+ gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
+ gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
+ gam=sqrt(gammin+(gammax-gammin)*(real(j,kp)/Ngam))  !square root step
 
 
 
-!  alpha=4.*(1.-gamma)
+!  alpha=4.*(1.-gam)
 !  w=(alpha-2.)/(alpha+2.)
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi1_lnrhoend(gamma,beta,Pstar)
+  lnRhoRehMax = lmi1_lnrhoend(gam,beta,Pstar)
 
-  print *,'gamma=',gamma,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+  print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
   do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = lmi1_x_star(gamma,beta,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
  
 
-       eps1 = lmi1_epsilon_one(xstar,gamma,beta)
-       eps2 = lmi1_epsilon_two(xstar,gamma,beta)
-       eps3 = lmi1_epsilon_three(xstar,gamma,beta)
+       eps1 = lmi1_epsilon_one(xstar,gam,beta)
+       eps2 = lmi1_epsilon_two(xstar,gam,beta)
+       eps3 = lmi1_epsilon_three(xstar,gam,beta)
    
 
        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -87,7 +87,7 @@ beta=50.
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('lmi1_predic.dat',gamma,beta,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('lmi1_predic.dat',gam,beta,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('lmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
