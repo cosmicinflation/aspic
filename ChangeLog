@@ -1,3 +1,642 @@
+commit bb5e330649fac977fbcb434ce46b7fd32c3fcb1b
+Date:   Thu Sep 20 19:33:09 2012 +0200
+
+    fixing missing xend in bei, comments in rgi, adding man
+
+ NEWS                |    5 ++++-
+ include/aspic.h     |    6 ++++--
+ man/libaspic.3      |   13 +++++++++----
+ src/bei/beisr.f90   |    6 +++---
+ src/rgi/Makefile.am |    2 ++
+ src/rgi/aspic_rgi.3 |   24 ++++++++++++++++++++++++
+ src/rgi/rgisr.f90   |    2 +-
+ 7 files changed, 47 insertions(+), 11 deletions(-)
+
+commit 4f5fb4bd83a5f0f9a9b1f82efabca20b25beaab2
+Date:   Thu Sep 20 18:02:16 2012 +0200
+
+    Fix potential derivatives for rpi
+
+ src/rpi/rpi1sr.f90    |    4 ++--
+ src/rpi/rpi2sr.f90    |    4 ++--
+ src/rpi/rpicommon.f90 |   10 +++++-----
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 060bcea718857034f59155b12d6a56ffff377e7b
+Date:   Thu Sep 20 16:48:51 2012 +0200
+
+    cleaning rpi, fixing man files
+
+ src/lmi/aspic_lmi1.3  |    4 +-
+ src/lmi/aspic_lmi2.3  |    2 +-
+ src/rpi/Makefile.in   |  715 -------------------------------------------------
+ src/rpi/aspic_rpi1.3  |   24 +-
+ src/rpi/aspic_rpi2.3  |   25 +-
+ src/rpi/rpimain.f90   |   86 ------
+ src/rpi/rpireheat.f90 |  162 -----------
+ src/rpi/rpisr.f90     |  201 --------------
+ 8 files changed, 47 insertions(+), 1172 deletions(-)
+
+commit 9deed7541af9dabcdd637aaf576e303e42b7454c
+Date:   Thu Sep 20 16:39:03 2012 +0200
+
+    splitting rpi into 1 and 2
+
+ src/lmi/Makefile.in    |  715 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/lmi/lmi1main.f90   |   44 +--
+ src/lmi/lmi1reheat.f90 |   44 +--
+ src/lmi/lmi1sr.f90     |   78 +++---
+ src/lmi/lmi2main.f90   |   68 ++---
+ src/lmi/lmi2reheat.f90 |   40 +--
+ src/lmi/lmi2sr.f90     |  140 +++++-----
+ src/lmi/lmicommon.f90  |  112 ++++----
+ src/rpi/Makefile.am    |   19 +-
+ src/rpi/Makefile.in    |  715 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/rpi/aspic_rpi.3    |   24 --
+ src/rpi/aspic_rpi1.3   |   24 ++
+ src/rpi/aspic_rpi2.3   |   24 ++
+ src/rpi/rpi1main.f90   |   86 ++++++
+ src/rpi/rpi1reheat.f90 |  143 ++++++++++
+ src/rpi/rpi1sr.f90     |  158 +++++++++++
+ src/rpi/rpi2main.f90   |  106 +++++++
+ src/rpi/rpi2reheat.f90 |  137 ++++++++++
+ src/rpi/rpi2sr.f90     |  147 ++++++++++
+ src/rpi/rpicommon.f90  |  142 ++++++++++
+ src/rpi/rpimain.f90    |   24 +-
+ src/rpi/rpireheat.f90  |   72 +++--
+ src/rpi/rpisr.f90      |  146 ++++++----
+ 23 files changed, 2820 insertions(+), 388 deletions(-)
+
+commit e4c99f6f121dc6beb6f3b4dd1366790bd4129bd2
+Date:   Tue Sep 18 15:57:44 2012 +0200
+
+    updating logs, aspic.h, cleaning sources
+
+ ChangeLog            |    2 -
+ NEWS                 |    5 +-
+ include/aspic.h      |    4 +-
+ src/lmi/Makefile.in  |  715 --------------------------------------------------
+ src/lmi1/Makefile.in |  631 --------------------------------------------
+ src/lmi2/Makefile.in |  631 --------------------------------------------
+ 6 files changed, 6 insertions(+), 1982 deletions(-)
+
+commit d877e1d224edc5990a69a2b8df81d2b2ab29ccee
+Date:   Tue Sep 18 15:43:24 2012 +0200
+
+    cleaning twi, moving lmi1 and lmi2 under common lmi directory
+
+ configure.ac            |    3 +-
+ man/libaspic.3          |   90 ++++++++++---------------
+ src/Makefile.am         |    5 +-
+ src/common/inftools.f90 |    5 ++
+ src/lmi/Makefile.am     |    2 +-
+ src/lmi/Makefile.in     |  172 +++++++++++++++++++++++++++++++++++------------
+ src/lmi/aspic_lmi1.3    |    2 +-
+ src/lmi/aspic_lmi2.3    |   40 ++++++++---
+ src/lmi/lmi1reheat.f90  |    9 ++-
+ src/lmi/lmi1sr.f90      |   15 +++--
+ src/lmi/lmi2main.f90    |    6 +-
+ src/lmi/lmi2reheat.f90  |    7 +-
+ src/lmi/lmi2sr.f90      |  101 +++++++++++++++++++---------
+ src/lmi/lmicommon.f90   |   97 +++++++++++++-------------
+ src/lmi1/lmi1sr.f90     |    4 +-
+ src/lmi2/lmi2sr.f90     |    4 +-
+ src/twi/twisr.f90       |   65 ++++++++++++++----
+ 17 files changed, 395 insertions(+), 232 deletions(-)
+
+commit ac2f7c7a4b576b1d08334f21ffab58ba439324f8
+Date:   Tue Sep 18 15:37:17 2012 +0200
+
+    cleaning of the lmi models
+
+ src/lmi/Makefile.am     |   25 ++
+ src/lmi/Makefile.in     |  631 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/lmi/aspic_lmi1.3    |   44 ++++
+ src/lmi/aspic_lmi2.3    |   73 ++++++
+ src/lmi/lmi1main.f90    |  101 ++++++++
+ src/lmi/lmi1reheat.f90  |  128 ++++++++++
+ src/lmi/lmi1sr.f90      |  184 ++++++++++++++
+ src/lmi/lmi2main.f90    |  160 ++++++++++++
+ src/lmi/lmi2reheat.f90  |  123 +++++++++
+ src/lmi/lmi2sr.f90      |  266 ++++++++++++++++++++
+ src/lmi/lmicommon.f90   |  209 ++++++++++++++++
+ src/lmi1/Makefile.in    |  631 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/lmi1/aspic_lmi1.3   |    6 +-
+ src/lmi1/lmi1main.f90   |   32 +--
+ src/lmi1/lmi1reheat.f90 |   48 ++--
+ src/lmi1/lmi1sr.f90     |  153 +++++++-----
+ src/lmi2/Makefile.in    |  631 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/lmi2/aspic_lmi2.3   |    6 +-
+ src/lmi2/lmi2main.f90   |  108 ++++----
+ src/lmi2/lmi2reheat.f90 |   42 ++--
+ src/lmi2/lmi2sr.f90     |  188 ++++++++------
+ 21 files changed, 3538 insertions(+), 251 deletions(-)
+
+commit a5a79d7454b9dfa75acce752ee992bd1c07d725c
+Date:   Fri Sep 14 18:54:26 2012 +0200
+
+    removing obsolete rmi3
+
+ NEWS                    |    8 +-
+ configure.ac            |    2 +-
+ include/aspic.h         |   30 +++----
+ man/libaspic.3          |   24 +++---
+ src/common/srreheat.f90 |    2 +-
+ src/lmi3/Makefile.am    |   24 ------
+ src/lmi3/aspic_lmi3.3   |   25 ------
+ src/lmi3/lmi3main.f90   |  102 -----------------------
+ src/lmi3/lmi3reheat.f90 |  198 --------------------------------------------
+ src/lmi3/lmi3sr.f90     |  210 -----------------------------------------------
+ src/rpi/aspic_rpi.3     |    4 +-
+ 11 files changed, 37 insertions(+), 592 deletions(-)
+
+commit 7856b21d4217457c6652c7b7a1e031a3f788d4b8
+Date:   Fri Sep 14 18:09:48 2012 +0200
+
+    move pi from srreheat to infprec, move kstar from srreheat to cosmopar
+
+ src/common/cosmopar.f90   |    4 ++++
+ src/common/infprec.f90    |    2 ++
+ src/common/specialinf.f90 |    3 +--
+ src/common/srreheat.f90   |    5 +----
+ 4 files changed, 8 insertions(+), 6 deletions(-)
+
+commit f67eed01241915007e94cd4dbc81cbaa0bbecccd
+Date:   Fri Sep 14 17:32:03 2012 +0200
+
+    Remove autoconf generated files from git tracking
+
+ INSTALL      |  370 ---
+ aclocal.m4   | 9584 ---------------------------------------------------------
+ config.guess | 1522 ---------
+ config.sub   | 1766 -----------
+ install-sh   |  527 ----
+ ltmain.sh    | 9675 ----------------------------------------------------------
+ missing      |  331 --
+ 7 files changed, 23775 deletions(-)
+
+commit 361ce26bc30db3105e57f423b1edd760edc47606
+Date:   Fri Sep 14 17:30:43 2012 +0200
+
+    update autoconf
+
+ INSTALL      |    9 +-
+ aclocal.m4   | 2413 +++++++++++++++++++++-------------
+ config.guess |  383 +++---
+ config.sub   |  207 ++-
+ install-sh   |   29 +-
+ ltmain.sh    | 4050 ++++++++++++++++++++++++++++++++++++++--------------------
+ missing      |   53 +-
+ 7 files changed, 4551 insertions(+), 2593 deletions(-)
+
+commit 36db7610afeb4c174bf993bcba693efc2b36b1e3
+Merge: eb0e5b8 7cbbb2f
+Date:   Fri Sep 14 17:27:11 2012 +0200
+
+    Merging with JJVV(0.0.5) modified
+
+commit 7cbbb2f716017964463c42191b412644d9cb742d
+Date:   Fri Sep 14 17:14:42 2012 +0200
+
+    clean source
+
+ configure |16015 -------------------------------------------------------------
+ 1 file changed, 16015 deletions(-)
+
+commit 98f0f94fd500c06f5f64a577454cc954d8ad4689
+Date:   Fri Sep 14 17:13:32 2012 +0200
+
+    removing Makefile.in
+
+ Makefile.in             |  703 -----------------------------------------------
+ src/bei/Makefile.in     |  562 -------------------------------------
+ src/bi/Makefile.in      |  560 -------------------------------------
+ src/bsusybi/Makefile.in |  566 --------------------------------------
+ src/common/Makefile.in  |  563 -------------------------------------
+ src/cwi/Makefile.in     |  562 -------------------------------------
+ src/dwi/Makefile.in     |  562 -------------------------------------
+ src/esi/Makefile.in     |  562 -------------------------------------
+ src/hf1i/Makefile.in    |  563 -------------------------------------
+ src/hi/Makefile.in      |  562 -------------------------------------
+ src/ii/Makefile.in      |  562 -------------------------------------
+ src/kmii/Makefile.in    |  563 -------------------------------------
+ src/kmiii/Makefile.in   |  564 -------------------------------------
+ src/lfi/Makefile.in     |  562 -------------------------------------
+ src/li/Makefile.in      |  562 -------------------------------------
+ src/lmi1/Makefile.in    |  563 -------------------------------------
+ src/lmi2/Makefile.in    |  563 -------------------------------------
+ src/lmi3/Makefile.in    |  574 --------------------------------------
+ src/mhi/Makefile.in     |  562 -------------------------------------
+ src/mlfi/Makefile.in    |  563 -------------------------------------
+ src/mni/Makefile.in     |  562 -------------------------------------
+ src/mssmi/Makefile.in   |  564 -------------------------------------
+ src/ncki/Makefile.in    |  563 -------------------------------------
+ src/pli/Makefile.in     |  562 -------------------------------------
+ src/pni/Makefile.in     |  562 -------------------------------------
+ src/psni/Makefile.in    |  563 -------------------------------------
+ src/rcmi/Makefile.in    |  563 -------------------------------------
+ src/rcqi/Makefile.in    |  563 -------------------------------------
+ src/rgi/Makefile.in     |  562 -------------------------------------
+ src/rmi/Makefile.in     |  560 -------------------------------------
+ src/rpi/Makefile.in     |  562 -------------------------------------
+ src/sfbi/Makefile.in    |  564 -------------------------------------
+ src/sfi/Makefile.in     |  562 -------------------------------------
+ src/ti/Makefile.in      |  562 -------------------------------------
+ src/twi/Makefile.in     |  562 -------------------------------------
+ src/vhi/Makefile.in     |  562 -------------------------------------
+ 36 files changed, 20401 deletions(-)
+
+commit dd6c920722f6e76f1f8c63253ad1fb165cc69d9d
+Date:   Fri Sep 14 17:12:42 2012 +0200
+
+    0.0.5 back from vincent
+
+ INSTALL                   |    9 +-
+ Makefile.in               |   82 +-
+ aclocal.m4                | 2435 +++++++++---------------
+ config.guess              |  383 ++--
+ config.sub                |  207 +-
+ configure                 | 4577 ++++++++++++++++++---------------------------
+ configure.ac              |    3 +-
+ install-sh                |   29 +-
+ ltmain.sh                 | 4052 ++++++++++++++-------------------------
+ missing                   |   53 +-
+ src/Makefile.am           |    6 +-
+ src/Makefile.in           |   39 +-
+ src/bei/Makefile.in       |   37 +-
+ src/bei/beimain.f90       |    1 +
+ src/bsusybi/Makefile.in   |   37 +-
+ src/common/Makefile.in    |   37 +-
+ src/common/infprec.f90    |    3 +
+ src/common/specialinf.f90 |    7 +-
+ src/cwi/Makefile.in       |   37 +-
+ src/dwi/Makefile.in       |   37 +-
+ src/esi/Makefile.in       |   37 +-
+ src/hf1i/Makefile.in      |   37 +-
+ src/hi/Makefile.in        |   37 +-
+ src/ii/Makefile.in        |   37 +-
+ src/kmii/Makefile.in      |   37 +-
+ src/kmii/kmiisr.f90       |    2 +-
+ src/kmiii/Makefile.in     |   37 +-
+ src/lfi/Makefile.in       |   37 +-
+ src/li/Makefile.in        |   37 +-
+ src/lmi1/Makefile.in      |   37 +-
+ src/lmi1/lmi1main.f90     |   63 +-
+ src/lmi1/lmi1reheat.f90   |   96 +-
+ src/lmi1/lmi1sr.f90       |  144 +-
+ src/lmi2/Makefile.am      |    3 -
+ src/lmi2/Makefile.in      |   37 +-
+ src/lmi2/lmi2main.f90     |  130 +-
+ src/lmi2/lmi2reheat.f90   |  141 +-
+ src/lmi2/lmi2sr.f90       |  230 ++-
+ src/mhi/Makefile.in       |   37 +-
+ src/mlfi/Makefile.in      |   37 +-
+ src/mni/Makefile.in       |   37 +-
+ src/mssmi/Makefile.in     |   37 +-
+ src/ncki/Makefile.in      |   37 +-
+ src/pli/Makefile.in       |   37 +-
+ src/pni/Makefile.in       |   37 +-
+ src/psni/Makefile.in      |   37 +-
+ src/rcmi/Makefile.in      |   37 +-
+ src/rcqi/Makefile.in      |   37 +-
+ src/rgi/Makefile.am       |   21 +
+ src/rgi/Makefile.in       |  562 ++++++
+ src/rgi/rgimain.f90       |   71 +
+ src/rgi/rgireheat.f90     |  200 ++
+ src/rgi/rgisr.f90         |  128 ++
+ src/rpi/Makefile.in       |   37 +-
+ src/sfi/Makefile.in       |   37 +-
+ src/ti/Makefile.in        |   37 +-
+ src/twi/Makefile.in       |   37 +-
+ src/twi/twimain.f90       |   27 +-
+ src/twi/twireheat.f90     |   21 +-
+ src/twi/twisr.f90         |   25 +-
+ src/vhi/Makefile.in       |    9 +-
+ src/vhi/vhimain.f90       |  136 +-
+ src/vhi/vhireheat.f90     |  151 +-
+ src/vhi/vhisr.f90         |  342 ++--
+ 64 files changed, 6598 insertions(+), 8863 deletions(-)
+
+commit eb0e5b82ee0d92198a8139a962f42f98b1d27572
+Date:   Mon Sep 10 17:48:52 2012 +0200
+
+    fix README
+
+ README |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+commit f857680a5af7bde793da9a451218f4d05d1839fc
+Date:   Mon Sep 10 17:43:28 2012 +0200
+
+    spelling fix on man
+
+ man/libaspic.3 |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit 62af8cf22ebac7b9b2533693408998e3f9314121
+Date:   Mon Sep 10 16:39:28 2012 +0200
+
+    fixing url in man pages
+
+ man/libaspic.3 |   26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
+
+commit fcaff030a4ca0d0a1a4b7f359548399cfdbce144
+Date:   Mon Sep 10 14:10:21 2012 +0200
+
+    correcting man, changing man names
+
+ man/libaspic.3              |  186 +++++++++++++++++++++++++++----------------
+ src/bei/Makefile.am         |    2 +-
+ src/bei/aspic_bei.3         |   24 ++++++
+ src/bei/libbei.3            |   24 ------
+ src/bi/Makefile.am          |    2 +-
+ src/bi/aspic_bi.3           |   30 +++++++
+ src/bi/libbi.3              |   30 -------
+ src/bsusybi/Makefile.am     |    2 +-
+ src/bsusybi/aspic_bsusybi.3 |   33 ++++++++
+ src/bsusybi/libbsusybi.3    |   33 --------
+ src/cwi/Makefile.am         |    2 +-
+ src/cwi/aspic_cwi.3         |   25 ++++++
+ src/cwi/libcwi.3            |   25 ------
+ src/dsi/Makefile.am         |    2 +-
+ src/dsi/aspic_dsi.3         |   46 +++++++++++
+ src/dsi/libdsi.3            |   46 -----------
+ src/dwi/Makefile.am         |    2 +-
+ src/dwi/aspic_dwi.3         |   25 ++++++
+ src/dwi/libdwi.3            |   25 ------
+ src/esi/Makefile.am         |    2 +-
+ src/esi/aspic_esi.3         |   26 ++++++
+ src/esi/libesi.3            |   26 ------
+ src/gmi/Makefile.am         |    2 +-
+ src/gmi/aspic_gmi.3         |   46 +++++++++++
+ src/gmi/libgmi.3            |   46 -----------
+ src/hf1i/Makefile.am        |    2 +-
+ src/hf1i/aspic_hf1i.3       |   25 ++++++
+ src/hf1i/libhf1i.3          |   25 ------
+ src/hf2i/Makefile.am        |    2 +-
+ src/hf2i/aspic_hf2i.3       |   25 ++++++
+ src/hf2i/libhf2i.3          |   25 ------
+ src/hi/Makefile.am          |    2 +-
+ src/hi/aspic_hi.3           |   22 +++++
+ src/hi/libhi.3              |   22 -----
+ src/ii/Makefile.am          |    2 +-
+ src/ii/aspic_ii.3           |   30 +++++++
+ src/ii/libii.3              |   30 -------
+ src/kmii/Makefile.am        |    2 +-
+ src/kmii/aspic_kmii.3       |   25 ++++++
+ src/kmii/libkmii.3          |   25 ------
+ src/kmiii/Makefile.am       |    2 +-
+ src/kmiii/aspic_kmiii.3     |   26 ++++++
+ src/kmiii/libkmiii.3        |   26 ------
+ src/lfi/Makefile.am         |    2 +-
+ src/lfi/aspic_lfi.3         |   24 ++++++
+ src/lfi/liblfi.3            |   24 ------
+ src/li/Makefile.am          |    2 +-
+ src/li/aspic_li.3           |   25 ++++++
+ src/li/libli.3              |   25 ------
+ src/lmi1/Makefile.am        |    2 +-
+ src/lmi1/aspic_lmi1.3       |   26 ++++++
+ src/lmi1/liblmi1.3          |   26 ------
+ src/lmi2/Makefile.am        |    2 +-
+ src/lmi2/aspic_lmi2.3       |   25 ++++++
+ src/lmi2/liblmi2.3          |   25 ------
+ src/lmi3/Makefile.am        |    2 +-
+ src/lmi3/aspic_lmi3.3       |   25 ++++++
+ src/lmi3/liblmi3.3          |   25 ------
+ src/mhi/Makefile.am         |    2 +-
+ src/mhi/aspic_mhi.3         |   25 ++++++
+ src/mhi/libmhi.3            |   25 ------
+ src/mlfi/Makefile.am        |    2 +-
+ src/mlfi/aspic_mlfi.3       |   25 ++++++
+ src/mlfi/libmlfi.3          |   25 ------
+ src/mni/Makefile.am         |    2 +-
+ src/mni/aspic_mni.3         |   26 ++++++
+ src/mni/libmni.3            |   26 ------
+ src/mssmi/Makefile.am       |    2 +-
+ src/mssmi/aspic_mssmi.3     |   25 ++++++
+ src/mssmi/libmssmi.3        |   25 ------
+ src/ncki/Makefile.am        |    2 +-
+ src/ncki/aspic_ncki.3       |   25 ++++++
+ src/ncki/libncki.3          |   25 ------
+ src/pli/Makefile.am         |    2 +-
+ src/pli/aspic_pli.3         |   25 ++++++
+ src/pli/libpli.3            |   25 ------
+ src/pni/Makefile.am         |    2 +-
+ src/pni/aspic_pni.3         |   26 ++++++
+ src/pni/libpni.3            |   26 ------
+ src/psni/aspic_psni.3       |   29 +++++++
+ src/psni/libpsni.3          |   29 -------
+ src/rcmi/Makefile.am        |    2 +-
+ src/rcmi/aspic_rcmi.3       |   24 ++++++
+ src/rcmi/librcmi.3          |   24 ------
+ src/rcqi/Makefile.am        |    2 +-
+ src/rcqi/aspic_rcqi.3       |   24 ++++++
+ src/rcqi/librcqi.3          |   24 ------
+ src/rmi/Makefile.am         |    2 +-
+ src/rmi/aspic_rmi.3         |   35 ++++++++
+ src/rmi/librmi.3            |   35 --------
+ src/rpi/Makefile.am         |    2 +-
+ src/rpi/aspic_rpi.3         |   24 ++++++
+ src/rpi/librpi.3            |   24 ------
+ src/sfi/Makefile.am         |    2 +-
+ src/sfi/aspic_sfi.3         |   31 ++++++++
+ src/sfi/libsfi.3            |   31 --------
+ src/ti/Makefile.am          |    2 +-
+ src/ti/aspic_ti.3           |   33 ++++++++
+ src/ti/libti.3              |   33 --------
+ src/twi/Makefile.am         |    2 +-
+ src/twi/aspic_twi.3         |   30 +++++++
+ src/twi/libtwi.3            |   30 -------
+ src/vhi/Makefile.am         |    2 +-
+ src/vhi/aspic_vhi.3         |   46 +++++++++++
+ src/vhi/libvhi.3            |   46 -----------
+ 105 files changed, 1137 insertions(+), 1089 deletions(-)
+
+commit a69493b842cdd54a60bb4c75480103cdcc7b9606
+Date:   Fri Sep 7 18:54:56 2012 +0200
+
+    clean libaspic.3
+
+ man/libaspic.3 |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit bc80fad95b12a5819b953009a460ce5e114d4439
+Date:   Fri Sep 7 18:45:42 2012 +0200
+
+    fix makefile bugs
+
+ src/Makefile.am      |    2 +-
+ src/rcqi/Makefile.am |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c3117291564a0c41c365e08fc6430a3b5baa1d68
+Date:   Fri Sep 7 18:39:19 2012 +0200
+
+    adding include file aspic.h
+
+ include/aspic.h |   83 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/Makefile.am |    3 ++
+ 2 files changed, 86 insertions(+)
+
+commit 55daa5c07e97fc8d9b095432555b4bfcedcfa157
+Date:   Fri Sep 7 18:21:40 2012 +0200
+
+    Removing Makefile.in files
+
+ Makefile.in             |  729 -----------------------------------------------
+ man/Makefile.in         |  448 -----------------------------
+ src/Makefile.in         |  713 ---------------------------------------------
+ src/bei/Makefile.in     |  573 -------------------------------------
+ src/bi/Makefile.in      |  560 ------------------------------------
+ src/bsusybi/Makefile.in |  577 -------------------------------------
+ src/common/Makefile.in  |  574 -------------------------------------
+ src/cwi/Makefile.in     |  573 -------------------------------------
+ src/dwi/Makefile.in     |  573 -------------------------------------
+ src/esi/Makefile.in     |  573 -------------------------------------
+ src/hf1i/Makefile.in    |  574 -------------------------------------
+ src/hi/Makefile.in      |  630 ----------------------------------------
+ src/ii/Makefile.in      |  573 -------------------------------------
+ src/kmii/Makefile.in    |  574 -------------------------------------
+ src/kmiii/Makefile.in   |  575 -------------------------------------
+ src/lfi/Makefile.in     |  573 -------------------------------------
+ src/li/Makefile.in      |  573 -------------------------------------
+ src/lmi1/Makefile.in    |  574 -------------------------------------
+ src/lmi2/Makefile.in    |  574 -------------------------------------
+ src/lmi3/Makefile.in    |  574 -------------------------------------
+ src/mhi/Makefile.in     |  573 -------------------------------------
+ src/mlfi/Makefile.in    |  574 -------------------------------------
+ src/mni/Makefile.in     |  573 -------------------------------------
+ src/mssmi/Makefile.in   |  575 -------------------------------------
+ src/ncki/Makefile.in    |  574 -------------------------------------
+ src/pli/Makefile.in     |  573 -------------------------------------
+ src/pni/Makefile.in     |  573 -------------------------------------
+ src/psni/Makefile.in    |  574 -------------------------------------
+ src/rcmi/Makefile.in    |  574 -------------------------------------
+ src/rcqi/Makefile.in    |  574 -------------------------------------
+ src/rmi/Makefile.in     |  560 ------------------------------------
+ src/rpi/Makefile.in     |  573 -------------------------------------
+ src/sfbi/Makefile.in    |  564 ------------------------------------
+ src/sfi/Makefile.in     |  573 -------------------------------------
+ src/ti/Makefile.in      |  573 -------------------------------------
+ src/twi/Makefile.in     |  573 -------------------------------------
+ src/vhi/Makefile.in     |  561 ------------------------------------
+ 37 files changed, 21401 deletions(-)
+
+commit db201833e76f6f81e5f9a23dcf843f3b80f3a4c5
+Date:   Fri Sep 7 18:20:38 2012 +0200
+
+    Adding man files
+
+ Makefile.am              |    3 +-
+ Makefile.in              |    4 +-
+ configure                |17002 ----------------------------------------------
+ configure.ac             |    5 +-
+ depcomp                  |  630 --
+ man/Makefile.am          |    1 +
+ man/Makefile.in          |  448 ++
+ man/libaspic.3           |  760 +++
+ src/Makefile.am          |    8 +-
+ src/Makefile.in          |   50 +-
+ src/bei/Makefile.am      |    2 +
+ src/bei/beisr.f90        |    2 +-
+ src/bei/libbei.3         |   24 +
+ src/bi/Makefile.am       |    2 +
+ src/bi/bisr.f90          |    2 +-
+ src/bi/libbi.3           |   30 +
+ src/bsusybi/Makefile.am  |    2 +
+ src/bsusybi/libbsusybi.3 |   33 +
+ src/cwi/Makefile.am      |    2 +
+ src/cwi/cwisr.f90        |    2 +-
+ src/cwi/libcwi.3         |   25 +
+ src/dsi/Makefile.am      |    2 +
+ src/dsi/libdsi.3         |   46 +
+ src/dwi/Makefile.am      |    2 +
+ src/dwi/libdwi.3         |   25 +
+ src/esi/Makefile.am      |    2 +
+ src/esi/esisr.f90        |    2 +-
+ src/esi/libesi.3         |   26 +
+ src/gmi/Makefile.am      |    2 +
+ src/gmi/libgmi.3         |   46 +
+ src/hf1i/Makefile.am     |    2 +
+ src/hf1i/hf1isr.f90      |    2 +-
+ src/hf1i/libhf1i.3       |   25 +
+ src/hf2i/Makefile.am     |    2 +
+ src/hf2i/libhf2i.3       |   25 +
+ src/hi/Makefile.am       |    2 +
+ src/hi/Makefile.in       |   73 +-
+ src/hi/hisr.f90          |    2 +-
+ src/hi/libhi.3           |   22 +
+ src/ii/Makefile.am       |    2 +
+ src/ii/iisr.f90          |    2 +-
+ src/ii/libii.3           |   30 +
+ src/kmii/Makefile.am     |    2 +
+ src/kmii/kmiisr.f90      |    2 +-
+ src/kmii/libkmii.3       |   25 +
+ src/kmiii/Makefile.am    |    2 +
+ src/kmiii/kmiiisr.f90    |    2 +-
+ src/kmiii/libkmiii.3     |   26 +
+ src/lfi/Makefile.am      |    2 +
+ src/lfi/lfisr.f90        |    2 +-
+ src/lfi/liblfi.3         |   24 +
+ src/li/Makefile.am       |    2 +
+ src/li/libli.3           |   25 +
+ src/lmi1/Makefile.am     |    2 +
+ src/lmi1/liblmi1.3       |   26 +
+ src/lmi1/lmi1sr.f90      |    2 +-
+ src/lmi2/Makefile.am     |    2 +
+ src/lmi2/liblmi2.3       |   25 +
+ src/lmi2/lmi2sr.f90      |    2 +-
+ src/lmi3/Makefile.am     |    2 +
+ src/lmi3/liblmi3.3       |   25 +
+ src/lmi3/lmi3sr.f90      |    2 +-
+ src/mhi/Makefile.am      |    2 +
+ src/mhi/libmhi.3         |   25 +
+ src/mhi/mhisr.f90        |    2 +-
+ src/mlfi/Makefile.am     |    2 +
+ src/mlfi/libmlfi.3       |   25 +
+ src/mlfi/mlfisr.f90      |    4 +-
+ src/mni/Makefile.am      |    2 +
+ src/mni/libmni.3         |   26 +
+ src/mni/mnisr.f90        |    4 +-
+ src/mssmi/Makefile.am    |    2 +
+ src/mssmi/libmssmi.3     |   25 +
+ src/mssmi/mssmisr.f90    |    2 +-
+ src/ncki/Makefile.am     |    2 +
+ src/ncki/libncki.3       |   25 +
+ src/ncki/nckisr.f90      |    2 +-
+ src/pli/Makefile.am      |    2 +
+ src/pli/libpli.3         |   25 +
+ src/pli/plisr.f90        |    2 +-
+ src/pni/Makefile.am      |    2 +
+ src/pni/libpni.3         |   26 +
+ src/pni/pnisr.f90        |    5 +-
+ src/psni/libpsni.3       |   29 +
+ src/psni/psnisr.f90      |    2 +-
+ src/rcmi/Makefile.am     |    2 +
+ src/rcmi/librcmi.3       |   24 +
+ src/rcqi/Makefile.am     |    2 +
+ src/rcqi/librcqi.3       |   24 +
+ src/rmi/Makefile.am      |    2 +
+ src/rmi/librmi.3         |   35 +
+ src/rmi/rmisr.f90        |    2 +-
+ src/rpi/Makefile.am      |    2 +
+ src/rpi/librpi.3         |   24 +
+ src/sfi/Makefile.am      |    2 +
+ src/sfi/libsfi.3         |   31 +
+ src/sfi/sfisr.f90        |    3 +-
+ src/ti/Makefile.am       |    2 +
+ src/ti/libti.3           |   33 +
+ src/ti/tisr.f90          |    2 +-
+ src/twi/Makefile.am      |    2 +
+ src/twi/libtwi.3         |   30 +
+ src/twi/twisr.f90        |    2 +-
+ src/vhi/Makefile.am      |    2 +
+ src/vhi/libvhi.3         |   46 +
+ src/vhi/vhisr.f90        |    2 +-
+ 106 files changed, 2388 insertions(+), 17710 deletions(-)
+
+
 commit 2925e7bee1c570b9ca79c653952b66d55a348692
 Date:   Thu Mar 22 18:38:23 2012 +0100
 

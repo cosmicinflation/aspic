@@ -1,5 +1,5 @@
 * v0.0.6
-- 4 new models imported, check ChangeLog
+- 4 new models imported (lmi12, rpi12, bei,rgi), check ChangeLog
 - adding global include file 'aspic.h'
 - man files added, for both the library and each modules (*.3 files)
 - move kstar from srreheat to cosmopar
