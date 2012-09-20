@@ -6,4 +6,7 @@
 - move pi from srrehat to infpref 
 - adding test in zbrent to ensure x1<x2
 - unifying lmi1 and lmi2 models under lmi directory, adding lmicommon
-modules (some bugs fixed)
+  modules + some bugs fixed
+- splitting rpi into rpi1 and rpi2 models, adding rpicommon modules +
+  some bugs fixed
+- adding xend for bei trajectory

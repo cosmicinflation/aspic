@@ -108,13 +108,13 @@ contains
 
 
 !returns x at bfold=-efolds before the end of inflation
-  function bei_x_trajectory(bfold,lambda,beta)
+  function bei_x_trajectory(bfold,xend,lambda,beta)
     implicit none
-    real(kp), intent(in) :: bfold,lambda,beta
+    real(kp), intent(in) :: bfold,lambda,beta,xend
     real(kp) :: bei_x_trajectory
     
     
-    bei_x_trajectory = 1._kp/(lambda*beta)-sqrt(0.5_kp/(beta**2)-2._kp*bfold/beta)
+    bei_x_trajectory = 1._kp/lambda/beta - sqrt((xend - 1._kp/lambda/beta)**2 - 2._kp*bfold/beta)
     
   end function bei_x_trajectory
 

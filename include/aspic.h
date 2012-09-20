@@ -29,8 +29,8 @@ use cwisr
 use cwireheat
 use lisr
 use lireheat
-use rpisr
-use rpireheat
+use rpi1sr
+use rpi1reheat
 use dwisr
 use dwireheat
 use mhisr
@@ -47,6 +47,8 @@ use kmiiisr
 use kmiiireheat
 use lmi1sr
 use lmi1reheat
+use rpi2sr
+use rpi2reheat
 use twisr
 use twireheat
 use hf2isr

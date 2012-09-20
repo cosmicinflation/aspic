@@ -1,6 +1,6 @@
 !slow-roll functions for the radion gauge potential
 !
-!V(phi) = M^4 (phi/Mp)^2 / [ alpha + (phi/Mp)^2 ]
+!V(phi) = M^4 x^2 / [ alpha + x^2 ]
 !
 !x = phi/Mp
 
