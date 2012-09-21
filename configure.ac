@@ -8,7 +8,8 @@ AC_PROG_LIBTOOL
 version_info="0:0:0"
 AC_SUBST(version_info)
 
-FCFLAGS="-O -fopenmp"
+AC_LANG_PREPROC
+FCFLAGS="-O"
 
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
