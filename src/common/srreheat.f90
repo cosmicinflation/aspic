@@ -4,6 +4,7 @@ module srreheat
   use infprec, only : kp,pi
   use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf3OmegaRad
   use cosmopar, only : QrmsOverT, kstar, powerAmpScalar, lnMpinGeV
+  use cosmopar, only : RelatDofRatio
   implicit none
 
   private
