@@ -4,7 +4,7 @@ program lfimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use lfisr, only : lfi_epsilon_one, lfi_epsilon_two, lfi_epsilon_three
   use lfireheat, only : lfi_lnrhoend, lfi_lnrhoreh_fromepsilon 
-  use lfireheat, only : lfi_xp_fromepsilon, lfi_x_star
+  use lfireheat, only : lfi_xp_fromepsilon, lfi_x_reheat
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
   implicit none
@@ -41,7 +41,7 @@ program lfimain
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = lfi_x_reheat(p,w,lnRhoReh,Pstar,bfoldstar)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 

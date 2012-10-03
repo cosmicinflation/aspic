@@ -51,8 +51,8 @@ use rpi2sr
 use rpi2reheat
 use twisr
 use twireheat
-use hf2isr
-use hf2ireheat
+!use hf2isr
+!use hf2ireheat
 use mssmisr
 use mssmireheat
 use bsusybisr
@@ -61,8 +61,8 @@ use tisr
 use tireheat
 use beisr
 use beireheat
-use pcnisr
-use pcnireheat
+!use pcnisr
+!use pcnireheat
 use nckisr
 use nckireheat
 !use bisr
@@ -73,10 +73,10 @@ use nckireheat
 !three parameter models
 use lmi2sr
 use lmi2reheat
-use rmisr
-use rmireheat
-use vhisr
-use vhireheat
+!use rmisr
+!use rmireheat
+!use vhisr
+!use vhireheat
 !use dsisr
 !use dsireheat
 !use gmisr
