@@ -2,16 +2,20 @@
 !mean values for wreh
 module srreheat
   use infprec, only : kp,pi
-  use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf2OmegaRad
+  use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf3OmegaRad
   use cosmopar, only : QrmsOverT, kstar, powerAmpScalar, lnMpinGeV
   implicit none
 
   private
   
 
-  real(kp), parameter :: Nzero = log(kstar) - lnMpcToKappa &
-       - 0.5_kp*log(sqrt(1.5_kp)*HubbleSquareRootOf2OmegaRad)
+!  real(kp), parameter :: Nzero = log(kstar) - lnMpcToKappa &
+!       - 0.5_kp*log(sqrt(1.5_kp)*HubbleSquareRootOf2OmegaRad)
    
+  real(kp), parameter :: Nzero = log(kstar) - lnMpcToKappa &
+       - 0.5_kp*log(HubbleSquareRootOf3OmegaRad) &
+       -0.25_kp*log(RelatDofRatio)
+
   
   logical, parameter :: display = .false.
     
