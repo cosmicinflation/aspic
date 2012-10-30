@@ -71,8 +71,8 @@ contains
     real(kp) :: psni_epsilon_two
     real(kp), intent(in) :: x,alpha,mu
     
-    psni_epsilon_two =(2._kp*alpha*((1._kp+alpha*log(cos(x)))/(cos(x)**2)+ &
-                      alpha*tan(x)**2))/(1._kp+alpha*log(cos(x)))**2
+    psni_epsilon_two =2._kp*alpha/(mu**2)*(1._kp+alpha+alpha*log(cos(x))-alpha*cos(x)**2)/ &
+                      (1._kp+alpha*log(cos(x)))**2/(cos(x)**2)
     
   end function psni_epsilon_two
 
@@ -83,10 +83,9 @@ contains
     real(kp) :: psni_epsilon_three
     real(kp), intent(in) :: x,alpha,mu
     
-    psni_epsilon_three = (alpha*(2._kp+3._kp*alpha+alpha**2-alpha**2*cos(2._kp*x)+ &
+    psni_epsilon_three = alpha*tan(x)**2*(2._kp+3._kp*alpha+alpha**2-alpha**2*cos(2._kp*x)+ &
                          alpha*(4._kp+3._kp*alpha)*log(cos(x))+2._kp*alpha**2*log(cos(x))**2)/ &
-                         (cos(x)**2)*tan(x)**2)/((1._kp+alpha*log(cos(x)))**2*((1._kp+alpha*log(cos(x)))/ &
-                         (cos(x)**2)+alpha*tan(x)**2))
+                         ((1._kp+alpha*log(cos(x)))**2*(1._kp+alpha*log(cos(x))+alpha*sin(x)**2))/(mu**2)
     
   end function psni_epsilon_three
 
@@ -101,7 +100,8 @@ contains
     type(transfert) :: psniData
 
     mini = epsilon(1._kp)
-    maxi = acos(-1._kp)/2._kp*(1._kp-epsilon(1._kp))
+!    maxi = acos(-1._kp)/2._kp*(1._kp-epsilon(1._kp)) !!!!!!!!
+    maxi = acos(exp(-1._kp/alpha))
   
 
     psniData%real1 = alpha

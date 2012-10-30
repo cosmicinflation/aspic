@@ -49,6 +49,9 @@ program twimain
  xEnd=phi0*yEndmin*(yEndmax/yEndmin)**(2.**(2.**(real(k,kp)/NxEnd)-1.)-1.)*(1.+epsilon(1._kp)) !ultralogarithmic step
 
 
+phi0=0.06821_kp
+xEnd=0.1378
+
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = twi_lnrhoend(phi0,xEnd,Pstar)
 

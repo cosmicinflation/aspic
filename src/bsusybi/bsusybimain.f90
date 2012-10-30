@@ -37,6 +37,7 @@ program bsusybimain
   call delete_file('bsusybi_xendmax.dat')
   do i=1,ngamma
        gammaBSUSYB=gammamin+(gammamax-gammamin)*(real(i,kp)/real(ngamma,kp))
+
        call livewrite('bsusybi_xendmax.dat',gammaBSUSYB,bsusybi_xendmax(gammaBSUSYB,-40._kp), &
        bsusybi_xendmax(gammaBSUSYB,-60._kp),bsusybi_xendmax(gammaBSUSYB,-80._kp))
   end do
@@ -75,7 +76,6 @@ program bsusybimain
 
      do k=1,nxend
         xend=xendmin*(xendmax/xendmin)**(real(k,kp)/real(nxend,kp))
-     
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = bsusybi_lnrhoend(gammaBSUSYB,xend,Pstar)

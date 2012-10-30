@@ -1,10 +1,14 @@
-SRC = mssmisr.f90 mssmireheat.f90
-MOD = mssmisr.$(FC_MODEXT) mssmireheat.$(FC_MODEXT)
+SRC = mssmicommon.f90 mssmisr.f90 mssmireheat.f90 gmssmisr.f90 gmssmireheat.f90
+MOD = mssmicommon.$(FC_MODEXT) mssmisr.$(FC_MODEXT) mssmireheat.$(FC_MODEXT) \
+	gmssmisr.$(FC_MODEXT) gmssmireheat.$(FC_MODEXT)
 
-check_PROGRAMS = mssmimain
+check_PROGRAMS = mssmimain gmssmimain
 mssmimain_SOURCES = $(SRC) mssmimain.f90
 mssmimain_FCFLAGS = -I../$(SRCOMMDIR)
 mssmimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+gmssmimain_SOURCES = $(SRC) gmssmimain.f90
+gmssmimain_FCFLAGS = -I../$(SRCOMMDIR)
+gmssmimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = libmssmi.la
 libmssmi_la_SOURCES = $(SRC)
@@ -12,13 +16,10 @@ libmssmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libmssmi_la_includedir = $(includedir)/$(SRINCDIR)
 libmssmi_la_include_HEADERS = $(MOD)
 
-man_MANS = aspic_mssmi.3
+man_MANS = aspic_mssmi.3 aspic_gmssmi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
 clean-outfiles:
 	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
-
-
-

@@ -82,7 +82,7 @@ contains
     ti_epsilon_three = (-2._kp+(-2._kp-4._kp*alpha)/(1._kp+alpha-alpha*cos(x))**2 + &
                        (5._kp+3._kp*alpha)/(1._kp+alpha-alpha*cos(x))+(4._kp*(1._kp+alpha+3._kp*alpha**2) &
                        -2._kp*alpha*(7._kp+4._kp*alpha)*cos(x))/(-2._kp-alpha*(3._kp+4._kp*alpha)+ &
-                       alpha*((6._kp+4._kp*alpha)*cos(x)+cos(2._kp*x)))+1._kp/(cos(x/2._kp)**2))/mu**4
+                       alpha*((6._kp+4._kp*alpha)*cos(x)+cos(2._kp*x)))+1._kp/(cos(x/2._kp)**2))/mu**2
     
   end function ti_epsilon_three
 

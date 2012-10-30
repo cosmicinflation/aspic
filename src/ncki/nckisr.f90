@@ -110,7 +110,6 @@ contains
     
     ncki_x_endinf = zbrent(find_ncki_x_endinf,mini,maxi,tolFind,nckiData)
    
-   
   end function ncki_x_endinf
 
   function find_ncki_x_endinf(x,nckiData)    
@@ -160,7 +159,7 @@ contains
       maxi = 1000._kp* sqrt(alpha/(2._kp*abs(beta))) !several times the position of the inflexion point if beta>0
     endif
 
-
+    mini=epsilon(1._kp)
 
     nckiData%real1 = alpha
     nckiData%real2 = beta

@@ -41,9 +41,9 @@ contains
     potEnd = ncki_norm_potential(xEnd,alpha,beta)
     primEnd = ncki_efold_primitive(xEnd,alpha,beta)
 
-!    print*,'ncki_x_star:    xEnd=',xEnd,'  epsOneEnd=',epsOneEnd,'  potEnd=',potEnd,'  primEnd=',primEnd
 
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+
 
     nckiData%real1 = alpha 
     nckiData%real2 = beta
@@ -58,19 +58,9 @@ contains
       maxi = 1000._kp* sqrt(alpha/(2._kp*abs(beta))) !several times the position of the inflexion point if beta>0
     endif
 
-!    print*,'ncki_x_star:    mini=',mini,'  maxi=',maxi,'  f(mini)=',find_ncki_x_star(mini,nckiData), &
-!            '  f(maxi)=',find_ncki_x_star(maxi,nckiData),'  prim(mini)=', & 
-!            ncki_efold_primitive(mini,alpha,beta),'  prim(maxi)=',ncki_efold_primitive(maxi,alpha,beta)
-
-
 
         x = zbrent(find_ncki_x_star,mini,maxi,tolzbrent,nckiData)
         ncki_x_star = x
-
-
-
-
-
 
 
 
@@ -126,8 +116,6 @@ contains
     x = ncki_x_star(alpha,beta,wrad,junk,Pstar)    
     potStar = ncki_norm_potential(x,alpha,beta)
     epsOneStar = ncki_epsilon_one(x,alpha,beta)
-
-    !print*,'ncki_lnrhoend:   xstar=',x,'  potStar=',potStar,'  epsOneStar=',epsOneStar
 
 
     

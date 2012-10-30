@@ -2651,9 +2651,8 @@ END FUNCTION dei
   function atanh(x)
   USE nrutil, ONLY : nrerror
     implicit none
-    real(kp) ::atanh
+    complex(kp) ::atanh
     real(kp), intent(in) ::x
-	if (abs(x)>1.) call nrerror('specialinf/acosh: bad argument x<1. gives non real value for acosh(x)')
 	atanh=0.5_kp*log((1._kp+x)/(1._kp-x))
   end function atanh
 
@@ -2689,7 +2688,7 @@ END FUNCTION dei
        do i=1,Nsum
           polylog=polylog+(1._kp/z)**(real(i,kp))/(real(i,kp)**2)
        enddo
-       polylog=-acos(-1._kp)**2/3._kp-0.5_kp*(log(-z))**2-polylog
+       polylog=-acos(-1._kp)**2/6._kp-0.5_kp*(log(-z))**2-polylog ! An error has been corrected from numerical recipe source (3->6)
     else
     do i=1,Nsum
       polylog=polylog+z**(real(i,kp))/(real(i,kp)**s)

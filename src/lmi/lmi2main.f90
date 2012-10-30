@@ -45,7 +45,7 @@ program lmi2main
   w=0._kp
 
 beta=0.01
-beta=1.
+!beta=1.
 !beta=10.
 
 

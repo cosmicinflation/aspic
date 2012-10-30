@@ -1,13 +1,13 @@
-.TH libmssmi 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libssi1 3 "September 7, 2012" "libaspic" "Module convention" 
 
 .SH NAME
-.I mssmi
-- the MSSM inflation module
+.I ssi1
+- the power law inflation module
 
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 [ x^2 - alpha x^6 + 9/20 alpha^2 x^10 ]
+V(phi) = M^4 [ 1 + alpha x^2 + beta x^4 ]
 .TP
 Routine units
 .I real(kp)
@@ -18,7 +18,7 @@ Routine units
 Parameters
 .I real(kp)
 ::
-.B alpha, beta
+.B alpha beta
 
 
 .SH AUTHORS

@@ -16,13 +16,13 @@ program lmi1main
   integer :: i,j,k
   integer :: npts = 20
 
-  integer :: Ngam=1000         !for beta=0.001: Ngam=20
+  integer :: Ngam                  !for beta=0.001: Ngam=20
                                    !for beta=1: Ngam=50
                                    !for beta=50: Ngam=1000
-  real(kp) :: gammin=0.00005   !for beta = 0.001:  gammin=0.004
+  real(kp) :: gammin               !for beta = 0.001:  gammin=0.004
                                    !for beta=1: gammin=0.001
                                    !for beta=50: gammin=0.00005
-  real(kp) :: gammax=0.1    !for beta=0.001: gammax=0.99
+  real(kp) :: gammax               !for beta=0.001: gammax=0.99
                                    !for beta=1: gammax=0.99
                                    !for beta=50: gammax=0.1
 
@@ -50,6 +50,22 @@ program lmi1main
 beta=0.001
 beta=1.
 beta=50.
+
+if (beta .eq. 0.001) then
+  Ngam=20
+  gammin=0.004
+  gammax=0.99
+endif
+if (beta .eq. 1.) then
+  Ngam=50
+  gammin=0.001
+  gammax=0.99
+endif
+if (beta .eq. 50.) then
+  Ngam=1000
+  gammin=0.00005
+  gammax=0.1
+endif
 
  do j=0,Ngam 
  gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step

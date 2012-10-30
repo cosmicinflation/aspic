@@ -33,11 +33,12 @@ program psnimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   npts = 20
-  nalpha=20
+  nalpha=30
 
-  mu=2._kp
-  mu=1._kp
-  mu=0.5_kp
+  mu=10._kp
+!  mu=1._kp
+!  mu=0.5_kp
+!  mu=100._kp
 
   w=0._kp
 !  w = 1._kp/3._kp
@@ -52,6 +53,28 @@ program psnimain
 
        alphaminlog=10._kp**(-7._kp)
        alphamaxlog=10._kp**(-2.3_kp)
+
+       if (mu .eq. 10._kp) then
+       
+       nalpha=30
+       alphamax=10._kp**(1._kp)
+       alphamin=10._kp**(-3._kp)
+
+       alphaminlog=10._kp**(-6._kp)
+       alphamaxlog=10._kp**(-0.5_kp)
+
+       endif
+
+       if (mu .eq. 100._kp) then
+       
+       nalpha=30
+       alphamax=10._kp**(3._kp)
+       alphamin=10._kp**(-1._kp)
+
+       alphaminlog=10._kp**(-6._kp)
+       alphamaxlog=10._kp**(2._kp)
+
+       endif
 
   do k=1,2*nalpha
        if(k.lt.nalpha) then

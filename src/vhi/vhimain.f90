@@ -104,6 +104,7 @@ endif
 	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
+
  
 
        eps1 = vhi_epsilon_one(xstar,p,mu)

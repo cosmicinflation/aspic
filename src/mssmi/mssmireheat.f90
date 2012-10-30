@@ -7,9 +7,8 @@ module mssmireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three
-  use mssmisr, only : mssmi_norm_potential
-  use mssmisr, only : mssmi_x_endinf, mssmi_efold_primitive
-  use mssmisr, only : mssmi_x_epsilon1_min
+  use mssmisr, only : mssmi_norm_potential, mssmi_x_endinf, mssmi_x_epsilon1_min
+  use mssmisr, only :  mssmi_efold_primitive
   implicit none
 
   private
@@ -20,10 +19,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function mssmi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)    
+  function mssmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: mssmi_x_star
-    real(kp), intent(in) :: alpha,beta,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -37,34 +36,29 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = mssmi_x_endinf(alpha,beta)
-    epsOneEnd = mssmi_epsilon_one(xEnd,alpha,beta)
-    potEnd = mssmi_norm_potential(xEnd,alpha,beta)
-    primEnd = mssmi_efold_primitive(xEnd,alpha,beta)
-   
+    xEnd = mssmi_x_endinf(alpha)
+    epsOneEnd = mssmi_epsilon_one(xEnd,alpha)
+    potEnd = mssmi_norm_potential(xEnd,alpha)
+    primEnd = mssmi_efold_primitive(xEnd,alpha) 
+    
+
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
     mssmiData%real1 = alpha 
-    mssmiData%real2 = beta 
-    mssmiData%real3 = xEnd
-    mssmiData%real4 = w
-    mssmiData%real5 = calF + primEnd
+    mssmiData%real2 = xEnd
+    mssmiData%real3 = w
+    mssmiData%real4 = calF + primEnd
 
     mini = xEnd
 
-    if (alpha**2/beta>20._kp/9._kp) then
-	maxi = mssmi_x_epsilon1_min(alpha,beta)!*(1._kp-epsilon(1._kp)) !local maximum of the potential
-    else
-	maxi=100._kp*mssmi_x_epsilon1_min(alpha,beta)
-    endif
-
-
+    maxi = mssmi_x_epsilon1_min(alpha)*(1._kp-epsilon(1._kp)) !Position of the inflexion point
 
     x = zbrent(find_mssmi_x_star,mini,maxi,tolzbrent,mssmiData)
-    mssmi_x_star = x
+    mssmi_x_star = x   
+
 
     if (present(bfoldstar)) then
-       bfoldstar = - (mssmi_efold_primitive(x,alpha,beta) - primEnd)
+       bfoldstar = - (mssmi_efold_primitive(x,alpha) - primEnd)
     endif
 
   end function mssmi_x_star
@@ -75,17 +69,16 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: mssmiData
 
-    real(kp) :: primStar,alpha,beta,xEnd,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,alpha,xEnd,w,CalFplusprimEnd,potStar,epsOneStar
 
     alpha=mssmiData%real1
-    beta=mssmiData%real2
-    xEnd=mssmiData%real3
-    w = mssmiData%real4
-    CalFplusprimEnd = mssmiData%real5
+    xEnd=mssmiData%real2
+    w = mssmiData%real3
+    CalFplusprimEnd = mssmiData%real4
 
-    primStar = mssmi_efold_primitive(x,alpha,beta)
-    epsOneStar = mssmi_epsilon_one(x,alpha,beta)
-    potStar = mssmi_norm_potential(x,alpha,beta)
+    primStar = mssmi_efold_primitive(x,alpha)
+    epsOneStar = mssmi_epsilon_one(x,alpha)
+    potStar = mssmi_norm_potential(x,alpha)
 
     find_mssmi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -93,10 +86,10 @@ contains
 
 
 
-  function mssmi_lnrhoend(alpha,beta,Pstar) 
+  function mssmi_lnrhoend(alpha,Pstar) 
     implicit none
     real(kp) :: mssmi_lnrhoend
-    real(kp), intent(in) :: alpha,beta,Pstar
+    real(kp), intent(in) :: alpha,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
@@ -106,15 +99,15 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = mssmi_x_endinf(alpha,beta)
-    potEnd  = mssmi_norm_potential(xEnd,alpha,beta)
-    epsOneEnd = mssmi_epsilon_one(xEnd,alpha,beta)
+    xEnd = mssmi_x_endinf(alpha)
+    potEnd  = mssmi_norm_potential(xEnd,alpha)
+    epsOneEnd = mssmi_epsilon_one(xEnd,alpha)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = mssmi_x_star(alpha,beta,wrad,junk,Pstar)    
-    potStar = mssmi_norm_potential(x,alpha,beta)
-    epsOneStar = mssmi_epsilon_one(x,alpha,beta)
+    x = mssmi_x_star(alpha,wrad,junk,Pstar)    
+    potStar = mssmi_norm_potential(x,alpha)
+    epsOneStar = mssmi_epsilon_one(x,alpha)
 
 
     

@@ -40,6 +40,7 @@ contains
     potEnd = vhi_norm_potential(xEnd,p)
 
     primEnd = vhi_efold_primitive(xEnd,p,mu)
+
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
