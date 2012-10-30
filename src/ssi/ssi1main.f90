@@ -46,8 +46,8 @@ program ssi1main
   call livewrite('ssi1_alphamin.dat',beta,alpha)
  end do
 
-print*,'Priors Written'
-pause
+print *,'Priors Written'
+read(*,*)
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
