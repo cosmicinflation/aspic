@@ -10,6 +10,13 @@ module cosmopar
   real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.4585d-63
   real(kp), parameter :: HubbleSquareRootOf2OmegaRad = sqrt(2._kp/3._kp)*HubbleSquareRootOf3OmegaRad
 
+!q: number of relativistic entropic dof
+!g: number of relativistic energy dof
+!RelatDofRatio is: qo^(4/3)/go x greh/qreh^4/3
+!If q=g this is  : (go/greh)^1/3
+  real(kp), parameter :: RelatDofRatio = 1._kp
+
+
   real(kp), parameter :: lnMpcToKappa = 130.282_kp
 
   real(kp), parameter :: lnMpinGeV=42.334_kp

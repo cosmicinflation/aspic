@@ -6,11 +6,11 @@ ssi1main_SOURCES = $(SRC) ssi1main.f90
 ssi1main_FCFLAGS = -I../$(SRCOMMDIR)
 ssi1main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
-noinst_LTLIBRARIES = libssi1.la
-libssi1_la_SOURCES = $(SRC)
-libssi1_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-libssi1_la_includedir = $(includedir)/$(SRINCDIR)
-libssi1_la_include_HEADERS = $(MOD)
+noinst_LTLIBRARIES = libssi.la
+libssi_la_SOURCES = $(SRC)
+libssi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+libssi_la_includedir = $(includedir)/$(SRINCDIR)
+libssi_la_include_HEADERS = $(MOD)
 
 man_MANS = aspic_ssi1.3
 
