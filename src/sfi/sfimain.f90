@@ -2,7 +2,7 @@
 program sfimain
   use infprec, only : kp, transfert
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use sfireheat, only : sfi_x_reheat, sfi_lnrhoend
+  use sfireheat, only : sfi_x_star, sfi_lnrhoend
   use sfireheat, only : sfi_xpmu_fromepsilon, sfi_lnrhoreh_fromepsilon
   use sfisr, only : sfi_epsilon_one, sfi_epsilon_two,sfi_epsilon_three
   use infinout, only : delete_file, livewrite
@@ -69,7 +69,7 @@ program sfimain
 
      lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = sfi_x_reheat(p,mu,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = sfi_x_star(p,mu,w,lnRhoReh,Pstar,bfoldstar)
      eps1 = sfi_epsilon_one(xstar,p,mu)
      eps2 = sfi_epsilon_two(xstar,p,mu)
      eps3 = sfi_epsilon_three(xstar,p,mu)

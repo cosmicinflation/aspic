@@ -2,7 +2,7 @@
 program kklttest  
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use kkltreheat, only : kklt_x_reheat, kklt_lnrhoend
+  use kkltreheat, only : kklt_x_star, kklt_lnrhoend
   use kkltsrevol, only : kklt_x_endinf, kklt_epsilon_one, kklt_epsilon_two
   use infinout, only : delete_file, livewrite
   implicit none
@@ -41,7 +41,7 @@ program kklttest
 
      lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     chi = kklt_x_reheat(p,mu,wreh,lnRhoReh,Pstar,bfold)     
+     chi = kklt_x_star(p,mu,wreh,lnRhoReh,Pstar,bfold)     
      eps1 = kklt_epsilon_one(chi,p,mu)
      eps2 = kklt_epsilon_two(chi,p,mu)
 

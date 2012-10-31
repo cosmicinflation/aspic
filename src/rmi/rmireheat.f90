@@ -12,16 +12,16 @@ module rmreheat
 
   private
 
-  public rm_x_reheat, rm_lnrhoend
+  public rm_x_star, rm_lnrhoend
   public find_rmreheat
 
 contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function rm_x_reheat(p,mu,nu,xstop,w,lnRhoReh,Pstar,bfold)    
+  function rm_x_star(p,mu,nu,xstop,w,lnRhoReh,Pstar,bfold)    
     implicit none
-    real(kp) :: rm_x_reheat
+    real(kp) :: rm_x_star
     real(kp), intent(in) :: p,mu,nu,xstop,lnRhoReh,w,Pstar
     real(kp), optional :: bfold
 
@@ -65,18 +65,18 @@ contains
           maxi = 1._kp/epsilon(1._kp)
        endif
     else
-       stop 'rm_x_reheat: internal error'
+       stop 'rm_x_star: internal error'
     endif
     
     x = zbrent(find_rmreheat,mini,maxi,tolFind,rmData)
 
-    rm_x_reheat = x
+    rm_x_star = x
 
     if (present(bfold)) then
        bfold = -(rm_nufunc(x,p,mu,nu) - nuEnd)
     endif
     
-  end function rm_x_reheat
+  end function rm_x_star
 
   function find_rmreheat(x,rmData)   
     implicit none
@@ -118,7 +118,7 @@ contains
     potEnd  = rm_norm_potential(xEnd,p,mu,nu)
     epsEnd = rm_epsilon_one(xEnd,p,mu,nu)
        
-    x = rm_x_reheat(p,mu,nu,xstop,w,lnRhoReh,Pstar)
+    x = rm_x_star(p,mu,nu,xstop,w,lnRhoReh,Pstar)
     potStar = rm_norm_potential(x,p,mu,nu)
     epsStar = rm_epsilon_one(x,p,mu,nu)
     

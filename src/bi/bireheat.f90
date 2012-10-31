@@ -12,16 +12,16 @@ module kkltreheat
 
   private
 
-  public kklt_x_reheat, kklt_lnrhoend
+  public kklt_x_star, kklt_lnrhoend
   public find_kkltreheat
 
 contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function kklt_x_reheat(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function kklt_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
     implicit none
-    real(kp) :: kklt_x_reheat
+    real(kp) :: kklt_x_star
     real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
     real(kp), optional :: bfold
 
@@ -56,13 +56,13 @@ contains
     maxi = 1._kp/epsilon(1._kp)
 
     x = zbrent(find_kkltreheat,mini,maxi,tolFind,kkltData)
-    kklt_x_reheat = x
+    kklt_x_star = x
 
     if (present(bfold)) then
        bfold = -(kklt_nufunc(x,p,mu) - nuEnd)
     endif
     
-  end function kklt_x_reheat
+  end function kklt_x_star
 
   function find_kkltreheat(x,kkltData)   
     implicit none
@@ -103,7 +103,7 @@ contains
     potEnd  = kklt_norm_potential(xEnd,p)
     epsEnd = kklt_epsilon_one(xEnd,p,mu)
        
-    x = kklt_x_reheat(p,mu,w,lnRhoReh,Pstar)
+    x = kklt_x_star(p,mu,w,lnRhoReh,Pstar)
     potStar = kklt_norm_potential(x,p)
     epsStar = kklt_epsilon_one(x,p,mu)
     

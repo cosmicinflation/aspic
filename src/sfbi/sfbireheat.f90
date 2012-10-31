@@ -13,15 +13,15 @@ module kksfreheat
 
   private
 
-  public kksf_x_reheat, kksf_lnrhoend
+  public kksf_x_star, kksf_lnrhoend
 
 contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function kksf_x_reheat(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function kksf_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
     implicit none
-    real(kp) :: kksf_x_reheat
+    real(kp) :: kksf_x_star
     real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
     real(kp), optional :: bfold
 
@@ -56,16 +56,16 @@ contains
     maxi = 1._kp/epsilon(1._kp)
 
     x = zbrent(find_sfreheat,mini,maxi,tolFind,kksfData)
-    kksf_x_reheat = x
+    kksf_x_star = x
 
     if (present(bfold)) then
        bfold = -(kksf_nufunc(x,p,mu) - nuEnd)
     endif
 
     if (x.lt.1._kp) then
-       if (display) write(*,*) 'kksf_x_reheat: phi<mu!'
+       if (display) write(*,*) 'kksf_x_star: phi<mu!'
     endif
-  end function kksf_x_reheat
+  end function kksf_x_star
 
 
 
@@ -85,7 +85,7 @@ contains
     potEnd  = kksf_norm_potential(xEnd,p)
     epsEnd = kksf_epsilon_one(xEnd,p,mu)
        
-    x = kksf_x_reheat(p,mu,w,lnRhoReh,Pstar)    
+    x = kksf_x_star(p,mu,w,lnRhoReh,Pstar)    
     potStar = kksf_norm_potential(x,p)
     epsStar = kksf_epsilon_one(x,p,mu)
     

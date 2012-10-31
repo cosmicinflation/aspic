@@ -22,13 +22,25 @@ module mssmisr
 
  
 contains
+
+
+  function mssmi_beta(alpha)
+    implicit none
+    real(kp), intent(in) :: alpha
+    real(kp) :: mssmi_beta
+
+    mssmi_beta = 9._kp/20._kp*alpha**2.
+
+  end function mssmi_beta
+
+
 !returns V/M**4
   function mssmi_norm_potential(x,alpha)
     implicit none
     real(kp) :: mssmi_norm_potential
     real(kp), intent(in) :: x,alpha
 
-    mssmi_norm_potential = gmssmi_gen_norm_potential(x,alpha)
+    mssmi_norm_potential = gmssmi_gen_norm_potential(x,alpha,mssmi_beta(alpha))
 
   end function mssmi_norm_potential
 
@@ -40,7 +52,7 @@ contains
     real(kp) :: mssmi_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
 
-   mssmi_norm_deriv_potential = gmssmi_gen_norm_deriv_potential(x,alpha)
+   mssmi_norm_deriv_potential = gmssmi_gen_norm_deriv_potential(x,alpha,mssmi_beta(alpha))
 
   end function mssmi_norm_deriv_potential
 
@@ -52,7 +64,7 @@ contains
     real(kp) :: mssmi_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
 
-    mssmi_norm_deriv_second_potential = gmssmi_gen_norm_deriv_second_potential(x,alpha)
+    mssmi_norm_deriv_second_potential = gmssmi_gen_norm_deriv_second_potential(x,alpha,mssmi_beta(alpha))
 
   end function mssmi_norm_deriv_second_potential
 
@@ -64,7 +76,7 @@ contains
     real(kp) :: mssmi_epsilon_one
     real(kp), intent(in) :: x,alpha
     
-    mssmi_epsilon_one = gmssmi_gen_epsilon_one(x,alpha)
+    mssmi_epsilon_one = gmssmi_gen_epsilon_one(x,alpha,mssmi_beta(alpha))
     
   end function mssmi_epsilon_one
 
@@ -75,7 +87,7 @@ contains
     real(kp) :: mssmi_epsilon_two
     real(kp), intent(in) :: x,alpha
     
-    mssmi_epsilon_two = gmssmi_gen_epsilon_two(x,alpha) 
+    mssmi_epsilon_two = gmssmi_gen_epsilon_two(x,alpha,mssmi_beta(alpha)) 
     
   end function mssmi_epsilon_two
 
@@ -86,7 +98,7 @@ contains
     real(kp) :: mssmi_epsilon_three
     real(kp), intent(in) :: x,alpha
     
-    mssmi_epsilon_three = gmssmi_gen_epsilon_three(x,alpha) 
+    mssmi_epsilon_three = gmssmi_gen_epsilon_three(x,alpha,mssmi_beta(alpha)) 
     
   end function mssmi_epsilon_three
 
@@ -97,7 +109,7 @@ contains
     real(kp), intent(in) :: alpha
     real(kp) :: mssmi_x_endinf
     
-    mssmi_x_endinf = gmssmi_gen_x_endinf(alpha)
+    mssmi_x_endinf = gmssmi_gen_x_endinf(alpha,mssmi_beta(alpha))
    
 
   end function mssmi_x_endinf
@@ -159,10 +171,9 @@ contains
     real(kp) :: mssmi_x_epsilon1_min
     real(kp), intent(in) :: alpha
 
-	mssmi_x_epsilon1_min = gmssmi_gen_x_epsilon1_min(alpha) 
+	mssmi_x_epsilon1_min = gmssmi_gen_x_epsilon1_min(alpha,mssmi_beta(alpha)) 
     
   end function mssmi_x_epsilon1_min
-
 
   
 end module mssmisr

@@ -12,17 +12,17 @@ module sfireheat
 
   private
 
-  public sfi_x_reheat, sfi_lnrhoend, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
+  public sfi_x_star, sfi_lnrhoend, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
 
-  public find_sfi_x_reheat
+  public find_sfi_x_star
 
 contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function sfi_x_reheat(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function sfi_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
     implicit none
-    real(kp) :: sfi_x_reheat
+    real(kp) :: sfi_x_star
     real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
     real(kp), optional :: bfold
 
@@ -53,22 +53,22 @@ contains
     mini = 0._kp
     maxi = xEnd + epsilon(1._kp)
 
-    x = zbrent(find_sfi_x_reheat,mini,maxi,tolFind,sfiData)
-    sfi_x_reheat = x
+    x = zbrent(find_sfi_x_star,mini,maxi,tolFind,sfiData)
+    sfi_x_star = x
 
     if (present(bfold)) then
        bfold = -(sfi_efold_primitive(x,p,mu) - primEnd)
     endif
 
     if (x.gt.1._kp) then
-       if (display) write(*,*) 'sfi_x_reheat: phi>mu!'
+       if (display) write(*,*) 'sfi_x_star: phi>mu!'
     endif
 
-  end function sfi_x_reheat
+  end function sfi_x_star
 
-  function find_sfi_x_reheat(x,sfiData)   
+  function find_sfi_x_star(x,sfiData)   
     implicit none
-    real(kp) :: find_sfi_x_reheat
+    real(kp) :: find_sfi_x_star
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: sfiData
 
@@ -84,13 +84,13 @@ contains
     potStar = sfi_norm_potential(x,p)
 
 
-    find_sfi_x_reheat = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
+    find_sfi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
 !    sr_find_reheat_sf = nuStar - CalFPlusNuCalEnd &
 !         + 1._kp/(3._kp+3._kp*w) &
 !         * log( (9._kp-3._kp*epsStar)/( 9._kp*(2._kp*epsStar)**(0.5_kp+1.5_kp*w)*potStar) )
 
-  end function find_sfi_x_reheat
+  end function find_sfi_x_star
 
 
   function sfi_lnrhoend(p,mu,Pstar) 
@@ -109,7 +109,7 @@ contains
     potEnd  = sfi_norm_potential(xEnd,p)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
        
-    x = sfi_x_reheat(p,mu,wrad,junk,Pstar)    
+    x = sfi_x_star(p,mu,wrad,junk,Pstar)    
     potStar = sfi_norm_potential(x,p)
     epsOneStar = sfi_epsilon_one(x,p,mu)
     

@@ -2,7 +2,7 @@
 program rmtest
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use rmreheat, only : rm_x_reheat, rm_lnrhoend
+  use rmreheat, only : rm_x_star, rm_lnrhoend
   use rmsrevol, only : rm_x_endinf, rm_epsilon_one, rm_epsilon_two
   use infinout, only : delete_file, livewrite
   implicit none
@@ -40,7 +40,7 @@ program rmtest
 
      lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     phi = rm_x_reheat(p,mu,nu,xstop,wreh,lnRhoReh,Pstar,bfold)
+     phi = rm_x_star(p,mu,nu,xstop,wreh,lnRhoReh,Pstar,bfold)
 
      print *,'lnRhoReh bfold= ',lnRhoReh,bfold
 

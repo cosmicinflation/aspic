@@ -13,16 +13,16 @@ module lfireheat
 
   private
 
-  public lfi_x_reheat, lfi_lnrhoend 
+  public lfi_x_star, lfi_lnrhoend 
   public lfi_xp_fromepsilon, lfi_lnrhoreh_fromepsilon 
 
 contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function lfi_x_reheat(p,w,lnRhoReh,Pstar,bfoldstar)    
+  function lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: lfi_x_reheat
+    real(kp) :: lfi_x_star
     real(kp), intent(in) :: p,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
@@ -51,18 +51,18 @@ contains
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
-    x = zbrent(find_lfi_x_reheat,mini,maxi,tolzbrent,lfiData)
-    lfi_x_reheat = x
+    x = zbrent(find_lfi_x_star,mini,maxi,tolzbrent,lfiData)
+    lfi_x_star = x
 
     if (present(bfoldstar)) then
        bfoldstar = - (lfi_efold_primitive(x,p) - primEnd)
     endif
 
-  end function lfi_x_reheat
+  end function lfi_x_star
 
-  function find_lfi_x_reheat(x,lfiData)   
+  function find_lfi_x_star(x,lfiData)   
     implicit none
-    real(kp) :: find_lfi_x_reheat
+    real(kp) :: find_lfi_x_star
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: lfiData
 
@@ -76,9 +76,9 @@ contains
     epsOneStar = lfi_epsilon_one(x,p)
     potStar = lfi_norm_potential(x,p)
 
-    find_lfi_x_reheat = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
+    find_lfi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
-  end function find_lfi_x_reheat
+  end function find_lfi_x_star
 
 
 
@@ -101,7 +101,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = lfi_x_reheat(p,wrad,junk,Pstar)    
+    x = lfi_x_star(p,wrad,junk,Pstar)    
     potStar = lfi_norm_potential(x,p)
     epsOneStar = lfi_epsilon_one(x,p)
     

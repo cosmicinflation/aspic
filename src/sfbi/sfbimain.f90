@@ -2,7 +2,7 @@
 program kksftest  
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use kksfreheat, only : kksf_x_reheat, kksf_lnrhoend
+  use kksfreheat, only : kksf_x_star, kksf_lnrhoend
   use kksfsrevol, only : kksf_x_endinf, kksf_epsilon_one, kksf_epsilon_two
   use infinout, only : delete_file, livewrite
   implicit none
@@ -42,7 +42,7 @@ program kksftest
 
      lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     chi = kksf_x_reheat(p,mu,wreh,lnRhoReh,Pstar,bfold)     
+     chi = kksf_x_star(p,mu,wreh,lnRhoReh,Pstar,bfold)     
      eps1 = kksf_epsilon_one(chi,p,mu)
      eps2 = kksf_epsilon_two(chi,p,mu)
 
