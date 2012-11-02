@@ -1,4 +1,4 @@
-.TH libdsi 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libdsi 3 "November 2, 2012" "libaspic" "Module convention" 
 
 .SH NAME
 .I dsi
@@ -30,17 +30,41 @@ Parameters
 ::
 .B xend
 
-.SH NOTES
-The end of inflation is an additional model parameter encoded in the
-dimensionless field value xend at which this occurs. The potential
-routines therefore take only the
-.B p
-argument on entry whereas the Hubble flow routines requires
-.B p
-and
-.B
-mu
-as arguments.
+.SH DESCRIPTION
+The
+.I dsi
+module is used for the dynamical supersymmetric inflation which ends
+by instability. The field value 'xend' is an extra model parameter
+that has to be specified and the function
+.BR dsi_x_endinf ()
+is not provided. There is however a domain along which the first
+Hubble flow function can be greater than unity, but this region is a
+repellor for the field dynamics such that inflation cannot stop by
+slow-roll violation. As a result, inflation is forbidden in this
+region. The
+.I
+real(kp),
+function
+.IP
+.BR dsi_x_epsoneunity (p,mu)
+.P
+precisely returns the field value 'xeps1' at which the first Hubble flow
+function equals unity. We also provide the
+.I
+real(kp)
+functions
+.IP
+.BR vhi_xinimin (p,mu)
+.RS
+.BR vhi_xendmin (N,p,mu)
+.RE
+.P
+The first gives the minimal acceptable value for 'xini' and is just an
+alias of
+.BR dsi_x_endinf ().
+The second function returns the minimal acceptable value for 'xend' to
+get 'N' number of e-folds of inflation, starting from the minimal acceptable
+value of 'xini'.
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

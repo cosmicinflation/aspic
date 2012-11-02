@@ -12,9 +12,10 @@ module nckisr
 
   private
 
-  public  ncki_norm_potential, ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
-  public  ncki_x_endinf, ncki_efold_primitive, ncki_x_trajectory
-  public  ncki_norm_deriv_potential, ncki_norm_deriv_second_potential
+  public ncki_norm_potential, ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
+  public ncki_x_endinf, ncki_efold_primitive, ncki_x_trajectory
+  public ncki_norm_deriv_potential, ncki_norm_deriv_second_potential
+  public ncki_x_potmax
 
  
 contains
@@ -30,7 +31,7 @@ contains
 
 
 
-!returns the first derivative of the potential with respect to phi/Mp, divided by M**4
+!returns the first derivative of the potential with respect to x
   function ncki_norm_deriv_potential(x,alpha,beta)
     implicit none
     real(kp) :: ncki_norm_deriv_potential
@@ -42,7 +43,7 @@ contains
 
 
 
-!returns the second derivative of the potential with respect to phi/Mp, divided by M**4
+!returns the second derivative of the potential with respect to x
   function ncki_norm_deriv_second_potential(x,alpha,beta)
     implicit none
     real(kp) :: ncki_norm_deriv_second_potential
@@ -92,6 +93,21 @@ contains
   end function ncki_epsilon_three
 
 
+
+!field value at which the potential is maximal when beta<0
+  function ncki_x_potmax(alpha,beta)
+    implicit none
+    real(kp) , intent(in) :: alpha,beta
+    real(kp) :: ncki_x_potmax
+
+    if (beta.gt.0._kp) stop 'ncki_x_potmax: no maximum for beta>0!'
+
+    ncki_x_potmax = sqrt(abs(alpha/2._kp/beta))
+
+  end function ncki_x_potmax
+
+
+
 !returns x at the end of inflation defined as epsilon1=1
   function ncki_x_endinf(alpha,beta)
     implicit none
@@ -136,8 +152,8 @@ contains
     if (alpha.eq.0._kp) stop 'ncki_efold_primitive: alpha=0 !'
 
     ncki_efold_primitive = (1._kp-alpha/2._kp+alpha*log(x))*log(alpha+2._kp*beta*x**2)/(4._kp*beta) &
-                           +x**2/4._kp-alpha/(4._kp*beta)*log(alpha)*log(x)+alpha/(8._kp*beta)* &
-                           real(polylog(complex(-2._kp*beta/alpha*x**2,0._kp),complex(2._kp,0._kp)),kp)
+         +x**2/4._kp-alpha/(4._kp*beta)*log(alpha)*log(x)+alpha/(8._kp*beta)* &
+         real(polylog(complex(-2._kp*beta/alpha*x**2,0._kp),complex(2._kp,0._kp)),kp)
 
 
   end function ncki_efold_primitive

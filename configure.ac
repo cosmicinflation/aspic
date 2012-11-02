@@ -1,4 +1,4 @@
-AC_INIT([aspic], [0.0.6], [chris@ringeval.com])
+AC_INIT([aspic], [0.0.7], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -59,7 +59,6 @@ AC_CONFIG_FILES([Makefile
                  src/rgi/Makefile
                  src/vhi/Makefile
                  src/dsi/Makefile
-                 src/gmi/Makefile
                  src/ssi/Makefile
                 ])
 AC_OUTPUT

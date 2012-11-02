@@ -18,20 +18,22 @@ module tisr
  
 contains
 !returns V/M**4
-  function ti_norm_potential(x,alpha)
+  function ti_norm_potential(x,alpha,mu)
     implicit none
     real(kp) :: ti_norm_potential
     real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: mu
 
     ti_norm_potential = 1._kp+cos(x)+alpha*sin(x)**2
   end function ti_norm_potential
 
 
 !returns the first derivative of the potential with respect to x=phi/mu, divided by M**4
-  function ti_norm_deriv_potential(x,alpha)
+  function ti_norm_deriv_potential(x,alpha,mu)
     implicit none
     real(kp) :: ti_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: mu
 
    ti_norm_deriv_potential = sin(x)*(2._kp*alpha*cos(x)-1._kp)
 
@@ -40,10 +42,11 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M**4
-  function ti_norm_deriv_second_potential(x,alpha)
+  function ti_norm_deriv_second_potential(x,alpha,mu)
     implicit none
     real(kp) :: ti_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: mu
 
     ti_norm_deriv_second_potential = 2._kp*alpha*cos(2._kp*x)-cos(x)
 

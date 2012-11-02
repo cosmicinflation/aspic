@@ -1,4 +1,4 @@
-.TH libncki 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libncki 3 "October 31, 2012" "libaspic" "Module convention" 
 
 .SH NAME
 .I ncki
@@ -20,6 +20,14 @@ Parameters
 ::
 .B alpha, beta
 
-
+.SH DESCRIPTION
+For negative values of the parameter
+.BR beta ,
+the potential has a maximum at a field value 'xVmax' returned by the
+function
+.BR ncki_x_potmax (alpha,beta)
+and accessible through
+.IP
+.B use nckisr, only : ncki_x_potmax
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

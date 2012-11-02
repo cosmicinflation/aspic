@@ -14,10 +14,15 @@ module vhisr
 
   private
 
-  public  vhi_norm_potential, vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
-  public  vhi_efold_primitive, vhi_x_trajectory
-  public  vhi_norm_deriv_potential, vhi_norm_deriv_second_potential
-  public  vhi_xend_max,vhi_xend_min
+  public vhi_norm_potential, vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
+  public vhi_efold_primitive, vhi_x_trajectory
+  public vhi_norm_deriv_potential, vhi_norm_deriv_second_potential
+  public vhi_epsilon_one_max, vhi_x_epsonemax, vhi_x_epsoneunity
+  public vhi_xinimax, vhi_xendmax,vhi_xendmin
+
+
+
+  real(kp), parameter :: phihuge = 10000._kp
 
 
 contains
@@ -25,10 +30,11 @@ contains
 
 
 !returns V/M**4
-  function vhi_norm_potential(x,p)
+  function vhi_norm_potential(x,p,mu)
     implicit none
     real(kp) :: vhi_norm_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
     vhi_norm_potential = 1._kp+x**p
 
@@ -37,10 +43,11 @@ contains
 
 
 !returns the first derivative of the potential with respect to x, divided by M**4
-  function vhi_norm_deriv_potential(x,p)
+  function vhi_norm_deriv_potential(x,p,mu)
     implicit none
     real(kp) :: vhi_norm_deriv_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
    vhi_norm_deriv_potential = p*x**(p-1._kp)
 
@@ -49,10 +56,11 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M**4
-  function vhi_norm_deriv_second_potential(x,p)
+  function vhi_norm_deriv_second_potential(x,p,mu)
     implicit none
     real(kp) :: vhi_norm_deriv_second_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
     vhi_norm_deriv_second_potential = p*(p-1._kp)*x**(p-2._kp)
 
@@ -100,99 +108,198 @@ contains
 
 
 
-!returns the minimum value for xend as a function of p and mu, so that xend should vary between vhi_xend_min and vhi_xend_max if inflation stops by critical instability.
-  function vhi_xend_min(p,mu)
+!the maximal value of eps1 
+  function vhi_epsilon_one_max(p,mu)
     implicit none
+    real(kp) :: vhi_epsilon_one_max
     real(kp), intent(in) :: p,mu
-    real(kp) :: vhi_xend_min
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: vhiData
-    
-    if (p .gt. 1._kp) then
 
-      vhi_xend_min=epsilon(1._kp)
-  
-    else if (p .eq. 1._kp) then
 
-      if (sqrt(2._kp)*mu .lt. 1._kp) then !eps1>1 at x=0. Return x_eps.
+    if (p.lt.1._kp) stop 'vhi_epsilon_one_max: no local maximum for eps1 with p<1!'
 
-        vhi_xend_min = 1._kp/(sqrt(2._kp)*mu)-1._kp
-
-      else !eps<1 everywhere
-
-        vhi_xend_min = epsilon(1._kp)
-
-      endif
-
-    else if (p .lt. 1._kp) then
-
-        maxi= 10000._kp*p/mu
-        mini=epsilon(1._kp)
-        vhiData%real1 = p
-        vhiData%real2 = mu
-        vhi_xend_min = zbrent(find_vhi_xend_bound,mini,maxi,tolFind,vhiData)
-
+    if (p.eq.1._kp) then
+       vhi_epsilon_one_max = 0.5_kp/mu/mu
+       return
     endif
 
-  end function vhi_xend_min
+    vhi_epsilon_one_max= 0.5_kp*((p-1._kp)*(p-1._kp))**(1._kp-1._kp/p)/mu/mu
+
+
+  end function vhi_epsilon_one_max
+
+
+!the field value at which epsilon is maximal
+ function vhi_x_epsonemax(p,mu)
+    implicit none
+    real(kp) :: vhi_x_epsonemax
+    real(kp), intent(in) :: p
+    real(kp), intent(in), optional :: mu    
+
+    if (p.lt.1._kp) stop 'vhi_x_epsonemax: no local maximum for eps1 with p<1!'
+
+    if (p.eq.1._kp) then
+       vhi_x_epsonemax = 0._kp
+    else
+       vhi_x_epsonemax = (p-1._kp)**(1._kp/p)
+    endif
+
+  end function vhi_x_epsonemax
 
 
 
-!returns the maximum value for xend as a function of p and mu, so that xend should vary between vhi_xend_min and vhi_xend_max if inflation stops by critical instability.
-  function vhi_xend_max(p,mu)
+!returns a vector containing the two roots of eps1=1
+  function vhi_x_epsoneunity(p,mu)
     implicit none
     real(kp), intent(in) :: p,mu
-    real(kp) :: vhi_xend_max
+    real(kp), dimension(2) :: vhi_x_epsoneunity
+    real(kp) :: xeps1max
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: vhiData
-    
-    if (p .gt. 1._kp) then
 
-      if (mu*sqrt(2._kp) .lt. (p-1._kp)**((p-1._kp)/p)) then !eps1>1 for some values of x. Return x_eps^-.
 
-        if (p .eq. 2._kp) then
-          vhi_xend_max=1._kp/(sqrt(2._kp)*mu)*(1._kp-sqrt(1._kp-2._kp*mu**2))
-        else
-      
-        maxi= (p-1._kp)**(1._kp/p) !value of x such that epsilon1 is maximum
-        mini=0._kp
-        vhiData%real1 = p
-        vhiData%real2 = mu
-        vhi_xend_max = zbrent(find_vhi_xend_bound,mini,maxi,tolFind,vhiData)
+    vhiData%real1 = p
+    vhiData%real2 = mu
 
-        endif
-
-      else !eps1<1 everywhere
+    if (p.lt.1._kp) then
+!only one root as eps1 blows up for x->0
        
-        vhi_xend_max = 10000._kp*p/mu
-      
-      endif
+       mini=epsilon(1._kp)
+       maxi = phihuge*p/mu
+       
+       vhi_x_epsoneunity(2) &
+            = zbrent(find_vhixepsoneunity,mini,maxi,tolFind,vhiData)
+       vhi_x_epsoneunity(1) = vhi_x_epsoneunity(2)
 
+    elseif (p.eq.1_kp) then
+!eps1 is maximal in x=0, only one root
+       if (vhi_epsilon_one_max(p,mu).lt.1._kp) then
+          stop 'vhi_x_epsoneunity: no solution for eps1=1'
+       endif
 
-    else if (p .le. 1._kp) then
+       vhi_x_epsoneunity(2) = 1._kp/(mu*sqrt(2._kp)) - 1._kp
+       vhi_x_epsoneunity(1) = vhi_x_epsoneunity(2)
+       
 
-        vhi_xend_max = 10000._kp*p/mu
+    elseif (p.gt.1_kp) then
 
+       if (vhi_epsilon_one_max(p,mu).lt.1._kp) then
+          stop 'vhi_x_epsoneunity: no solution for eps1=1'
+       endif
+       xeps1max = vhi_x_epsonemax(p,mu)    
+!smallest root
+       mini = epsilon(1._kp)
+       maxi = xeps1max + epsilon(1._kp)
+
+       vhi_x_epsoneunity(1) &
+            = zbrent(find_vhixepsoneunity,mini,maxi,tolFind,vhiData)
+
+!largest root
+       mini = xeps1max - epsilon(1._kp)
+       maxi = phihuge* p/mu
+           
+       vhi_x_epsoneunity(2) &
+            = zbrent(find_vhixepsoneunity,mini,maxi,tolFind,vhiData)
+
+    else
+
+       stop 'vhi_x_epsoneunity: internal error!'
+        
     endif
 
-  end function vhi_xend_max
 
-  function find_vhi_xend_bound(x,vhiData)    
+  end function vhi_x_epsoneunity
+  
+  function find_vhixepsoneunity(x,vhiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: vhiData
-    real(kp) :: find_vhi_xend_bound
+    real(kp) :: find_vhixepsoneunity
     real(kp) :: p,mu
 
     p = vhiData%real1
     mu = vhiData%real2
     
-    find_vhi_xend_bound = vhi_epsilon_one(x,p,mu) - 1._kp
+    find_vhixepsoneunity = vhi_epsilon_one(x,p,mu) - 1._kp
   
-  end function find_vhi_xend_bound
+  end function find_vhixepsoneunity
 
+
+!returns the minimum value for xend as a function of p and mu such
+!that inflation stops by instability.
+  function vhi_xendmin(p,mu)
+    implicit none
+    real(kp), intent(in) :: p,mu
+    real(kp) :: vhi_xendmin
+    real(kp), parameter :: tolFind=tolkp
+    real(kp), dimension(2) :: xepsones   
+    
+    vhi_xendmin=epsilon(1._kp)
+
+    if (p.eq.1._kp) then
+
+       if (vhi_epsilon_one_max(p,mu).gt.1._kp) then
+          xepsones = vhi_x_epsoneunity(p,mu)
+          vhi_xendmin = xepsones(2)
+       endif
+    elseif (p.lt.1._kp) then
+       
+       xepsones = vhi_x_epsoneunity(p,mu)
+       vhi_xendmin = xepsones(2)
+
+    endif
+
+  end function vhi_xendmin
+
+
+
+!returns the maximum value for xini as a function of p and mu
+  function vhi_xinimax(p,mu)
+    implicit none
+    real(kp), intent(in) :: p,mu
+    real(kp) :: vhi_xinimax
+    real(kp), parameter :: tolFind=tolkp
+    real(kp), dimension(2) :: xepsones 
+   
+    vhi_xinimax = phihuge*p/mu
+
+    if ((p.gt.1._kp).and.(vhi_epsilon_one_max(p,mu).gt.1._kp)) then
+       xepsones = vhi_x_epsoneunity(p,mu)
+       vhi_xinimax = xepsones(1)
+    endif
+
+  end function vhi_xinimax
+
+
+!returns the maximal value for xend such that there are efold number
+!of inflation from xinimax
+  function vhi_xendmax(efold,p,mu)
+    implicit none
+    real(kp), intent(in) :: efold,p,mu
+    real(kp) :: vhi_xendmax, xiniMax, xendMin
+    real(kp), parameter :: tolFind=tolkp
+
+    real(kp) :: efoldMax
+    
+    xiniMax = vhi_xinimax(p,mu)
+    xendMin = vhi_xendmin(p,mu)
+
+    efoldMax = -vhi_efold_primitive(xendMin,p,mu) &
+         + vhi_efold_primitive(xiniMax,p,mu)
+
+    if (efold.gt.efoldMax) then
+       write(*,*)'vhi_xendmax: not enough efolds!'
+       write(*,*)'efold requested=   efold maxi= ',efold,efoldMax
+       stop
+    endif
+
+    vhi_xendmax = vhi_x_trajectory(efold,xiniMax,p,mu)
+       
+
+  end function vhi_xendmax
+
+
+  
 
 
 !this is integral[V(phi)/V'(phi) dphi]
@@ -224,28 +331,37 @@ contains
     logical :: approx = .false. !set to true if one wants to use the approximate phi/mu << 1 formula
     type(transfert) :: vhiData
 
+!trick land here: if bfold>0 is inputed, allows to return xend by
+!input of xini (ah ah ah)
+
     if (p .eq. 1._kp) then
-
-      vhi_x_trajectory=-1._kp+sqrt(1._kp-2._kp/(mu**2)*bfold+xend**2+2._kp*xend)
-
+       
+       vhi_x_trajectory=-1._kp+sqrt(1._kp-2._kp/(mu**2)*bfold+xend**2+2._kp*xend)
+      
     else if (p .eq. 2._kp) then 
 
-      vhi_x_trajectory=sqrt(lambert(xend**2*exp(xend**2-4._kp*bfold/(mu**2)),0))
+       vhi_x_trajectory=sqrt(lambert(xend**2*exp(xend**2-4._kp*bfold/(mu**2)),0))
+       
+    else if (approx) then
 
-    else if (approx .eqv. .true.) then
-
-      vhi_x_trajectory=(xend**(2._kp-p)+p*(p-2._kp)*bfold/(mu**2))**(1._kp/(2._kp-p))
+       vhi_x_trajectory=(xend**(2._kp-p)+p*(p-2._kp)*bfold/(mu**2))**(1._kp/(2._kp-p))
 
     else
 
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi= vhi_xend_max(p,mu)*(1._kp-epsilon(1._kp))
+ 
+       if (bfold.le.0._kp) then
+          mini = xend*(1._kp+epsilon(1._kp))
+          maxi= vhi_xinimax(p,mu)*(1._kp-epsilon(1._kp))
+       else
+          maxi = xend*(1._kp+epsilon(1._kp))
+          mini = vhi_xendmin(p,mu)*(1._kp-epsilon(1._kp))
+       endif
 
-    vhiData%real1 = p
-    vhiData%real2 = mu
-    vhiData%real3 = -bfold + vhi_efold_primitive(xend,p,mu)
-    
-    vhi_x_trajectory = zbrent(find_vhitraj,mini,maxi,tolFind,vhiData)
+       vhiData%real1 = p
+       vhiData%real2 = mu
+       vhiData%real3 = -bfold + vhi_efold_primitive(xend,p,mu)
+
+       vhi_x_trajectory = zbrent(find_vhitraj,mini,maxi,tolFind,vhiData)
 
     end if
        

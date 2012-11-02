@@ -2,7 +2,8 @@
 program vhimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three,vhi_xend_max,vhi_xend_min
+  use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
+  use vhisr, only : vhi_xinimax,vhi_xendmin
   use vhireheat, only : vhi_lnrhoend, vhi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -84,11 +85,11 @@ endif
 
  do j=0,Nmu
  mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xend_min(p,mu)
- xEndmax=vhi_xend_max(p,mu)
+ xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+ xEndmax=vhi_xinimax(p,mu)*(1._kp-epsilon(1._kp))
 
  do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd)*(1.+epsilon(1._kp)) !logarithmic step
+ xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
 ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 

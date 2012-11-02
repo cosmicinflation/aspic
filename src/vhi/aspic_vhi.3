@@ -1,4 +1,4 @@
-.TH libvhi 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libvhi 3 "November 2, 2012" "libaspic" "Module convention" 
 
 .SH NAME
 .I vhi
@@ -30,17 +30,68 @@ Parameters
 ::
 .B xend
 
+.SH DESCRIPTION
+The
+.I vhi
+module is used for the one field hybrid inflation in the vacuum
+dominated regime. If 'p > 1', this is the region for which 'x <
+xeps1-' where 'xeps1-' is the smallest field value at which the first
+Hubble flow function equals unity. If 'p <= 1', inflation can
+only take place at field values 'x > xeps1'. Notice that the 'xeps1+-'
+do not always exist and can be degenerated such that we provide a
+.I
+real(kp), dimension(2)
+function
+.IP
+.BR vhi_x_epsoneunity (p,mu)
+.P
+which returns the two field values 'xeps1-' and 'xeps1+' when they exist.
+In this regime, valley hybrid inflation ends by instability and the field
+value 'xend' is an extra model parameter that has to be specified. As
+the result, the function
+.BR vhi_x_endinf ()
+does not exist but we provide instead three other
+.I
+real(kp)
+functions
+.IP
+.BR vhi_xendmin (p,mu)
+.RS
+.BR vhi_xinimax (p,mu)
+.RE
+.RS
+.BR vhi_xendmax (N,p,mu)
+.RE
+.P
+which returns the minimal and maximal acceptable values for 'xini'
+given the model parameterts and 'xend' given the total number of
+efolds 'N' wanted, starting from the maximum value of 'xini'. Two
+other convenience functions have been implemented:
+.IP
+.BR vhi_epsilon_one_max (p,mu)
+.RS
+.BR vhi_x_epsonemax (p,mu)
+.RE
+.P
+The first returns the maximal value of the first Hubble flow function
+while the second returns the field value at which the first Hubble
+flow function is maximal (this is not 'xeps+-').
+
+
 .SH NOTES
-The end of inflation is an additional model parameter encoded in the
-dimensionless field value xend at which this occurs. The potential
-routines therefore take only the
-.B p
-argument on entry whereas the Hubble flow routines requires
-.B p
-and
-.B
-mu
-as arguments.
+For some model parameters, hybrid inflation is not well approximated
+by the one field potential, either due to slow-roll violations or
+because it is genuinely a two-field inflation model. More information
+can be found in
+.UR http://fr.arxiv.org/abs/0809.4355
+arXiv:0809.4355
+.UE
+.UR http://fr.arxiv.org/abs/0909.0402
+arXiv:0909.0402
+.UE
+.UR http://fr.arxiv.org/abs/1006.4522
+arXiv:1006.4522
+.UE
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

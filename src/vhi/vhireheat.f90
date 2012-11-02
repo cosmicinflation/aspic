@@ -7,7 +7,7 @@ module vhireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
-  use vhisr, only : vhi_norm_potential,vhi_efold_primitive,vhi_xend_max,vhi_xend_min
+  use vhisr, only : vhi_norm_potential,vhi_efold_primitive,vhi_xinimax,vhi_xendmin
   implicit none
 
   private
@@ -48,9 +48,9 @@ contains
     vhiData%real2 = mu
     vhiData%real3 = w
     vhiData%real4 = calF + primEnd
-
-    mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi= vhi_xend_max(p,mu)*(1._kp-epsilon(1._kp))
+    
+    mini = xEnd -epsilon(1._kp)
+    maxi = vhi_xinimax(p,mu) + epsilon(1._kp)
 
     x = zbrent(find_vhi_x_star,mini,maxi,tolzbrent,vhiData)
     vhi_x_star = x

@@ -19,36 +19,39 @@ module psnisr
  
 contains
 !returns V/M**4 as function of x=phi/mu
-  function psni_norm_potential(x,alpha)
+  function psni_norm_potential(x,alpha,mu)
     implicit none
     real(kp) :: psni_norm_potential
     real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: mu
 
-    psni_norm_potential = 1._kp-alpha*log(cos(x))
+    psni_norm_potential = 1._kp + alpha*log(cos(x))
 
   end function psni_norm_potential
 
 
 
-!returns the first derivative of the potential with respect to phi/Mp, divided by M**4
+!returns the first derivative of the potential with respect to x
   function psni_norm_deriv_potential(x,alpha,mu)
     implicit none
     real(kp) :: psni_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: mu
 
-   psni_norm_deriv_potential = -alpha*tan(x)/mu
+   psni_norm_deriv_potential = -alpha*tan(x)
 
   end function psni_norm_deriv_potential
 
 
 
-!returns the second derivative of the potential with respect to phi/Mp, divided by M**4
+!returns the second derivative of the potential with respect to x
   function psni_norm_deriv_second_potential(x,alpha,mu)
     implicit none
     real(kp) :: psni_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: mu
 
-    psni_norm_deriv_second_potential = -alpha/(cos(x)*mu)**2
+    psni_norm_deriv_second_potential = -alpha/(cos(x))**2
 
   end function psni_norm_deriv_second_potential
 

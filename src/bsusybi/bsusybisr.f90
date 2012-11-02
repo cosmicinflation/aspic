@@ -139,7 +139,7 @@ contains
   end function find_bsusybi_x_trajectory
 
   
-  function bsusybi_xendmax(gammaBSUSYB,bfoldstar) !Returns the maximum value of gamma in order to realize the required -bdolstar e-folds.
+  function bsusybi_xendmax(gammaBSUSYB,bfoldstar) !Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
     implicit none
     real(kp), intent(in) :: gammaBSUSYB,bfoldstar
     real(kp) :: bsusybi_xendmax

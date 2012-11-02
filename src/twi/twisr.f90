@@ -19,8 +19,10 @@ module twisr
   public twi_norm_deriv_potential, twi_norm_deriv_second_potential
 
   public twi_x_endsr
+  public phi0eps1,A
 
-  real(kp), parameter ::A=0.33183220315845589991447280462623125031833134154035_kp
+  real(kp), parameter :: A = 0.33183220315845589991447280462623125031833134154035_kp
+  real(kp), parameter :: phi0eps1 = 0.04228_kp
 
 !if bigger numerical errors
   real(kp), parameter :: ymax = 100._kp
@@ -118,7 +120,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: twiData
     
-    if (phi0.gt.0.04228_kp) stop 'twi_x_epsoneequalsone: no slow roll solution for this value of phi0!'
+    if (phi0.gt.phi0eps1) stop 'twi_x_epsoneequalsone: no slow roll solution for this value of phi0!'
 
     maxi=ymax*phi0 !if bigger, <numaccuracy errors
     mini = twi_x_eps1max(phi0) !second maximum of eps1
@@ -155,7 +157,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: twiData
     
-    if (phi0.gt.0.04228_kp) stop 'twi_x_endsr: no slow roll solution for this value of phi0!'
+    if (phi0.gt.phi0eps1) stop 'twi_x_endsr: no slow roll solution for this value of phi0!'
 
     maxi=ymax*phi0 !if bigger, <numaccuracy errors
     mini = twi_x_eps1max(phi0) !second maximum of eps1

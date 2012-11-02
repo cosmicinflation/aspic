@@ -1,4 +1,4 @@
-.TH librpi 3 "September 20, 2012" "libaspic" "Module convention" 
+.TH librpi 3 "October 31, 2012" "libaspic" "Module convention" 
 
 .SH NAME
 .I rpi1
@@ -27,16 +27,16 @@ module is used for the R + R^p inflation at small field values,
 namely in the region for which 'x < xVmax', the field value at which the
 potential is maximal. In this regime, inflation naturally ends at a
 field value 'xend' returned by the function
-.BR rmi1_x_endinf (p).
+.BR rpi1_x_endinf (p).
 
 This model shares a few peculiar functions with
-.I rmi2
+.I rpi2
 in a module named
-.BR rmicommon .
+.BR rpicommon .
 The value of 'xvMax' is returned by
-.BR rmi_x_max_potential (p)
+.BR rpi_x_potmax (p)
 accessible through
 .IP
-.B use rmicommon, only : rmi_x_max_potential
+.B use rpicommon, only : rpi_x_potmax
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

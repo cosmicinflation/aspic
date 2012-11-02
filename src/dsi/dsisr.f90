@@ -13,17 +13,20 @@ module dsisr
 
   private
 
-  public  dsi_norm_potential, dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three
-  public  dsi_x_min, dsi_efold_primitive, dsi_x_trajectory
-  public  dsi_norm_deriv_potential, dsi_norm_deriv_second_potential
+  public dsi_norm_potential, dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three
+  public dsi_efold_primitive, dsi_x_trajectory
+  public dsi_norm_deriv_potential, dsi_norm_deriv_second_potential
+  public dsi_xinimin, dsi_xendmin, dsi_x_epsoneunity
 
+    
  
 contains
 !returns V/M**4 as function of x=phi/mu
-  function dsi_norm_potential(x,p)
+  function dsi_norm_potential(x,p,mu)
     implicit none
     real(kp) :: dsi_norm_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
     dsi_norm_potential = 1._kp+x**(-p)
 
@@ -32,22 +35,24 @@ contains
 
 
 !returns the first derivative of the potential with respect to x=phi/mu, divided by M**4
-  function dsi_norm_deriv_potential(x,p)
+  function dsi_norm_deriv_potential(x,p,mu)
     implicit none
     real(kp) :: dsi_norm_deriv_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
-   dsi_norm_deriv_potential = -p/(x**(p+1._kp))
+    dsi_norm_deriv_potential = -p/(x**(p+1._kp))
 
   end function dsi_norm_deriv_potential
 
 
 
 !returns the second derivative of the potential with respect to x=phi/mu, divided by M**4
-  function dsi_norm_deriv_second_potential(x,p)
+  function dsi_norm_deriv_second_potential(x,p,mu)
     implicit none
     real(kp) :: dsi_norm_deriv_second_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
     dsi_norm_deriv_second_potential = p*(p+1._kp)/(x**(p+2._kp))
 
@@ -90,40 +95,73 @@ contains
   end function dsi_epsilon_three
 
 
-!returns the minimum value for x, defined as epsilon1=1, such that inflation takes place
-  function dsi_x_min(p,mu)
+!returns the field value at which eps1=1
+  function dsi_x_epsoneunity(p,mu)
     implicit none
     real(kp), intent(in) :: p,mu
-    real(kp) :: dsi_x_min
+    real(kp) :: dsi_x_epsoneunity
+    real(kp) :: xeps1max
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: dsiData
 
+
+    dsiData%real1 = p
+    dsiData%real2 = mu
+
     mini = epsilon(1._kp)
-    maxi = (p/(sqrt(2._kp)*mu))**(1._kp/(p+1._kp))*100._kp !Asymptotic Solution when x_min >> 1, times some safety number
-  
+    maxi = 1._kp/epsilon(1._kp)
 
     dsiData%real1 = p
     dsiData%real2 = mu
     
-    dsi_x_min = zbrent(find_dsi_x_min,mini,maxi,tolFind,dsiData)
-   
-   
-  end function dsi_x_min
-
-  function find_dsi_x_min(x,dsiData)    
+    dsi_x_epsoneunity = zbrent(find_dsixepsoneunity,mini,maxi,tolFind,dsiData)
+    
+  end function dsi_x_epsoneunity
+  
+  function find_dsixepsoneunity(x,dsiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: dsiData
-    real(kp) :: find_dsi_x_min
+    real(kp) :: find_dsixepsoneunity
     real(kp) :: p,mu
 
     p = dsiData%real1
     mu = dsiData%real2
+    
+    find_dsixepsoneunity = dsi_epsilon_one(x,p,mu) - 1._kp
+  
+  end function find_dsixepsoneunity
 
-    find_dsi_x_min = dsi_epsilon_one(x,p,mu)-1._kp
-   
-  end function find_dsi_x_min
+
+
+!the min value for xini
+  function dsi_xinimin(p,mu)
+    implicit none
+    real(kp), intent(in) :: p,mu
+    real(kp) :: dsi_xinimin
+    
+    dsi_xinimin = dsi_x_epsoneunity(p,mu)
+    
+  end function dsi_xinimin
+
+
+
+!the min value for xend if we want efolds inflation
+  function dsi_xendmin(efold,p,mu)
+    implicit none
+    real(kp), intent(in) :: efold, p, mu
+    real(kp) :: dsi_xendmin, xini, xhuge
+    real(kp) :: mini,maxi
+    type(transfert) :: dsiData
+
+    xini = dsi_xinimin(p,mu)    
+
+    dsi_xendmin = dsi_x_trajectory(efold,xini,p,mu)
+
+  end function dsi_xendmin
+
+ 
 
 
 !this is integral(V(phi)/V'(phi) dphi)
@@ -144,13 +182,20 @@ contains
   function dsi_x_trajectory(bfold,xend,p,mu)
     implicit none
     real(kp), intent(in) :: bfold,p,mu,xend
-    real(kp) :: dsi_x_trajectory
+    real(kp) :: dsi_x_trajectory,xiniMin
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: dsiData
 
-    mini=dsi_x_min(p,mu)
-    maxi = xend
+    xiniMin = dsi_xinimin(p,mu)
+
+    if (bfold.gt.0._kp) then
+       mini=xIniMin
+       maxi = 1._kp/epsilon(1._kp)
+    else
+       mini= xiniMin
+       maxi = xend
+    endif
 
     dsiData%real1 = p
     dsiData%real2 = mu

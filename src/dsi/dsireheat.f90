@@ -8,7 +8,7 @@ module dsireheat
   use srreheat, only : ln_rho_reheat
   use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three
   use dsisr, only : dsi_norm_potential
-  use dsisr, only : dsi_x_min, dsi_efold_primitive
+  use dsisr, only : dsi_xinimin, dsi_efold_primitive
   implicit none
 
   private
@@ -50,7 +50,7 @@ contains
     dsiData%real4 = w
     dsiData%real5 = calF + primEnd
 
-    mini=dsi_x_min(p,mu)
+    mini=dsi_xinimin(p,mu)
     maxi = xend
 
 
