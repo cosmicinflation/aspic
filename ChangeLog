@@ -1,3 +1,185 @@
+commit 0ef61df71fcaf9a305bf1af2187a522a43bcdfbf
+Date:   Mon Nov 5 10:53:08 2012 +0100
+
+    Merge mlfi and gmi into gmlfi; add optional mu parameter when needed
+
+ NEWS                      |   50 +++++++++---
+ configure.ac              |    2 +-
+ include/aspic.h           |   58 +++++++++-----
+ man/libaspic.3            |  111 ++++++++++++++++++--------
+ src/Makefile.am           |    8 +-
+ src/dwi/dwisr.f90         |    9 ++-
+ src/gmlfi/Makefile.am     |   27 +++++++
+ src/gmlfi/aspic_gmlfi.3   |   25 ++++++
+ src/gmlfi/gmlfimain.f90   |   94 ++++++++++++++++++++++
+ src/gmlfi/gmlfireheat.f90 |  128 ++++++++++++++++++++++++++++++
+ src/gmlfi/gmlfisr.f90     |  190 +++++++++++++++++++++++++++++++++++++++++++++
+ src/gmlfi/mlfimain.f90    |   79 +++++++++++++++++++
+ src/mhi/mhisr.f90         |    9 ++-
+ src/mlfi/Makefile.am      |   21 -----
+ src/mlfi/aspic_mlfi.3     |   25 ------
+ src/mlfi/mlfimain.f90     |   79 -------------------
+ src/mlfi/mlfireheat.f90   |  122 -----------------------------
+ src/mlfi/mlfisr.f90       |  189 --------------------------------------------
+ src/sfi/sfisr.f90         |    9 ++-
+ 19 files changed, 723 insertions(+), 512 deletions(-)
+
+commit 81056f8de4924fbfb0ba4a18f3666401c81cbde2
+Date:   Fri Nov 2 18:01:58 2012 +0100
+
+    Massive edition of vhisr and dsisr; removing duplicated gmi
+
+ configure.ac              |    3 +-
+ src/Makefile.am           |    3 +-
+ src/bsusybi/bsusybisr.f90 |    2 +-
+ src/dsi/aspic_dsi.3       |   48 ++++++---
+ src/dsi/dsimain.f90       |   54 +++++-----
+ src/dsi/dsireheat.f90     |    4 +-
+ src/dsi/dsisr.f90         |   95 ++++++++++++-----
+ src/gmi/Makefile.am       |   24 -----
+ src/gmi/aspic_gmi.3       |   46 --------
+ src/gmi/gmimain.f90       |   94 ----------------
+ src/gmi/gmireheat.f90     |  127 ----------------------
+ src/gmi/gmisr.f90         |  186 --------------------------------
+ src/mssmi/aspic_gmssmi.3  |    2 +-
+ src/mssmi/aspic_mssmi.3   |    4 +-
+ src/ncki/aspic_ncki.3     |   12 ++-
+ src/ncki/nckisr.f90       |   30 ++++--
+ src/psni/psnisr.f90       |   19 ++--
+ src/rpi/aspic_rpi1.3      |   12 +--
+ src/rpi/aspic_rpi2.3      |   12 +--
+ src/ti/aspic_ti.3         |    4 +-
+ src/ti/tisr.f90           |    9 +-
+ src/twi/twisr.f90         |    8 +-
+ src/vhi/aspic_vhi.3       |   73 +++++++++++--
+ src/vhi/vhimain.f90       |    9 +-
+ src/vhi/vhireheat.f90     |    8 +-
+ src/vhi/vhisr.f90         |  260 ++++++++++++++++++++++++++++++++-------------
+ 26 files changed, 469 insertions(+), 679 deletions(-)
+
+commit 972f5e88ac76c2d33c1c17b705916e85a0af56fd
+Date:   Wed Oct 31 11:08:43 2012 +0100
+
+    Fixes wrong names _x_reheat instead of x_star; moving beta_mssm to mssmsr
+
+ src/bi/bimain.f90         |    4 +-
+ src/bi/bireheat.f90       |   12 ++--
+ src/lfi/lfimain.f90       |    4 +-
+ src/lfi/lfireheat.f90     |   22 +++----
+ src/mssmi/mssmicommon.f90 |  157 +++++++++++++--------------------------------
+ src/mssmi/mssmisr.f90     |   29 ++++++---
+ src/rmi/rmimain.f90       |    4 +-
+ src/rmi/rmireheat.f90     |   14 ++--
+ src/sfbi/sfbimain.f90     |    4 +-
+ src/sfbi/sfbireheat.f90   |   14 ++--
+ src/sfi/sfimain.f90       |    4 +-
+ src/sfi/sfireheat.f90     |   26 ++++----
+ 12 files changed, 117 insertions(+), 177 deletions(-)
+
+commit 4af79cb481196d91b9213e58de6461f07ad9da0e
+Date:   Tue Oct 30 16:43:27 2012 +0100
+
+    remove obsolete pause statements
+
+ src/ssi/ssi1main.f90 |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 1862e627ea4ab474669413ea61c0c9ccbe574735
+Date:   Tue Oct 30 16:39:05 2012 +0100
+
+    Fix libssi build
+
+ src/common/cosmopar.f90 |    7 +++++++
+ src/common/srreheat.f90 |   11 ++++++++---
+ src/lfi/lfimain.f90     |    4 ++--
+ src/lfi/lfireheat.f90   |   22 +++++++++++-----------
+ src/ssi/Makefile.am     |   10 +++++-----
+ src/ssi/libssi.la       |   41 -----------------------------------------
+ 6 files changed, 33 insertions(+), 62 deletions(-)
+
+commit 1dbc8348af6263e0651d7624a3f23324fe8c3067
+Date:   Tue Oct 30 16:23:01 2012 +0100
+
+    Merging with JMVV (0.0.6)
+
+ configure.ac                |    3 +
+ include/aspic.h             |   16 +-
+ src/Makefile.am             |   12 +-
+ src/bsusybi/bsusybimain.f90 |    2 +-
+ src/common/cosmopar.f90     |    7 -
+ src/common/infprec.f90      |    2 +-
+ src/common/specialinf.f90   |    5 +-
+ src/common/srreheat.f90     |   11 +-
+ src/dsi/Makefile.am         |    3 -
+ src/dsi/dsimain.f90         |  104 +++++++
+ src/dsi/dsireheat.f90       |  129 ++++++++
+ src/dsi/dsisr.f90           |  180 +++++++++++
+ src/gmi/gmimain.f90         |   94 ++++++
+ src/gmi/gmireheat.f90       |  127 ++++++++
+ src/gmi/gmisr.f90           |  186 +++++++++++
+ src/lfi/lfimain.f90         |    4 +-
+ src/lfi/lfireheat.f90       |   22 +-
+ src/lmi/Makefile.in         |  715 -------------------------------------------
+ src/lmi/lmi1main.f90        |   22 +-
+ src/lmi/lmi2main.f90        |    2 +-
+ src/mssmi/Makefile.am       |   15 +-
+ src/mssmi/aspic_gmssmi.3    |   25 ++
+ src/mssmi/aspic_mssmi.3     |    2 +-
+ src/mssmi/gmssmimain.f90    |  166 ++++++++++
+ src/mssmi/gmssmireheat.f90  |  127 ++++++++
+ src/mssmi/gmssmisr.f90      |  231 ++++++++++++++
+ src/mssmi/mssmicommon.f90   |  243 +++++++++++++++
+ src/mssmi/mssmimain.f90     |   97 +-----
+ src/mssmi/mssmireheat.f90   |   71 ++---
+ src/mssmi/mssmisr.f90       |  203 +++---------
+ src/ncki/nckimain.f90       |  123 ++++----
+ src/ncki/nckimain.f90~      |  168 ++++++++++
+ src/ncki/nckireheat.f90     |   14 +-
+ src/ncki/nckisr.f90         |    3 +-
+ src/psni/psnimain.f90       |   31 +-
+ src/psni/psnisr.f90         |   12 +-
+ src/ssi/.deps/ssi1main.Po   |    1 +
+ src/ssi/Makefile.am         |   24 ++
+ src/ssi/aspic_ssi1.3        |   25 ++
+ src/ssi/libssi.la           |   41 +++
+ src/ssi/ssi1main.f90        |  121 ++++++++
+ src/ssi/ssi1reheat.f90      |  124 ++++++++
+ src/ssi/ssi1sr.f90          |  231 ++++++++++++++
+ src/ssi/ssicommon.f90       |  143 +++++++++
+ src/ti/tisr.f90             |    2 +-
+ src/twi/twimain.f90         |    3 +
+ src/vhi/vhimain.f90         |    1 +
+ src/vhi/vhireheat.f90       |    1 +
+ 48 files changed, 2755 insertions(+), 1139 deletions(-)
+
+commit cf0e1a57dfc668eb857abd517c6c35bbe32ae7b5
+Date:   Wed Oct 3 17:45:55 2012 +0200
+
+    fix missing use
+
+ src/common/srreheat.f90 |    1 +
+ 1 file changed, 1 insertion(+)
+
+commit ceed61dd51dd592db3435344e0e46faa0df8310a
+Date:   Wed Oct 3 17:43:15 2012 +0200
+
+    adding g* correcting factor
+
+ src/common/cosmopar.f90 |    7 +++++++
+ src/common/srreheat.f90 |   10 +++++++---
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 50d9ef4b85171fa0754eb2366f0c45adb7d09b43
+Date:   Wed Oct 3 14:57:45 2012 +0200
+
+    fixing wrong names x_star names in lfi + header
+
+ include/aspic.h       |   16 ++++++++--------
+ src/lfi/lfimain.f90   |    4 ++--
+ src/lfi/lfireheat.f90 |   22 +++++++++++-----------
+ 3 files changed, 21 insertions(+), 21 deletions(-)
+
+
 commit 8acd67c111d3d80e4bfc13edb89bc04b4c72a16f
 Date:   Thu Sep 20 20:06:13 2012 +0200
 
