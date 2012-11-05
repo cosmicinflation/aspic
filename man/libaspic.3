@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "September 18, 2012" "version 0.0.6" "Aspic usage"
+.TH libaspic 3 "November 5, 2012" "version 0.0.7" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -155,7 +155,7 @@ All these functions take as an input the dimensionless field value
 and/or a relative e-fold number
 .B 'N'
 and some extra model parameter values, all of the kind
-.I real(kp).
+.IR real(kp) .
 The field values
 .B 'x'
 are usually assumed to be in reduced Planck mass units. For some
@@ -172,7 +172,7 @@ man pages or in the header of the module file 'foosr.f90'.
 The first three functions return the
 .I normalized
 field potential and its
-derivatives. They
+derivatives with respect to the input variable 'x'. They
 .I do not
 include any multiplicative
 factor (such as M^4) because it is always uniquely determined by the
@@ -192,8 +192,8 @@ returns the field value
 at the end of inflation. For most models, this happens when the first
 Hubble flow function equals unity but it can also be given by more
 specific mechanisms. Notice that, for some models, the end of
-inflation may be an extra model parameter. For those models, this
-function is obviously not provided. The function
+inflation may be an extra model parameter. For those, this function is
+obviously not provided. The function
 .BR foo_efold_primitive ()
 returns, up to a constant, the value of the integral
 .B SUM{V(x)/V'(x)dx}
@@ -235,7 +235,7 @@ and in the header of the module files 'foosr.f90' and 'fooreheat.f90'.
 .P
 The function
 .BR foo_lnrhoend ()
-return the natural logarithm of the total energy density of the
+returns the natural logarithm of the total energy density of the
 universe at the end of inflation. This number depending on the
 physical normalization of the potential, you need to input
 .B 'Pstar'
@@ -348,10 +348,10 @@ These functions are valid for any slow-roll inflationary model and
 take as arguments 'Pstar', the primordial power spectrum amplitude at
 the pivot, 'w' the mean equation of state during
 (pre)reheating, 'epsOneStar' and 'epsOneEnd' are the first Hubble flow
-function respectively evaluated at the time of pivot Hubble crossing
-and the end of inflation. The argument 'VendOverVstar' is the ratio
-between the field potential, evaluated at those two times. All those
-arguments are of
+function respectively evaluated at the time the pivot mode crossed the
+Hubble radius during inflation, and at the end of inflation. The
+argument 'VendOverVstar' is the ratio between the field potential,
+evaluated at those two times. All those arguments are of
 .I real(kp)
 kind.
 
@@ -370,6 +370,9 @@ observational choices such as the pivot scale. More explicitly, they are
 .RE
 .RS
 .B HubbleSquareRootOf2OmegaRad
+.RE
+.RS
+.B RelatDofRatio
 .RE
 .RS
 .B lnRhoNuc                   
@@ -392,9 +395,10 @@ observational choices such as the pivot scale. More explicitly, they are
 
 .P
 The first two are the Hubble parameter today times the square root of
-the double (or triple) density parameter of radiation today
-(eventually renormalized by the ratio between the number of entropic
-relativistic species at the end of reheating and today). The constant
+the double (or triple) density parameter of radiation today, the
+second is the ratio between the number of entropic relativistic
+species at the end of reheating and today (gives only small
+corrections). The constant
 .B lnRhoNuc
 stands for the natural logarithm of the energy density of the universe
 just before Big-Bang Nucleosynthesis. Next
@@ -473,9 +477,6 @@ Model name
 .I lfi
 large field inflation
 .TQ
-.I mlfi
-mixed large field inflation
-.TQ
 .I rcmi
 radiatively corrected massive inflation
 .TQ
@@ -517,6 +518,21 @@ mutated hilltop inflation
 .TQ
 .I rgi
 radion gauge inflation
+.TQ
+.I mssmi
+minimal supersymmetric model inflation
+.TQ
+.I ripi
+renormalizable inflection point inflation
+.TQ
+.I ai
+arctan inflation
+.TQ
+.I cnai
+constant spectral index inflation A
+.TQ
+.I cnbi
+constant spectral index inflation B
 
 
 .SS TWO PARAMETERS MODELS
@@ -539,15 +555,14 @@ logamediate inflation I
 .I rpi2
 R + R^p inflation II
 .TQ
-.TQ
 .I twi
 twisted inflation
 .TQ
 .I hf2i
 horizon flow inflation at second order
 .TQ
-.I mssmi
-MSSM inflation
+.I gmssmi
+generalized minimal supersymmetric model inflation
 .TQ
 .I bsusybi
 brane SUSY breaking inflation
@@ -567,8 +582,24 @@ non-canonical Kahler inflation
 .I bi
 brane inflation
 .TQ
-.I lpi
-Logarithmic potential inflation
+.I csi
+constant spectrum inflation
+.TQ
+.I oi
+orientifold inflation
+.TQ
+.I cnci
+constant spectral index inflation C
+.TQ
+.I cndi
+constant spectral index inflation D
+.TQ
+.I sbi
+supergravity brane inflation
+.TQ
+.I ssi
+sneutrino supersymmetric inflation
+
 
 .SS THREE PARAMETERS MODELS
 .TP 20
@@ -587,18 +618,23 @@ valley hybrid inflation
 .I dsi
 dynamical supersymmetric inflation
 .TQ
-.I gmi
-generalized mixed inflation
+.I gmlfi
+generalized mixed large field inflation
 .TQ
 .I shi
 super hilltop inflation
 .TQ
-.I mhi
-more hilltop inflation
+.I ghi
+generalized hiltop inflation
 .TQ
 .I su5i
 SU(5) inflation
-
+.TQ
+.I pi
+polunomial inflation
+.TQ
+.I lpi
+Logarithmic potential inflation
 
 
 .SH ADDING A MODEL
@@ -758,7 +794,6 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .SH SEE ALSO
 .BR aspic_hi (3),
 .BR aspic_lfi (3),
-.BR aspic_mlfi (3),
 .BR aspic_rcmi (3),
 .BR aspic_rcqi (3),
 .BR aspic_pni (3),
@@ -772,7 +807,12 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_rpi1 (3),
 .BR aspic_dwi (3),
 .BR aspic_mhi (3),
-.BR aspic_rgi (3).
+.BR aspic_rgi (3),
+.BR aspic_mssmi (3),
+.BR aspic_ripi (3),
+.BR aspic_ai (3),
+.BR aspic_cnai (3),
+.BR aspic_cnbi (3).
 .P
 .BR aspic_sfi (3),
 .BR aspic_ii (3),
@@ -781,19 +821,26 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_rpi2 (3),
 .BR aspic_twi (3),
 .BR aspic_hf2i (3),
-.BR aspic_mssmi (3),
+.BR aspic_gmssmi (3),
 .BR aspic_bsusybi (3),
 .BR aspic_ti (3),
 .BR aspic_bei (3),
 .BR aspic_psni (3),
 .BR aspic_ncki (3),
 .BR aspic_bi (3),
-.BR aspic_lpi (3).
+.BR aspic_csi (3),
+.BR aspic_oi (3),
+.BR aspic_cnci (3),
+.BR aspic_cndi (3),
+.BR aspic_sbi (3),
+.BR aspic_ssi (3).
 .P
 .BR aspic_lmi2 (3),
 .BR aspic_rmi (3),
 .BR aspic_vhi (3),
 .BR aspic_dsi (3),
-.BR aspic_gmi (3),
 .BR aspic_shi (3),
-.BR aspic_su5i(3).
+.BR aspic_ghi (3),
+.BR aspic_su5i(3),
+.BR aspic_pi(3),
+.BR aspic_lpi(3).

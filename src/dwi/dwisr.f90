@@ -19,10 +19,11 @@ module dwisr
  
 contains
 !returns V/M^4
-  function dwi_norm_potential(x)
+  function dwi_norm_potential(x,phi0)
     implicit none
     real(kp) :: dwi_norm_potential
     real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: phi0
 
     dwi_norm_potential = (x**2-1._kp)**2
 
@@ -31,10 +32,11 @@ contains
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function dwi_norm_deriv_potential(x)
+  function dwi_norm_deriv_potential(x,phi0)
     implicit none
     real(kp) :: dwi_norm_deriv_potential
     real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: phi0
 
    dwi_norm_deriv_potential = 4._kp*x*(-1._kp+x**2)
 
@@ -43,10 +45,11 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function dwi_norm_deriv_second_potential(x)
+  function dwi_norm_deriv_second_potential(x,phi0)
     implicit none
     real(kp) :: dwi_norm_deriv_second_potential
     real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: phi0
 
     dwi_norm_deriv_second_potential = 4._kp*(-1._kp+3._kp*x**2)
 

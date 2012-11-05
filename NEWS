@@ -1,12 +1,38 @@
-* v0.0.6
-- 4 new models imported (lmi12, rpi12, bei,rgi), check ChangeLog
-- adding global include file 'aspic.h'
-- man files added, for both the library and each modules (*.3 files)
-- move kstar from srreheat to cosmopar
-- move pi from srrehat to infpref 
-- adding test in zbrent to ensure x1<x2
-- unifying lmi1 and lmi2 models under lmi directory, adding lmicommon
-  modules + some bugs fixed
-- splitting rpi into rpi1 and rpi2 models, adding rpicommon modules +
-  some bugs fixed
-- adding xend for bei trajectory
+* v0.0.7
+
+- 9 new models imported
+  (mssmi,twi,gmssmi,bsusybi,ti,psni,ncki,vhi,dsi), check ChangeLog
+
+- Adding g* correction factor into Rrad (cosmopar + srreheat trivial changes)
+
+- Remove obsoletes pause statements, fix libssi build
+
+- Moving beta_mssm to mssmsr instead of common module
+
+- Adding optional mu variable to potentials even when they do not need
+  it; this allows to respect our convention that sr functions take all
+  parameters as arguments without breaking codes not specifying it on
+  input. This fix has been also applied to older models: sfi, dwi,
+  mhi, ti, psni, dsi, vhi.
+
+- Adding new functions and fix some stuff into dsisr. Former dsi_x_min
+  renamed dsi_xinimin, wrote new function dsi_xendmin(efold,p,mu)
+  working with the number of efolds. Check out the module for more
+  details.
+
+- Adding new functions and fix some stuff into vhisr. Same as dsi,
+  xendmin(max) function renamed according to what they really compute
+  and added new function vhi_xendmax(efold,p,mu). Check out the module
+  for more details.
+
+- Fix reheat function names in sfi/rmi/bi, they should be x_star() not
+  x_reheat()?
+
+- Adding new function x_potmax() in nckisr
+
+- Fix bug in psnisr, the potential had the wrong sign (- instead of +)!?
+
+- Man files completed
+
+- Merge mlfi and gmi into gmlfi. Functions changed for compatibility,
+  new order is p,q,alpha

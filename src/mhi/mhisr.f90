@@ -19,10 +19,11 @@ module mhisr
  
 contains
 !returns V/M^4
-  function mhi_norm_potential(x)
+  function mhi_norm_potential(x,mu)
     implicit none
     real(kp) :: mhi_norm_potential
     real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: mu
 
     mhi_norm_potential = 1._kp-1._kp/cosh(x)
 
@@ -30,10 +31,11 @@ contains
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function mhi_norm_deriv_potential(x)
+  function mhi_norm_deriv_potential(x,mu)
     implicit none
     real(kp) :: mhi_norm_deriv_potential
     real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: mu
 
    mhi_norm_deriv_potential = tanh(x)/cosh(x)
 
@@ -42,10 +44,11 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function mhi_norm_deriv_second_potential(x)
+  function mhi_norm_deriv_second_potential(x,mu)
     implicit none
     real(kp) :: mhi_norm_deriv_second_potential
     real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: mu
 
     mhi_norm_deriv_second_potential = (cosh(x)**(-3)-tanh(x)**2/cosh(x))
 

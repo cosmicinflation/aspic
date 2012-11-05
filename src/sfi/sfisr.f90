@@ -21,20 +21,22 @@ module sfisr
  
 contains
 !returns V/M^4
-  function sfi_norm_potential(x,p)
+  function sfi_norm_potential(x,p,mu)
     implicit none
     real(kp) :: sfi_norm_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
     sfi_norm_potential = 1._kp - x**p
   end function sfi_norm_potential
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function sfi_norm_deriv_potential(x,p)
+  function sfi_norm_deriv_potential(x,p,mu)
     implicit none
     real(kp) :: sfi_norm_deriv_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
    sfi_norm_deriv_potential = -p*x**(p-1._kp)
 
@@ -43,10 +45,11 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function sfi_norm_deriv_second_potential(x,p)
+  function sfi_norm_deriv_second_potential(x,p,mu)
     implicit none
     real(kp) :: sfi_norm_deriv_second_potential
     real(kp), intent(in) :: x,p
+    real(kp), intent(in), optional :: mu
 
     sfi_norm_deriv_second_potential = -p*(p-1._kp)*x**(p-2._kp)
 

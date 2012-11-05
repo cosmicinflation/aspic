@@ -30,7 +30,7 @@ AC_CONFIG_FILES([Makefile
                  man/Makefile
                  src/common/Makefile
                  src/lfi/Makefile
-                 src/mlfi/Makefile
+                 src/gmlfi/Makefile
                  src/rcmi/Makefile
                  src/rcqi/Makefile
                  src/pni/Makefile

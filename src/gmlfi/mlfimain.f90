@@ -2,9 +2,9 @@
 program mlfimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use mlfisr, only : mlfi_epsilon_one, mlfi_epsilon_two, mlfi_epsilon_three
-  use mlfireheat, only : mlfi_lnrhoend 
-  use mlfireheat, only : mlfi_x_star
+  use gmlfisr, only : gmlfi_epsilon_one, gmlfi_epsilon_two, gmlfi_epsilon_three
+  use gmlfireheat, only : gmlfi_lnrhoend 
+  use gmlfireheat, only : gmlfi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
   implicit none
@@ -43,7 +43,7 @@ program mlfimain
    alpha=alphavalues(j)
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = mlfi_lnrhoend(p,q,alpha,Pstar)
+  lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -51,13 +51,13 @@ program mlfimain
 
      lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = mlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
 
      print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar
 
-     eps1 = mlfi_epsilon_one(xstar,p,q,alpha)
-     eps2 = mlfi_epsilon_two(xstar,p,q,alpha)
-     eps3 = mlfi_epsilon_three(xstar,p,q,alpha)
+     eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
+     eps2 = gmlfi_epsilon_two(xstar,p,q,alpha)
+     eps3 = gmlfi_epsilon_three(xstar,p,q,alpha)
 
      logErehGeV = log_energy_reheat_ingev(lnRhoReh)
      Treh =  10._kp**(logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp))

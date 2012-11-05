@@ -1,18 +1,18 @@
 lib_LTLIBRARIES = libaspic.la
 libaspic_la_SOURCES =
-libascpi_la_LDFLAGS = -version-info @version_info@
+libaspic_la_LDFLAGS = -version-info @version_info@
 
 libaspic_la_includedir = $(includedir)/$(SRINCDIR)
 libaspic_la_include_HEADERS = ../include/aspic.h
 
 #forces the linker to use fortran linking
-nodist_EXTRA_libsrmodels_la_SOURCES = donotexist.f90
+nodist_EXTRA_libaspic_la_SOURCES = donotexist.f90
 
 #while the real sources are already built libs
 libaspic_la_LIBADD =                \
         common/libsrcommon.la          \
         lfi/liblfi.la \
-        mlfi/libmlfi.la \
+        gmlfi/libgmlfi.la \
         rcmi/librcmi.la \
 	rcqi/librcqi.la \
 	pni/libpni.la \
@@ -51,5 +51,5 @@ libaspic_la_LIBADD =                \
 
 
 #to be build from there
-SUBDIRS = common lfi mlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssi
+SUBDIRS = common lfi gmlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssi
 
