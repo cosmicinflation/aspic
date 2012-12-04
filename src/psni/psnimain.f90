@@ -35,9 +35,9 @@ program psnimain
   npts = 20
   nalpha=30
 
-  mu=10._kp
+!  mu=10._kp
 !  mu=1._kp
-!  mu=0.5_kp
+  mu=0.5_kp
 !  mu=100._kp
 
   w=0._kp

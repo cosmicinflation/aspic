@@ -60,18 +60,17 @@ contains
   function get_calfconst(lnRhoReh,Pstar,w,epsEnd,potEnd)
     implicit none
     real(kp) :: get_calfconst
-    real(kp), intent(in) :: w,Pstar, epsEnd,potEnd,lnRhoReh
+    real(kp), intent(in) :: lnRhoReh,Pstar,w,epsEnd,potEnd
 
     real(kp) :: lnHoverSqrtEps,calF
 
-    lnHoverSqrtEps = 0.5_kp*log(Pstar*8*pi*pi)
+    lnHoverSqrtEps = 0.5_kp*log(Pstar*8._kp*pi**2)
 
     calF = -Nzero + (1._kp+3._kp*w)/(3._kp+3._kp*w)*lnHoverSqrtEps &
          - 1._kp/(3._kp+3._kp*w)*log(9._kp*2._kp**(1.5*w+0.5)*potEnd/(3._kp-epsEnd)) &
          +(1._kp-3._kp*w)/(12._kp+12._kp*w)*lnRhoReh
         
     get_calfconst = calF
-
 
   end function get_calfconst
 

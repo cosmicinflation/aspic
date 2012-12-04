@@ -7,6 +7,8 @@ module cosmopar
   
   public
 
+  real(kp), parameter :: pi=acos(-1._kp)
+
   real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.4585d-63
   real(kp), parameter :: HubbleSquareRootOf2OmegaRad = sqrt(2._kp/3._kp)*HubbleSquareRootOf3OmegaRad
 

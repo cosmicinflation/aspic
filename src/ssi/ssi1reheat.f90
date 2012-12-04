@@ -103,6 +103,9 @@ contains
 
     epsOneEnd = ssi1_epsilon_one(xEnd,alpha,beta)
 
+!    print*,'ssi1_lnrhoend:  xEnd=',xEnd,'  potEnd=',potEnd,'   epsOneEnd=',epsOneEnd
+!    pause
+
 
 !   Trick to return x such that rho_reh=rho_end
 

@@ -1,9 +1,9 @@
 !test the reheating derivation from slow-roll
-program ssi1main
+program ssi6main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use ssi1sr, only : ssi1_epsilon_one, ssi1_epsilon_two, ssi1_epsilon_three, ssi1_alphamin
-  use ssi1reheat, only : ssi1_lnrhoend, ssi1_x_star
+  use ssi6sr, only : ssi6_epsilon_one, ssi6_epsilon_two, ssi6_epsilon_three, ssi6_abs_alpha_min
+  use ssi6reheat, only : ssi6_lnrhoend, ssi6_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -33,20 +33,22 @@ program ssi1main
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
- call delete_file('ssi1_alphamin.dat')
+ call delete_file('ssi6_alphamin.dat')
 
- Nbeta=1000
- betamin=0.00000001_kp!10._kp**(-3._kp)
- betamax=100._kp!10._kp**(3._kp)
+ Nbeta=10000
+ betamin=0.000001_kp
+ betamax=100._kp
 
  do j=0,Nbeta 
   beta=betamin*(betamax/betamin)**(real(j,kp)/Nbeta)  !logarithmic step
 !  beta=betamin+(betamax-betamin)*(real(j,kp)/Nbeta)  !arithmetic step
-  alpha=ssi1_alphamin(beta)
-  call livewrite('ssi1_alphamin.dat',beta,alpha)
+  alpha=-ssi6_abs_alpha_min(beta)
+  call livewrite('ssi6_abs_alpha_min.dat',beta,-alpha)
  end do
 
 print *,'Priors Written'
+
+
 
 
 
@@ -60,8 +62,8 @@ print *,'Priors Written'
 
   Pstar = powerAmpScalar
 
-  call delete_file('ssi1_predic.dat')
-  call delete_file('ssi1_nsr.dat')
+  call delete_file('ssi6_predic.dat')
+  call delete_file('ssi6_nsr.dat')
 
  Nalpha=100
  Nbeta=100
@@ -75,18 +77,21 @@ print *,'Priors Written'
 ! do j=0,Nbeta 
 ! beta=betamin*(betamax/betamin)**(real(j,kp)/Nbeta)  !logarithmic step
 
-  beta=10._kp**(-3._kp)
-  beta=10._kp**(-1._kp)
-  beta=10._kp**(1._kp)
+  beta=10._kp**(-5._kp)
+  beta=0.1_kp
+  beta=10._kp**(0._kp)
+  beta=10._kp**(3._kp)
 
-   alphamin=max(ssi1_alphamin(beta)*(1._kp+100000._kp*epsilon(1._kp)),10._kp**(-3._kp))
-   alphamax=alphamin*10._kp**(6._kp)
+   alphamin=-ssi6_abs_alpha_min(beta)*1.001_kp
+   if (alphamin .eq. 0._kp) alphamin=-10._kp**(-4._kp)
+   alphamax=alphamin*10._kp**(4._kp)
+   if (beta .eq. 10._kp**(-6._kp))   alphamax=alphamin*10._kp**(1.5_kp)
 
     do k=0,Nalpha 
       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/Nalpha)  !logarithmic step
 
       lnRhoRehMin = lnRhoNuc
-      lnRhoRehMax = ssi1_lnrhoend(alpha,beta,Pstar)
+      lnRhoRehMax = ssi6_lnrhoend(alpha,beta,Pstar)
 
 
       print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -95,14 +100,14 @@ print *,'Priors Written'
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = ssi1_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = ssi6_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
  
 
-       eps1 = ssi1_epsilon_one(xstar,alpha,beta)
-       eps2 = ssi1_epsilon_two(xstar,alpha,beta)
-       eps3 = ssi1_epsilon_three(xstar,alpha,beta)
+       eps1 = ssi6_epsilon_one(xstar,alpha,beta)
+       eps2 = ssi6_epsilon_two(xstar,alpha,beta)
+       eps3 = ssi6_epsilon_three(xstar,alpha,beta)
    
 
        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -112,9 +117,9 @@ print *,'Priors Written'
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('ssi1_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('ssi6_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('ssi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       call livewrite('ssi6_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
       end do
 
@@ -123,4 +128,4 @@ print *,'Priors Written'
 ! end do
 
 
-end program ssi1main
+end program ssi6main

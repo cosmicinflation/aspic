@@ -13,7 +13,7 @@ module ssi1sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj
+  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi136_x_epsilon2_Equals_0
 
 
   implicit none
@@ -107,12 +107,7 @@ contains
     real(kp) :: ssi1_x_epsilon2_Equals_0
     real(kp), intent(in) :: alpha,beta
 
-    ssi1_x_epsilon2_Equals_0 = -(alpha/(6._kp*beta))+(16._kp*alpha**3*beta**3+2._kp* &
-                               sqrt(complex((64._kp*alpha**6+(5._kp*alpha**2-36._kp*beta)**3)* &
-                               beta**6,0._kp)))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)*beta**2)+ &
-                               (-5._kp*alpha**2+36._kp*beta)/(6._kp*(8._kp*alpha**3*beta**3+ & 
-                               3._kp*sqrt(3._kp)*sqrt(complex((alpha**2-4._kp*beta)*beta**6* &
-                               (7._kp*alpha**4-72._kp*alpha**2*beta+432._kp*beta**2),0._kp)))**(1._kp/3._kp))
+    ssi1_x_epsilon2_Equals_0 = ssi136_x_epsilon2_Equals_0(alpha,beta)
     
   end function ssi1_x_epsilon2_Equals_0
 
@@ -126,13 +121,19 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ssi1Data
 
-    mini=epsilon(1._kp)
+
+    mini=1._kp
     maxi=10._kp**(3._kp)
 
     ssi1Data%real1 = beta
 
-    if(beta .gt. 9._kp/(11._kp+2._kp*sqrt(30._kp))  &
-            .and. beta .lt. 9._kp*(11._kp+2._kp*sqrt(30._kp))) then
+!    print*,'ssi1_alphamin:  beta=',beta,'mini=',mini,'  xeps2mini=',ssi1_x_epsilon2_Equals_0(mini,beta), &
+!           'maxi=',maxi,'  xeps2maxi=',ssi1_x_epsilon2_Equals_0(maxi,beta), &
+!           '  eps1(xeps2mini)=',ssi1_epsilon_one(ssi1_x_epsilon2_Equals_0(mini,beta),mini,beta), &
+!           '  eps1(xeps2maxi)=',ssi1_epsilon_one(ssi1_x_epsilon2_Equals_0(maxi,beta),maxi,beta)
+!    pause
+
+    if(beta .gt. 0.251_kp)  then!In that case inflation ends by slow roll violation for any value of alpha
 
        ssi1_alphamin = 0._kp
  
@@ -171,6 +172,10 @@ contains
 
     mini = ssi1_x_epsilon2_Equals_0(alpha,beta)
     maxi = mini/epsilon(1._kp)
+
+!    print*,'ss1_xend:  mini=',mini,'   maxi=',maxi,'   epsOne(mini)=',ssi1_epsilon_one(mini,alpha,beta), &
+!                 '   epsOne(maxi)=',ssi1_epsilon_one(maxi,alpha,beta)
+!    pause
 
     ssi1Data%real1 = alpha
     ssi1Data%real2 = beta

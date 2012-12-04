@@ -60,5 +60,10 @@ AC_CONFIG_FILES([Makefile
                  src/vhi/Makefile
                  src/dsi/Makefile
                  src/ssi/Makefile
+                 src/oi/Makefile
+                 src/ai/Makefile
+                 src/cnai/Makefile
+                 src/cnbi/Makefile
+                 src/ripi/Makefile
                 ])
 AC_OUTPUT

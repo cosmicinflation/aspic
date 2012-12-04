@@ -1,4 +1,4 @@
-!slow-roll functions for the sneutrino supersymmetric 1,2,3,4,5,6 potential
+!Common slow-roll functions for the sneutrino supersymmetric 1,2,3,4,5,6 potential
 !
 !
 !V(phi) = M^4 [ 1 + alpha x^2 + beta x^4 ]
@@ -24,6 +24,7 @@ module ssicommon
   public ssi_norm_deriv_potential, ssi_norm_deriv_second_potential
   public ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
   public ssi_efold_primitive, find_ssitraj
+  public ssi136_x_epsilon2_Equals_0, ssi245_x_V_Equals_0, ssi3456_x_Vprime_Equals_0
 
 contains
 
@@ -138,6 +139,43 @@ contains
     find_ssitraj = ssi_efold_primitive(x,alpha,beta) - NplusNuend
    
   end function find_ssitraj
+
+! Return the position x at which epsilon2 vanishes for SSI1, SSI3, SSI6
+  function ssi136_x_epsilon2_Equals_0(alpha,beta)
+  implicit none
+    real(kp) :: ssi136_x_epsilon2_Equals_0
+    real(kp), intent(in) :: alpha,beta
+
+    ssi136_x_epsilon2_Equals_0 = sqrt(-(alpha/(6._kp*beta))+(16._kp*alpha**3*beta**3+2._kp* &
+                               sqrt(complex((64._kp*alpha**6+(5._kp*alpha**2-36._kp*beta)**3)* &
+                               beta**6,0._kp)))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)*beta**2)+ &
+                               (-5._kp*alpha**2+36._kp*beta)/(6._kp*(8._kp*alpha**3*beta**3+ & 
+                               3._kp*sqrt(3._kp)*sqrt(complex((alpha**2-4._kp*beta)*beta**6* &
+                               (7._kp*alpha**4-72._kp*alpha**2*beta+432._kp*beta**2),0._kp)))**(1._kp/3._kp)))
+
+   end function ssi136_x_epsilon2_Equals_0
+
+
+! Return the position x at which the potential vanishes for SSI2, SSI4 and SSI5
+  function ssi245_x_V_Equals_0(alpha,beta)
+  implicit none
+    real(kp) :: ssi245_x_V_Equals_0
+    real(kp), intent(in) :: alpha,beta
+
+    ssi245_x_V_Equals_0 = sqrt(-(alpha+sqrt(alpha**2-4._kp*beta))/(2._kp*beta))
+
+   end function ssi245_x_V_Equals_0
+
+
+! Return the position x at which the first derivative of the potential with respect to x vanishes for SSI3&4 and SSI5&6
+  function ssi3456_x_Vprime_Equals_0(alpha,beta)
+  implicit none
+    real(kp) :: ssi3456_x_Vprime_Equals_0
+    real(kp), intent(in) :: alpha,beta
+
+    ssi3456_x_Vprime_Equals_0 = sqrt(-alpha/(2._kp*beta))
+
+   end function ssi3456_x_Vprime_Equals_0
 
 
 end module ssicommon
