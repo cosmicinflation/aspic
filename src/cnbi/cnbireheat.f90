@@ -7,7 +7,7 @@ module cnbireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use cnbisr, only : cnbi_epsilon_one, cnbi_epsilon_two, cnbi_epsilon_three
-  use cnbisr, only : cnbi_norm_potential, cnbi_x_max
+  use cnbisr, only : cnbi_norm_potential, cnbi_x_epsoneunity
   use cnbisr, only : cnbi_x_endinf, cnbi_efold_primitive, cnbi_x_trajectory
   implicit none
 
@@ -28,6 +28,8 @@ contains
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    
+    real(kp), dimension(2) :: xEps1
 
     type(transfert) :: cnbiData
     
@@ -37,6 +39,7 @@ contains
     endif
     
     xEnd = cnbi_x_endinf(alpha)
+    xEps1 = cnbi_x_epsoneunity(alpha)
 
     epsOneEnd = cnbi_epsilon_one(xEnd,alpha)
     potEnd = cnbi_norm_potential(xEnd,alpha)
@@ -52,8 +55,8 @@ contains
     cnbiData%real2 = w
     cnbiData%real3 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = cnbi_x_max(alpha)*(1._kp-epsilon(1._kp)) !Position where slow roll stops being valid
+    mini = xEnd + epsilon(1._kp)
+    maxi = xEps1(2) + epsilon(1._kp)
 
 
     x = zbrent(find_cnbi_x_star,mini,maxi,tolzbrent,cnbiData)

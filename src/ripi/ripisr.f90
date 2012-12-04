@@ -1,13 +1,12 @@
 !slow-roll functions for the renormalizable inflection point inflation potential
 !
-!V(phi) = M**4 (x**2 - alpha x**3 + 9 alpha**2/32 x**4)
+!V(phi) = M**4 (x**2 - alpha x**3 + 9/32 alpha**2 x**4)
 !
 !x = phi/Mp
 
 module ripisr
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent
-  use cosmopar, only : pi
   implicit none
 
   private

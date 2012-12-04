@@ -1,38 +1,20 @@
-* v0.0.7
+* v0.0.8
 
-- 9 new models imported
-  (mssmi,twi,gmssmi,bsusybi,ti,psni,ncki,vhi,dsi), check ChangeLog
+- 4 new models imported
+  (ripi, ai, cnai, cnbi), check ChangeLog
 
-- Adding g* correction factor into Rrad (cosmopar + srreheat trivial changes)
+- Remove pi from cosmopar as it is already defined in infprec
 
-- Remove obsoletes pause statements, fix libssi build
+- Fix typos in lmi man
 
-- Moving beta_mssm to mssmsr instead of common module
+- Adding cnai_x_potzero() function in cnaisr
 
-- Adding optional mu variable to potentials even when they do not need
-  it; this allows to respect our convention that sr functions take all
-  parameters as arguments without breaking codes not specifying it on
-  input. This fix has been also applied to older models: sfi, dwi,
-  mhi, ti, psni, dsi, vhi.
+- Some significant changes in cnbi, coded new functions and added an
+  efold test in the trajectory to get enough efolds of inflation. The
+  new functions are:
+      cnbi_x_potzero, cnbi_x_potinfty, cnbi_x_epsoneunity,
+      cnbi_epsilon_one_min, cnbi_x_epsonemin
+  and removed cnbi_xend_max.
 
-- Adding new functions and fix some stuff into dsisr. Former dsi_x_min
-  renamed dsi_xinimin, wrote new function dsi_xendmin(efold,p,mu)
-  working with the number of efolds. Check out the module for more
-  details.
+- Adding the corresponding descriptions in the man
 
-- Adding new functions and fix some stuff into vhisr. Same as dsi,
-  xendmin(max) function renamed according to what they really compute
-  and added new function vhi_xendmax(efold,p,mu). Check out the module
-  for more details.
-
-- Fix reheat function names in sfi/rmi/bi, they should be x_star() not
-  x_reheat()?
-
-- Adding new function x_potmax() in nckisr
-
-- Fix bug in psnisr, the potential had the wrong sign (- instead of +)!?
-
-- Man files completed
-
-- Merge mlfi and gmi into gmlfi. Functions changed for compatibility,
-  new order is p,q,alpha

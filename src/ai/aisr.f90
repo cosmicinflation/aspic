@@ -6,9 +6,8 @@
 !mu=mu/Mp
 
 module aisr
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,tolkp,transfert, pi
   use inftools, only : zbrent
-  use cosmopar, only : pi
   implicit none
 
   private

@@ -1,13 +1,13 @@
-.TH libcnbi 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libcnbi 3 "December 4, 2012" "libaspic" "Module convention" 
 
 .SH NAME
 .I cnbi
-- the constant ns A inflation module
+- the constant ns B inflation module
 
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 [(3-alpha^2) tan^2(alpha x / sqrt(2) ) -2 ]
+V(phi) = M^4 { (3-alpha^2) tan^2[alpha x / sqrt(2)] - 3 }
 .TP
 Routine units
 .I real(kp)
@@ -19,6 +19,47 @@ Parameters
 .I real(kp)
 ::
 .B alpha
+
+.SH DESCRIPTION
+The
+.I cnbi
+module encodes the constant ns B inflation at positive field values
+and for the first periodic domain in which the potential remains
+positive and varies from zero to infinity. The minimal and maximal
+field values are given by the two
+.I
+real(kp)
+functions
+.IP
+.BR cnbi_x_potzero (alpha)
+.RS
+.BR cnbi_x_potinfty (alpha)
+.RE
+.P
+In between, the fist Hubble flow function admits a global minimum,
+whose value and location are respectively given by the two
+.I
+real(kp)
+functions
+.IP
+.BR cnbi_epsilon_one_min (alpha)
+.RS
+.BR cnbi_x_epsonemin (alpha)
+.RE
+.P
+Provided the output value of
+.BR cnbi_epsilon_one_min ()
+is less than one, the first Hubble flow function equals unity at two
+field values 'xeps1-' and 'xeps1+'. The smaller value corresponds to
+the end of inflation whereas the larger one delimits the region in
+which the slow-roll approximation can be used. Both field values are
+returned from the
+.I
+real(kp), dimension(2)
+function
+.IP
+.BR cnbi_x_epsoneunity (alpha)
+.RE
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

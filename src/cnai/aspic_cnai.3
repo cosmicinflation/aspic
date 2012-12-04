@@ -1,4 +1,4 @@
-.TH libcnai 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libcnai 3 "December 4, 2012" "libaspic" "Module convention" 
 
 .SH NAME
 .I cnai
@@ -7,7 +7,7 @@
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 [ 3 - (3+alpha^2) tanh^2( alpha/sqrt(2) x) ]
+V(phi) = M^4 { 3 - (3+alpha^2) tanh^2[alpha x /sqrt(2)] }
 .TP
 Routine units
 .I real(kp)
@@ -19,6 +19,20 @@ Parameters
 .I real(kp)
 ::
 .B alpha
+
+.SH DESCRIPTION
+The
+.I cnai
+module encodes the constant ns A inflation at positive field values
+and for the domain in which the potential remains positive. The maximal
+allowed field value (above which the potential becomes negative) can be
+obtained from the
+.I
+real(kp)
+functions
+.IP
+.BR cnai_x_potzero (alpha)
+.RS
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

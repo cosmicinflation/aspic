@@ -12,10 +12,11 @@ module cnaisr
 
   private
 
-  public  cnai_norm_potential, cnai_epsilon_one, cnai_epsilon_two, cnai_epsilon_three
-  public  cnai_x_endinf, cnai_efold_primitive, cnai_x_trajectory
-  public  cnai_norm_deriv_potential, cnai_norm_deriv_second_potential
- 
+  public cnai_norm_potential, cnai_epsilon_one, cnai_epsilon_two, cnai_epsilon_three
+  public cnai_x_endinf, cnai_efold_primitive, cnai_x_trajectory
+  public cnai_norm_deriv_potential, cnai_norm_deriv_second_potential
+  public cnai_x_potzero
+
 contains
 !returns V/M**4
   function cnai_norm_potential(x,alpha)
@@ -36,8 +37,8 @@ contains
     real(kp), intent(in) :: x,alpha
 
    cnai_norm_deriv_potential = -sqrt(2._kp)*alpha*(3._kp+alpha**2)* &
-                               1._kp/cosh((alpha*x)/sqrt(2._kp))**2* &
-                               tanh((alpha*x)/sqrt(2._kp))
+        1._kp/cosh((alpha*x)/sqrt(2._kp))**2* &
+        tanh((alpha*x)/sqrt(2._kp))
 
   end function cnai_norm_deriv_potential
 
@@ -50,8 +51,8 @@ contains
     real(kp), intent(in) :: x,alpha
 
     cnai_norm_deriv_second_potential = alpha**2*(3._kp+alpha**2)* &
-                                       (-2._kp+cosh(sqrt(2._kp)*alpha*x))* & 
-                                       1._kp/cosh((alpha*x)/sqrt(2._kp))**4
+         (-2._kp+cosh(sqrt(2._kp)*alpha*x))* & 
+         1._kp/cosh((alpha*x)/sqrt(2._kp))**4
 
   end function cnai_norm_deriv_second_potential
 
@@ -64,8 +65,8 @@ contains
     real(kp), intent(in) :: x,alpha
     
     cnai_epsilon_one = (4._kp*alpha**2*(3._kp+alpha**2)**2*tanh((alpha*x)/ &
-                       sqrt(2._kp))**2)/(6._kp+alpha**2-alpha**2* &
-                       cosh(sqrt(2._kp)*alpha*x))**2
+         sqrt(2._kp))**2)/(6._kp+alpha**2-alpha**2* &
+         cosh(sqrt(2._kp)*alpha*x))**2
     
   end function cnai_epsilon_one
 
@@ -77,10 +78,10 @@ contains
     real(kp), intent(in) :: x,alpha
     
     cnai_epsilon_two =(2._kp*alpha**2*(3._kp+alpha**2)*(12._kp+alpha**2+ &
-                      alpha**2*(-2._kp*cosh(sqrt(2._kp)*alpha*x)+ &
-                      cosh(2._kp*sqrt(2._kp)*alpha*x)))* &
-                      1._kp/cosh((alpha*x)/sqrt(2._kp))**2)/ &
-                      (6._kp+alpha**2-alpha**2*cosh(sqrt(2._kp)*alpha*x))**2
+         alpha**2*(-2._kp*cosh(sqrt(2._kp)*alpha*x)+ &
+         cosh(2._kp*sqrt(2._kp)*alpha*x)))* &
+         1._kp/cosh((alpha*x)/sqrt(2._kp))**2)/ &
+         (6._kp+alpha**2-alpha**2*cosh(sqrt(2._kp)*alpha*x))**2
 
   end function cnai_epsilon_two
 
@@ -92,16 +93,29 @@ contains
     real(kp), intent(in) :: x,alpha
     
     cnai_epsilon_three = (2._kp*alpha**2*(3._kp+alpha**2)* &
-                         (-6._kp*(24._kp-2._kp*alpha**2+alpha**4)+ &
-                         alpha**2*((120._kp+7._kp*alpha**2)*cosh(sqrt(2._kp)*alpha*x)- &
-                         2._kp*(-6._kp+alpha**2)*cosh(2._kp*sqrt(2._kp)*alpha*x)+ &
-                         alpha**2*cosh(3._kp*sqrt(2._kp)*alpha*x)))* &
-                         tanh((alpha*x)/sqrt(2._kp))**2)/((6._kp+alpha**2-alpha**2* &
-                         cosh(sqrt(2._kp)*alpha*x))**2*(12._kp+alpha**2+alpha**2* &
-                         (-2._kp*cosh(sqrt(2._kp)*alpha*x)+cosh(2._kp*sqrt(2._kp)*alpha*x))))
+         (-6._kp*(24._kp-2._kp*alpha**2+alpha**4)+ &
+         alpha**2*((120._kp+7._kp*alpha**2)*cosh(sqrt(2._kp)*alpha*x)- &
+         2._kp*(-6._kp+alpha**2)*cosh(2._kp*sqrt(2._kp)*alpha*x)+ &
+         alpha**2*cosh(3._kp*sqrt(2._kp)*alpha*x)))* &
+         tanh((alpha*x)/sqrt(2._kp))**2)/((6._kp+alpha**2-alpha**2* &
+         cosh(sqrt(2._kp)*alpha*x))**2*(12._kp+alpha**2+alpha**2* &
+         (-2._kp*cosh(sqrt(2._kp)*alpha*x)+cosh(2._kp*sqrt(2._kp)*alpha*x))))
 
 
   end function cnai_epsilon_three
+
+
+!return the field value at which V=0 (and negative for x>x_potzero)
+  function cnai_x_potzero(alpha)
+    implicit none
+    real(kp) :: cnai_x_potzero
+    real(kp), intent(in) :: alpha
+    
+    cnai_x_potzero = sqrt(2._kp)/alpha &
+         *atanh(sqrt(3._kp/(3._kp+alpha**2)))
+
+  end function cnai_x_potzero
+
 
 
 !returns x at the end of inflation defined as epsilon1=1
@@ -114,7 +128,7 @@ contains
     type(transfert) :: cnaiData
 
     mini = epsilon(1._kp)
-    maxi = sqrt(2._kp)/alpha*atanh(sqrt(3._kp/(3._kp+alpha**2)))*(1._kp-epsilon(1._kp)) !Position where the potential vanishes
+    maxi = cnai_x_potzero(alpha) * (1._kp-epsilon(1._kp))
 
     cnaiData%real1 = alpha
 
