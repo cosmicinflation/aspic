@@ -1,3 +1,79 @@
+commit 29a5ea5a2641e06c9a8274c70624a46893da4f52
+Date:   Tue Dec 4 20:04:03 2012 +0100
+
+    Merging with jjvv 0.0.7
+
+ Makefile.am             |    1 +
+ NEWS                    |   44 ++++----------
+ configure.ac            |    2 +-
+ src/ai/aisr.f90         |    3 +-
+ src/cnai/aspic_cnai.3   |   18 +++++-
+ src/cnai/cnaisr.f90     |   58 +++++++++++-------
+ src/cnbi/aspic_cnbi.3   |   47 ++++++++++++++-
+ src/cnbi/cnbireheat.f90 |    9 ++-
+ src/cnbi/cnbisr.f90     |  204 ++++++++++++++++++++++++++++++++++++++++++++++----------------
+ src/common/cosmopar.f90 |    2 -
+ src/lmi/aspic_lmi1.3    |    6 +-
+ src/ripi/ripisr.f90     |    5 +-
+ 12 files changed, 275 insertions(+), 124 deletions(-)
+
+commit 7ad465656ad041a87daf6aaa226e5b97ee89caf0
+Date:   Tue Dec 4 15:19:20 2012 +0100
+
+    version 0.0.7+ back from jjvv
+
+ configure.ac            |    5 ++
+ src/Makefile.am         |   15 ++--
+ src/ai/Makefile.am      |   24 ++++++
+ src/ai/aimain.f90       |   80 ++++++++++++++++++++
+ src/ai/aireheat.f90     |  128 +++++++++++++++++++++++++++++++
+ src/ai/aisr.f90         |  183 ++++++++++++++++++++++++++++++++++++++++++++
+ src/ai/aspic_ai.3       |   25 ++++++
+ src/cnai/Makefile.am    |   24 ++++++
+ src/cnai/aspic_cnai.3   |   24 ++++++
+ src/cnai/cnaimain.f90   |   75 ++++++++++++++++++
+ src/cnai/cnaireheat.f90 |  117 ++++++++++++++++++++++++++++
+ src/cnai/cnaisr.f90     |  193 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/cnbi/Makefile.am    |   24 ++++++
+ src/cnbi/aspic_cnbi.3   |   24 ++++++
+ src/cnbi/cnbimain.f90   |   77 +++++++++++++++++++
+ src/cnbi/cnbireheat.f90 |  128 +++++++++++++++++++++++++++++++
+ src/cnbi/cnbisr.f90     |  207 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/common/cosmopar.f90 |    2 +
+ src/common/srreheat.f90 |    5 +-
+ src/oi/Makefile.am      |   21 ++++++
+ src/oi/aspic_oi.3       |   33 ++++++++
+ src/oi/oimain.f90       |  104 +++++++++++++++++++++++++
+ src/oi/oireheat.f90     |  129 +++++++++++++++++++++++++++++++
+ src/oi/oisr.f90         |  193 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/psni/psnimain.f90   |    4 +-
+ src/ripi/Makefile.am    |   24 ++++++
+ src/ripi/aspic_ripi.3   |   24 ++++++
+ src/ripi/ripimain.f90   |   78 +++++++++++++++++++
+ src/ripi/ripireheat.f90 |  124 ++++++++++++++++++++++++++++++
+ src/ripi/ripisr.f90     |  170 +++++++++++++++++++++++++++++++++++++++++
+ src/ssi/Makefile.am     |   31 +++++++-
+ src/ssi/ssi1main.f90    |   19 +++--
+ src/ssi/ssi1reheat.f90  |    3 +
+ src/ssi/ssi1sr.f90      |   25 +++---
+ src/ssi/ssi2main.f90    |  111 +++++++++++++++++++++++++++
+ src/ssi/ssi2reheat.f90  |  127 +++++++++++++++++++++++++++++++
+ src/ssi/ssi2sr.f90      |  187 +++++++++++++++++++++++++++++++++++++++++++++
+ src/ssi/ssi3main.f90    |  127 +++++++++++++++++++++++++++++++
+ src/ssi/ssi3reheat.f90  |  133 ++++++++++++++++++++++++++++++++
+ src/ssi/ssi3sr.f90      |  227 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssi/ssi4main.f90    |  114 ++++++++++++++++++++++++++++
+ src/ssi/ssi4reheat.f90  |  126 +++++++++++++++++++++++++++++++
+ src/ssi/ssi4sr.f90      |  182 ++++++++++++++++++++++++++++++++++++++++++++
+ src/ssi/ssi5main.f90    |  128 +++++++++++++++++++++++++++++++
+ src/ssi/ssi5reheat.f90  |  132 ++++++++++++++++++++++++++++++++
+ src/ssi/ssi5sr.f90      |  250 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssi/ssi6main.f90    |  131 ++++++++++++++++++++++++++++++++
+ src/ssi/ssi6reheat.f90  |  132 ++++++++++++++++++++++++++++++++
+ src/ssi/ssi6sr.f90      |  255 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssi/ssicommon.f90   |   40 +++++++++-
+ 50 files changed, 4710 insertions(+), 34 deletions(-)
+
 commit 0ef61df71fcaf9a305bf1af2187a522a43bcdfbf
 Date:   Mon Nov 5 10:53:08 2012 +0100
 

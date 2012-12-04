@@ -37,14 +37,14 @@ use rgisr
 use rgireheat
 use mssmisr
 use mssmireheat
-!use ripisr
-!use ripireheat
-!use aisr
-!use aireheat
-!use cnaisr
-!use cnaireheat
-!use cnbisr
-!use cnbireheat
+use ripisr
+use ripireheat
+use aisr
+use aireheat
+use cnaisr
+use cnaireheat
+use cnbisr
+use cnbireheat
 
 !two parameters models
 use sfisr
