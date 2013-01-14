@@ -140,10 +140,10 @@ contains
   end function hypergeom_2F1
 
 
-  REAL(kp) FUNCTION lambert(x,n) !lambert function of the nth-branch (n=0 or 1)
+  REAL(kp) FUNCTION lambert(x,n) !lambert function of the nth-branch (n=0 or -1)
 	REAL(kp), INTENT(IN)::x
 	INTEGER, INTENT(IN)::n
-	REAL(kp) ::y1,y2,y
+	REAL(kp) ::y1,y2,y,L1,L2
 	IF(x<-1.d0/exp(1.d0)) THEN
 		WRITE(*,*) 'Impossible to evaluate lambert Function: arg < -1/e'
 	END IF
@@ -179,6 +179,13 @@ contains
 				y1=y
 			END IF
 		END DO
+                IF (-x .lt. epsilon(1._kp)) THEN !Uses an asymptotic solution to avoid numerical errors
+                L1=log(-x)
+                L2=log(-log(-x))
+		y=L1-L2+L2/L1+L2*(-2._kp+L2)/(2._kp*L1**2)+ &
+                  L2*(6._kp-9._kp*L2+2._kp*L2**2)/(6._kp*L1**3)+ &
+                  L2*(-12._kp+36._kp*L2-22._kp*L2**2+3._kp*L2**3)/(12._kp*L1**4)
+		ENDIF
 	END IF
 	lambert=y
   END FUNCTION lambert
@@ -251,7 +258,7 @@ contains
 	IMPLICIT NONE
 	REAL(kp), INTENT(IN) :: x
 	REAL(kp) :: ei
-	INTEGER(I4B), PARAMETER :: MAXIT=1000
+	INTEGER(I4B), PARAMETER :: MAXIT=10000
 	REAL(kp), PARAMETER :: EPS=epsilon(x),FPMIN=tiny(x)/EPS
 	INTEGER(I4B) :: k
 	REAL(kp) :: fact,prev,sm,term
@@ -264,6 +271,7 @@ contains
 				!Parameters: MAXIT is the maximum number of iterations allowed; EPS is the relative error,
 				!or absolute error near the zero of Ei at x = 0.3725; FPMIN is a number near the smallest
 				!representable floating-point number; EULER (in nrtype) is Euler's constant γ.
+
 		call assert(x > 0.0, 'ei arg')
 		if (x < FPMIN) then !Special case: avoid failure of convergence test
 			ei=log(x)+EULER !because of underflow.

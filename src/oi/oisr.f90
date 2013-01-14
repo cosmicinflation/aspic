@@ -61,7 +61,7 @@ contains
     real(kp), intent(in) :: x,alpha,phi0
     
     oi_epsilon_one = ((2._kp*(-2._kp+alpha*log(x)*(1._kp+2._kp*log(x)))**2)/ &
-                     (phi0**2*x**2*(-1._kp+alpha*log(x)**2)**2))/(phi0**2)
+                     (phi0**2*x**2*(-1._kp+alpha*log(x)**2)**2))
     
   end function oi_epsilon_one
 
@@ -74,7 +74,7 @@ contains
     
     oi_epsilon_two = ((4._kp*(2._kp+alpha+alpha*log(x)*(-1._kp+ &
                      log(x)*(-4._kp+alpha+alpha*log(x)*(1._kp+2._kp* &
-                     log(x))))))/(phi0**2*x**2*(-1._kp+alpha*log(x)**2)**2))/(phi0**2)
+                     log(x))))))/(phi0**2*x**2*(-1._kp+alpha*log(x)**2)**2))
     
   end function oi_epsilon_two
 
@@ -92,7 +92,7 @@ contains
                        alpha**3*log(x)**6+8._kp*alpha**4*log(x)**7+8._kp*alpha**4* &
                        log(x)**8))/(phi0**2*x**2*(-1._kp+alpha*log(x)**2)**2*(2._kp+ & 
                        alpha-alpha*log(x)+(-4._kp+alpha)*alpha*log(x)**2+alpha**2* &
-                       log(x)**3+2._kp*alpha**2*log(x)**4)))/(phi0**2)
+                       log(x)**3+2._kp*alpha**2*log(x)**4)))
     
   end function oi_epsilon_three
 
@@ -143,11 +143,11 @@ contains
      xminus=exp(-0.25_kp-sqrt(1._kp/16._kp+1._kp/alpha))  !Lower position where the derivative of the potential vanishes
      xplus=exp(-0.25_kp+sqrt(1._kp/16._kp+1._kp/alpha))  !Upper position where the derivative of the potential vanishes
 
-    oi_efold_primitive = phi0**2/8._kp*(x**2 &
-                         +(alpha*log(xplus)**2-1._kp)/sqrt(alpha**2+16._kp*alpha)*xplus**2* &
-                         (-ei(-2._kp*log(x/xplus))) &
-                         -(alpha*log(xminus)**2-1._kp)/sqrt(alpha**2+16._kp*alpha)*xminus**2* &
-                         (-ei(-2._kp*log(x/xminus))))
+    oi_efold_primitive = phi0**2*(x**2/8._kp &
+                         +(alpha*log(xplus)**2-1._kp)/(2._kp*sqrt(alpha**2+16._kp*alpha))*xplus**2* &
+                         ei(2._kp*log(x/xplus)) &
+                         -(alpha*log(xminus)**2-1._kp)/(2._kp*sqrt(alpha**2+16._kp*alpha))*xminus**2* &
+                         ei(2._kp*log(x/xminus)))
 
   end function oi_efold_primitive
  

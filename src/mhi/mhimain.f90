@@ -21,6 +21,9 @@ program mhimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  integer :: nmu
+
 
 
   Pstar = powerAmpScalar
@@ -81,5 +84,33 @@ program mhimain
 
  end do
 
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('mhi_predic_summarized.dat') 
+         nmu=1000
+         mumin=(10._kp)**(-1)
+         mumax=(10._kp)**2
+         w=0._kp
+         do j=1,nmu
+         mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = mhi_epsilon_one(xstarA,mu)
+         eps2A = mhi_epsilon_two(xstarA,mu)
+         eps3A = mhi_epsilon_three(xstarA,mu)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = mhi_lnrhoend(mu,Pstar)
+         xstarB = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = mhi_epsilon_one(xstarB,mu)
+         eps2B = mhi_epsilon_two(xstarB,mu)
+         eps3B = mhi_epsilon_three(xstarB,mu)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('mhi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
 
 end program mhimain

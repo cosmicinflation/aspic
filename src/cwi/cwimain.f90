@@ -15,7 +15,7 @@ program cwimain
   integer :: i,j
   integer :: npts = 20
 
-  integer :: Nalpha=10
+  integer :: Nalpha
   real(kp) :: alphamin=0.00000001
   real(kp) :: alphamax=0.01
 
@@ -26,6 +26,9 @@ program cwimain
   real(kp), dimension(2) :: vecbuffer
 
 
+  real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+
+  Nalpha=10
 
   Pstar = powerAmpScalar
 
@@ -81,6 +84,35 @@ program cwimain
 
  end do
 
- 
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('cwi_predic_summarized.dat') 
+         nalpha=1000
+         alphamin=10._kp**(-8.)
+         alphamax=10._kp**(-1.)
+         w=0._kp
+         do j=1,nalpha
+         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+         Q=(4._kp*exp(1._kp)/alpha)**(1._kp/4._kp)
+         lnRhoReh = lnRhoNuc
+         xstarA = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = cwi_epsilon_one(xstarA,alpha,Q)
+         eps2A = cwi_epsilon_two(xstarA,alpha,Q)
+         eps3A = cwi_epsilon_three(xstarA,alpha,Q)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = cwi_lnrhoend(alpha,Q,Pstar)
+         xstarB = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = cwi_epsilon_one(xstarB,alpha,Q)
+         eps2B = cwi_epsilon_two(xstarB,alpha,Q)
+         eps3B = cwi_epsilon_three(xstarB,alpha,Q)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('cwi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
+
 
 end program cwimain

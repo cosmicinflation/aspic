@@ -14,7 +14,7 @@ program cnbimain
 
   integer :: i,j
   integer :: npts = 20
-  integer :: nalpha = 300
+  integer :: nalpha
 
   real(kp) :: alpha,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -24,6 +24,10 @@ program cnbimain
 
   real(kp) ::alphamin,alphamax
 
+  real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+
+  nalpha = 300
+
   alphamin=10.**(-5)
   alphamax=0.2975_kp*0.99_kp
 
@@ -31,6 +35,8 @@ program cnbimain
 
   !w = 1._kp/3._kp
   w=0._kp
+
+
 
   call delete_file('cnbi_predic.dat')
   call delete_file('cnbi_nsr.dat')
@@ -71,6 +77,34 @@ program cnbimain
     end do
 
  end do
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('cnbi_predic_summarized.dat') 
+         nalpha=1000
+         alphamin=10.**(-5)
+         alphamax=0.2975_kp*0.99_kp
+         w=0._kp
+         do j=1,nalpha
+         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = cnbi_epsilon_one(xstarA,alpha)
+         eps2A = cnbi_epsilon_two(xstarA,alpha)
+         eps3A = cnbi_epsilon_three(xstarA,alpha)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = cnbi_lnrhoend(alpha,Pstar)
+         xstarB = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = cnbi_epsilon_one(xstarB,alpha)
+         eps2B = cnbi_epsilon_two(xstarB,alpha)
+         eps3B = cnbi_epsilon_three(xstarB,alpha)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('cnbi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
 
 
 

@@ -2,7 +2,7 @@
 program dsimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three,dsi_xinimin
+  use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three,dsi_xinimin,dsi_xendmin
   use dsireheat, only : dsi_lnrhoend, dsi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -41,26 +41,59 @@ program dsimain
   w=0._kp
 !  w = 1._kp/3._kp
 
-  p=1.5_kp
-
-  nmu=20
-  nxEnd=10
-
+  p=2._kp
+  p=3._kp
+  p=4._kp
+ 
+ if (p .eq. 2._kp) then
+  nmu=100
+  nxEnd=100
+  mumin=10**(-0._kp)
+  mumax=10**(3._kp)
+ endif
+ if (p .eq. 3._kp) then
+  nmu=70
+  nxEnd=150
   mumin=10**(-1._kp)
-  mumax=10**(1._kp)
+  mumax=10**(2._kp)
+ endif
+ if (p .eq. 4._kp) then
+  nmu=70
+  nxEnd=150
+  mumin=10**(-1._kp)
+  mumax=10**(3._kp)
+ endif
+
+
 
   do j=0,nmu
      mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
 
-!     mu=0.1  !!!!!!!!!!!!!!
-
+ if (p .eq. 2._kp) then
      xEndmin=dsi_xinimin(p,mu)*10.
      xEndmax=100._kp*xEndmin
+ endif
+if (p .eq. 3._kp) then
+     xEndmin=dsi_xendmin(62._kp,p,mu)
+     xEndmax=100._kp*xEndmin
+ endif
+if (p .eq. 4._kp) then
+     xEndmin=dsi_xendmin(62._kp,p,mu)
+     xEndmax=100._kp*xEndmin
+ endif
+
 
      do k=1,nxEnd
-        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/real(nxEnd,kp))
+ if (p .eq. 2._kp) then
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/real(nxEnd,kp)) !logarithmic step
+ endif
+ if (p .eq. 3._kp) then
+        xEnd=xEndmin*exp((log(xEndmax/xEndmin))**((real(k,kp)-1._kp)/real(nxEnd,kp))-1._kp) !ultralogarithmic step
+ endif
+ if (p .eq. 4._kp) then
+        xEnd=xEndmin*exp((log(xEndmax/xEndmin))**((real(k,kp)-1._kp)/real(nxEnd,kp))-1._kp) !ultralogarithmic step
+ endif
 
-!        xEnd=10.*(p/(sqrt(2._kp)*mu))**(1._kp/(p+1._kp))  !!!!!!!!!!!!!!!!!!!!!!!
 
 
         lnRhoRehMin = lnRhoNuc

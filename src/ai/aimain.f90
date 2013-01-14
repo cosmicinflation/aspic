@@ -22,6 +22,9 @@ program aimain
   real(kp), dimension(2) :: vecbuffer
 
 
+  real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  integer :: nmu
+
 
   Pstar = powerAmpScalar
 
@@ -75,6 +78,34 @@ program aimain
     end do
 
  end do
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('ai_predic_summarized.dat') 
+         nmu=1000
+         mumin=(10._kp)**(-3)
+         mumax=0.512378_kp*0.99_kp
+         w=0._kp
+         do j=1,nmu
+         mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = ai_epsilon_one(xstarA,mu)
+         eps2A = ai_epsilon_two(xstarA,mu)
+         eps3A = ai_epsilon_three(xstarA,mu)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = ai_lnrhoend(mu,Pstar)
+         xstarB = ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = ai_epsilon_one(xstarB,mu)
+         eps2B = ai_epsilon_two(xstarB,mu)
+         eps3B = ai_epsilon_three(xstarB,mu)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('ai_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
 
 
 end program aimain

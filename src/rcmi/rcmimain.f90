@@ -22,6 +22,9 @@ program rcmimain
   real(kp), dimension(2) :: vecbuffer
 
   real(kp), dimension(1:7) ::alphavalues
+ 
+  real(kp)  ::alphamin,alphamax,eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  integer :: nalpha
 
   alphavalues(1)=(10._kp)**(-6.)
   alphavalues(2)=5.*(10._kp)**(-5.)
@@ -73,6 +76,32 @@ program rcmimain
 
 end do
 
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('rcmi_predic_summarized.dat') 
+         nalpha=1000
+         alphamin=10._kp**(-6.)
+         alphamax=10._kp**(-3.)
+         do j=1,nalpha
+         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = rcmi_epsilon_one(xstarA,alpha)
+         eps2A = rcmi_epsilon_two(xstarA,alpha)
+         eps3A = rcmi_epsilon_three(xstarA,alpha)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = rcmi_lnrhoend(alpha,Pstar)
+         xstarB = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = rcmi_epsilon_one(xstarB,alpha)
+         eps2B = rcmi_epsilon_two(xstarB,alpha)
+         eps3B = rcmi_epsilon_three(xstarB,alpha)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('rcmi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
   
 
 end program rcmimain

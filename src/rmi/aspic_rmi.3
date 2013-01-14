@@ -7,28 +7,28 @@
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 { 1 + nu [1/p - ln(x)](mu*x)^p }
+V(phi) = M^4 { 1 - c/2 [-1/2 + ln(x)](phi0*x)^2 }
 .TP
 Routine units
 .I real(kp)
 ::
 .B x
-= phi/mu
+= phi/phi0
 .TP
 Parameters
 .I real(kp)
 ::
-.B p
+.B p=2
 .RS
 .I real(kp)
 ::
-.B mu
+.B phi0
 (in Mp units)
 .RE
 .RS
 .I real(kp)
 ::
-.B nu
+.B c
 
 
 .SH AUTHORS

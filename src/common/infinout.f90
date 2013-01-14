@@ -71,7 +71,7 @@ contains
     
     close(10)
 
-100 format(8(ES25.16E3))
+ 100 format(8(ES25.16E3))
 
   end subroutine sp_livewrite
 

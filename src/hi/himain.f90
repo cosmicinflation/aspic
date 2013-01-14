@@ -71,6 +71,28 @@ program himain
   
     end do
 
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('hi_predic_summarized.dat')
+         lnRhoReh = lnRhoRehMin
+         xstar = hi_x_star(w,lnRhoReh,Pstar,bfoldstar)
+         eps1 = hi_epsilon_one(xstar)
+         eps2 = hi_epsilon_two(xstar)
+         eps3 = hi_epsilon_three(xstar)
+         ns = 1._kp - 2._kp*eps1 - eps2
+         r =16._kp*eps1
+         call livewrite('hi_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+         lnRhoReh = lnRhoRehMax
+         xstar = hi_x_star(w,lnRhoReh,Pstar,bfoldstar)
+         eps1 = hi_epsilon_one(xstar)
+         eps2 = hi_epsilon_two(xstar)
+         eps3 = hi_epsilon_three(xstar)
+         ns = 1._kp - 2._kp*eps1 - eps2
+         r =16._kp*eps1
+         call livewrite('hi_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+
 
 
 end program himain

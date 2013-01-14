@@ -63,4 +63,48 @@ program lfimain
 
   enddo
 
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('lfi2_predic_summarized.dat')
+         p=2._kp
+         w = (p-2)/(p+2)
+         lnRhoReh = lnRhoNuc
+         xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+         eps1 = lfi_epsilon_one(xstar,p)
+         eps2 = lfi_epsilon_two(xstar,p)
+         eps3 = lfi_epsilon_three(xstar,p)
+         ns = 1._kp - 2._kp*eps1 - eps2
+         r =16._kp*eps1
+         call livewrite('lfi2_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+         lnRhoReh = lfi_lnrhoend(p,Pstar)
+         xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+         eps1 = lfi_epsilon_one(xstar,p)
+         eps2 = lfi_epsilon_two(xstar,p)
+         eps3 = lfi_epsilon_three(xstar,p)
+         ns = 1._kp - 2._kp*eps1 - eps2
+         r =16._kp*eps1
+         call livewrite('lfi2_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+
+  call delete_file('lfi4_predic_summarized.dat')
+         p=4._kp
+         w = (p-2)/(p+2)
+         lnRhoReh = lnRhoNuc
+         xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+         eps1 = lfi_epsilon_one(xstar,p)
+         eps2 = lfi_epsilon_two(xstar,p)
+         eps3 = lfi_epsilon_three(xstar,p)
+         ns = 1._kp - 2._kp*eps1 - eps2
+         r =16._kp*eps1
+         call livewrite('lfi4_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+         lnRhoReh = lfi_lnrhoend(p,Pstar)
+         xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+         eps1 = lfi_epsilon_one(xstar,p)
+         eps2 = lfi_epsilon_two(xstar,p)
+         eps3 = lfi_epsilon_three(xstar,p)
+         ns = 1._kp - 2._kp*eps1 - eps2
+         r =16._kp*eps1
+         call livewrite('lfi4_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+
 end program lfimain

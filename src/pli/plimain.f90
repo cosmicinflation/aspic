@@ -21,6 +21,9 @@ program plimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp)  ::alphamin,alphamax,eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  integer :: nalpha
+
   Pstar = powerAmpScalar
 
   call delete_file('pli_predic.dat')
@@ -63,6 +66,34 @@ program plimain
     end do
 
   enddo
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('pli_predic_summarized.dat') 
+         nalpha=1000
+         alphamin=10._kp**(-3.)
+         alphamax=10._kp**(0.)
+         w=0._kp
+         do i=1,nalpha
+         alpha=alphamin*(alphamax/alphamin)**(real(i,kp)/real(nalpha,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = pli_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = pli_epsilon_one(xstarA,alpha)
+         eps2A = pli_epsilon_two(xstarA,alpha)
+         eps3A = pli_epsilon_three(xstarA,alpha)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = pli_lnrhoend(alpha,Pstar)
+         xstarB = pli_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = pli_epsilon_one(xstarB,alpha)
+         eps2B = pli_epsilon_two(xstarB,alpha)
+         eps3B = pli_epsilon_three(xstarB,alpha)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('pli_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
 
 
 

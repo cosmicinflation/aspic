@@ -43,13 +43,33 @@ program gmlfimain
 
   npts = 20
 
-  p=2.7
-  q=4.8
-  
-  nalpha=20
+  p=2.
+  q=1.
 
+  p=2.
+  q=3.
+  
+  p=3.
+  q=2.
+
+
+  if (p .eq. 2. .and. q .eq. 1.) then
   alphamin=10._kp**(-3._kp)
   alphamax=10._kp**(3._kp)
+  nalpha=20
+  endif
+
+  if (p .eq. 2. .and. q.eq. 3. ) then
+  alphamin=10._kp**(-8._kp)
+  alphamax=10._kp**(1._kp)
+  nalpha=100
+  endif
+
+  if (p .eq. 3. .and. q.eq. 2. ) then
+  alphamin=10._kp**(-6._kp)
+  alphamax=10._kp**(3._kp)
+  nalpha=50
+  endif
 
   do j=0,nalpha
     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
@@ -80,7 +100,7 @@ program gmlfimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('gmlfi_predic.dat',alpha,p,q,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('gmlfi_predic.dat',p,q,alpha,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('gmlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   

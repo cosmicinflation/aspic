@@ -190,7 +190,7 @@ contains
     xiniMin = dsi_xinimin(p,mu)
 
     if (bfold.gt.0._kp) then
-       mini=xIniMin
+       mini=xiniMin
        maxi = 1._kp/epsilon(1._kp)
     else
        mini= xiniMin

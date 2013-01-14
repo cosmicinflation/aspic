@@ -15,7 +15,7 @@ program dwimain
   integer :: i,j
   integer :: npts = 20
 
-  integer :: Nphi0=20
+  integer :: Nphi0
  ! real(kp) :: phi0min=2._kp*sqrt(2._kp)
   real(kp) :: phi0min=7.6_kp
   real(kp) :: phi0max=10._kp**2
@@ -26,7 +26,10 @@ program dwimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
 
+
+  Nphi0=20
 
   Pstar = powerAmpScalar
 
@@ -85,6 +88,34 @@ program dwimain
     end do
 
  end do
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('dwi_predic_summarized.dat') 
+         nphi0=1000
+         phi0min=7.6_kp
+         phi0max=10._kp**2
+         w=0._kp
+         do j=1,nphi0
+         phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = dwi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = dwi_epsilon_one(xstarA,phi0)
+         eps2A = dwi_epsilon_two(xstarA,phi0)
+         eps3A = dwi_epsilon_three(xstarA,phi0)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = dwi_lnrhoend(phi0,Pstar)
+         xstarB = dwi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = dwi_epsilon_one(xstarB,phi0)
+         eps2B = dwi_epsilon_two(xstarB,phi0)
+         eps3B = dwi_epsilon_three(xstarB,phi0)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('dwi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
 
  
 end program dwimain

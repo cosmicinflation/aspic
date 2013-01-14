@@ -21,16 +21,6 @@ program oimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  real(kp), dimension(1:3) ::phi0values
-
-  phi0values(1)=2._kp
-  phi0values(2)=1._kp
-  phi0values(3)=1000._kp
-!  phi0values(4)=5._kp
- ! phi0values(5)=6.5_kp
-!  phi0values(6)=10._kp
-!  phi0values(7)=100._kp
-
 
   Pstar = powerAmpScalar
 
@@ -42,12 +32,29 @@ program oimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   npts = 20
+
+
+  phi0=0.001_kp
+  phi0=1._kp
+  phi0=1000._kp
+
+  if (phi0 .eq. 0.001_kp) then
+  alphamin=10._kp**(-3._kp)
+  alphamax=10._kp**(-1._kp)
   nalpha=500
+  endif
 
-
-
+  if (phi0 .eq. 1._kp) then
   alphamin=10._kp**(-2._kp)
-  alphamax=10._kp**(2._kp)
+  alphamax=10._kp**(1._kp)
+  nalpha=300
+  endif
+
+  if (phi0 .eq. 1000._kp) then
+  alphamin=10._kp**(-2._kp)
+  alphamax=10._kp**(8._kp)
+  nalpha=100
+  endif
 
   w=0._kp
 !  w = 1._kp/3._kp
@@ -56,12 +63,10 @@ program oimain
   call delete_file('oi_nsr.dat')
 
 
-  do j=1,size(phi0values)
-    phi0=phi0values(j)
 
     do k=0,nalpha
         alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))
-     
+    
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = oi_lnrhoend(alpha,phi0,Pstar)
@@ -96,7 +101,6 @@ program oimain
 
      end do
 
- end do
 
 
 

@@ -35,12 +35,10 @@ contains
     endif
 
     xEnd=oi_x_endinf(alpha,phi0)
-    
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
     potEnd = oi_norm_potential(xEnd,alpha)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
    
-
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
     oiData%real1 = alpha

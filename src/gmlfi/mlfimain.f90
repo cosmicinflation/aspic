@@ -23,6 +23,10 @@ program mlfimain
 
   real(kp), dimension(1:6) ::alphavalues
 
+  real(kp) :: alphamin,alphamax,xstarA,eps1A,eps2A,eps3A,nsA,rA, &
+              xstarB,eps1B,eps2B,eps3B,nsB,rB
+  integer :: nalpha
+
   Pstar = powerAmpScalar
 
   alphavalues(1)=(10._kp)**(-5.)
@@ -74,6 +78,32 @@ program mlfimain
 
  end do
 
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call delete_file('mlfi_predic_summarized.dat') 
+         nalpha=1000
+         alphamin=10._kp**(-5.)
+         alphamax=1._kp
+         do j=1,nalpha
+         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+         lnRhoReh = lnRhoNuc
+         xstarA = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = gmlfi_epsilon_one(xstarA,p,q,alpha)
+         eps2A = gmlfi_epsilon_two(xstarA,p,q,alpha)
+         eps3A = gmlfi_epsilon_three(xstarA,p,q,alpha)
+         nsA = 1._kp - 2._kp*eps1A - eps2A
+         rA = 16._kp*eps1A
+         lnRhoReh = gmlfi_lnrhoend(p,q,alpha,Pstar)
+         xstarB = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = gmlfi_epsilon_one(xstarB,p,q,alpha)
+         eps2B = gmlfi_epsilon_two(xstarB,p,q,alpha)
+         eps3B = gmlfi_epsilon_three(xstarB,p,q,alpha)
+         nsB = 1._kp - 2._kp*eps1B - eps2B
+         rB =16._kp*eps1B
+         call livewrite('mlfi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+         enddo
   
 
 end program mlfimain
