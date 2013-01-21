@@ -136,26 +136,26 @@ contains
     lpi2Data%real2 = q
     lpi2Data%real3 = phi0
     
-    lpi2_x_endinf = zbrent(find_lpi2endinf,mini,maxi,tolFind,lpi2Data)
+    lpi2_x_endinf = zbrent(find_lpi2_x_endinf,mini,maxi,tolFind,lpi2Data)
       
   end function lpi2_x_endinf
 
 
  
-  function find_lpi2endinf(x,lpiData)    
+  function find_lpi2_x_endinf(x,lpiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lpiData
-    real(kp) :: find_lpi2endinf
+    real(kp) :: find_lpi2_x_endinf
     real(kp) :: phi0,p,q
 
     p = lpiData%real1
     q = lpiData%real2
     phi0 = lpiData%real3
 
-    find_lpi2endinf = lpi2_epsilon_one(x,p,q,phi0)-1._kp
+    find_lpi2_x_endinf = lpi2_epsilon_one(x,p,q,phi0)-1._kp
    
-  end function find_lpi2endinf
+  end function find_lpi2_x_endinf
 
 
 

@@ -124,12 +124,12 @@ contains
     IF(kmiii_epsilon_one(xplus,alpha,beta).gt.1._kp) THEN
           mini = xplus
           maxi = 1._kp/epsilon(1._kp)
-          kmiii_x_endinf = zbrent(find_kmiiiendinf,mini,maxi,tolFind,kmiiiData)
+          kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
 
     ELSE IF(kmiii_epsilon_one(xminus,alpha,beta).gt.1._kp) THEN
           mini = xminus
           maxi = xplus
-          kmiii_x_endinf = zbrent(find_kmiiiendinf,mini,maxi,tolFind,kmiiiData)
+          kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
 
     ELSE
 
@@ -141,19 +141,19 @@ contains
   end function kmiii_x_endinf
 
 
-  function find_kmiiiendinf(x,kmiiiData)
+  function find_kmiii_x_endinf(x,kmiiiData)
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: kmiiiData
-    real(kp) :: find_kmiiiendinf
+    real(kp) :: find_kmiii_x_endinf
     real(kp) :: alpha,beta
     
     alpha = kmiiiData%real1
     beta = kmiiiData%real2
     
-    find_kmiiiendinf = kmiii_epsilon_one(x,alpha,beta)-1._kp
+    find_kmiii_x_endinf = kmiii_epsilon_one(x,alpha,beta)-1._kp
     
-  end function find_kmiiiendinf
+  end function find_kmiii_x_endinf
 
 
 !Returns the position of the smallest maximum of epsilon1

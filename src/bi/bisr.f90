@@ -84,15 +84,15 @@ contains
     kkltData%real1 = p
     kkltData%real2 = mu
 
-    kklt_x_endinf = zbrent(find_kkltendinf,mini,maxi,tolFind,kkltData)
+    kklt_x_endinf = zbrent(find_kklt_x_endinf,mini,maxi,tolFind,kkltData)
    
   end function kklt_x_endinf
   
-  function find_kkltendinf(x,kkltData)
+  function find_kklt_x_endinf(x,kkltData)
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: kkltData
-    real(kp) :: find_kkltendinf
+    real(kp) :: find_kklt_x_endinf
     real(kp) :: p,mu
     
     p=kkltData%real1
@@ -100,14 +100,14 @@ contains
 
     if (endinfIsEpsOne) then
 !eps1=1
-       find_kkltendinf = x**(p+1._kp) + x - p/(mu*sqrt(2._kp))
+       find_kklt_x_endinf = x**(p+1._kp) + x - p/(mu*sqrt(2._kp))
     else
 !eps2=1
-       find_kkltendinf = (x**(p+1._kp) + x)**2 - (2._kp*p/mu/mu) &
+       find_kklt_x_endinf = (x**(p+1._kp) + x)**2 - (2._kp*p/mu/mu) &
             *( (p+1._kp)*x**p + 1._kp)
     endif
     
-  end function find_kkltendinf
+  end function find_kklt_x_endinf
  
 
 

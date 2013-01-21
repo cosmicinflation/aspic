@@ -124,25 +124,25 @@ contains
     lmi1Data%real1 = gam
     lmi1Data%real2 = beta
     
-    lmi1_x_endinf = zbrent(find_lmi1endinf,mini,maxi,tolFind,lmi1Data)
+    lmi1_x_endinf = zbrent(find_lmi1_x_endinf,mini,maxi,tolFind,lmi1Data)
 
   end function lmi1_x_endinf
 
 
 
-  function find_lmi1endinf(x,lmi1Data)    
+  function find_lmi1_x_endinf(x,lmi1Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lmi1Data
-    real(kp) :: find_lmi1endinf
+    real(kp) :: find_lmi1_x_endinf
     real(kp) :: gam,beta
 
     gam = lmi1Data%real1
     beta = lmi1Data%real2
     
-    find_lmi1endinf = lmi1_epsilon_one(x,gam,beta) - 1._kp
+    find_lmi1_x_endinf = lmi1_epsilon_one(x,gam,beta) - 1._kp
    
-  end function find_lmi1endinf
+  end function find_lmi1_x_endinf
 
 !this is integral[V(phi)/V'(phi) dphi]
   function lmi1_efold_primitive(x,gam,beta)

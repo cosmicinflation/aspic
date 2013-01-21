@@ -113,25 +113,25 @@ contains
 
     rcqiData%real1 = alpha
 
-    rcqi_x_endinf = zbrent(find_rcqiendinf,mini,maxi,tolFind,rcqiData)
+    rcqi_x_endinf = zbrent(find_rcqi_x_endinf,mini,maxi,tolFind,rcqiData)
    
   end function rcqi_x_endinf
 
 
-  function find_rcqiendinf(x,rcqiData)
+  function find_rcqi_x_endinf(x,rcqiData)
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: rcqiData
-    real(kp) :: find_rcqiendinf
+    real(kp) :: find_rcqi_x_endinf
     real(kp) :: alpha
     
     alpha = rcqiData%real1
     
-    find_rcqiendinf = 2._kp*sqrt(2._kp)/x &
+    find_rcqi_x_endinf = 2._kp*sqrt(2._kp)/x &
          *(1._kp-alpha/4._kp-alpha*log(x)) &
          +alpha*log(x)-1._kp
     
-  end function find_rcqiendinf
+  end function find_rcqi_x_endinf
 
 
 !this is integral[V(phi)/V'(phi) dphi]

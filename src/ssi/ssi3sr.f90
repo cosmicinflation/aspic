@@ -183,25 +183,25 @@ contains
     ssi3Data%real1 = alpha
     ssi3Data%real2 = beta
     
-    ssi3_x_endinf = zbrent(find_ssi3endinf,mini,maxi,tolFind,ssi3Data)
+    ssi3_x_endinf = zbrent(find_ssi3_x_endinf,mini,maxi,tolFind,ssi3Data)
 
   end function ssi3_x_endinf
 
 
 
-  function find_ssi3endinf(x,ssi3Data)    
+  function find_ssi3_x_endinf(x,ssi3Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ssi3Data
-    real(kp) :: find_ssi3endinf
+    real(kp) :: find_ssi3_x_endinf
     real(kp) :: alpha,beta
 
     alpha = ssi3Data%real1
     beta = ssi3Data%real2
     
-    find_ssi3endinf = ssi3_epsilon_one(x,alpha,beta) - 1._kp
+    find_ssi3_x_endinf = ssi3_epsilon_one(x,alpha,beta) - 1._kp
    
-  end function find_ssi3endinf
+  end function find_ssi3_x_endinf
 
 !this is integral[V(phi)/V'(phi) dphi]
   function ssi3_efold_primitive(x,alpha,beta)

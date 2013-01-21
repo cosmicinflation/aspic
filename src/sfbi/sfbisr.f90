@@ -11,15 +11,15 @@ module kksfsrevol
   use inftools, only : zbrent
   use sfsrevol, only : sf_norm_potential, sf_epsilon_one, sf_epsilon_two
   use sfsrevol, only : sf_nufunc, sf_x_endinf, sf_x_trajectory
-  use sfsrevol, only : sf_x_epstwo
-  use sfsrevol, only : find_sfepstwo, find_sftraj, find_sfendinf
+  use sfsrevol, only : sf_x_epstwounity
+  use sfsrevol, only : find_sfbi_x_epstwounity, find_sfbi_x_trajectory, find_sfbi_x_endinf
 
   implicit none
 
   private
 
   public  kksf_norm_potential, kksf_epsilon_one, kksf_epsilon_two
-  public  kksf_x_endinf, kksf_nufunc, kksf_x_trajectory, kksf_x_epstwo
+  public  kksf_x_endinf, kksf_nufunc, kksf_x_trajectory, kksf_x_epstwounity
  
 contains
 !returns V/M^4
@@ -85,7 +85,7 @@ contains
     kksfData%real1 = -p
     kksfData%real2 = mu
 
-    kksf_x_endinf = zbrent(find_sfendinf,mini,maxi,tolFind,kksfData)
+    kksf_x_endinf = zbrent(find_sfbi_x_endinf,mini,maxi,tolFind,kksfData)
    
   end function kksf_x_endinf
   
@@ -108,7 +108,7 @@ contains
     kksfData%real2 = mu
     kksfData%real3 = -bfold + kksf_nufunc(xend,p,mu)
     
-    kksf_x_trajectory = zbrent(find_sftraj,mini,maxi,tolFind,kksfData)
+    kksf_x_trajectory = zbrent(find_sfbi_x_trajectory,mini,maxi,tolFind,kksfData)
     
    
   end function kksf_x_trajectory
@@ -116,10 +116,10 @@ contains
     
 !returns x given epsilon2. If x~1, the small field approx may be not
 !good enough, use kklt instead
-  function kksf_x_epstwo(eps2,p,mu)   
+  function kksf_x_epstwounity(eps2,p,mu)   
     implicit none
     real(kp), intent(in) :: p,mu,eps2
-    real(kp) :: kksf_x_epstwo
+    real(kp) :: kksf_x_epstwounity
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: kksfData
@@ -131,9 +131,9 @@ contains
     kksfData%real2 = mu
     kksfData%real3 = eps2
 
-    kksf_x_epstwo = zbrent(find_sfepstwo,mini,maxi,tolFind,kksfData)
+    kksf_x_epstwounity = zbrent(find_sfbi_x_epstwounity,mini,maxi,tolFind,kksfData)
    
- end function kksf_x_epstwo
+ end function kksf_x_epstwounity
 
     
 end module kksfsrevol

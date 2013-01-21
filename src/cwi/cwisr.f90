@@ -149,26 +149,26 @@ end function cwi_xplus_positive_potential
     cwiData%real1 = alpha
     cwiData%real2 = Q	
     
-    cwi_x_endinf = zbrent(find_cwiendinf,mini,maxi,tolFind,cwiData)
+    cwi_x_endinf = zbrent(find_cwi_x_endinf,mini,maxi,tolFind,cwiData)
 
 
   end function cwi_x_endinf
 
 
 
-  function find_cwiendinf(x,cwiData)    
+  function find_cwi_x_endinf(x,cwiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: cwiData
-    real(kp) :: find_cwiendinf
+    real(kp) :: find_cwi_x_endinf
     real(kp) :: alpha,Q
 
     alpha = cwiData%real1
     Q = cwiData%real2
     
-    find_cwiendinf = cwi_epsilon_one(x,alpha,Q) - 1._kp
+    find_cwi_x_endinf = cwi_epsilon_one(x,alpha,Q) - 1._kp
    
-  end function find_cwiendinf
+  end function find_cwi_x_endinf
 
 
 

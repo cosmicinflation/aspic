@@ -130,25 +130,25 @@ contains
     ssi2Data%real1 = alpha
     ssi2Data%real2 = beta
     
-    ssi2_x_endinf = zbrent(find_ssi2endinf,mini,maxi,tolFind,ssi2Data)
+    ssi2_x_endinf = zbrent(find_ssi2_x_endinf,mini,maxi,tolFind,ssi2Data)
 
   end function ssi2_x_endinf
 
 
 
-  function find_ssi2endinf(x,ssi2Data)    
+  function find_ssi2_x_endinf(x,ssi2Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ssi2Data
-    real(kp) :: find_ssi2endinf
+    real(kp) :: find_ssi2_x_endinf
     real(kp) :: alpha,beta
 
     alpha = ssi2Data%real1
     beta = ssi2Data%real2
     
-    find_ssi2endinf = ssi2_epsilon_one(x,alpha,beta) - 1._kp
+    find_ssi2_x_endinf = ssi2_epsilon_one(x,alpha,beta) - 1._kp
    
-  end function find_ssi2endinf
+  end function find_ssi2_x_endinf
 
 !this is integral[V(phi)/V'(phi) dphi]
   function ssi2_efold_primitive(x,alpha,beta)

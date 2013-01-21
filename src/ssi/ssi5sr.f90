@@ -205,25 +205,25 @@ contains
     ssi5Data%real1 = alpha
     ssi5Data%real2 = beta
     
-    ssi5_x_endinf = zbrent(find_ssi5endinf,mini,maxi,tolFind,ssi5Data)
+    ssi5_x_endinf = zbrent(find_ssi5_x_endinf,mini,maxi,tolFind,ssi5Data)
 
   end function ssi5_x_endinf
 
 
 
-  function find_ssi5endinf(x,ssi5Data)    
+  function find_ssi5_x_endinf(x,ssi5Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ssi5Data
-    real(kp) :: find_ssi5endinf
+    real(kp) :: find_ssi5_x_endinf
     real(kp) :: alpha,beta
 
     alpha = ssi5Data%real1
     beta = ssi5Data%real2
     
-    find_ssi5endinf = ssi5_epsilon_one(x,alpha,beta) - 1._kp
+    find_ssi5_x_endinf = ssi5_epsilon_one(x,alpha,beta) - 1._kp
    
-  end function find_ssi5endinf
+  end function find_ssi5_x_endinf
 
 !this is integral[V(phi)/V'(phi) dphi]
   function ssi5_efold_primitive(x,alpha,beta)

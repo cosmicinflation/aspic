@@ -202,25 +202,25 @@ contains
     ssi6Data%real1 = alpha
     ssi6Data%real2 = beta
     
-    ssi6_x_endinf = zbrent(find_ssi6endinf,mini,maxi,tolFind,ssi6Data)
+    ssi6_x_endinf = zbrent(find_ssi6_x_endinf,mini,maxi,tolFind,ssi6Data)
 
   end function ssi6_x_endinf
 
 
 
-  function find_ssi6endinf(x,ssi6Data)    
+  function find_ssi6_x_endinf(x,ssi6Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ssi6Data
-    real(kp) :: find_ssi6endinf
+    real(kp) :: find_ssi6_x_endinf
     real(kp) :: alpha,beta
 
     alpha = ssi6Data%real1
     beta = ssi6Data%real2
     
-    find_ssi6endinf = ssi6_epsilon_one(x,alpha,beta) - 1._kp
+    find_ssi6_x_endinf = ssi6_epsilon_one(x,alpha,beta) - 1._kp
    
-  end function find_ssi6endinf
+  end function find_ssi6_x_endinf
 
 !this is integral[V(phi)/V'(phi) dphi]
   function ssi6_efold_primitive(x,alpha,beta)
