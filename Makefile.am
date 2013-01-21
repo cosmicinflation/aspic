@@ -1,5 +1,3 @@
 AUTOMAKE_OPTIONS = gnu
 
 SUBDIRS = src man
-
-ACLOCAL_AMFLAGS = -I m4
