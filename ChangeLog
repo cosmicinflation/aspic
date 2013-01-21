@@ -1,3 +1,291 @@
+commit 735a26ea380c8e4ac3f705efea7b98fb30e2e14f
+Date:   Mon Jan 21 17:06:18 2013 +0100
+
+    just found out that ACLOCAL_AMFLAGS is deprecated: removed all my
+	previous shits
+
+ Makefile.am  |    2 --
+ configure.ac |    2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+commit 528c2dedb23c1a0a03b551c60be6f8e9912f9eab
+Author: chris <chris@ringeval.com>
+Date:   Mon Jan 21 17:01:55 2013 +0100
+
+    cleaning m4
+
+ m4/libtool.m4     | 8008 -----------------------------------------------------
+ m4/ltoptions.m4   |  384 ---
+ m4/ltsugar.m4     |  123 -
+ m4/ltversion.m4   |   23 -
+ m4/lt~obsolete.m4 |   98 -
+ 5 files changed, 8636 deletions(-)
+
+commit ca3f5d1b0c3ad4da13c2b5cb3e225ebf55208790
+Date:   Mon Jan 21 17:01:40 2013 +0100
+
+    adding m4 files
+
+ m4/libtool.m4     | 8008 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ m4/ltoptions.m4   |  384 +++
+ m4/ltsugar.m4     |  123 +
+ m4/ltversion.m4   |   23 +
+ m4/lt~obsolete.m4 |   98 +
+ 5 files changed, 8636 insertions(+)
+
+commit 565d7b276f1b00ff9b3cb5cfd55482ee1b097b6f
+Date:   Mon Jan 21 16:57:17 2013 +0100
+
+    Clean autoconf directory, remaining old files, m4 directory added to tree
+
+ NEWS                    |   26 ++++++++++----------------
+ src/gmssmi/Makefile.am~ |   26 --------------------------
+ src/gmssmi/libmssmi.la  |   41 -----------------------------------------
+ 3 files changed, 10 insertions(+), 83 deletions(-)
+
+commit d8773ba5320db3c158d1619932ca24d5fd169f5f
+Date:   Mon Jan 21 16:44:08 2013 +0100
+
+    Renaming mssmi to gmssmi
+
+ Makefile.am                 |    1 +
+ configure.ac                |    4 +-
+ src/Makefile.am             |    4 +-
+ src/gmssmi/Makefile.am      |   26 ++
+ src/gmssmi/Makefile.am~     |   26 ++
+ src/gmssmi/Makefile.in      |  723 +++++++++++++++++++++++++++++++++++++++++++
+ src/gmssmi/aspic_gmssmi.3   |   25 ++
+ src/gmssmi/aspic_mssmi.3    |   25 ++
+ src/gmssmi/gmssmicommon.f90 |  172 ++++++++++
+ src/gmssmi/gmssmimain.f90   |  166 ++++++++++
+ src/gmssmi/gmssmireheat.f90 |  127 ++++++++
+ src/gmssmi/gmssmisr.f90     |  136 ++++++++
+ src/gmssmi/libmssmi.la      |   41 +++
+ src/gmssmi/mssmimain.f90    |  128 ++++++++
+ src/gmssmi/mssmireheat.f90  |  123 ++++++++
+ src/gmssmi/mssmisr.f90      |  179 +++++++++++
+ src/mssmi/Makefile.am       |   26 --
+ src/mssmi/aspic_gmssmi.3    |   25 --
+ src/mssmi/aspic_mssmi.3     |   25 --
+ src/mssmi/gmssmicommon.f90  |  172 ----------
+ src/mssmi/gmssmimain.f90    |  166 ----------
+ src/mssmi/gmssmireheat.f90  |  127 --------
+ src/mssmi/gmssmisr.f90      |  136 --------
+ src/mssmi/mssmimain.f90     |  128 --------
+ src/mssmi/mssmireheat.f90   |  123 --------
+ src/mssmi/mssmisr.f90       |  179 -----------
+ 26 files changed, 1902 insertions(+), 1111 deletions(-)
+
+commit ec672ab2589b6915e6113c9c2a0b9f29e75b473f
+Date:   Mon Jan 21 16:22:45 2013 +0100
+
+    Fix convention find_foostuff into find_foo_x_stuff; deep cleaning into gmssmi
+
+ src/bi/bireheat.f90        |   12 ++--
+ src/bi/bisr.f90            |   10 +--
+ src/cnbi/cnbisr.f90        |   12 ++--
+ src/kmiii/kmiiisr.f90      |   32 ++++-----
+ src/lmi/lmi2sr.f90         |   10 +--
+ src/mssmi/Makefile.am      |    4 +-
+ src/mssmi/gmssmicommon.f90 |  172 ++++++++++++++++++++++++++++++++++++++++++++
+ src/mssmi/gmssmimain.f90   |   18 ++---
+ src/mssmi/gmssmireheat.f90 |    6 +-
+ src/mssmi/gmssmisr.f90     |  131 +++++----------------------------
+ src/mssmi/mssmicommon.f90  |  172 --------------------------------------------
+ src/mssmi/mssmimain.f90    |    2 +-
+ src/mssmi/mssmireheat.f90  |    4 +-
+ src/mssmi/mssmisr.f90      |   32 ++++-----
+ src/sfbi/sfbireheat.f90    |    4 +-
+ src/sfi/sfireheat.f90      |    4 --
+ src/ssi/ssi1sr.f90         |   10 +--
+ src/ssi/ssi3sr.f90         |   10 +--
+ src/twi/twisr.f90          |   40 +++++------
+ src/vhi/vhisr.f90          |   14 ++--
+ 20 files changed, 300 insertions(+), 399 deletions(-)
+
+commit 70cb06abf5af4535255f4e805f6ba4796832ae43
+Author: chris <chris@ringeval.com>
+Date:   Mon Jan 21 15:28:40 2013 +0100
+
+    Fix convention of find endinf routines to: find_foo_x_endinf
+
+ src/bi/bisr.f90       |   12 ++++++------
+ src/cwi/cwisr.f90     |   10 +++++-----
+ src/kmiii/kmiiisr.f90 |   12 ++++++------
+ src/lmi/lmi1sr.f90    |   10 +++++-----
+ src/lpi/lpi1sr.f90    |   10 +++++-----
+ src/lpi/lpi2sr.f90    |   10 +++++-----
+ src/lpi/lpi3sr.f90    |   10 +++++-----
+ src/rcqi/rcqisr.f90   |   10 +++++-----
+ src/sfbi/sfbisr.f90   |   18 +++++++++---------
+ src/ssi/ssi1sr.f90    |   10 +++++-----
+ src/ssi/ssi2sr.f90    |   10 +++++-----
+ src/ssi/ssi3sr.f90    |   10 +++++-----
+ src/ssi/ssi4sr.f90    |   10 +++++-----
+ src/ssi/ssi5sr.f90    |   10 +++++-----
+ src/ssi/ssi6sr.f90    |   10 +++++-----
+ 15 files changed, 81 insertions(+), 81 deletions(-)
+
+commit 2ad6aba5c6e3806eb9d1a58d33f114ec6221ee0e
+Date:   Mon Jan 21 15:15:30 2013 +0100
+
+    Fix convention of traj routines to: find_foo_x_trajectory
+
+ src/bi/bisr.f90        |   10 +++++-----
+ src/cnai/cnaisr.f90    |   10 +++++-----
+ src/cnbi/cnbisr.f90    |   10 +++++-----
+ src/cnci/cncisr.f90    |   10 +++++-----
+ src/cndi/cndisr.f90    |   10 +++++-----
+ src/cwi/cwisr.f90      |   10 +++++-----
+ src/dsi/dsisr.f90      |   10 +++++-----
+ src/gmlfi/gmlfisr.f90  |   10 +++++-----
+ src/ii/iisr.f90        |   10 +++++-----
+ src/kmii/kmiisr.f90    |   10 +++++-----
+ src/kmiii/kmiiisr.f90  |   10 +++++-----
+ src/li/lisr.f90        |   10 +++++-----
+ src/lmi/lmi1sr.f90     |    4 ++--
+ src/lmi/lmi2sr.f90     |    4 ++--
+ src/lmi/lmicommon.f90  |   10 +++++-----
+ src/lpi/lpi1sr.f90     |    4 ++--
+ src/lpi/lpi2sr.f90     |    4 ++--
+ src/lpi/lpi3sr.f90     |    4 ++--
+ src/lpi/lpicommon.f90  |   10 +++++-----
+ src/mssmi/gmssmisr.f90 |   10 +++++-----
+ src/mssmi/mssmisr.f90  |   10 +++++-----
+ src/ncki/nckisr.f90    |   10 +++++-----
+ src/psni/psnisr.f90    |   10 +++++-----
+ src/rcqi/rcqisr.f90    |   10 +++++-----
+ src/ripi/ripisr.f90    |   10 +++++-----
+ src/rmi/rmi1sr.f90     |    4 ++--
+ src/rmi/rmi2sr.f90     |    4 ++--
+ src/rmi/rmi3sr.f90     |    4 ++--
+ src/rmi/rmi4sr.f90     |    4 ++--
+ src/rmi/rmicommon.f90  |   10 +++++-----
+ src/ssi/ssi1sr.f90     |    4 ++--
+ src/ssi/ssi2sr.f90     |    4 ++--
+ src/ssi/ssi3sr.f90     |    4 ++--
+ src/ssi/ssi4sr.f90     |    4 ++--
+ src/ssi/ssi5sr.f90     |    4 ++--
+ src/ssi/ssi6sr.f90     |    4 ++--
+ src/ssi/ssicommon.f90  |   10 +++++-----
+ src/twi/twisr.f90      |   10 +++++-----
+ src/vhi/vhisr.f90      |   10 +++++-----
+ 39 files changed, 150 insertions(+), 150 deletions(-)
+
+commit b00d7f7e72886d1085ff927d477df4112aa03540
+Date:   Mon Jan 21 14:47:30 2013 +0100
+
+    6 new models added: csi, oi, cnci, sbi, ssi, rmi, lpi, cndi
+
+ configure.ac                |    3 +-
+ include/aspic.h             |   55 +++++++---
+ man/libaspic.3              |   62 ++++++++---
+ src/Makefile.am             |    9 +-
+ src/ai/Makefile.am          |    1 +
+ src/bei/Makefile.am         |    1 +
+ src/bi/Makefile.am          |    3 +-
+ src/bsusybi/Makefile.am     |    1 +
+ src/bsusybi/bsusybimain.f90 |    9 +-
+ src/bsusybi/bsusybisr.f90   |   39 +++----
+ src/cnai/Makefile.am        |    1 +
+ src/cnai/cnaisr.f90         |   14 +--
+ src/cnbi/Makefile.am        |    1 +
+ src/cnci/Makefile.am        |    1 +
+ src/cnci/aspic_cnci.3       |    2 +-
+ src/cnci/cncimain.f90       |   13 +--
+ src/cnci/cncireheat.f90     |    6 +-
+ src/cnci/cncisr.f90         |   97 +++++++++--------
+ src/cndi/Makefile.am        |    1 +
+ src/cndi/aspic_cndi.3       |   49 ++++++++-
+ src/cndi/cndimain.f90       |  102 +++++++++---------
+ src/cndi/cndireheat.f90     |   11 +-
+ src/cndi/cndisr.f90         |  111 ++++++++++---------
+ src/common/Makefile.am      |    2 +
+ src/csi/Makefile.am         |    1 +
+ src/csi/aspic_csi.3         |    2 +-
+ src/csi/csimain.f90         |    8 +-
+ src/csi/csireheat.f90       |    4 +-
+ src/csi/csisr.f90           |   16 +--
+ src/cwi/Makefile.am         |    1 +
+ src/dsi/Makefile.am         |    1 +
+ src/dwi/Makefile.am         |    1 +
+ src/esi/Makefile.am         |    1 +
+ src/gmlfi/Makefile.am       |    1 +
+ src/hf1i/Makefile.am        |    1 +
+ src/hf2i/Makefile.am        |    1 +
+ src/hi/Makefile.am          |    1 +
+ src/ii/Makefile.am          |    1 +
+ src/kmii/Makefile.am        |    1 +
+ src/kmiii/Makefile.am       |    1 +
+ src/lfi/Makefile.am         |    3 +-
+ src/li/Makefile.am          |    1 +
+ src/lmi/Makefile.am         |    1 +
+ src/lpi/Makefile.am         |   26 +++--
+ src/lpi/aspic_lpi.3         |   38 ++++++-
+ src/lpi/lpi1main.f90        |  112 +++++++++++++++++++
+ src/lpi/lpi1reheat.f90      |  127 ++++++++++++++++++++++
+ src/lpi/lpi1sr.f90          |  191 ++++++++++++++++++++++++++++++++
+ src/lpi/lpi2main.f90        |  112 +++++++++++++++++++
+ src/lpi/lpi2reheat.f90      |  128 ++++++++++++++++++++++
+ src/lpi/lpi2sr.f90          |  201 ++++++++++++++++++++++++++++++++++
+ src/lpi/lpi3main.f90        |  112 +++++++++++++++++++
+ src/lpi/lpi3reheat.f90      |  128 ++++++++++++++++++++++
+ src/lpi/lpi3sr.f90          |  211 ++++++++++++++++++++++++++++++++++++
+ src/lpi/lpicommon.f90       |  175 ++++++++++++++++++++++++++++++
+ src/lpi/lpimain.f90         |  112 -------------------
+ src/lpi/lpireheat.f90       |  127 ----------------------
+ src/lpi/lpisr.f90           |  185 -------------------------------
+ src/mhi/Makefile.am         |    1 +
+ src/mni/Makefile.am         |    1 +
+ src/mssmi/Makefile.am       |    1 +
+ src/ncki/Makefile.am        |    1 +
+ src/oi/Makefile.am          |    1 +
+ src/oi/oisr.f90             |   42 ++++----
+ src/pli/Makefile.am         |    1 +
+ src/pni/Makefile.am         |    1 +
+ src/psni/Makefile.am        |    1 +
+ src/rcmi/Makefile.am        |    1 +
+ src/rcqi/Makefile.am        |    1 +
+ src/rgi/Makefile.am         |    1 +
+ src/ripi/Makefile.am        |    1 +
+ src/rmi/Makefile.am         |    1 +
+ src/rmi/aspic_rmi.3         |   37 ++++++-
+ src/rmi/rmi1main.f90        |    5 +-
+ src/rmi/rmi1sr.f90          |   36 ++++---
+ src/rmi/rmi2main.f90        |    4 +-
+ src/rmi/rmi2sr.f90          |   21 ++--
+ src/rmi/rmi3sr.f90          |    3 +-
+ src/rmi/rmi4sr.f90          |    5 +-
+ src/rmi/rmicommon.f90       |   18 ++--
+ src/rmi/rmimain.f90         |   61 -----------
+ src/rmi/rmireheat.f90       |  134 -----------------------
+ src/rmi/rmisr.f90           |  252 -------------------------------------------
+ src/rpi/Makefile.am         |    1 +
+ src/sbi/Makefile.am         |    1 +
+ src/sbi/sbisr.f90           |   82 +++++++-------
+ src/sfbi/Makefile.am        |    3 +-
+ src/sfi/Makefile.am         |    3 +-
+ src/ssi/Makefile.am         |    3 +-
+ src/ssi/aspic_ssi.3         |  142 ++++++++++++++++++++++++
+ src/ssi/aspic_ssi1.3        |   25 -----
+ src/ssi/ssi1sr.f90          |   31 +++---
+ src/ssi/ssi2sr.f90          |   13 ++-
+ src/ssi/ssi3reheat.f90      |    7 +-
+ src/ssi/ssi3sr.f90          |   48 +++++----
+ src/ssi/ssi4reheat.f90      |    5 +-
+ src/ssi/ssi4sr.f90          |   34 ++++--
+ src/ssi/ssi5main.f90        |   10 +-
+ src/ssi/ssi5sr.f90          |   91 +++++++++-------
+ src/ssi/ssi6main.f90        |   10 +-
+ src/ssi/ssi6sr.f90          |   73 +++++++------
+ src/ssi/ssicommon.f90       |   49 ++++-----
+ src/ti/Makefile.am          |    1 +
+ src/twi/Makefile.am         |    1 +
+ src/twi/twisr.f90           |   18 ++--
+ src/vhi/Makefile.am         |    3 +-
+ src/vhi/vhisr.f90           |    2 -
+ 107 files changed, 2475 insertions(+), 1438 deletions(-)
+
 commit 29a5ea5a2641e06c9a8274c70624a46893da4f52
 Date:   Tue Dec 4 20:04:03 2012 +0100
 
