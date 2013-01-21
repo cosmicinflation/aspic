@@ -160,23 +160,23 @@ contains
     kmiiData%real1 = alpha
     kmiiData%real2 = -bfold + kmii_efold_primitive(xend,alpha)
     
-    kmii_x_trajectory = zbrent(find_kmiitraj,mini,maxi,tokmiind,kmiiData)
+    kmii_x_trajectory = zbrent(find_kmii_x_trajectory,mini,maxi,tokmiind,kmiiData)
        
   end function kmii_x_trajectory
 
-  function find_kmiitraj(x,kmiiData)    
+  function find_kmii_x_trajectory(x,kmiiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: kmiiData
-    real(kp) :: find_kmiitraj
+    real(kp) :: find_kmii_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha = kmiiData%real1
     NplusNuend = kmiiData%real2
 
-    find_kmiitraj = kmii_efold_primitive(x,alpha) - NplusNuend
+    find_kmii_x_trajectory = kmii_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_kmiitraj
+  end function find_kmii_x_trajectory
 
 
   

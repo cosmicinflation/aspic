@@ -13,7 +13,7 @@ module ssi6sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj 
+  use ssicommon, only : ssi_efold_primitive, find_ssi_x_trajectory 
   use ssicommon, only : ssi3456_x_derivpotzero,ssi136_x_epstwozero
 
 
@@ -250,7 +250,7 @@ contains
     ssi6Data%real2 = beta
     ssi6Data%real3 = -bfold + ssi6_efold_primitive(xend,alpha,beta)
     
-    ssi6_x_trajectory = zbrent(find_ssitraj,mini,maxi,tolFind,ssi6Data)
+    ssi6_x_trajectory = zbrent(find_ssi_x_trajectory,mini,maxi,tolFind,ssi6Data)
        
   end function ssi6_x_trajectory
  

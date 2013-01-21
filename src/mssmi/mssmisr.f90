@@ -145,23 +145,23 @@ contains
     mssmiData%real1 = alpha
     mssmiData%real2 = -bfold + mssmi_efold_primitive(xend,alpha)
     
-    mssmi_x_trajectory = zbrent(find_mssmitraj,mini,maxi,tolFind,mssmiData)
+    mssmi_x_trajectory = zbrent(find_mssmi_x_trajectory,mini,maxi,tolFind,mssmiData)
        
   end function mssmi_x_trajectory
 
-  function find_mssmitraj(x,mssmiData)    
+  function find_mssmi_x_trajectory(x,mssmiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: mssmiData
-    real(kp) :: find_mssmitraj
+    real(kp) :: find_mssmi_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha= mssmiData%real1
     NplusNuend = mssmiData%real2
 
-    find_mssmitraj = mssmi_efold_primitive(x,alpha) - NplusNuend
+    find_mssmi_x_trajectory = mssmi_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_mssmitraj
+  end function find_mssmi_x_trajectory
 
 
 

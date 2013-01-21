@@ -23,7 +23,7 @@ module rmicommon
   public rmi_norm_potential
   public rmi_norm_deriv_potential, rmi_norm_deriv_second_potential
   public rmi_epsilon_one, rmi_epsilon_two, rmi_epsilon_three
-  public rmi_efold_primitive, find_rmitraj
+  public rmi_efold_primitive, find_rmi_x_trajectory
 
 contains
 
@@ -127,20 +127,20 @@ contains
 
 
 
-  function find_rmitraj(x,rmiData)    
+  function find_rmi_x_trajectory(x,rmiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: rmiData
-    real(kp) :: find_rmitraj
+    real(kp) :: find_rmi_x_trajectory
     real(kp) :: c,phi0,NplusNuend
 
     c = rmiData%real1
     phi0 = rmiData%real2
     NplusNuend = rmiData%real3
 
-    find_rmitraj = rmi_efold_primitive(x,c,phi0) - NplusNuend
+    find_rmi_x_trajectory = rmi_efold_primitive(x,c,phi0) - NplusNuend
    
-  end function find_rmitraj
+  end function find_rmi_x_trajectory
 
 
 end module rmicommon

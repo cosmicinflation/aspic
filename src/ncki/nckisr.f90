@@ -181,24 +181,24 @@ contains
     nckiData%real2 = beta
     nckiData%real3 = -bfold + ncki_efold_primitive(xend,alpha,beta)
     
-    ncki_x_trajectory = zbrent(find_nckitraj,mini,maxi,tolFind,nckiData)
+    ncki_x_trajectory = zbrent(find_ncki_x_trajectory,mini,maxi,tolFind,nckiData)
        
   end function ncki_x_trajectory
 
-  function find_nckitraj(x,nckiData)    
+  function find_ncki_x_trajectory(x,nckiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: nckiData
-    real(kp) :: find_nckitraj
+    real(kp) :: find_ncki_x_trajectory
     real(kp) :: alpha,beta,NplusNuend
 
     alpha= nckiData%real1
     beta = nckiData%real2
     NplusNuend = nckiData%real3
 
-    find_nckitraj = ncki_efold_primitive(x,alpha,beta) - NplusNuend
+    find_ncki_x_trajectory = ncki_efold_primitive(x,alpha,beta) - NplusNuend
    
-  end function find_nckitraj
+  end function find_ncki_x_trajectory
 
 
   

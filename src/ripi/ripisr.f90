@@ -146,23 +146,23 @@ contains
     ripiData%real1 = alpha
     ripiData%real2 = -bfold + ripi_efold_primitive(xend,alpha)
     
-    ripi_x_trajectory = zbrent(find_ripitraj,mini,maxi,tolFind,ripiData)
+    ripi_x_trajectory = zbrent(find_ripi_x_trajectory,mini,maxi,tolFind,ripiData)
        
   end function ripi_x_trajectory
 
-  function find_ripitraj(x,ripiData)    
+  function find_ripi_x_trajectory(x,ripiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ripiData
-    real(kp) :: find_ripitraj
+    real(kp) :: find_ripi_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha = ripiData%real1
     NplusNuend = ripiData%real2
 
-    find_ripitraj = ripi_efold_primitive(x,alpha) - NplusNuend
+    find_ripi_x_trajectory = ripi_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_ripitraj
+  end function find_ripi_x_trajectory
 
 
   

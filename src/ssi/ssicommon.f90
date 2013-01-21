@@ -23,7 +23,7 @@ module ssicommon
   public ssi_norm_potential
   public ssi_norm_deriv_potential, ssi_norm_deriv_second_potential
   public ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  public ssi_efold_primitive, find_ssitraj
+  public ssi_efold_primitive, find_ssi_x_trajectory
   public ssi136_x_epstwozero, ssi245_x_potzero, ssi3456_x_derivpotzero
 
 contains
@@ -125,20 +125,20 @@ contains
 
 
 
-  function find_ssitraj(x,ssiData)    
+  function find_ssi_x_trajectory(x,ssiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ssiData
-    real(kp) :: find_ssitraj
+    real(kp) :: find_ssi_x_trajectory
     real(kp) :: alpha,beta,NplusNuend
 
     alpha = ssiData%real1
     beta = ssiData%real2
     NplusNuend = ssiData%real3
 
-    find_ssitraj = ssi_efold_primitive(x,alpha,beta) - NplusNuend
+    find_ssi_x_trajectory = ssi_efold_primitive(x,alpha,beta) - NplusNuend
    
-  end function find_ssitraj
+  end function find_ssi_x_trajectory
 
 ! Return the position x at which epsilon2 vanishes for SSI1, SSI3, SSI6
   function ssi136_x_epstwozero(alpha,beta)

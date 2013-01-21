@@ -18,7 +18,7 @@ module lmicommon
   public lmi_norm_deriv_potential, lmi_norm_deriv_second_potential
   public lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
   public lmi_epsilon_one_max, lmi_x_epsonemax, lmi_x_potmax
-  public lmi_efold_primitive, find_lmitraj
+  public lmi_efold_primitive, find_lmi_x_trajectory
 
 contains
 
@@ -193,20 +193,20 @@ contains
 
 
 
-  function find_lmitraj(x,lmiData)    
+  function find_lmi_x_trajectory(x,lmiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lmiData
-    real(kp) :: find_lmitraj
+    real(kp) :: find_lmi_x_trajectory
     real(kp) :: gam,beta,NplusNuend
 
     gam = lmiData%real1
     beta = lmiData%real2
     NplusNuend = lmiData%real3
 
-    find_lmitraj = lmi_efold_primitive(x,gam,beta) - NplusNuend
+    find_lmi_x_trajectory = lmi_efold_primitive(x,gam,beta) - NplusNuend
    
-  end function find_lmitraj
+  end function find_lmi_x_trajectory
 
 
 end module lmicommon

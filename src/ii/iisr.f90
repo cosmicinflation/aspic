@@ -138,23 +138,23 @@ contains
     iiData%real1 = beta
     iiData%real2 = -bfold + ii_efold_primitive(xend,beta)
     
-    ii_x_trajectory = zbrent(find_iitraj,mini,maxi,tolFind,iiData)
+    ii_x_trajectory = zbrent(find_ii_x_trajectory,mini,maxi,tolFind,iiData)
        
   end function ii_x_trajectory
 
-  function find_iitraj(x,iiData)    
+  function find_ii_x_trajectory(x,iiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: iiData
-    real(kp) :: find_iitraj
+    real(kp) :: find_ii_x_trajectory
     real(kp) :: beta,NplusNuend
 
     beta = iiData%real1
     NplusNuend = iiData%real2
 
-    find_iitraj = ii_efold_primitive(x,beta) - NplusNuend
+    find_ii_x_trajectory = ii_efold_primitive(x,beta) - NplusNuend
    
-  end function find_iitraj
+  end function find_ii_x_trajectory
 
  
 !Returns the minimum value of xend in order to have at least -bfolds possible

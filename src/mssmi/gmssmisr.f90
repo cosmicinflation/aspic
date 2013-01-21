@@ -165,24 +165,24 @@ contains
     gmssmiData%real2 = beta
     gmssmiData%real3 = -bfold + gmssmi_efold_primitive(xend,alpha,beta)
     
-    gmssmi_x_trajectory = zbrent(find_gmssmitraj,mini,maxi,tolFind,gmssmiData)
+    gmssmi_x_trajectory = zbrent(find_gmssmi_x_trajectory,mini,maxi,tolFind,gmssmiData)
        
   end function gmssmi_x_trajectory
 
-  function find_gmssmitraj(x,gmssmiData)    
+  function find_gmssmi_x_trajectory(x,gmssmiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: gmssmiData
-    real(kp) :: find_gmssmitraj
+    real(kp) :: find_gmssmi_x_trajectory
     real(kp) :: alpha,beta,NplusNuend
 
     alpha= gmssmiData%real1
     beta = gmssmiData%real2
     NplusNuend = gmssmiData%real3
 
-    find_gmssmitraj = gmssmi_efold_primitive(x,alpha,beta) - NplusNuend
+    find_gmssmi_x_trajectory = gmssmi_efold_primitive(x,alpha,beta) - NplusNuend
    
-  end function find_gmssmitraj
+  end function find_gmssmi_x_trajectory
 
 
 !Returns the prior alpha_min(beta) such that the first local minimum of epsilon1 is less than one

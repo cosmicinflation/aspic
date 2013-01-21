@@ -251,23 +251,23 @@ contains
     twiData%real1 = phi0
     twiData%real2 = -bfold + twi_efold_primitive(xend,phi0)
     
-    twi_x_trajectory = zbrent(find_twitraj,mini,maxi,tolFind,twiData)
+    twi_x_trajectory = zbrent(find_twi_x_trajectory,mini,maxi,tolFind,twiData)
        
   end function twi_x_trajectory
 
-  function find_twitraj(x,twiData)    
+  function find_twi_x_trajectory(x,twiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: twiData
-    real(kp) :: find_twitraj
+    real(kp) :: find_twi_x_trajectory
     real(kp) :: phi0,NplusNuend
 
     phi0 = twiData%real1
     NplusNuend = twiData%real2
 
-    find_twitraj = twi_efold_primitive(x,phi0) - NplusNuend
+    find_twi_x_trajectory = twi_efold_primitive(x,phi0) - NplusNuend
    
-  end function find_twitraj
+  end function find_twi_x_trajectory
 
 
 

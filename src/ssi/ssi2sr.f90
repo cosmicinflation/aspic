@@ -13,7 +13,7 @@ module ssi2sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi245_x_potzero
+  use ssicommon, only : ssi_efold_primitive, find_ssi_x_trajectory, ssi245_x_potzero
 
 
   implicit none
@@ -178,7 +178,7 @@ contains
     ssi2Data%real2 = beta
     ssi2Data%real3 = -bfold + ssi2_efold_primitive(xend,alpha,beta)
     
-    ssi2_x_trajectory = zbrent(find_ssitraj,mini,maxi,tolFind,ssi2Data)
+    ssi2_x_trajectory = zbrent(find_ssi_x_trajectory,mini,maxi,tolFind,ssi2Data)
        
   end function ssi2_x_trajectory
  

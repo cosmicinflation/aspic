@@ -166,23 +166,23 @@ contains
     rcqiData%real1 = alpha
     rcqiData%real2 = -bfold + rcqi_efold_primitive(xend,alpha)
     
-    rcqi_x_trajectory = zbrent(find_rcqitraj,mini,maxi,tolFind,rcqiData)
+    rcqi_x_trajectory = zbrent(find_rcqi_x_trajectory,mini,maxi,tolFind,rcqiData)
        
   end function rcqi_x_trajectory
 
-  function find_rcqitraj(x,rcqiData)    
+  function find_rcqi_x_trajectory(x,rcqiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: rcqiData
-    real(kp) :: find_rcqitraj
+    real(kp) :: find_rcqi_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha = rcqiData%real1
     NplusNuend = rcqiData%real2
 
-    find_rcqitraj = rcqi_efold_primitive(x,alpha) - NplusNuend
+    find_rcqi_x_trajectory = rcqi_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_rcqitraj
+  end function find_rcqi_x_trajectory
 
 
   

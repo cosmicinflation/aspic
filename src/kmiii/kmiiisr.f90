@@ -243,24 +243,24 @@ contains
     kmiiiData%real2 = beta
     kmiiiData%real3 = -bfold + kmiii_efold_primitive(xend,alpha,beta)
     
-    kmiii_x_trajectory = zbrent(find_kmiiitraj,mini,maxi,tolFind,kmiiiData)
+    kmiii_x_trajectory = zbrent(find_kmiii_x_trajectory,mini,maxi,tolFind,kmiiiData)
        
   end function kmiii_x_trajectory
 
-  function find_kmiiitraj(x,kmiiiData)    
+  function find_kmiii_x_trajectory(x,kmiiiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: kmiiiData
-    real(kp) :: find_kmiiitraj
+    real(kp) :: find_kmiii_x_trajectory
     real(kp) :: alpha,beta,NplusNuend
 
     alpha = kmiiiData%real1
     beta = kmiiiData%real2
     NplusNuend = kmiiiData%real3
 
-    find_kmiiitraj = kmiii_efold_primitive(x,alpha,beta) - NplusNuend
+    find_kmiii_x_trajectory = kmiii_efold_primitive(x,alpha,beta) - NplusNuend
    
-  end function find_kmiiitraj
+  end function find_kmiii_x_trajectory
 
   function kmiii_alphamin(beta) !Given beta, returns the minimum value of alpha such that inflation can be stopped by violation of the slow roll conditions
     implicit none

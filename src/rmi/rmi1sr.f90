@@ -14,7 +14,7 @@ module rmi1sr
   use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential
   use rmicommon, only : rmi_norm_deriv_second_potential
   use rmicommon, only : rmi_epsilon_one, rmi_epsilon_two, rmi_epsilon_three
-  use rmicommon, only : rmi_efold_primitive, find_rmitraj
+  use rmicommon, only : rmi_efold_primitive, find_rmi_x_trajectory
 
 
   implicit none
@@ -132,7 +132,7 @@ contains
     rmi1Data%real2 = phi0
     rmi1Data%real3 = -bfold + rmi1_efold_primitive(xend,c,phi0)
     
-    rmi1_x_trajectory = zbrent(find_rmitraj,mini,maxi,tolFind,rmi1Data)
+    rmi1_x_trajectory = zbrent(find_rmi_x_trajectory,mini,maxi,tolFind,rmi1Data)
        
   end function rmi1_x_trajectory
 

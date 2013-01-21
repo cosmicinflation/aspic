@@ -207,24 +207,24 @@ end function cwi_xplus_positive_potential
     cwiData%real2 = Q	
     cwiData%real3 = -bfold + cwi_efold_primitive(xend,alpha,Q)
     
-    cwi_x_trajectory = zbrent(find_cwitraj,mini,maxi,tolFind,cwiData)
+    cwi_x_trajectory = zbrent(find_cwi_x_trajectory,mini,maxi,tolFind,cwiData)
        
   end function cwi_x_trajectory
 
-  function find_cwitraj(x,cwiData)    
+  function find_cwi_x_trajectory(x,cwiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: cwiData
-    real(kp) :: find_cwitraj
+    real(kp) :: find_cwi_x_trajectory
     real(kp) :: alpha,Q,NplusNuend
 
     alpha = cwiData%real1
     Q = cwiData%real2
     NplusNuend = cwiData%real3
 
-    find_cwitraj = cwi_efold_primitive(x,alpha,Q) - NplusNuend
+    find_cwi_x_trajectory = cwi_efold_primitive(x,alpha,Q) - NplusNuend
    
-  end function find_cwitraj
+  end function find_cwi_x_trajectory
 
 
 

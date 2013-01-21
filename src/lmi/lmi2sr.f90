@@ -15,7 +15,7 @@ module lmi2sr
   use lmicommon, only : lmi_norm_deriv_second_potential
   use lmicommon, only : lmi_epsilon_one_max, lmi_x_potmax, lmi_x_epsonemax
   use lmicommon, only : lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
-  use lmicommon, only : lmi_efold_primitive, find_lmitraj
+  use lmicommon, only : lmi_efold_primitive, find_lmi_x_trajectory
   implicit none
 
   private
@@ -242,7 +242,7 @@ contains
     lmiData%real2 = beta
     lmiData%real3 = -bfold + lmi_efold_primitive(xend,gam,beta)
     
-    lmi2_x_trajectory = zbrent(find_lmitraj,mini,maxi,tolFind,lmiData)
+    lmi2_x_trajectory = zbrent(find_lmi_x_trajectory,mini,maxi,tolFind,lmiData)
        
   end function lmi2_x_trajectory
 

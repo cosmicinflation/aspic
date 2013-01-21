@@ -201,24 +201,24 @@ contains
     dsiData%real2 = mu
     dsiData%real3 = -bfold + dsi_efold_primitive(xend,p,mu)
     
-    dsi_x_trajectory = zbrent(find_dsitraj,mini,maxi,tolFind,dsiData)
+    dsi_x_trajectory = zbrent(find_dsi_x_trajectory,mini,maxi,tolFind,dsiData)
        
   end function dsi_x_trajectory
 
-  function find_dsitraj(x,dsiData)    
+  function find_dsi_x_trajectory(x,dsiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: dsiData
-    real(kp) :: find_dsitraj
+    real(kp) :: find_dsi_x_trajectory
     real(kp) :: p,mu,NplusNuend
 
     p= dsiData%real1
     mu = dsiData%real2
     NplusNuend = dsiData%real3
 
-    find_dsitraj = dsi_efold_primitive(x,p,mu) - NplusNuend
+    find_dsi_x_trajectory = dsi_efold_primitive(x,p,mu) - NplusNuend
    
-  end function find_dsitraj
+  end function find_dsi_x_trajectory
 
 
   

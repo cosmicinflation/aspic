@@ -214,24 +214,24 @@ contains
       mini = epsilon(1._kp)
     endif
     
-    cndi_x_trajectory = zbrent(find_cnditraj,mini,maxi,tolFind,cndiData)
+    cndi_x_trajectory = zbrent(find_cndi_x_trajectory,mini,maxi,tolFind,cndiData)
        
   end function cndi_x_trajectory
 
-  function find_cnditraj(x,cndiData)    
+  function find_cndi_x_trajectory(x,cndiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: cndiData
-    real(kp) :: find_cnditraj
+    real(kp) :: find_cndi_x_trajectory
     real(kp) :: alpha,beta,NplusNuend
 
     alpha= cndiData%real1
     beta = cndiData%real2
     NplusNuend = cndiData%real3
 
-    find_cnditraj = cndi_efold_primitive(x,alpha,beta) - NplusNuend
+    find_cndi_x_trajectory = cndi_efold_primitive(x,alpha,beta) - NplusNuend
    
-  end function find_cnditraj
+  end function find_cndi_x_trajectory
 
 
   

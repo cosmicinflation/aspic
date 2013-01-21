@@ -162,24 +162,24 @@ contains
     psniData%real2 = mu
     psniData%real3 = -bfold + psni_efold_primitive(xend,alpha,mu)
     
-    psni_x_trajectory = zbrent(find_psnitraj,mini,maxi,tolFind,psniData)
+    psni_x_trajectory = zbrent(find_psni_x_trajectory,mini,maxi,tolFind,psniData)
        
   end function psni_x_trajectory
 
-  function find_psnitraj(x,psniData)    
+  function find_psni_x_trajectory(x,psniData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: psniData
-    real(kp) :: find_psnitraj
+    real(kp) :: find_psni_x_trajectory
     real(kp) :: alpha,mu,NplusNuend
 
     alpha= psniData%real1
     mu = psniData%real2
     NplusNuend = psniData%real3
 
-    find_psnitraj = psni_efold_primitive(x,alpha,mu) - NplusNuend
+    find_psni_x_trajectory = psni_efold_primitive(x,alpha,mu) - NplusNuend
    
-  end function find_psnitraj
+  end function find_psni_x_trajectory
 
 
   

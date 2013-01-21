@@ -127,24 +127,24 @@ contains
     kkltData%real2 = mu
     kkltData%real3 = -bfold + kklt_nufunc(xend,p,mu)
     
-    kklt_x_trajectory = zbrent(find_kklttraj,mini,maxi,tolFind,kkltData)
+    kklt_x_trajectory = zbrent(find_kklt_x_trajectory,mini,maxi,tolFind,kkltData)
        
   end function kklt_x_trajectory
 
-  function find_kklttraj(x,kkltData)    
+  function find_kklt_x_trajectory(x,kkltData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: kkltData
-    real(kp) :: find_kklttraj
+    real(kp) :: find_kklt_x_trajectory
     real(kp) :: p,mu,NplusNuend
 
     p=kkltData%real1
     mu = kkltData%real2
     NplusNuend = kkltData%real3
 
-    find_kklttraj = kklt_nufunc(x,p,mu) - NplusNuend
+    find_kklt_x_trajectory = kklt_nufunc(x,p,mu) - NplusNuend
    
-  end function find_kklttraj
+  end function find_kklt_x_trajectory
 
   
 !returns x given epsilon2  

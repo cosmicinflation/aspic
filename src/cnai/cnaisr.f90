@@ -184,23 +184,23 @@ contains
     cnaiData%real1 = alpha
     cnaiData%real2 = -bfold + cnai_efold_primitive(xend,alpha)
     
-    cnai_x_trajectory = zbrent(find_cnaitraj,mini,maxi,tolFind,cnaiData)
+    cnai_x_trajectory = zbrent(find_cnai_x_trajectory,mini,maxi,tolFind,cnaiData)
        
   end function cnai_x_trajectory
 
-  function find_cnaitraj(x,cnaiData)    
+  function find_cnai_x_trajectory(x,cnaiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: cnaiData
-    real(kp) :: find_cnaitraj
+    real(kp) :: find_cnai_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha = cnaiData%real1
     NplusNuend = cnaiData%real2
 
-    find_cnaitraj = cnai_efold_primitive(x,alpha) - NplusNuend
+    find_cnai_x_trajectory = cnai_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_cnaitraj
+  end function find_cnai_x_trajectory
 
 
   

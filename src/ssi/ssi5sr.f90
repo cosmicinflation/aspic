@@ -13,7 +13,7 @@ module ssi5sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj 
+  use ssicommon, only : ssi_efold_primitive, find_ssi_x_trajectory 
   use ssicommon, only : ssi245_x_potzero
 
 
@@ -253,7 +253,7 @@ contains
     ssi5Data%real2 = beta
     ssi5Data%real3 = -bfold + ssi5_efold_primitive(xend,alpha,beta)
     
-    ssi5_x_trajectory = zbrent(find_ssitraj,mini,maxi,tolFind,ssi5Data)
+    ssi5_x_trajectory = zbrent(find_ssi_x_trajectory,mini,maxi,tolFind,ssi5Data)
        
   end function ssi5_x_trajectory
  

@@ -178,23 +178,23 @@ contains
     cnciData%real1 = alpha
     cnciData%real2 = -bfold + cnci_efold_primitive(xend,alpha)
     
-    cnci_x_trajectory = zbrent(find_cncitraj,mini,maxi,tolFind,cnciData)
+    cnci_x_trajectory = zbrent(find_cnci_x_trajectory,mini,maxi,tolFind,cnciData)
        
   end function cnci_x_trajectory
 
-  function find_cncitraj(x,cnciData)    
+  function find_cnci_x_trajectory(x,cnciData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: cnciData
-    real(kp) :: find_cncitraj
+    real(kp) :: find_cnci_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha= cnciData%real1
     NplusNuend = cnciData%real2
 
-    find_cncitraj = cnci_efold_primitive(x,alpha) - NplusNuend
+    find_cnci_x_trajectory = cnci_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_cncitraj
+  end function find_cnci_x_trajectory
 
  
 

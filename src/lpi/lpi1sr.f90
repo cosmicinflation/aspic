@@ -14,7 +14,7 @@ module lpi1sr
   use lpicommon, only : lpi_norm_potential, lpi_epsilon_one, lpi_epsilon_two
   use lpicommon, only : lpi_epsilon_three,  lpi_norm_deriv_potential 
   use lpicommon, only : lpi_norm_deriv_second_potential, lpi_x_potmax
-  use lpicommon, only : lpi_efold_primitive, find_lpitraj
+  use lpicommon, only : lpi_efold_primitive, find_lpi_x_trajectory
 
   implicit none
 
@@ -182,7 +182,7 @@ contains
     lpi1Data%real3 = phi0
     lpi1Data%real4 = -bfold + lpi_efold_primitive(xend,p,q,phi0)
     
-    lpi1_x_trajectory = zbrent(find_lpitraj,mini,maxi,tolFind,lpi1Data)
+    lpi1_x_trajectory = zbrent(find_lpi_x_trajectory,mini,maxi,tolFind,lpi1Data)
        
   end function lpi1_x_trajectory
 

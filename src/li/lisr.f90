@@ -141,23 +141,23 @@ contains
     liData%real1 = alpha
     liData%real2 = -bfold + li_efold_primitive(xend,alpha)
     
-    li_x_trajectory = zbrent(find_litraj,mini,maxi,tolFind,liData)
+    li_x_trajectory = zbrent(find_li_x_trajectory,mini,maxi,tolFind,liData)
        
   end function li_x_trajectory
 
-  function find_litraj(x,liData)    
+  function find_li_x_trajectory(x,liData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: liData
-    real(kp) :: find_litraj
+    real(kp) :: find_li_x_trajectory
     real(kp) :: alpha,mu,NplusNuend
 
     alpha = liData%real1
     NplusNuend = liData%real2
 
-    find_litraj = li_efold_primitive(x,alpha) - NplusNuend
+    find_li_x_trajectory = li_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_litraj
+  end function find_li_x_trajectory
 
 
   

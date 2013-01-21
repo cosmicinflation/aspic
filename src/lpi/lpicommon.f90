@@ -17,7 +17,7 @@ module lpicommon
   public lpi_norm_potential, lpi_epsilon_one, lpi_epsilon_two, lpi_epsilon_three
   public lpi_norm_deriv_potential, lpi_norm_deriv_second_potential
   public lpi_x_potmax, lpi_efold_primitive, lpi_x_epstwozero
-  public lpi23_sanity_check, find_lpitraj
+  public lpi23_sanity_check, find_lpi_x_trajectory
 
  
 contains
@@ -155,11 +155,11 @@ contains
 
 
 
-  function find_lpitraj(x,lpiData)    
+  function find_lpi_x_trajectory(x,lpiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lpiData
-    real(kp) :: find_lpitraj
+    real(kp) :: find_lpi_x_trajectory
     real(kp) :: phi0,p,q,NplusNuend
 
     p= lpiData%real1
@@ -167,9 +167,9 @@ contains
     phi0= lpiData%real3
     NplusNuend = lpiData%real4
 
-    find_lpitraj = lpi_efold_primitive(x,p,q,phi0) - NplusNuend
+    find_lpi_x_trajectory = lpi_efold_primitive(x,p,q,phi0) - NplusNuend
    
-  end function find_lpitraj
+  end function find_lpi_x_trajectory
 
   
 end module lpicommon

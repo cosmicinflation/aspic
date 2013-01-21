@@ -166,15 +166,15 @@ contains
     gmlfiData%real3 = q
     gmlfiData%real4 = -bfold + gmlfi_efold_primitive(xend,p,q,alpha)
     
-    gmlfi_x_trajectory = zbrent(find_gmlfitraj,mini,maxi,tolFind,gmlfiData)
+    gmlfi_x_trajectory = zbrent(find_gmlfi_x_trajectory,mini,maxi,tolFind,gmlfiData)
        
   end function gmlfi_x_trajectory
 
-  function find_gmlfitraj(x,gmlfiData)    
+  function find_gmlfi_x_trajectory(x,gmlfiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: gmlfiData
-    real(kp) :: find_gmlfitraj
+    real(kp) :: find_gmlfi_x_trajectory
     real(kp) :: alpha,p,q,NplusNuend
 
     alpha= gmlfiData%real1
@@ -182,9 +182,9 @@ contains
     q= gmlfiData%real3
     NplusNuend = gmlfiData%real4
 
-    find_gmlfitraj = gmlfi_efold_primitive(x,p,q,alpha) - NplusNuend
+    find_gmlfi_x_trajectory = gmlfi_efold_primitive(x,p,q,alpha) - NplusNuend
    
-  end function find_gmlfitraj
+  end function find_gmlfi_x_trajectory
 
   
 end module gmlfisr

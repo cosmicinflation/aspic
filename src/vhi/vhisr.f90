@@ -359,27 +359,27 @@ contains
        vhiData%real2 = mu
        vhiData%real3 = -bfold + vhi_efold_primitive(xend,p,mu)
 
-       vhi_x_trajectory = zbrent(find_vhitraj,mini,maxi,tolFind,vhiData)
+       vhi_x_trajectory = zbrent(find_vhi_x_trajectory,mini,maxi,tolFind,vhiData)
 
     end if
        
   end function vhi_x_trajectory
 
 
-  function find_vhitraj(x,vhiData)    
+  function find_vhi_x_trajectory(x,vhiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: vhiData
-    real(kp) :: find_vhitraj
+    real(kp) :: find_vhi_x_trajectory
     real(kp) :: p,mu,NplusNuend
 
     p= vhiData%real1
     mu= vhiData%real2
     NplusNuend = vhiData%real3
 
-    find_vhitraj = vhi_efold_primitive(x,p,mu) - NplusNuend
+    find_vhi_x_trajectory = vhi_efold_primitive(x,p,mu) - NplusNuend
    
-  end function find_vhitraj
+  end function find_vhi_x_trajectory
 
 
 

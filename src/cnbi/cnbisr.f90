@@ -284,23 +284,23 @@ contains
     cnbiData%real1 = alpha
     cnbiData%real2 = -bfold + cnbi_efold_primitive(xend,alpha)
     
-    cnbi_x_trajectory = zbrent(find_cnbitraj,mini,maxi,tolFind,cnbiData)
+    cnbi_x_trajectory = zbrent(find_cnbi_x_trajectory,mini,maxi,tolFind,cnbiData)
        
   end function cnbi_x_trajectory
 
-  function find_cnbitraj(x,cnbiData)    
+  function find_cnbi_x_trajectory(x,cnbiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: cnbiData
-    real(kp) :: find_cnbitraj
+    real(kp) :: find_cnbi_x_trajectory
     real(kp) :: alpha,NplusNuend
 
     alpha = cnbiData%real1
     NplusNuend = cnbiData%real2
 
-    find_cnbitraj = cnbi_efold_primitive(x,alpha) - NplusNuend
+    find_cnbi_x_trajectory = cnbi_efold_primitive(x,alpha) - NplusNuend
    
-  end function find_cnbitraj
+  end function find_cnbi_x_trajectory
 
 
   
