@@ -32,7 +32,7 @@ libaspic_la_LIBADD =                \
         mhi/libmhi.la \
         rpi/librpi.la \
         dwi/libdwi.la \
-        mssmi/libmssmi.la \
+        gmssmi/libgmssmi.la \
         bsusybi/libbsusybi.la \
         ti/libti.la \
         bei/libbei.la \
@@ -58,7 +58,7 @@ libaspic_la_LIBADD =                \
 
 #to be build from there
 SUBDIRS = common lfi gmlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
-          mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssi oi ai cnai cnbi \
+          mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssi oi ai cnai cnbi \
           ripi csi sbi cnci rmi lpi cndi
 
 #make clean does not remove modules by default

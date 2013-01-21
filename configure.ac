@@ -4,6 +4,7 @@ AC_PROG_FC
 AC_PROG_CPP
 AC_PROG_RANLIB
 AC_PROG_LIBTOOL
+AC_CONFIG_MACRO_DIR([m4])
 
 version_info="0:0:0"
 AC_SUBST(version_info)
@@ -24,7 +25,6 @@ DATEXT="dat"
 AC_SUBST([DATEXT]) 
 
 AM_INIT_AUTOMAKE
-
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
@@ -50,7 +50,7 @@ AC_CONFIG_FILES([Makefile
                  src/mhi/Makefile
                  src/rpi/Makefile
                  src/dwi/Makefile
-                 src/mssmi/Makefile
+                 src/gmssmi/Makefile
                  src/bsusybi/Makefile
                  src/ti/Makefile
                  src/bei/Makefile

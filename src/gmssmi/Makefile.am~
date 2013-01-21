@@ -10,7 +10,7 @@ gmssmimain_SOURCES = $(SRC) gmssmimain.f90
 gmssmimain_FCFLAGS = -I../$(SRCOMMDIR)
 gmssmimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
-noinst_LTLIBRARIES = libmssmi.la
+noinst_LTLIBRARIES = libgmssmi.la
 libmssmi_la_SOURCES = $(SRC)
 libmssmi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libmssmi_la_includedir = $(includedir)/$(SRINCDIR)
