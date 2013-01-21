@@ -7,7 +7,7 @@ module cndireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use cndisr, only : cndi_epsilon_one, cndi_epsilon_two, cndi_epsilon_three
-  use cndisr, only : cndi_norm_potential, cndi_efold_primitive, cndi_xin_max
+  use cndisr, only : cndi_norm_potential, cndi_efold_primitive, cndi_xinimax
   implicit none
 
   private
@@ -49,14 +49,11 @@ contains
     cndiData%real4 = w
     cndiData%real5 = calF + primEnd
 
-    maxi = cndi_xin_max(alpha,beta)
+    maxi = cndi_xinimax(alpha,beta)
     mini = xend
 
-
-        x = zbrent(find_cndi_x_star,mini,maxi,tolzbrent,cndiData)
-        cndi_x_star = x
-
-
+    x = zbrent(find_cndi_x_star,mini,maxi,tolzbrent,cndiData)
+    cndi_x_star = x
 
     if (present(bfoldstar)) then
        bfoldstar = - (cndi_efold_primitive(x,alpha,beta) - primEnd)

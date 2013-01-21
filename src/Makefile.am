@@ -8,6 +8,7 @@ libaspic_la_include_HEADERS = ../include/aspic.h
 #forces the linker to use fortran linking
 nodist_EXTRA_libaspic_la_SOURCES = donotexist.f90
 
+
 #while the real sources are already built libs
 libaspic_la_LIBADD =                \
         common/libsrcommon.la          \
@@ -56,5 +57,11 @@ libaspic_la_LIBADD =                \
 
 
 #to be build from there
-SUBDIRS = common lfi gmlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssi oi ai cnai cnbi ripi csi sbi cnci rmi lpi cndi
+SUBDIRS = common lfi gmlfi rcmi rcqi pni mni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
+          mhi rpi dwi mssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssi oi ai cnai cnbi \
+          ripi csi sbi cnci rmi lpi cndi
 
+#make clean does not remove modules by default
+clean-local: clean-modules
+clean-modules:
+	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)

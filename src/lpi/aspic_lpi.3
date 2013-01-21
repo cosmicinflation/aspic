@@ -1,8 +1,8 @@
-.TH liblpi 3 "November 5, 2012" "libaspic" "Module convention" 
+.TH liblpi 3 "January 18, 2013" "libaspic" "Module convention" 
 
 .SH NAME
-.I lpi
-- the logarithmic potential inflation module
+.I lpi1 lpi2 lpi3
+- the logarithmic potential inflation modules
 
 .SH SYNOPSIS
 .TP 20
@@ -20,6 +20,38 @@ Parameters
 ::
 .B p,q,phi0
 
+.SH DESCRIPTION
+The
+.I lpi1
+module is used for the logarithmic inflation at large field values,
+namely in the region for which 'x > 1'. In this regime, inflation
+proceeds at decreasing field values and naturally ends at 'xend'
+returned by the function
+.BR lpi1_x_endinf (p,q,phi0).
+
+The
+.I lpi2
+module is used for the logarithmic inflation at intermediate field
+values, namely in the region for which 'xVmax < x < 1'. In this regime,
+inflation proceeds at increasing field values and naturally ends
+at 'xend' returned by the function
+.BR lpi2_x_endinf (p,q,phi0).
+
+Finally, the
+.I lpi3
+module is used for the logarithmic inflation at small field values,
+namely in the region for which '0 < x < xVmax'. In this regime,
+inflation proceeds at decreasing field values and naturally ends
+at 'xend' returned by the function
+.BR lpi3_x_endinf (p,q,phi0).
+
+Shared functions can be found in a module named
+.BR lpicommon .
+The value of 'xvMax' is returned by
+.BR lpi_x_potmax (p,q,phi0)
+accessible through
+.IP
+.B use lmicommon, only : lmi_x_potmax
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

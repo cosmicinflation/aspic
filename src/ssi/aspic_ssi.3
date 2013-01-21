@@ -1,0 +1,142 @@
+.TH libssi1 3 "January 18, 2013" "libaspic" "Module convention" 
+
+.SH NAME
+.I ssi1 ssi2 ssi3 ssi4 ssi5 ssi6
+- the sneutrino supersymmetric inflation modules
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ 1 + alpha x^2 + beta x^4 ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha beta
+
+.SH DESCRIPTION
+The
+.I ssi1
+module is used for sneutrino supersymmetric inflation for 'alpha > 0'
+and 'beta > 0', in the large field region 'x > xeps1max' and proceeds
+at decreasing field values. The quantity 'xeps1max' is the field value
+at which the first Hubble flow function is maximal. It is returned by
+the
+.I
+real(kp)
+function
+.BR ssi1_x_epsonemax (alpha,beta).
+
+Inflation naturally ends at 'xend' but only if the parameters are such
+that the maximal value for the first Hubble flow function is greater
+than unity. This is the case provided 'alpha >
+.BR ssi1_alphamin (beta)'
+and 'xend' is given by the function
+.BR ssi1_x_endinf (alpha,beta).
+
+The field space 'x < xeps1max' could also support inflation but it
+would have to stop by a yet to specified instability mechanism. The
+end of inflation would be an extra-model parameter and, as such, this
+case is not studied here.
+
+The
+.I ssi2
+module is used for sneutrino supersymmetric inflation for 'alpha < 0'
+and 'beta < 0', in the small field region '0 < x < xVzero', and proceeds
+at increasing field values. The quantity 'xVzero' is the field value
+at which the potential vanishes and is given by
+.BR ssi2_x_potzero (alpha,beta).
+
+In this domain, inflation naturally ends at 'xend', returned by the
+function
+.BR ssi2_x_endinf (alpha,beta).
+
+The
+.I ssi3
+module is used for sneutrino supersymmetric inflation for 'alpha > 0'
+and 'beta < 0', in the small field region '0 < x < xVmax', and
+proceeds at decreasing field values. The quantity 'xVmax' is the field value
+at which the potential is maximal and given by
+.BR ssi3_x_potmax (alpha,beta).
+
+Along a hypothetical field trajectory starting around 'xVmax', the
+first Hubble flow function increases from zero to a maximum at 'x =
+xeps1max' and goes down to zero. As for the
+.I ssi1
+case, inflation naturally ends only if this maximum is greater than
+unity, which happens again only for 'alpha >
+.BR ssi3_alphamin (beta)'.
+In that situation, 'xend' is given by the function
+.BR ssi3_x_endinf (alpha,beta).
+
+The
+.I ssi4
+module is used for sneutrino supersymmetric inflation for 'alpha > 0'
+and 'beta < 0', in the large field region 'xVmax < x < xVzero', and
+proceeds at increasing field values. The quantity 'xVmax' is the same
+as for the
+.I ssi3
+case while 'xVzero' is the same as for the
+.I ssi2
+case. Both are returned by the
+.I
+real(kp)
+functions
+.IP
+.BR ssi4_x_potmax (alpha,beta)
+.RS
+.BR ssi4_x_potzero (alpha,beta)
+.RE
+.P
+respectively.
+
+The
+.I ssi5
+module is used for sneutrino supersymmetric inflation for 'alpha < 0'
+and 'beta > 0', in the small field region '0 < x < xeps1max < xVzero',
+and proceeds at increasing field values. The quantities 'xVzero'
+and 'xeps1max' stand for the field value at which the potential
+vanishes and at which the first Hubble flow function is maximal. Both
+are given by the
+.I
+real(kp)
+functions
+.IP
+.BR ssi5_x_potzero (alpha,beta)
+.RS
+.BR ssi5_x_epsonemax (alpha,beta)
+.RE
+.P
+respectively. Inflation naturally ends only if 'alpha <
+.BR ssi5_alphamax (beta)'.
+In that situation, the field value 'xend' is given by
+.BR ssi5_x_endinf (alpha,beta).
+
+The
+.I ssi6
+module is used for sneutrino supersymmetric inflation for 'alpha < 0'
+and 'beta > 0', in the large field region 'max(xeps1max,xVzero) < x',
+and proceeds at decreasing field values. The quantities 'xVzero'
+and 'xeps1max' have the same meaning as before and given by the
+.I
+real(kp)
+functions
+.IP
+.BR ssi6_x_potzero (alpha,beta)
+.RS
+.BR ssi6_x_epsonemax (alpha,beta)
+.RE
+.P
+respectively.
+
+Shared functions can be found in a module named
+.BR ssicommon
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

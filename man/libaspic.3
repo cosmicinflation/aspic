@@ -591,15 +591,26 @@ orientifold inflation
 .I cnci
 constant spectral index inflation C
 .TQ
-.I cndi
-constant spectral index inflation D
-.TQ
 .I sbi
 supergravity brane inflation
 .TQ
-.I ssi
-sneutrino supersymmetric inflation
-
+.I ssi1 
+sneutrino supersymmetric inflation I
+.TQ
+.I ssi2
+sneutrino supersymmetric inflation II
+.TQ
+.I ssi3
+sneutrino supersymmetric inflation III
+.TQ
+.I ssi4
+sneutrino supersymmetric inflation IV
+.TQ
+.I ssi5
+sneutrino supersymmetric inflation V
+.TQ
+.I ssi6
+sneutrino supersymmetric inflation VI
 
 .SS THREE PARAMETERS MODELS
 .TP 20
@@ -609,8 +620,17 @@ sneutrino supersymmetric inflation
 .I lmi2
 logamediate inflation II
 .TQ
-.I rmi
-running mass inflation
+.I rmi1
+running mass inflation I
+.TQ
+.I rmi2
+running mass inflation II
+.TQ
+.I rmi3
+running mass inflation III
+.TQ
+.I rmi4
+running mass inflation IV
 .TQ
 .I vhi
 valley hybrid inflation
@@ -620,6 +640,18 @@ dynamical supersymmetric inflation
 .TQ
 .I gmlfi
 generalized mixed large field inflation
+.TQ
+.I lpi1
+logarithmic potential inflation I
+.TQ
+.I lpi2
+logarithmic potential inflation II
+.TQ
+.I lpi3
+logarithmic potential inflation III
+.TQ
+.I cndi
+constant spectral index inflation D
 .TQ
 .I shi
 super hilltop inflation
@@ -631,10 +663,8 @@ generalized hiltop inflation
 SU(5) inflation
 .TQ
 .I pi
-polunomial inflation
-.TQ
-.I lpi
-Logarithmic potential inflation
+polynomial inflation
+
 
 
 .SH ADDING A MODEL
@@ -693,6 +723,7 @@ clean-modules:
         test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
 clean-outfiles:
         test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
+\ .NOTPARALLEL:
 .EE
 .RE
 
@@ -831,7 +862,6 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_csi (3),
 .BR aspic_oi (3),
 .BR aspic_cnci (3),
-.BR aspic_cndi (3),
 .BR aspic_sbi (3),
 .BR aspic_ssi (3).
 .P
@@ -839,8 +869,10 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_rmi (3),
 .BR aspic_vhi (3),
 .BR aspic_dsi (3),
+.BR aspic_gmlfi (3),
+.BR aspic_lpi(3),
+.BR aspic_cndi (3),
 .BR aspic_shi (3),
 .BR aspic_ghi (3),
 .BR aspic_su5i(3),
-.BR aspic_pi(3),
-.BR aspic_lpi(3).
+.BR aspic_pi(3).

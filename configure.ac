@@ -25,10 +25,11 @@ AC_SUBST([DATEXT])
 
 AM_INIT_AUTOMAKE
 
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  man/Makefile
-                 src/common/Makefile
+		 src/common/Makefile
                  src/lfi/Makefile
                  src/gmlfi/Makefile
                  src/rcmi/Makefile

@@ -14,7 +14,7 @@ module ssi5sr
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
   use ssicommon, only : ssi_efold_primitive, find_ssitraj 
-  use ssicommon, only : ssi3456_x_Vprime_Equals_0, ssi245_x_V_Equals_0
+  use ssicommon, only : ssi245_x_potzero
 
 
   implicit none
@@ -25,7 +25,7 @@ module ssi5sr
   public ssi5_epsilon_one, ssi5_epsilon_two, ssi5_epsilon_three
   public ssi5_x_endinf, ssi5_efold_primitive, ssi5_x_trajectory
   public ssi5_norm_deriv_potential, ssi5_norm_deriv_second_potential
-  public ssi5_abs_alpha_min
+  public ssi5_x_potzero, ssi5_alphamax
   
 contains
 
@@ -103,33 +103,55 @@ contains
 
 
 !returns the position x where epsilon_one is maximum when alpha**2 < 4 * beta
-  function ssi5_x_epsilon2_Equals_0(alpha,beta)    
+  function ssi5_x_epsonemax(alpha,beta)    
     implicit none
-    real(kp) :: ssi5_x_epsilon2_Equals_0
+    real(kp) :: ssi5_x_epsonemax
     real(kp), intent(in) :: alpha,beta
 
     if (alpha**2 .gt. 4._kp*beta) then
-               print*,'(alpha=', alpha,'  beta=',beta,')'
-               stop 'ssi5_x_epsilon2_Equals_0: error: alpha^2 > 4 beta, epsilon_2 never vanishes'
+       write(*,*)'(alpha=', alpha,'  beta=',beta,')'
+       stop 'ssi5_x_epsonemax: error: alpha^2 > 4 beta, epsilon_2 never vanishes'
     else
 
-    ssi5_x_epsilon2_Equals_0 = sqrt(-(alpha/(6._kp*beta))+((1._kp-complex(0._kp,1._kp)*sqrt(3._kp))* &
-                               (5._kp*alpha**2*beta**2-36._kp*beta**3))/(6._kp*2._kp**(2._kp/3._kp)* &
-                               beta**2*(16._kp*alpha**3*beta**3+sqrt(complex(256._kp*alpha**6*beta**6+ &
-                               4._kp*(5._kp*alpha**2*beta**2-36._kp*beta**3)**3,0._kp)))**(1._kp/3._kp))- &
-                               ((1._kp+complex(0._kp,1._kp)*sqrt(3._kp))*(16._kp*alpha**3*beta**3+ &
-                               sqrt(complex(256._kp*alpha**6*beta**6+4._kp*(5._kp*alpha**2*beta**2- &
-                               36._kp*beta**3)**3,0._kp)))**(1._kp/3._kp))/(12._kp*2._kp**(1._kp/3._kp)*beta**2))
+    ssi5_x_epsonemax = sqrt(-(alpha/(6._kp*beta))+((1._kp-complex(0._kp,1._kp)*sqrt(3._kp))* &
+         (5._kp*alpha**2*beta**2-36._kp*beta**3))/(6._kp*2._kp**(2._kp/3._kp)* &
+         beta**2*(16._kp*alpha**3*beta**3+sqrt(complex(256._kp*alpha**6*beta**6+ &
+         4._kp*(5._kp*alpha**2*beta**2-36._kp*beta**3)**3,0._kp)))**(1._kp/3._kp))- &
+         ((1._kp+complex(0._kp,1._kp)*sqrt(3._kp))*(16._kp*alpha**3*beta**3+ &
+         sqrt(complex(256._kp*alpha**6*beta**6+4._kp*(5._kp*alpha**2*beta**2- &
+         36._kp*beta**3)**3,0._kp)))**(1._kp/3._kp))/(12._kp*2._kp**(1._kp/3._kp)*beta**2))
 
     endif
     
-  end function ssi5_x_epsilon2_Equals_0
+  end function ssi5_x_epsonemax
 
 
-!returns the minimum value of the absolute value of alpha (given beta) in order for inflation to end by slow roll violation (eps1max>1)
-  function ssi5_abs_alpha_min(beta)    
+  function ssi5_x_potzero(alpha,beta)    
     implicit none
-    real(kp) :: ssi5_abs_alpha_min
+    real(kp) :: ssi5_x_potzero
+    real(kp), intent(in) :: alpha,beta
+
+    ssi5_x_potzero = ssi245_x_potzero(alpha,beta)
+    
+  end function ssi5_x_potzero
+
+
+  function ssi5_alphamax(beta)
+    implicit none
+    real(kp) :: ssi5_alphamax
+    real(kp), intent(in) :: beta
+    
+    ssi5_alphamax = -ssi5_absalphamin(beta)
+
+  end function ssi5_alphamax
+
+
+
+!returns the minimum value of the absolute value of alpha (given beta)
+!in order for inflation to end by slow roll violation (eps1max>1)
+  function ssi5_absalphamin(beta)    
+    implicit none
+    real(kp) :: ssi5_absalphamin
     real(kp), intent(in) :: beta
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
@@ -140,32 +162,24 @@ contains
 
     ssi5Data%real1 = beta
 
-!    print*,'ssi5_alphamin:  beta=',beta,'mini=',mini,'  xeps2mini=',ssi5_x_epsilon2_Equals_0(-mini,beta), &
-!           'maxi=',maxi,'  xeps2maxi=',ssi5_x_epsilon2_Equals_0(-maxi,beta), &
-!           '  eps1(xeps2mini)=',ssi5_epsilon_one(ssi5_x_epsilon2_Equals_0(-mini,beta),-mini,beta), &
-!           '  eps1(xeps2maxi)=',ssi5_epsilon_one(ssi5_x_epsilon2_Equals_0(-maxi,beta),-maxi,beta)
-!    pause
+    ssi5_absalphamin = zbrent(find_ssi5_absalphamin,mini,maxi,tolFind,ssi5Data)
 
-       ssi5_abs_alpha_min = zbrent(find_ssi5_abs_alpha_min,mini,maxi,tolFind,ssi5Data)
-
-!    print*,'ssi5_alphamin: ssi5_abs_alpha_min=',ssi5_abs_alpha_min
-!    pause
     
-    
-  end function ssi5_abs_alpha_min
+  end function ssi5_absalphamin
 
-  function find_ssi5_abs_alpha_min(abs_alpha,ssi5Data)    
+  function find_ssi5_absalphamin(abs_alpha,ssi5Data)    
     implicit none
     real(kp), intent(in) :: abs_alpha   
     type(transfert), optional, intent(inout) :: ssi5Data
-    real(kp) :: find_ssi5_abs_alpha_min
+    real(kp) :: find_ssi5_absalphamin
     real(kp) :: beta
 
     beta = ssi5Data%real1
     
-    find_ssi5_abs_alpha_min = ssi5_epsilon_one(ssi5_x_epsilon2_Equals_0(-abs_alpha,beta),-abs_alpha,beta)-1._kp
+    find_ssi5_absalphamin = ssi5_epsilon_one(ssi5_x_epsonemax(-abs_alpha,beta) &
+         ,- abs_alpha,beta) - 1._kp
    
-  end function find_ssi5_abs_alpha_min
+  end function find_ssi5_absalphamin
 
 
 !returns x at the end of inflation defined as epsilon1=1
@@ -177,19 +191,16 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ssi5Data
 
-    if (abs(alpha) .lt. ssi5_abs_alpha_min(beta)) stop 'ssi5_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    if (alpha .gt. ssi5_alphamax(beta)) then
+       stop 'ssi5_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    endif
 
     mini=epsilon(1._kp)
     if (alpha**2 .lt. 4._kp*beta) then
-       	maxi=ssi5_x_epsilon2_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+       	maxi=ssi5_x_epsonemax(alpha,beta)*(1._kp-epsilon(1._kp))
     else
-	maxi=ssi245_x_V_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+	maxi=ssi5_x_potzero(alpha,beta)*(1._kp-epsilon(1._kp))
     endif
-
-
-!    print*,'ssi5_xend:  mini=',mini,'   maxi=',maxi,'   epsOne(mini)=',ssi5_epsilon_one(mini,alpha,beta), &
-!                 '   epsOne(maxi)=',ssi5_epsilon_one(maxi,alpha,beta)
-!    pause
 
     ssi5Data%real1 = alpha
     ssi5Data%real2 = beta

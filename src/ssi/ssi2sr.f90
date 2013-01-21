@@ -13,7 +13,7 @@ module ssi2sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi245_x_V_Equals_0
+  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi245_x_potzero
 
 
   implicit none
@@ -101,15 +101,14 @@ contains
 
 
 !returns the position x where the potential vanishes
-  function ssi2_x_V_Equals_0(alpha,beta)    
+  function ssi2_x_potzero(alpha,beta)    
     implicit none
-    real(kp) :: ssi2_x_V_Equals_0
+    real(kp) :: ssi2_x_potzero
     real(kp), intent(in) :: alpha,beta
 
-    ssi2_x_V_Equals_0 = ssi245_x_V_Equals_0(alpha,beta)
+    ssi2_x_potzero = ssi245_x_potzero(alpha,beta)
 
-    
-  end function ssi2_x_V_Equals_0
+  end function ssi2_x_potzero
 
 
 !returns x at the end of inflation defined as epsilon1=1
@@ -122,7 +121,7 @@ contains
     type(transfert) :: ssi2Data
 
     mini = epsilon(1._kp)
-    maxi = ssi2_x_V_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+    maxi = ssi2_x_potzero(alpha,beta)*(1._kp-epsilon(1._kp))
 
 !    print*,'ssi2_xend:  mini=',mini,'   maxi=',maxi,'   epsOne(mini)=',ssi2_epsilon_one(mini,alpha,beta), &
 !                 '   epsOne(maxi)=',ssi2_epsilon_one(maxi,alpha,beta)

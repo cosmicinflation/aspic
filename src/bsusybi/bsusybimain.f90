@@ -2,7 +2,8 @@
 program bsusybimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use bsusybisr, only : bsusybi_epsilon_one, bsusybi_epsilon_two,bsusybi_epsilon_three,bsusybi_xendmax
+  use bsusybisr, only : bsusybi_epsilon_one, bsusybi_epsilon_two 
+  use bsusybisr, only : bsusybi_epsilon_three,bsusybi_xendmax
   use bsusybireheat, only : bsusybi_lnrhoend, bsusybi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -38,8 +39,8 @@ program bsusybimain
   do i=1,ngamma
        gammaBSUSYB=gammamin+(gammamax-gammamin)*(real(i,kp)/real(ngamma,kp))
 
-       call livewrite('bsusybi_xendmax.dat',gammaBSUSYB,bsusybi_xendmax(gammaBSUSYB,-40._kp), &
-       bsusybi_xendmax(gammaBSUSYB,-60._kp),bsusybi_xendmax(gammaBSUSYB,-80._kp))
+       call livewrite('bsusybi_xendmax.dat',gammaBSUSYB,bsusybi_xendmax(40._kp,gammaBSUSYB), &
+       bsusybi_xendmax(60._kp,gammaBSUSYB),bsusybi_xendmax(80._kp,gammaBSUSYB))
   end do
 
 
@@ -70,7 +71,7 @@ program bsusybimain
 
   !Prior on xend
 
-     xendmax=bsusybi_xendmax(gammaBSUSYB,-70._kp)
+     xendmax=bsusybi_xendmax(70._kp,gammaBSUSYB)
      xendmin=2._kp*xendmax
 
 

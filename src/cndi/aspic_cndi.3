@@ -1,8 +1,8 @@
-.TH libcndi 3 "October 31, 2012" "libaspic" "Module convention" 
+.TH libcndi 3 "January 21, 2013" "libaspic" "Module convention" 
 
 .SH NAME
 .I cndi
-- the non-canonical Kahler inflation module
+- the constant ns D inflation module
 
 .SH SYNOPSIS
 .TP 20
@@ -18,11 +18,50 @@ Routine units
 Parameters
 .I real(kp)
 ::
-.B alpha, beta
+.B alpha, beta, xend
+
+.SH NOTES
+The end of inflation is an additional model parameter encoded in the
+dimensionless field value
+.B xend
+at which this occurs.
 
 .SH DESCRIPTION
-
-To be filled
+According to the value of 'alpha' and 'beta', the potential exhibits
+various inflationary regimes of which only one is of cosmological
+interest. It proceeds at decreasing field values for 'xend < x <
+xeps1-' where 'xeps1-' is the smallest field value at which the first
+Hubble flow function equals unity. Notice that the 'xeps1+-' do not
+always exist and can be degenerated such that we provide a
+.I real(kp)
+function
+.IP
+.BR cndi_alphamin (beta)
+.P
+and a
+.I real(kp), dimension(2)
+function
+.IP
+.BR cndi_x_epsoneunity (alpha,beta)
+.P
+The first returns the minimal value of 'alpha' given 'beta' such that
+the first Hubble flow function equals unity whereas the second one
+returns the two field values 'xeps1-' and 'xeps1+' when they exist. In
+this regime, constant ns D inflation ends by instability and the field
+value 'xend' is an extra model parameter that has to be specified. As
+the result, we provide two other
+.I real(kp)
+functions
+.IP
+.BR cndi_xinimax (alpha,beta)
+.RS
+.BR cndi_xendmax (efold,alpha,beta)
+.RE
+.P	
+The first returns the maximal initial field value to start inflation
+in the small field regime whereas the second one returns the maximal
+allowed value of the parameter 'xend' such that inflation lasts for
+the specified number of e-folds.
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

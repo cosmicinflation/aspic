@@ -6,7 +6,7 @@ module cncireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
   use cncisr, only : cnci_epsilon_one, cnci_epsilon_two, cnci_epsilon_three
-  use cncisr, only : cnci_norm_potential,cnci_efold_primitive,cnci_x_epsOne_equals_one
+  use cncisr, only : cnci_norm_potential,cnci_efold_primitive,cnci_x_epsoneunity
   implicit none
 
   private
@@ -45,7 +45,9 @@ contains
     cnciData%real3 = calF + primEnd
 
     maxi = xend*(1._kp-epsilon(1._kp))
-    mini = cnci_x_epsOne_equals_one(alpha)    !Value of x such that epsilon1=1 below which inflation cannot proceed
+
+!Value of x such that epsilon1=1 below which inflation cannot proceed
+    mini = cnci_x_epsoneunity(alpha)    
 
     x = zbrent(find_cnci_x_star,mini,maxi,tolFind,cnciData)
     cnci_x_star = x

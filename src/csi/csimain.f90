@@ -38,8 +38,8 @@ program csimain
   do i=1,nalpha
        alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(nalpha,kp))
 
-       call livewrite('csi_xendmax.dat',alpha,csi_xendmax(alpha,-40._kp), &
-       csi_xendmax(alpha,-60._kp),csi_xendmax(alpha,-80._kp))
+       call livewrite('csi_xendmax.dat',alpha,csi_xendmax(40._kp,alpha), &
+       csi_xendmax(60._kp,alpha),csi_xendmax(80._kp,alpha))
   end do
 
 
@@ -73,12 +73,12 @@ program csimain
 
   !Prior on xend
      if (alpha .eq. 10._kp**(-3.)) then
-     xendmax=csi_xendmax(alpha,-55._kp)
+     xendmax=csi_xendmax(55._kp,alpha)
      xendmin=-xendmax
      nxend=500
      endif
      if (alpha .eq. 1._kp) then
-     xendmax=csi_xendmax(alpha,-55._kp)
+     xendmax=csi_xendmax(55._kp,alpha)
      xendmin=-1000._kp
      nxend=400
      endif

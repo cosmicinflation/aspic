@@ -13,7 +13,7 @@ module ssi1sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi136_x_epsilon2_Equals_0
+  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi136_x_epstwozero
 
 
   implicit none
@@ -24,7 +24,7 @@ module ssi1sr
   public ssi1_epsilon_one, ssi1_epsilon_two, ssi1_epsilon_three
   public ssi1_x_endinf, ssi1_efold_primitive, ssi1_x_trajectory
   public ssi1_norm_deriv_potential, ssi1_norm_deriv_second_potential
-  public ssi1_alphamin
+  public ssi1_alphamin, ssi1_x_epsonemax
   
 contains
 
@@ -102,17 +102,18 @@ contains
 
 
 !returns the position x where epsilon_one is maximum
-  function ssi1_x_epsilon2_Equals_0(alpha,beta)    
+  function ssi1_x_epsonemax(alpha,beta)    
     implicit none
-    real(kp) :: ssi1_x_epsilon2_Equals_0
+    real(kp) :: ssi1_x_epsonemax
     real(kp), intent(in) :: alpha,beta
 
-    ssi1_x_epsilon2_Equals_0 = ssi136_x_epsilon2_Equals_0(alpha,beta)
+    ssi1_x_epsonemax = ssi136_x_epstwozero(alpha,beta)
     
-  end function ssi1_x_epsilon2_Equals_0
+  end function ssi1_x_epsonemax
 
 
-!returns the minimum value of alpha (given beta) in order for inflation to end by slow roll violation (eps1max>1)
+!returns the minimum value of alpha (given beta) in order for
+!inflation to end by slow roll violation (eps1max>1)
   function ssi1_alphamin(beta)    
     implicit none
     real(kp) :: ssi1_alphamin
@@ -127,13 +128,9 @@ contains
 
     ssi1Data%real1 = beta
 
-!    print*,'ssi1_alphamin:  beta=',beta,'mini=',mini,'  xeps2mini=',ssi1_x_epsilon2_Equals_0(mini,beta), &
-!           'maxi=',maxi,'  xeps2maxi=',ssi1_x_epsilon2_Equals_0(maxi,beta), &
-!           '  eps1(xeps2mini)=',ssi1_epsilon_one(ssi1_x_epsilon2_Equals_0(mini,beta),mini,beta), &
-!           '  eps1(xeps2maxi)=',ssi1_epsilon_one(ssi1_x_epsilon2_Equals_0(maxi,beta),maxi,beta)
-!    pause
 
-    if(beta .gt. 0.251_kp)  then!In that case inflation ends by slow roll violation for any value of alpha
+!In that case inflation ends by slow roll violation for any value of alpha
+    if(beta .gt. 0.251_kp) then
 
        ssi1_alphamin = 0._kp
  
@@ -154,7 +151,7 @@ contains
 
     beta = ssi1Data%real1
     
-    find_ssi1alphamin = ssi1_epsilon_one(ssi1_x_epsilon2_Equals_0(alpha,beta),alpha,beta)-1._kp
+    find_ssi1alphamin = ssi1_epsilon_one(ssi1_x_epsonemax(alpha,beta),alpha,beta)-1._kp
    
   end function find_ssi1alphamin
 
@@ -168,9 +165,11 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ssi1Data
 
-    if (alpha .lt. ssi1_alphamin(beta)) stop 'ssi1_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    if (alpha .lt. ssi1_alphamin(beta)) then
+       stop 'ssi1_x_endinf: epsilon1max < 1, inflation cannot stop by slow roll violation!'
+    endif
 
-    mini = ssi1_x_epsilon2_Equals_0(alpha,beta)
+    mini = ssi1_x_epsonemax(alpha,beta)
     maxi = mini/epsilon(1._kp)
 
 !    print*,'ss1_xend:  mini=',mini,'   maxi=',maxi,'   epsOne(mini)=',ssi1_epsilon_one(mini,alpha,beta), &

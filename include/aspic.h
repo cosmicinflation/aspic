@@ -1,6 +1,6 @@
 !brute force importation of all modules and all function. Use this
-!include file only if you are lazy enough to not pick up only what you
-!want.
+!include file only if you are too lazy to pick up only what you
+!need.
 
 !one parameter models
 use hisr
@@ -75,35 +75,58 @@ use rpi2sr
 use rpi2reheat
 !use bisr
 !use bireheat
-!use csisr
-!use csireheat
-!use oisr
-!use oireheat
-!use cncisr
-!use cncireheat
-!use cndisr
-!use cndireheat
-!use sbisr
-!use sbireheat
+use csisr
+use csireheat
+use oisr
+use oireheat
+use cncisr
+use cncireheat
+use sbisr
+use sbireheat
+use ssi1sr
+use ssi1reheat
+use ssi2sr
+use ssi2reheat
+use ssi3sr
+use ssi3reheat
+use ssi4sr
+use ssi4reheat
+use ssi5sr
+use ssi5reheat
+use ssi6sr
+use ssi6reheat
 
 
 
 !three parameter models
 use lmi2sr
 use lmi2reheat
-!use rmisr
-!use rmireheat
+use rmi1sr
+use rmi1reheat
+use rmi2sr
+use rmi2reheat
+use rmi3sr
+use rmi3reheat
+use rmi4sr
+use rmi4reheat
 use vhisr
 use vhireheat
 use dsisr
 use dsireheat
 use gmlfisr
 use gmlfireheat
+use lpi1sr
+use lpi1reheat
+use lpi2sr
+use lpi2reheat
+use lpi3sr
+use lpi3reheat
+use cndisr
+use cndireheat
 !use shisr
 !use shireheat
 !use su5isr
 !use su5ireheat
 !use pisr
 !use pireheat
-!use lpiosr
-!use lpireheat
+

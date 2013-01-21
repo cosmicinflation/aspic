@@ -11,7 +11,8 @@
 module rmi4sr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
-  use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential,rmi_norm_deriv_second_potential
+  use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential
+  use rmicommon, only : rmi_norm_deriv_second_potential
   use rmicommon, only : rmi_epsilon_one, rmi_epsilon_two, rmi_epsilon_three
   use rmicommon, only : rmi_efold_primitive, find_rmitraj
 
@@ -122,7 +123,7 @@ contains
 
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = 10._kp
+    maxi = 1._kp/epsilon(1._kp)
   
     rmi4Data%real1 = c
     rmi4Data%real2 = phi0

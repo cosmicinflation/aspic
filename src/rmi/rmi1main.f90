@@ -2,7 +2,8 @@
 program rmi1main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use rmi1sr, only : rmi1_epsilon_one, rmi1_epsilon_two, rmi1_epsilon_three, rmi1_xendmax
+  use rmi1sr, only : rmi1_epsilon_one, rmi1_epsilon_two, rmi1_epsilon_three
+  use rmi1sr, only : rmi1_numacc_xendmax
   use rmi1reheat, only : rmi1_lnrhoend, rmi1_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -65,7 +66,7 @@ program rmi1main
       phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
 
 
-    xendmax = rmi1_xendmax(70._kp,c,phi0)
+    xendmax = rmi1_numacc_xendmax(70._kp,c,phi0)
     xendmin = 1._kp/exp(1._kp)
 
     if (xendmax .lt. xendmin) then

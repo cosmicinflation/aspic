@@ -5,7 +5,7 @@
 !x = phi/phi0
 !phi0 = phi0/Mp
 
-module lpisr
+module lpicommon
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : ei
@@ -16,16 +16,34 @@ module lpisr
 
   public lpi_norm_potential, lpi_epsilon_one, lpi_epsilon_two, lpi_epsilon_three
   public lpi_norm_deriv_potential, lpi_norm_deriv_second_potential
-  public lpi_x_endinf, lpi_efold_primitive, lpi_x_trajectory
-
+  public lpi_x_potmax, lpi_efold_primitive, lpi_x_epstwozero
+  public lpi23_sanity_check, find_lpitraj
 
  
 contains
+
+!q should be integer and even
+  subroutine lpi23_sanity_check(p,q,phi0)
+    implicit none
+    real(kp), intent(in) :: q
+    real(kp), intent(in), optional :: p,phi0
+
+    if (modulo(q,2._kp).ne.0._kp) then
+       write(*,*)'q= ',q
+       stop 'lpi23_sanity_check: q should be positive and even!'
+    endif
+    
+  end subroutine lpi23_sanity_check
+
+
+
+
 !returns V/M**4
   function lpi_norm_potential(x,p,q,phi0)
     implicit none
     real(kp) :: lpi_norm_potential
-    real(kp), intent(in) :: x,phi0,p,q
+    real(kp), intent(in) :: x,p,q
+    real(kp), intent(in), optional :: phi0
 
     lpi_norm_potential = x**p*log(x)**q
 
@@ -37,7 +55,8 @@ contains
   function lpi_norm_deriv_potential(x,p,q,phi0)
     implicit none
     real(kp) :: lpi_norm_deriv_potential
-    real(kp), intent(in) :: x,phi0,p,q
+    real(kp), intent(in) :: x,p,q
+    real(kp), intent(in), optional :: phi0
 
    lpi_norm_deriv_potential = x**(-1._kp+p)*log(x)**(-1._kp+q)*(q+p*log(x))
 
@@ -49,10 +68,11 @@ contains
   function lpi_norm_deriv_second_potential(x,p,q,phi0)
     implicit none
     real(kp) :: lpi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,phi0,p,q
+    real(kp), intent(in) :: x,p,q
+    real(kp), intent(in), optional :: phi0
 
     lpi_norm_deriv_second_potential = x**(-2._kp+p)*log(x)**(-2._kp+q)*((-1._kp+q)*q+ &
-                                      (-1._kp+2._kp*p)*q*log(x)+(-1._kp+p)*p*log(x)**2)
+         (-1._kp+2._kp*p)*q*log(x)+(-1._kp+p)*p*log(x)**2)
 
   end function lpi_norm_deriv_second_potential
 
@@ -62,8 +82,9 @@ contains
   function lpi_epsilon_one(x,p,q,phi0)    
     implicit none
     real(kp) :: lpi_epsilon_one
-    real(kp), intent(in) :: x,phi0,p,q
-    
+    real(kp), intent(in) :: x,p,q
+    real(kp), intent(in) :: phi0
+
     lpi_epsilon_one = (q+p*log(x))**2/(2._kp*phi0**2*x**2*log(x)**2)
     
   end function lpi_epsilon_one
@@ -73,8 +94,9 @@ contains
   function lpi_epsilon_two(x,p,q,phi0)    
     implicit none
     real(kp) :: lpi_epsilon_two
-    real(kp), intent(in) :: x,phi0,p,q
-    
+    real(kp), intent(in) :: x,p,q
+    real(kp), intent(in) :: phi0
+
     lpi_epsilon_two = (2._kp*(q+log(x)*(q+p*log(x))))/(phi0**2*x**2*log(x)**2)
     
   end function lpi_epsilon_two
@@ -84,50 +106,39 @@ contains
   function lpi_epsilon_three(x,p,q,phi0)    
     implicit none
     real(kp) :: lpi_epsilon_three
-    real(kp), intent(in) :: x,phi0,p,q
-    
+    real(kp), intent(in) :: x,p,q
+    real(kp), intent(in) :: phi0
+
     lpi_epsilon_three = ((q+p*log(x))*(2._kp*q+log(x)*(3._kp*q+2._kp*log(x)*(q+p*log(x)))))/ &
-                        (phi0**2*x**2*log(x)**2*(q+log(x)*(q+p*log(x))))
+         (phi0**2*x**2*log(x)**2*(q+log(x)*(q+p*log(x))))
 
     
   end function lpi_epsilon_three
 
 
-!returns the value for x=phi/Mp defined as epsilon1=1, where inflation ends
-  function lpi_x_endinf(p,q,phi0)
+  function lpi_x_potmax(p,q,phi0)
     implicit none
-    real(kp), intent(in) :: phi0,p,q
-    real(kp) :: lpi_x_endinf
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: lpiData
+    real(kp), intent(in) :: p,q
+    real(kp), intent(in), optional :: phi0
+    real(kp) :: lpi_x_potmax
 
-    mini =1._kp+q/sqrt(2._kp)*sqrt(epsilon(1._kp))/phi0 ! uses an asymptotic expression for epsilon1 when x->1 and requiring eps1<1/epsilon(1._kp) to avoid numerical issues
-    maxi = max(p*10._kp**(3)/(sqrt(2._kp)*phi0),10._kp**(3)) ! uses an asymptotic expression for epsilon1 when x->Infinity and and set the upper bound such that eps1 ~ 10^(-6) there
-
-    lpiData%real1 = p
-    lpiData%real2 = q
-    lpiData%real3 = phi0
+    lpi_x_potmax = exp(-q/p)
     
-    lpi_x_endinf = zbrent(find_lpi_x_endinf,mini,maxi,tolFind,lpiData)
-   
-   
-  end function lpi_x_endinf
+  end function lpi_x_potmax
 
-  function find_lpi_x_endinf(x,lpiData)    
+  
+
+  function lpi_x_epstwozero(p,q,phi0)
     implicit none
-    real(kp), intent(in) :: x   
-    type(transfert), optional, intent(inout) :: lpiData
-    real(kp) :: find_lpi_x_endinf
-    real(kp) :: phi0,p,q
+    real(kp), intent(in) :: p,q
+    real(kp), intent(in), optional :: phi0
+    real(kp), dimension(2) :: lpi_x_epstwozero
 
-    p = lpiData%real1
-    q = lpiData%real2
-    phi0 = lpiData%real3
+    lpi_x_epstwozero(1) = exp( (-q - sqrt(-4._kp*p*q + q*q))/(2._kp*p) )
+    lpi_x_epstwozero(2) = exp( (-q + sqrt(-4._kp*p*q + q*q))/(2._kp*p) )
+        
+  end function lpi_x_epstwozero
 
-    find_lpi_x_endinf = lpi_epsilon_one(x,p,q,phi0)-1._kp
-   
-  end function find_lpi_x_endinf
 
 
 !this is integral[V(phi)/V'(phi) dphi]
@@ -137,33 +148,12 @@ contains
     real(kp) :: lpi_efold_primitive
 
     lpi_efold_primitive = phi0**2*(x**2/(2._kp*p)- &
-                          q/(p**2)*exp(-2._kp*q/p)*ei(2._kp*q/p+2._kp*log(x)))
+         q/(p**2)*exp(-2._kp*q/p)*ei(2._kp*q/p+2._kp*log(x)))
 
   end function lpi_efold_primitive
 
 
 
-!returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function lpi_x_trajectory(bfold,xend,p,q,phi0)
-    implicit none
-    real(kp), intent(in) :: bfold, phi0,p,q, xend
-    real(kp) :: lpi_x_trajectory
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: lpiData
-
-  
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi = sqrt(xend**2+2._kp*p/(phi0**2)*10._kp**(4.)) !Uses an approximate solution for the slow roll trajectory when x>>1 and sets maxi at ~ 10^4 efolds away from xend
-
-    lpiData%real1 = p
-    lpiData%real2 = q
-    lpiData%real3 = phi0
-    lpiData%real4 = -bfold + lpi_efold_primitive(xend,p,q,phi0)
-    
-    lpi_x_trajectory = zbrent(find_lpitraj,mini,maxi,tolFind,lpiData)
-       
-  end function lpi_x_trajectory
 
   function find_lpitraj(x,lpiData)    
     implicit none
@@ -182,4 +172,4 @@ contains
   end function find_lpitraj
 
   
-end module lpisr
+end module lpicommon

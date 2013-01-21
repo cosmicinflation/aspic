@@ -2,7 +2,7 @@
 program ssi6main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use ssi6sr, only : ssi6_epsilon_one, ssi6_epsilon_two, ssi6_epsilon_three, ssi6_abs_alpha_min
+  use ssi6sr, only : ssi6_epsilon_one, ssi6_epsilon_two, ssi6_epsilon_three, ssi6_alphamax
   use ssi6reheat, only : ssi6_lnrhoend, ssi6_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -33,7 +33,7 @@ program ssi6main
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
- call delete_file('ssi6_alphamin.dat')
+ call delete_file('ssi6_alphamax.dat')
 
  Nbeta=10000
  betamin=0.000001_kp
@@ -42,8 +42,8 @@ program ssi6main
  do j=0,Nbeta 
   beta=betamin*(betamax/betamin)**(real(j,kp)/Nbeta)  !logarithmic step
 !  beta=betamin+(betamax-betamin)*(real(j,kp)/Nbeta)  !arithmetic step
-  alpha=-ssi6_abs_alpha_min(beta)
-  call livewrite('ssi6_abs_alpha_min.dat',beta,-alpha)
+  alpha=ssi6_alphamax(beta)
+  call livewrite('ssi6_alphamax.dat',beta,alpha)
  end do
 
 print *,'Priors Written'
@@ -82,7 +82,7 @@ print *,'Priors Written'
   beta=10._kp**(0._kp)
   beta=10._kp**(3._kp)
 
-   alphamin=-ssi6_abs_alpha_min(beta)*1.001_kp
+   alphamin=ssi6_alphamax(beta)*1.001_kp
    if (alphamin .eq. 0._kp) alphamin=-10._kp**(-4._kp)
    alphamax=alphamin*10._kp**(4._kp)
    if (beta .eq. 10._kp**(-6._kp))   alphamax=alphamin*10._kp**(1.5_kp)

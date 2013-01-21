@@ -11,7 +11,8 @@
 module rmi2sr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
-  use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential,rmi_norm_deriv_second_potential
+  use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential
+  use rmicommon, only : rmi_norm_deriv_second_potential
   use rmicommon, only : rmi_epsilon_one, rmi_epsilon_two, rmi_epsilon_three
   use rmicommon, only : rmi_efold_primitive, find_rmitraj
 
@@ -22,7 +23,7 @@ module rmi2sr
 
   public rmi2_norm_potential, rmi2_norm_deriv_potential, rmi2_norm_deriv_second_potential
   public rmi2_epsilon_one, rmi2_epsilon_two, rmi2_epsilon_three
-  public rmi2_efold_primitive, rmi2_x_trajectory, rmi2_xendmin
+  public rmi2_efold_primitive, rmi2_x_trajectory, rmi2_numacc_xendmin
 
 contains
 
@@ -137,28 +138,30 @@ contains
 
 !returns the minimal value for xend such that there are efold number
 !of inflation from xtopNUM
-  function rmi2_xendmin(efold,c,phi0)
+  function rmi2_numacc_xendmin(efold,c,phi0)
     implicit none
     real(kp), intent(in) :: efold,c,phi0
-    real(kp) :: rmi2_xendmin,xMin, xMax, efoldMax, eps
+    real(kp) :: rmi2_numacc_xendmin,xMin, xMax, efoldMax, eps
     real(kp), parameter :: tolFind=tolkp
-   
-    xMin =  1._kp+sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
+
+ !Using an asymptotic expression for eps1 when x->1, and requiring
+ !eps1>epsilon(1._kp) for numerical convergence
+    xMin =  1._kp+sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2))
     xMax = 2._kp
 
     efoldMax = rmi2_efold_primitive(xMin,c,phi0) &
          - rmi2_efold_primitive(xMax,c,phi0)
 
     if (efold.gt.efoldMax) then
-       write(*,*)'rmi2_xendmax: not enough efolds!'
+       write(*,*)'rmi2_xendmax: not enough efolds computable at current accuracy!'
        write(*,*)'efold requested=',efold,'   efold maxi=',efoldMax
        stop
     endif
 
-    rmi2_xendmin = rmi2_x_trajectory(efold,xMin,c,phi0)
+    rmi2_numacc_xendmin = rmi2_x_trajectory(efold,xMin,c,phi0)
        
 
-  end function rmi2_xendmin
+  end function rmi2_numacc_xendmin
  
 
 end module rmi2sr

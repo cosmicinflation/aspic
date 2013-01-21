@@ -14,7 +14,7 @@ module csisr
   public csi_norm_potential, csi_norm_deriv_potential, csi_norm_deriv_second_potential
   public csi_epsilon_one, csi_epsilon_two,csi_epsilon_three
   public csi_efold_primitive, csi_x_trajectory
-  public csi_xendmax, csi_x_epsOne_equals_one
+  public csi_xendmax, csi_x_epsoneunity
 
  
 contains
@@ -110,16 +110,16 @@ contains
   end function csi_x_trajectory
 
 ! Returns the value of x such that epsilon_one=1
-  function csi_x_epsOne_equals_one(alpha)
+  function csi_x_epsoneunity(alpha)
     implicit none
     real(kp), intent(in) :: alpha
-    real(kp) :: csi_x_epsOne_equals_one
+    real(kp) :: csi_x_epsoneunity
 
-    csi_x_epsOne_equals_one=1/alpha-sqrt(2._kp) !in the x<1/alpha branch of the potential
+    csi_x_epsoneunity=1/alpha-sqrt(2._kp) !in the x<1/alpha branch of the potential
 
 !    csi_x_epsOne_equals_one=1/alpha+sqrt(2._kp) !in the x>1/alpha branch of the potential
 
-  end function csi_x_epsOne_equals_one
+  end function csi_x_epsoneunity
 
 ! Returns the value of x such that epsilon_two=epsilon_three=-1
   function csi_x_epsTwo_equals_MinusOne(alpha)
@@ -134,12 +134,12 @@ contains
   end function csi_x_epsTwo_equals_MinusOne
 
   
-  function csi_xendmax(alpha,bfoldstar) !Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
+  function csi_xendmax(efold,alpha) !Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
     implicit none
-    real(kp), intent(in) :: alpha,bfoldstar
+    real(kp), intent(in) :: alpha, efold
     real(kp) :: csi_xendmax
     
-    csi_xendmax = csi_x_trajectory(-bfoldstar,csi_x_epsOne_equals_one(alpha),alpha)
+    csi_xendmax = csi_x_trajectory(efold,csi_x_epsoneunity(alpha),alpha)
 
   end function csi_xendmax
 

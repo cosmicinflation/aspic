@@ -7,9 +7,8 @@ module ssi4reheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use ssi4sr, only : ssi4_epsilon_one, ssi4_epsilon_two, ssi4_epsilon_three
-  use ssi4sr, only : ssi4_norm_potential
+  use ssi4sr, only : ssi4_norm_potential, ssi4_x_potmax
   use ssi4sr, only : ssi4_x_endinf, ssi4_efold_primitive
-  use ssicommon, only : ssi3456_x_Vprime_Equals_0
   use cosmopar, only : QrmsOverT
   implicit none
 
@@ -51,7 +50,7 @@ contains
     ssi4Data%real4 = calF + primEnd
 
 
-    mini = ssi3456_x_Vprime_Equals_0(alpha,beta)*(1._kp+epsilon(1._kp))
+    mini = ssi4_x_potmax(alpha,beta)*(1._kp+epsilon(1._kp))
     maxi = ssi4_x_endinf(alpha,beta)*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ssi4_x_star,mini,maxi,tolzbrent,ssi4Data)

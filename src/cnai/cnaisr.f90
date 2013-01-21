@@ -132,23 +132,23 @@ contains
 
     cnaiData%real1 = alpha
 
-    cnai_x_endinf = zbrent(find_cnaiendinf,mini,maxi,tolFind,cnaiData)
+    cnai_x_endinf = zbrent(find_cnai_x_endinf,mini,maxi,tolFind,cnaiData)
    
   end function cnai_x_endinf
 
 
-  function find_cnaiendinf(x,cnaiData)
+  function find_cnai_x_endinf(x,cnaiData)
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: cnaiData
-    real(kp) :: find_cnaiendinf
+    real(kp) :: find_cnai_x_endinf
     real(kp) :: alpha
     
     alpha = cnaiData%real1
     
-    find_cnaiendinf = cnai_epsilon_one(x,alpha) - 1._kp
+    find_cnai_x_endinf = cnai_epsilon_one(x,alpha) - 1._kp
     
-  end function find_cnaiendinf
+  end function find_cnai_x_endinf
 
 
 !this is integral[V(phi)/V'(phi) dphi)
@@ -160,8 +160,8 @@ contains
     if (alpha.eq.0._kp) stop 'cnai_efold_primitive: alpha=0!'
 
     cnai_efold_primitive = -1._kp/(alpha**2*(3._kp+alpha**2))* &
-                           (3._kp*log(sinh(alpha*x/sqrt(2._kp)))- &
-                            alpha**2/2._kp*sinh(alpha*x/sqrt(2._kp))**2)
+         (3._kp*log(sinh(alpha*x/sqrt(2._kp)))- &
+         alpha**2/2._kp*sinh(alpha*x/sqrt(2._kp))**2)
 
   end function cnai_efold_primitive
 

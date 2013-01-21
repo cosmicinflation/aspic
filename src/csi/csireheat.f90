@@ -6,7 +6,7 @@ module csireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
   use csisr, only : csi_epsilon_one, csi_epsilon_two, csi_epsilon_three
-  use csisr, only : csi_norm_potential,csi_efold_primitive,csi_x_epsOne_equals_one
+  use csisr, only : csi_norm_potential,csi_efold_primitive,csi_x_epsoneunity
   implicit none
 
   private
@@ -45,7 +45,7 @@ contains
     csiData%real3 = calF + primEnd
 
     mini = xend
-    maxi = csi_x_epsOne_equals_one(alpha)    !Value of x such that epsilon1=1 above which inflation cannot proceed
+    maxi = csi_x_epsoneunity(alpha)    !Value of x such that epsilon1=1 above which inflation cannot proceed
 
     x = zbrent(find_csi_x_star,mini,maxi,tolFind,csiData)
     csi_x_star = x

@@ -13,7 +13,8 @@ module ssi3sr
   use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi136_x_epsilon2_Equals_0, ssi3456_x_Vprime_Equals_0
+  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi136_x_epstwozero
+  use ssicommon, only : ssi3456_x_derivpotzero
 
 
   implicit none
@@ -24,7 +25,7 @@ module ssi3sr
   public ssi3_epsilon_one, ssi3_epsilon_two, ssi3_epsilon_three
   public ssi3_x_endinf, ssi3_efold_primitive, ssi3_x_trajectory
   public ssi3_norm_deriv_potential, ssi3_norm_deriv_second_potential
-  public ssi3_alphamin
+  public ssi3_alphamin, ssi3_x_epsonemax, ssi3_x_potmax
   
 contains
 
@@ -100,16 +101,28 @@ contains
     
   end function ssi3_epsilon_three
 
-
-!returns the position x where epsilon_one is maximum
-  function ssi3_x_epsilon2_Equals_0(alpha,beta)    
+!returns the position x where the potential is maximal
+  
+  function ssi3_x_potmax(alpha,beta)    
     implicit none
-    real(kp) :: ssi3_x_epsilon2_Equals_0
+    real(kp) :: ssi3_x_potmax
     real(kp), intent(in) :: alpha,beta
 
-    ssi3_x_epsilon2_Equals_0 = ssi136_x_epsilon2_Equals_0(alpha,beta)
+    ssi3_x_potmax = ssi3456_x_derivpotzero(alpha,beta)
     
-  end function ssi3_x_epsilon2_Equals_0
+  end function ssi3_x_potmax
+
+
+!returns the position x where epsilon_one is maximum
+  function ssi3_x_epsonemax(alpha,beta)    
+    implicit none
+    real(kp) :: ssi3_x_epsonemax
+    real(kp), intent(in) :: alpha,beta
+
+    ssi3_x_epsonemax = ssi136_x_epstwozero(alpha,beta)
+    
+  end function ssi3_x_epsonemax
+
 
 
 !returns the minimum value of alpha (given beta) in order for inflation to end by slow roll violation (eps1max>1)
@@ -126,10 +139,10 @@ contains
 
     ssi3Data%real1 = beta
 
-!    print*,'ssi3_alphamin:  beta=',beta,'mini=',mini,'  xeps2mini=',ssi3_x_epsilon2_Equals_0(mini,beta), &
-!           'maxi=',maxi,'  xeps2maxi=',ssi3_x_epsilon2_Equals_0(maxi,beta), &
-!           '  eps1(xeps2mini)=',ssi3_epsilon_one(ssi3_x_epsilon2_Equals_0(mini,beta),mini,beta), &
-!           '  eps1(xeps2maxi)=',ssi3_epsilon_one(ssi3_x_epsilon2_Equals_0(maxi,beta),maxi,beta)
+!    print*,'ssi3_alphamin:  beta=',beta,'mini=',mini,'  xeps2mini=',ssi3_x_epsonemax(mini,beta), &
+!           'maxi=',maxi,'  xeps2maxi=',ssi3_x_epsonemax(maxi,beta), &
+!           '  eps1(xeps2mini)=',ssi3_epsilon_one(ssi3_x_epsonemax(mini,beta),mini,beta), &
+!           '  eps1(xeps2maxi)=',ssi3_epsilon_one(ssi3_x_epsonemax(maxi,beta),maxi,beta)
 !    pause
 
        ssi3_alphamin = zbrent(find_ssi3alphamin,mini,maxi,tolFind,ssi3Data)
@@ -145,7 +158,7 @@ contains
 
     beta = ssi3Data%real1
     
-    find_ssi3alphamin = ssi3_epsilon_one(ssi3_x_epsilon2_Equals_0(alpha,beta),alpha,beta)-1._kp
+    find_ssi3alphamin = ssi3_epsilon_one(ssi3_x_epsonemax(alpha,beta),alpha,beta)-1._kp
    
   end function find_ssi3alphamin
 
@@ -159,14 +172,13 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ssi3Data
 
-    if (alpha .lt. ssi3_alphamin(beta)) stop 'ssi3_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    if (alpha .lt. ssi3_alphamin(beta)) then
+       stop 'ssi3_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    endif
 
-    mini = ssi3_x_epsilon2_Equals_0(alpha,beta)*(1._kp+epsilon(1._kp))
-    maxi = ssi3456_x_Vprime_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+    mini = ssi3_x_epsonemax(alpha,beta)*(1._kp+epsilon(1._kp))
+    maxi = ssi3_x_potmax(alpha,beta)*(1._kp-epsilon(1._kp))
 
-!    print*,'ssi3_xend:  mini=',mini,'   maxi=',maxi,'   epsOne(mini)=',ssi3_epsilon_one(mini,alpha,beta), &
-!                 '   epsOne(maxi)=',ssi3_epsilon_one(maxi,alpha,beta)
-!    pause
 
     ssi3Data%real1 = alpha
     ssi3Data%real2 = beta
@@ -213,7 +225,7 @@ contains
 
 
     mini = ssi3_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
-    maxi = ssi3456_x_Vprime_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+    maxi = ssi3_x_potmax(alpha,beta)*(1._kp-epsilon(1._kp))
   
     ssi3Data%real1 = alpha
     ssi3Data%real2 = beta

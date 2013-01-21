@@ -2,7 +2,8 @@
 program cncimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use cncisr, only : cnci_epsilon_one, cnci_epsilon_two,cnci_epsilon_three,cnci_xendmin,cnci_x_epsOne_equals_one
+  use cncisr, only : cnci_epsilon_one, cnci_epsilon_two,cnci_epsilon_three
+  use cncisr, only : cnci_xendmin, cnci_x_epsoneunity
   use cncireheat, only : cnci_lnrhoend, cnci_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -39,8 +40,8 @@ program cncimain
   do i=1,nalpha
        alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(nalpha,kp))
 
-       call livewrite('cnci_xendmin.dat',alpha,cnci_xendmin(alpha,-40._kp), &
-       cnci_xendmin(alpha,-60._kp),cnci_xendmin(alpha,-80._kp))
+       call livewrite('cnci_xendmin.dat',alpha,cnci_xendmin(40._kp,alpha), &
+       cnci_xendmin(60._kp,alpha),cnci_xendmin(80._kp,alpha))
   end do
 
 
@@ -71,17 +72,17 @@ program cncimain
 
   !Prior on xend
      if (alpha .eq. 10._kp**(-3.)) then
-     xendmin=cnci_xendmin(alpha,-55._kp)
+     xendmin=cnci_xendmin(55._kp,alpha)
      xendmax=30._kp*xendmin
      nxend=500
      endif
      if (alpha .eq. 10._kp**(-1.)) then
-     xendmin=cnci_xendmin(alpha,-58._kp)
+     xendmin=cnci_xendmin(58._kp,alpha)
      xendmax=10._kp*xendmin
      nxend=500
      endif
      if (alpha .eq. 0.2_kp) then
-     xendmin=cnci_xendmin(alpha,-60._kp)
+     xendmin=cnci_xendmin(60._kp,alpha)
      xendmax=2._kp*xendmin
      nxend=500
      endif

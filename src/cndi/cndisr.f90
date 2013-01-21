@@ -14,7 +14,7 @@ module cndisr
   public cndi_norm_potential, cndi_epsilon_one, cndi_epsilon_two, cndi_epsilon_three
   public cndi_efold_primitive, cndi_x_trajectory
   public cndi_norm_deriv_potential, cndi_norm_deriv_second_potential
-  public cndi_xin_max, cndi_xend_max
+  public cndi_xinimax, cndi_xendmax
 
  
 contains
@@ -37,7 +37,7 @@ contains
     real(kp), intent(in) :: x,alpha,beta
 
    cndi_norm_deriv_potential = (2._kp*alpha*beta*sin(alpha*x))/ &
-                               (1._kp+beta*cos(alpha*x))**3
+        (1._kp+beta*cos(alpha*x))**3
 
   end function cndi_norm_deriv_potential
 
@@ -50,8 +50,8 @@ contains
     real(kp), intent(in) :: x,alpha,beta
 
     cndi_norm_deriv_second_potential = (2._kp*alpha**2*beta*(cos(alpha*x)- &
-                                       beta*(-2._kp+cos(2._kp*alpha*x))))/ & 
-                                       (1._kp+beta*cos(alpha*x))**4
+         beta*(-2._kp+cos(2._kp*alpha*x))))/ & 
+         (1._kp+beta*cos(alpha*x))**4
 
   end function cndi_norm_deriv_second_potential
 
@@ -64,7 +64,7 @@ contains
     real(kp), intent(in) :: x,alpha,beta
     
     cndi_epsilon_one = (2._kp*alpha**2*beta**2*sin(alpha*x)**2)/ &
-                       (1._kp+beta*cos(alpha*x))**2
+         (1._kp+beta*cos(alpha*x))**2
     
   end function cndi_epsilon_one
 
@@ -76,7 +76,7 @@ contains
     real(kp), intent(in) :: x,alpha,beta
     
     cndi_epsilon_two = -((4._kp*alpha**2*beta*(beta+cos(alpha*x)))/ &
-                       (1._kp+beta*cos(alpha*x))**2)
+         (1._kp+beta*cos(alpha*x))**2)
     
   end function cndi_epsilon_two
 
@@ -88,81 +88,92 @@ contains
     real(kp), intent(in) :: x,alpha,beta
     
     cndi_epsilon_three = -((2._kp*alpha**2*beta*(-1._kp+2._kp*beta**2+ &
-                         beta*cos(alpha*x))*sin(alpha*x)**2)/((beta+cos(alpha*x))* &
-                         (1._kp+beta*cos(alpha*x))**2))
+         beta*cos(alpha*x))*sin(alpha*x)**2)/((beta+cos(alpha*x))* &
+         (1._kp+beta*cos(alpha*x))**2))
     
   end function cndi_epsilon_three
 
 
 
 !returns the minimum value of alpha, given beta, such that eps1=1 has a solution for beta<1
-  function cndi_alpha_min(beta)
+  function cndi_alphamin(beta)
     implicit none
     real(kp) , intent(in) :: beta
-    real(kp) :: cndi_alpha_min
+    real(kp) :: cndi_alphamin
 
     if (beta.gt.1._kp) then
-       cndi_alpha_min=0._kp
+       cndi_alphamin=0._kp
     else
-       cndi_alpha_min=sqrt((1._kp-beta**2)/(2._kp*beta**2))
+       cndi_alphamin=sqrt((1._kp-beta**2)/(2._kp*beta**2))
     endif
 
-  end function cndi_alpha_min
+  end function cndi_alphamin
 
 
 
-!returns the higher solution x of epsilon1=1
-  function cndi_xPlus_epsOne_Equals_One(alpha,beta)
+  function cndi_x_epsoneunity(alpha,beta)
     implicit none
     real(kp), intent(in) :: alpha,beta
-    real(kp) :: cndi_xPlus_epsOne_Equals_One
+    real(kp), dimension(2) :: cndi_x_epsoneunity
 
-    
-    cndi_xPlus_epsOne_Equals_One = acos(-((alpha*sqrt(beta**2*(2._kp+4._kp*alpha**2)-2._kp)+1._kp))/ &
-                    (beta+2._kp*alpha**2*beta))/alpha
-   
-  end function cndi_xPlus_epsOne_Equals_One
+    if (alpha.lt.cndi_alphamin(beta)) then
+       stop 'cndi_x_epsoneunity: not root for epsilon1 = 1' 
+    endif
 
-!returns the smaller solution x of epsilon1=1
-  function cndi_xMinus_epsOne_Equals_One(alpha,beta)
-    implicit none
-    real(kp), intent(in) :: alpha,beta
-    real(kp) :: cndi_xMinus_epsOne_Equals_One
+    cndi_x_epsoneunity(1) = acos((alpha*sqrt(beta**2*(2._kp+4._kp*alpha**2)-2._kp)-1._kp)/ &
+         (beta+2._kp*alpha**2*beta))/alpha
 
-    
-    cndi_xMinus_epsOne_Equals_One = acos((alpha*sqrt(beta**2*(2._kp+4._kp*alpha**2)-2._kp)-1._kp)/ &
-                    (beta+2._kp*alpha**2*beta))/alpha
-   
-  end function cndi_xMinus_epsOne_Equals_One
+    cndi_x_epsoneunity(2) = acos(-((alpha*sqrt(beta**2*(2._kp+4._kp*alpha**2)-2._kp)+1._kp))/ &
+         (beta+2._kp*alpha**2*beta))/alpha
+
+  end function cndi_x_epsoneunity
+
+
+
 
 !returns the maximum authorized value for x (in order for epsilon1<1)
-  function cndi_xin_max(alpha,beta)
+  function cndi_xinimax(alpha,beta)
     implicit none
     real(kp), intent(in) :: alpha,beta
-    real(kp) :: cndi_xin_max
+    real(kp) :: cndi_xinimax
 
-    if (beta .gt. 1._kp .or. (beta .lt. 1._kp .and. alpha.gt.cndi_alpha_min(beta) ) ) then
-      cndi_xin_max  = cndi_xMinus_epsOne_Equals_One(alpha,beta)
+    real(kp), dimension(2) :: xepsone
+
+    xepsone = cndi_x_epsoneunity(alpha,beta)
+    
+    if (beta .gt. 1._kp .or. (beta .lt. 1._kp .and. alpha.gt.cndi_alphamin(beta) ) ) then
+      cndi_xinimax  = xepsone(1)
     else
-      cndi_xin_max  = acos(-1._kp)/alpha*(1._kp-epsilon(1._kp))
+      cndi_xinimax  = acos(-1._kp)/alpha*(1._kp-epsilon(1._kp))
     endif
    
-  end function cndi_xin_max
+  end function cndi_xinimax
 
-!returns the maximum authorized value for xend in order for efold to be realized from xin_max
-  function cndi_xend_max(efold,alpha,beta)
+!returns the maximum authorized value for xend in order for efold to be realized from xinimax
+  function cndi_xendmax(efold,alpha,beta)
     implicit none
     real(kp), intent(in) :: efold,alpha,beta
-    real(kp) :: cndi_xend_max,xini
+    real(kp) :: cndi_xendmax,xiniMax,xendMin
 
-    xini=cndi_xin_max(alpha,beta)
+    real(kp) :: efoldNumAccMax
 
-    cndi_xend_max = cndi_x_trajectory(efold,xini,alpha,beta)
-  
-    cndi_xend_max = min(cndi_xend_max, acos(-1._kp)/alpha- &
-       sqrt(epsilon(1._kp)/2._kp)*(1._kp-beta)/(alpha**2*beta)) ! to avoid < numaccureacy errors
+    xiniMax = cndi_xinimax(alpha,beta)
+    xendMin = epsilon(1._kp)
+
+    efoldNumAccMax = -cndi_efold_primitive(xendMin,alpha,beta) &
+         + cndi_efold_primitive(xiniMax,alpha,beta)
+
+    if (efold.gt.efoldNumAccMax) then
+       write(*,*)'cndi_xendmax: not enough efolds computable at current accuracy!'
+       write(*,*)'efold requested=   efold maxi computable= ',efold,efoldNumAccMax
+       write(*,*)'xend mini computable= ',xendMin
+       stop
+    endif
    
-  end function cndi_xend_max
+    cndi_xendmax = cndi_x_trajectory(efold,xiniMax,alpha,beta)
+
+   
+  end function cndi_xendmax
 
 
 !this is integral(V(phi)/V'(phi) dphi)
@@ -173,7 +184,7 @@ contains
 
     if (alpha*beta.eq.0._kp) stop 'cndi_efold_primitive: alpha*beta=0 !'
 
-    cndi_efold_primitive=(log(sin(alpha*x))+log(tan(0.5_kp*alpha*x))/beta)/(2._kp*alpha**2)
+    cndi_efold_primitive = (log(sin(alpha*x))+log(tan(0.5_kp*alpha*x))/beta)/(2._kp*alpha**2)
 
   end function cndi_efold_primitive
 
@@ -194,11 +205,13 @@ contains
 
 
     if (bfold .lt. 0._kp) then
-      maxi = cndi_xin_max(alpha,beta)
+      maxi = cndi_xinimax(alpha,beta)
       mini = xend
     else
       maxi = xend
-      mini = sqrt(epsilon(1._kp)/2._kp)*(1._kp+beta)/(alpha**2*beta) !to avoid < numaccuracy errors
+!to avoid < numaccuracy errors
+!      mini = sqrt(epsilon(1._kp)/2._kp)*(1._kp+beta)/(alpha**2*beta) 
+      mini = epsilon(1._kp)
     endif
     
     cndi_x_trajectory = zbrent(find_cnditraj,mini,maxi,tolFind,cndiData)

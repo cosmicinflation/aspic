@@ -21,3 +21,4 @@ clean-outfiles:
 	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
 
 
+.NOTPARALLEL:

@@ -11,7 +11,8 @@
 module rmi1sr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
-  use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential,rmi_norm_deriv_second_potential
+  use rmicommon, only : rmi_norm_potential, rmi_norm_deriv_potential
+  use rmicommon, only : rmi_norm_deriv_second_potential
   use rmicommon, only : rmi_epsilon_one, rmi_epsilon_two, rmi_epsilon_three
   use rmicommon, only : rmi_efold_primitive, find_rmitraj
 
@@ -22,7 +23,7 @@ module rmi1sr
 
   public rmi1_norm_potential, rmi1_norm_deriv_potential, rmi1_norm_deriv_second_potential
   public rmi1_epsilon_one, rmi1_epsilon_two, rmi1_epsilon_three
-  public rmi1_efold_primitive, rmi1_x_trajectory, rmi1_xendmax
+  public rmi1_efold_primitive, rmi1_x_trajectory, rmi1_numacc_xendmax
   
 contains
 
@@ -120,11 +121,11 @@ contains
     type(transfert) :: rmi1Data
 
     if (bfold .lt. 0._kp) then
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi = 1._kp*(1._kp-epsilon(1._kp))
+       mini = xend*(1._kp+epsilon(1._kp))
+       maxi = 1._kp*(1._kp-epsilon(1._kp))
     else
-    mini = epsilon(1._kp)
-    maxi = xend!*(1._kp-epsilon(1._kp))
+       mini = epsilon(1._kp)
+       maxi = xend!*(1._kp-epsilon(1._kp))
     endif
   
     rmi1Data%real1 = c
@@ -137,28 +138,33 @@ contains
 
 !returns the maximal value for xend such that there are efold number
 !of inflation from xtopNUM
-  function rmi1_xendmax(efold,c,phi0)
+  function rmi1_numacc_xendmax(efold,c,phi0)
     implicit none
     real(kp), intent(in) :: efold,c,phi0
-    real(kp) :: rmi1_xendmax,xMin, xMax, efoldMax, eps
+    real(kp) :: rmi1_numacc_xendmax,xMin, xMax, efoldMax, eps
     real(kp), parameter :: tolFind=tolkp
-   
-    xMax =  1._kp-sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
-    xMin = sqrt(2._kp*epsilon(1._kp)/(c**2*phi0**2)) !Using an asymptotic expression for eps1 when x->0, and requiring eps1>epsilon(1._kp) for numerical convergence
+
+!Using an asymptotic expression for eps1 when x->1, and requiring
+!eps1>epsilon(1._kp) for numerical convergence
+    xMax =  1._kp-sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2))
+
+!Using an asymptotic expression for eps1 when x->0, and requiring
+!eps1>epsilon(1._kp) for numerical convergence
+    xMin = sqrt(2._kp*epsilon(1._kp)/(c**2*phi0**2))
 
     efoldMax = -rmi1_efold_primitive(xMin,c,phi0) &
          + rmi1_efold_primitive(xMax,c,phi0)
 
     if (efold.gt.efoldMax) then
-       write(*,*)'rmi1_xendmax: not enough efolds!'
-       write(*,*)'efold requested=',efold,'   efold maxi=',efoldMax
+       write(*,*)'rmi1_numacc_xendmax: not enough efolds computable at current accuracy!'
+       write(*,*)'efold requested=',efold,'   numerical efold maxi=',efoldMax
        stop
     endif
 
-    rmi1_xendmax = rmi1_x_trajectory(efold,xMax,c,phi0)
+    rmi1_numacc_xendmax = rmi1_x_trajectory(efold,xMax,c,phi0)
 
 
-  end function rmi1_xendmax
+  end function rmi1_numacc_xendmax
  
 
 end module rmi1sr

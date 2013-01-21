@@ -7,9 +7,8 @@ module ssi3reheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use ssi3sr, only : ssi3_epsilon_one, ssi3_epsilon_two, ssi3_epsilon_three
-  use ssi3sr, only : ssi3_norm_potential
-  use ssi3sr, only : ssi3_x_endinf, ssi3_efold_primitive
-  use ssicommon, only : ssi3456_x_Vprime_Equals_0
+  use ssi3sr, only : ssi3_norm_potential, ssi3_x_potmax
+  use ssi3sr, only : ssi3_x_endinf, ssi3_efold_primitive  
   use cosmopar, only : QrmsOverT
 
   implicit none
@@ -52,7 +51,7 @@ contains
     ssi3Data%real4 = calF + primEnd
 
     mini = ssi3_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
-    maxi = ssi3456_x_Vprime_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+    maxi = ssi3_x_potmax(alpha,beta)*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ssi3_x_star,mini,maxi,tolzbrent,ssi3Data)
     ssi3_x_star = x

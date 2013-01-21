@@ -298,9 +298,7 @@ contains
 
   end function vhi_xendmax
 
-
   
-
 
 !this is integral[V(phi)/V'(phi) dphi]
   function vhi_efold_primitive(x,p,mu)

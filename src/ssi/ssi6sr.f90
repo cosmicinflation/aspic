@@ -14,7 +14,7 @@ module ssi6sr
   use ssicommon, only : ssi_norm_deriv_second_potential
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
   use ssicommon, only : ssi_efold_primitive, find_ssitraj 
-  use ssicommon, only : ssi3456_x_Vprime_Equals_0,ssi136_x_epsilon2_Equals_0
+  use ssicommon, only : ssi3456_x_derivpotzero,ssi136_x_epstwozero
 
 
   implicit none
@@ -25,7 +25,7 @@ module ssi6sr
   public ssi6_epsilon_one, ssi6_epsilon_two, ssi6_epsilon_three
   public ssi6_x_endinf, ssi6_efold_primitive, ssi6_x_trajectory
   public ssi6_norm_deriv_potential, ssi6_norm_deriv_second_potential
-  public ssi6_abs_alpha_min
+  public ssi6_alphamax, ssi6_x_epsonemax, ssi6_x_potzero
   
 contains
 
@@ -103,20 +103,31 @@ contains
 
 
 !returns the position x where epsilon_one is maximum when alpha**2 < 4 * beta
-  function ssi6_x_epsilon2_Equals_0(alpha,beta)    
+  function ssi6_x_epsonemax(alpha,beta)    
     implicit none
-    real(kp) :: ssi6_x_epsilon2_Equals_0
+    real(kp) :: ssi6_x_epsonemax
     real(kp), intent(in) :: alpha,beta
 
-    ssi6_x_epsilon2_Equals_0 = ssi136_x_epsilon2_Equals_0(alpha,beta)
+    ssi6_x_epsonemax = ssi136_x_epstwozero(alpha,beta)
     
-  end function ssi6_x_epsilon2_Equals_0
+  end function ssi6_x_epsonemax
+
+
+
+ function ssi6_alphamax(beta)
+    implicit none
+    real(kp) :: ssi6_alphamax
+    real(kp), intent(in) :: beta
+    
+    ssi6_alphamax = -ssi6_absalphamin(beta)
+
+  end function ssi6_alphamax
 
 
 !returns the minimum value of the absolute value of alpha (given beta) in order for inflation to end by slow roll violation (eps1max>1)
-  function ssi6_abs_alpha_min(beta)    
+  function ssi6_absalphamin(beta)    
     implicit none
-    real(kp) :: ssi6_abs_alpha_min
+    real(kp) :: ssi6_absalphamin
     real(kp), intent(in) :: beta
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
@@ -127,48 +138,43 @@ contains
 
     ssi6Data%real1 = beta
 
-!    print*,'ssi6_alphamin:  beta=',beta,'mini=',mini,'  xeps2mini=',ssi6_x_epsilon2_Equals_0(-mini,beta), &
-!           'maxi=',maxi,'  xeps2maxi=',ssi6_x_epsilon2_Equals_0(-maxi,beta), &
-!           '  eps1(xeps2mini)=',ssi6_epsilon_one(ssi6_x_epsilon2_Equals_0(-mini,beta),-mini,beta), &
-!           '  eps1(xeps2maxi)=',ssi6_epsilon_one(ssi6_x_epsilon2_Equals_0(-maxi,beta),-maxi,beta)
-!    pause
 
-
-     if (ssi6_epsilon_one(ssi6_x_epsilon2_Equals_0(-mini,beta),-mini,beta) .gt. 1._kp ) then !In that case inflation ends by slow roll violation for any value of alpha
-         ssi6_abs_alpha_min = 0._kp
+     if (ssi6_epsilon_one(ssi6_x_epsonemax(-mini,beta),-mini,beta) .gt. 1._kp ) then !In that case inflation ends by slow roll violation for any value of alpha
+        ssi6_absalphamin = 0._kp
      else    
-       ssi6_abs_alpha_min = zbrent(find_ssi6_abs_alpha_min,mini,maxi,tolFind,ssi6Data)
+        ssi6_absalphamin = zbrent(find_ssi6_absalphamin,mini,maxi,tolFind,ssi6Data)
      endif
 
-!    print*,'ssi6_alphamin: ssi6_abs_alpha_min=',ssi6_abs_alpha_min
+!    print*,'ssi6_alphamin: ssi6_absalphamin=',ssi6_absalphamin
 !    pause
     
     
-  end function ssi6_abs_alpha_min
+  end function ssi6_absalphamin
 
-  function find_ssi6_abs_alpha_min(abs_alpha,ssi6Data)    
+  function find_ssi6_absalphamin(abs_alpha,ssi6Data)    
     implicit none
     real(kp), intent(in) :: abs_alpha   
     type(transfert), optional, intent(inout) :: ssi6Data
-    real(kp) :: find_ssi6_abs_alpha_min
+    real(kp) :: find_ssi6_absalphamin
     real(kp) :: beta
 
     beta = ssi6Data%real1
     
-    find_ssi6_abs_alpha_min = ssi6_epsilon_one(ssi6_x_epsilon2_Equals_0(-abs_alpha,beta),-abs_alpha,beta)-1._kp
+    find_ssi6_absalphamin = ssi6_epsilon_one(ssi6_x_epsonemax(-abs_alpha,beta) &
+         ,-abs_alpha,beta)-1._kp
    
-  end function find_ssi6_abs_alpha_min
+  end function find_ssi6_absalphamin
 
 
 ! Return the position x at which the potential vanishes
-  function ssi6_x_V_Equals_0(alpha,beta)
+  function ssi6_x_potzero(alpha,beta)
   implicit none
-    real(kp) :: ssi6_x_V_Equals_0
+    real(kp) :: ssi6_x_potzero
     real(kp), intent(in) :: alpha,beta
 
-    ssi6_x_V_Equals_0 = sqrt(-(alpha-sqrt(alpha**2-4._kp*beta))/(2._kp*beta))
+    ssi6_x_potzero = sqrt(-(alpha-sqrt(alpha**2-4._kp*beta))/(2._kp*beta))
 
-   end function ssi6_x_V_Equals_0
+   end function ssi6_x_potzero
 
 !returns x at the end of inflation defined as epsilon1=1
   function ssi6_x_endinf(alpha,beta)
@@ -179,22 +185,19 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ssi6Data
 
-    if (abs(alpha) .lt. ssi6_abs_alpha_min(beta)) stop 'ssi6_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    if (abs(alpha) .lt. ssi6_absalphamin(beta)) then
+       stop 'ssi6_x_endinf: epsilon1max<1, inflation cannot stop by slow roll violation!'
+    endif
 
 
     if (alpha**2 .lt. 4._kp*beta) then
-       	mini=ssi6_x_epsilon2_Equals_0(alpha,beta)*(1._kp+epsilon(1._kp))
+       	mini=ssi6_x_epsonemax(alpha,beta)*(1._kp+epsilon(1._kp))
 !        print*,'ssi6_xend: maxi in the first case=',maxi
     else
-	mini=ssi6_x_V_Equals_0(alpha,beta)*(1._kp+epsilon(1._kp))
+	mini=ssi6_x_potzero(alpha,beta)*(1._kp+epsilon(1._kp))
 !        print*,'ssi6_xend: maxi in the second case=',maxi
     endif
     maxi=mini/epsilon(1._kp)
-
-
-!   print*,'ssi6_xend:  mini=',mini,'   maxi=',maxi,'   epsOne(mini)=',ssi6_epsilon_one(mini,alpha,beta), &
-!                '   epsOne(maxi)=',ssi6_epsilon_one(maxi,alpha,beta), '  alpha=',alpha,'  beta=',beta
-!   pause
 
     ssi6Data%real1 = alpha
     ssi6Data%real2 = beta

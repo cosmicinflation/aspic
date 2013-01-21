@@ -75,7 +75,7 @@ contains
 
 
     rmi_epsilon_one = c**2/2._kp*(phi0*x)**2*log(x)**2/ &
-                      ((1._kp+c/2._kp*(0.5_kp-log(x))*(phi0*x)**2)**2)
+         ((1._kp+c/2._kp*(0.5_kp-log(x))*(phi0*x)**2)**2)
     
   end function rmi_epsilon_one
 
@@ -88,8 +88,8 @@ contains
 
     
     rmi_epsilon_two = (8._kp*c*(4._kp+c*(phi0*x)**2+ &
-                      log(x)*(4._kp-c*(phi0*x)**2+2._kp*c*(phi0*x)**2*log(x))))/ &
-                      (4._kp+c*(phi0*x)**2-2._kp*c*(phi0*x)**2*log(x))**2
+         log(x)*(4._kp-c*(phi0*x)**2+2._kp*c*(phi0*x)**2*log(x))))/ &
+         (4._kp+c*(phi0*x)**2-2._kp*c*(phi0*x)**2*log(x))**2
    
   end function rmi_epsilon_two
 
@@ -102,10 +102,10 @@ contains
 
     
     rmi_epsilon_three = (4._kp*c*log(x)*((4._kp+c*(phi0*x)**2)**2+ &
-                        8._kp*c*(phi0*x)**2*log(x)*(4._kp+c*(phi0*x)**2+ &
-                        log(x)*(6._kp-c*(phi0*x)**2+c*(phi0*x)**2*log(x)))))/((4._kp+ &
-                        c*(phi0*x)**2-2._kp*c*(phi0*x)**2*log(x))**2*(4._kp+c*(phi0*x)**2+ &
-                        log(x)*(4._kp-c*(phi0*x)**2+2._kp*c*(phi0*x)**2._kp*log(x))))
+         8._kp*c*(phi0*x)**2*log(x)*(4._kp+c*(phi0*x)**2+ &
+         log(x)*(6._kp-c*(phi0*x)**2+c*(phi0*x)**2*log(x)))))/((4._kp+ &
+         c*(phi0*x)**2-2._kp*c*(phi0*x)**2*log(x))**2*(4._kp+c*(phi0*x)**2+ &
+         log(x)*(4._kp-c*(phi0*x)**2+2._kp*c*(phi0*x)**2._kp*log(x))))
     
   end function rmi_epsilon_three
 
@@ -120,8 +120,8 @@ contains
     if (phi0 .eq. 0._kp) stop 'rmi_efold_primitive: phi/Mp=0!'
 
     rmi_efold_primitive = -log(abs(log(x)))/c+ &
-                          x**2*phi0**2/4._kp- &
-                          phi0**2*ei(2._kp*log(x))/4._kp
+         x**2*phi0**2/4._kp- &
+         phi0**2*ei(2._kp*log(x))/4._kp
 
   end function rmi_efold_primitive
 

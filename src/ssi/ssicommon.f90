@@ -24,7 +24,7 @@ module ssicommon
   public ssi_norm_deriv_potential, ssi_norm_deriv_second_potential
   public ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
   public ssi_efold_primitive, find_ssitraj
-  public ssi136_x_epsilon2_Equals_0, ssi245_x_V_Equals_0, ssi3456_x_Vprime_Equals_0
+  public ssi136_x_epstwozero, ssi245_x_potzero, ssi3456_x_derivpotzero
 
 contains
 
@@ -88,7 +88,7 @@ contains
 
     
     ssi_epsilon_two = 4._kp*(-alpha+(alpha**2-6._kp*beta)*x**2+alpha*beta*x**4+ & 
-                      2._kp*beta**2*x**6)/(1._kp+alpha*x**2+beta*x**4)**2
+         2._kp*beta**2*x**6)/(1._kp+alpha*x**2+beta*x**4)**2
     
   end function ssi_epsilon_two
 
@@ -101,9 +101,9 @@ contains
 
     
     ssi_epsilon_three = (4._kp*x**2*(alpha+2._kp*beta*x**2)*(-3._kp*alpha**2+6._kp*beta+ & 
-                        alpha*(alpha**2-12._kp*beta)*x**2+3._kp*(alpha**2-8._kp*beta)*beta* &
-                        x**4+2._kp*beta**3*x**8))/((1._kp+alpha*x**2+beta*x**4)**2* &
-                        (-alpha+(alpha**2-6._kp*beta)*x**2+alpha*beta*x**4+2._kp*beta**2*x**6))
+         alpha*(alpha**2-12._kp*beta)*x**2+3._kp*(alpha**2-8._kp*beta)*beta* &
+         x**4+2._kp*beta**3*x**8))/((1._kp+alpha*x**2+beta*x**4)**2* &
+         (-alpha+(alpha**2-6._kp*beta)*x**2+alpha*beta*x**4+2._kp*beta**2*x**6))
     
   end function ssi_epsilon_three
 
@@ -118,8 +118,8 @@ contains
     if (alpha*beta .eq. 0._kp) stop 'ssi_efold_primitive: alpha*beta=0!'
 
     ssi_efold_primitive = 1._kp/(2._kp*alpha)*log(x)+x**2/8._kp &
-                          +(alpha**2-4._kp*beta)/(16._kp*alpha*beta) &
-                          *log(abs(1._kp+2._kp*beta/alpha*x**2)) 
+         +(alpha**2-4._kp*beta)/(16._kp*alpha*beta) &
+         *log(abs(1._kp+2._kp*beta/alpha*x**2)) 
 
   end function ssi_efold_primitive
 
@@ -141,41 +141,42 @@ contains
   end function find_ssitraj
 
 ! Return the position x at which epsilon2 vanishes for SSI1, SSI3, SSI6
-  function ssi136_x_epsilon2_Equals_0(alpha,beta)
+  function ssi136_x_epstwozero(alpha,beta)
   implicit none
-    real(kp) :: ssi136_x_epsilon2_Equals_0
+    real(kp) :: ssi136_x_epstwozero
     real(kp), intent(in) :: alpha,beta
 
-    ssi136_x_epsilon2_Equals_0 = sqrt(-(alpha/(6._kp*beta))+(16._kp*alpha**3*beta**3+2._kp* &
-                               sqrt(complex((64._kp*alpha**6+(5._kp*alpha**2-36._kp*beta)**3)* &
-                               beta**6,0._kp)))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)*beta**2)+ &
-                               (-5._kp*alpha**2+36._kp*beta)/(6._kp*(8._kp*alpha**3*beta**3+ & 
-                               3._kp*sqrt(3._kp)*sqrt(complex((alpha**2-4._kp*beta)*beta**6* &
-                               (7._kp*alpha**4-72._kp*alpha**2*beta+432._kp*beta**2),0._kp)))**(1._kp/3._kp)))
+    ssi136_x_epstwozero = sqrt(-(alpha/(6._kp*beta))+(16._kp*alpha**3*beta**3+2._kp* &
+         sqrt(complex((64._kp*alpha**6+(5._kp*alpha**2-36._kp*beta)**3)* &
+         beta**6,0._kp)))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)*beta**2)+ &
+         (-5._kp*alpha**2+36._kp*beta)/(6._kp*(8._kp*alpha**3*beta**3+ & 
+         3._kp*sqrt(3._kp)*sqrt(complex((alpha**2-4._kp*beta)*beta**6* &
+         (7._kp*alpha**4-72._kp*alpha**2*beta+432._kp*beta**2),0._kp)))**(1._kp/3._kp)))
 
-   end function ssi136_x_epsilon2_Equals_0
+   end function ssi136_x_epstwozero
+
 
 
 ! Return the position x at which the potential vanishes for SSI2, SSI4 and SSI5
-  function ssi245_x_V_Equals_0(alpha,beta)
+  function ssi245_x_potzero(alpha,beta)
   implicit none
-    real(kp) :: ssi245_x_V_Equals_0
+    real(kp) :: ssi245_x_potzero
     real(kp), intent(in) :: alpha,beta
 
-    ssi245_x_V_Equals_0 = sqrt(-(alpha+sqrt(alpha**2-4._kp*beta))/(2._kp*beta))
+    ssi245_x_potzero = sqrt(-(alpha+sqrt(alpha**2-4._kp*beta))/(2._kp*beta))
 
-   end function ssi245_x_V_Equals_0
+   end function ssi245_x_potzero
 
 
 ! Return the position x at which the first derivative of the potential with respect to x vanishes for SSI3&4 and SSI5&6
-  function ssi3456_x_Vprime_Equals_0(alpha,beta)
+  function ssi3456_x_derivpotzero(alpha,beta)
   implicit none
-    real(kp) :: ssi3456_x_Vprime_Equals_0
+    real(kp) :: ssi3456_x_derivpotzero
     real(kp), intent(in) :: alpha,beta
 
-    ssi3456_x_Vprime_Equals_0 = sqrt(-alpha/(2._kp*beta))
+    ssi3456_x_derivpotzero = sqrt(-alpha/(2._kp*beta))
 
-   end function ssi3456_x_Vprime_Equals_0
+   end function ssi3456_x_derivpotzero
 
 
 end module ssicommon

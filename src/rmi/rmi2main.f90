@@ -2,7 +2,7 @@
 program rmi2main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use rmi2sr, only : rmi2_epsilon_one, rmi2_epsilon_two, rmi2_epsilon_three, rmi2_xendmin
+  use rmi2sr, only : rmi2_epsilon_one, rmi2_epsilon_two, rmi2_epsilon_three, rmi2_numacc_xendmin
   use rmi2reheat, only : rmi2_lnrhoend, rmi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -77,7 +77,7 @@ program rmi2main
     do k=0,Nphi0 
       phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
 
-    xendmin = rmi2_xendmin(70._kp,c,phi0)
+    xendmin = rmi2_numacc_xendmin(70._kp,c,phi0)
     xendmax = exp(1._kp)
 
     if (xendmax .lt. xendmin) then

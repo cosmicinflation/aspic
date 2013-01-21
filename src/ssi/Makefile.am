@@ -37,7 +37,7 @@ libssi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libssi_la_includedir = $(includedir)/$(SRINCDIR)
 libssi_la_include_HEADERS = $(MOD)
 
-man_MANS = aspic_ssi1.3
+man_MANS = aspic_ssi.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:
@@ -47,3 +47,4 @@ clean-outfiles:
 
 
 
+.NOTPARALLEL:

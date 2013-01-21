@@ -2,7 +2,7 @@
 program ssi5main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use ssi5sr, only : ssi5_epsilon_one, ssi5_epsilon_two, ssi5_epsilon_three, ssi5_abs_alpha_min
+  use ssi5sr, only : ssi5_epsilon_one, ssi5_epsilon_two, ssi5_epsilon_three, ssi5_alphamax
   use ssi5reheat, only : ssi5_lnrhoend, ssi5_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -33,7 +33,7 @@ program ssi5main
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
- call delete_file('ssi5_alphamin.dat')
+ call delete_file('ssi5_alphamax.dat')
 
  Nbeta=1000
  betamin=0.0001_kp
@@ -42,8 +42,8 @@ program ssi5main
  do j=0,Nbeta 
   beta=betamin*(betamax/betamin)**(real(j,kp)/Nbeta)  !logarithmic step
 !  beta=betamin+(betamax-betamin)*(real(j,kp)/Nbeta)  !arithmetic step
-  alpha=-ssi5_abs_alpha_min(beta)
-  call livewrite('ssi5_abs_alpha_min.dat',beta,-alpha)
+  alpha= ssi5_alphamax(beta)
+  call livewrite('ssi5_alphamax.dat',beta,alpha)
  end do
 
 print *,'Priors Written'
@@ -80,7 +80,7 @@ print *,'Priors Written'
 !  beta=10._kp**(-5._kp)
 !  beta=10._kp**(-4._kp)
 
-   alphamin=-ssi5_abs_alpha_min(beta)*1.001_kp
+   alphamin=ssi5_alphamax(beta)*1.001_kp
    alphamax=alphamin*10._kp**(1._kp)
    if (beta .eq. 10._kp**(-6._kp))   alphamax=alphamin*10._kp**(1.5_kp)
 

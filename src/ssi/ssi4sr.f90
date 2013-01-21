@@ -3,16 +3,17 @@
 !
 !V(phi) = M**4 [ 1 + alpha x**2 + beta x**4 ]
 !
-!2: alpha>0, beta<0m x^2 > -alpha / ( 2 beta )
+!2: alpha>0, beta<0  x^2 > -alpha / ( 2 beta )
 !
 !x = phi/Mp
 
 module ssi4sr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
-  use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential, ssi_norm_deriv_second_potential
+  use ssicommon, only : ssi_norm_potential, ssi_norm_deriv_potential
+  use ssicommon, only : ssi_norm_deriv_second_potential, ssi3456_x_derivpotzero
   use ssicommon, only : ssi_epsilon_one, ssi_epsilon_two, ssi_epsilon_three
-  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi245_x_V_Equals_0, ssi3456_x_Vprime_Equals_0
+  use ssicommon, only : ssi_efold_primitive, find_ssitraj, ssi245_x_potzero
 
 
   implicit none
@@ -23,6 +24,7 @@ module ssi4sr
   public ssi4_epsilon_one, ssi4_epsilon_two, ssi4_epsilon_three
   public ssi4_x_endinf, ssi4_efold_primitive, ssi4_x_trajectory
   public ssi4_norm_deriv_potential, ssi4_norm_deriv_second_potential
+  public ssi4_x_potmax, ssi4_x_potzero
   
 contains
 
@@ -100,15 +102,27 @@ contains
 
 
 !returns the position x where the potential vanishes
-  function ssi4_x_V_Equals_0(alpha,beta)    
+  function ssi4_x_potzero(alpha,beta)    
     implicit none
-    real(kp) :: ssi4_x_V_Equals_0
+    real(kp) :: ssi4_x_potzero
     real(kp), intent(in) :: alpha,beta
 
-    ssi4_x_V_Equals_0 = ssi245_x_V_Equals_0(alpha,beta)
+    ssi4_x_potzero = ssi245_x_potzero(alpha,beta)
 
     
-  end function ssi4_x_V_Equals_0
+  end function ssi4_x_potzero
+
+
+!returns the position x where the potential is maximal
+  function ssi4_x_potmax(alpha,beta)    
+    implicit none
+    real(kp) :: ssi4_x_potmax
+    real(kp), intent(in) :: alpha,beta
+
+    ssi4_x_potmax = ssi3456_x_derivpotzero(alpha,beta)
+
+    
+  end function ssi4_x_potmax
 
 
 !returns x at the end of inflation defined as epsilon1=1
@@ -120,8 +134,8 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ssi4Data
 
-    mini = ssi3456_x_Vprime_Equals_0(alpha,beta)*(1._kp+epsilon(1._kp))
-    maxi = ssi4_x_V_Equals_0(alpha,beta)*(1._kp-epsilon(1._kp))
+    mini = ssi4_x_potmax(alpha,beta)*(1._kp+epsilon(1._kp))
+    maxi = ssi4_x_potzero(alpha,beta)*(1._kp-epsilon(1._kp))
 
     ssi4Data%real1 = alpha
     ssi4Data%real2 = beta
@@ -167,7 +181,7 @@ contains
     type(transfert) :: ssi4Data
 
 
-    mini = ssi3456_x_Vprime_Equals_0(alpha,beta)*(1._kp+epsilon(1._kp))
+    mini = ssi3456_x_derivpotzero(alpha,beta)*(1._kp+epsilon(1._kp))
     maxi = ssi4_x_endinf(alpha,beta)*(1._kp-epsilon(1._kp))
   
     ssi4Data%real1 = alpha

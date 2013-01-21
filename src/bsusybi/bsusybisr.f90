@@ -25,6 +25,7 @@ contains
     real(kp), intent(in) :: x,gammaBSUSYB
 
     bsusybi_norm_potential = exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x)
+
   end function bsusybi_norm_potential
 
 
@@ -35,7 +36,7 @@ contains
     real(kp), intent(in) :: x,gammaBSUSYB
 
    bsusybi_norm_deriv_potential = sqrt(6._kp)*(exp(sqrt(6._kp)*x)+ &
-                                  gammaBSUSYB*exp(sqrt(6._kp)*gammaBSUSYB*x))
+        gammaBSUSYB*exp(sqrt(6._kp)*gammaBSUSYB*x))
 
   end function bsusybi_norm_deriv_potential
 
@@ -48,7 +49,7 @@ contains
     real(kp), intent(in) :: x,gammaBSUSYB
 
     bsusybi_norm_deriv_second_potential = 6._kp*(exp(sqrt(6._kp)*x)+ &
-                                  gammaBSUSYB**2*exp(sqrt(6._kp)*gammaBSUSYB*x))
+         gammaBSUSYB**2*exp(sqrt(6._kp)*gammaBSUSYB*x))
 
   end function bsusybi_norm_deriv_second_potential
 
@@ -58,8 +59,9 @@ contains
     real(kp) :: bsusybi_epsilon_one
     real(kp), intent(in) :: x,gammaBSUSYB
     
-    bsusybi_epsilon_one = (3._kp*(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x)*gammaBSUSYB)**2) &
-                          /(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x))**2
+    bsusybi_epsilon_one = (3._kp*(exp(sqrt(6._kp)*x) &
+         + exp(sqrt(6._kp)*gammaBSUSYB*x)*gammaBSUSYB)**2) &
+         /(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x))**2
     
   end function bsusybi_epsilon_one
 
@@ -71,8 +73,8 @@ contains
     real(kp), intent(in) :: x,gammaBSUSYB
     
     bsusybi_epsilon_two = -((12._kp*exp(sqrt(6._kp)*(1._kp+gammaBSUSYB)*x)* &
-                          (-1._kp+gammaBSUSYB)**2)/(exp(sqrt(6._kp)*x)+ &
-                          exp(sqrt(6._kp)*gammaBSUSYB*x))**2)
+         (-1._kp+gammaBSUSYB)**2)/(exp(sqrt(6._kp)*x)+ &
+         exp(sqrt(6._kp)*gammaBSUSYB*x))**2)
     
   end function bsusybi_epsilon_two
 
@@ -83,8 +85,8 @@ contains
     real(kp), intent(in) :: x,gammaBSUSYB
     
     bsusybi_epsilon_three = -((6._kp*(exp(sqrt(6._kp)*x)-exp(sqrt(6._kp)*gammaBSUSYB*x))* &
-                            (-1._kp+gammaBSUSYB)*(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x)* &
-                            gammaBSUSYB))/(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x))**2)
+         (-1._kp+gammaBSUSYB)*(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x)* &
+         gammaBSUSYB))/(exp(sqrt(6._kp)*x)+exp(sqrt(6._kp)*gammaBSUSYB*x))**2)
     
   end function bsusybi_epsilon_three
 
@@ -138,22 +140,21 @@ contains
    
   end function find_bsusybi_x_trajectory
 
-  
-  function bsusybi_xendmax(gammaBSUSYB,bfoldstar) !Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
+!Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
+  function bsusybi_xendmax(efold, gammaBSUSYB) 
     implicit none
-    real(kp), intent(in) :: gammaBSUSYB,bfoldstar
+    real(kp), intent(in) :: gammaBSUSYB, efold
     real(kp) :: bsusybi_xendmax
     real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
+    real(kp) :: mini, maxi
     type(transfert) :: bsusybiData
-
-
+   
     maxi = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
-           log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))    !Value of x such that epsilon1=1
-    mini = 10._kp*sqrt(6._kp)*bfoldstar+maxi
+         log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))    !Value of x such that epsilon1=1
+    mini = - 10._kp*sqrt(6._kp) * efold + maxi
 
     bsusybiData%real1 = gammaBSUSYB
-    bsusybiData%real2 = bfoldstar
+    bsusybiData%real2 = -efold
     
     bsusybi_xendmax = zbrent(find_bsusybi_xendmax,mini,maxi,tolFind,bsusybiData)
 
@@ -165,10 +166,10 @@ contains
     type(transfert), optional, intent(inout) :: bsusybiData
     real(kp) :: find_bsusybi_xendmax,xmaxi
     real(kp) :: gammaBSUSYB,bfoldstar
+!Value of x such that epsilon1=1
 
     xmaxi = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
-           log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))     !Value of x such that epsilon1=1
-
+         log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))
     gammaBSUSYB=bsusybiData%real1
     bfoldstar = bsusybiData%real2
 
