@@ -8,9 +8,9 @@ module mssmisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : atanh
-  use mssmicommon, only : gmssmi_gen_norm_potential, gmssmi_gen_norm_deriv_potential, gmssmi_gen_norm_deriv_second_potential
-  use mssmicommon, only : gmssmi_gen_epsilon_one, gmssmi_gen_epsilon_two, gmssmi_gen_epsilon_three
-  use mssmicommon, only : gmssmi_gen_x_endinf, gmssmi_gen_x_epsilon1_min
+  use gmssmicommon, only : gmssmi_norm_potential, gmssmi_norm_deriv_potential, gmssmi_norm_deriv_second_potential
+  use gmssmicommon, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
+  use gmssmicommon, only : gmssmi_x_endinf, gmssmi_x_epsonemin
   implicit none
 
   private
@@ -18,7 +18,7 @@ module mssmisr
   public  mssmi_norm_potential, mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three
   public  mssmi_x_endinf, mssmi_efold_primitive, mssmi_x_trajectory
   public  mssmi_norm_deriv_potential, mssmi_norm_deriv_second_potential
-  public  mssmi_x_epsilon1_min
+  public  mssmi_x_epsonemin
 
  
 contains
@@ -40,7 +40,7 @@ contains
     real(kp) :: mssmi_norm_potential
     real(kp), intent(in) :: x,alpha
 
-    mssmi_norm_potential = gmssmi_gen_norm_potential(x,alpha,mssmi_beta(alpha))
+    mssmi_norm_potential = gmssmi_norm_potential(x,alpha,mssmi_beta(alpha))
 
   end function mssmi_norm_potential
 
@@ -52,7 +52,7 @@ contains
     real(kp) :: mssmi_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
 
-   mssmi_norm_deriv_potential = gmssmi_gen_norm_deriv_potential(x,alpha,mssmi_beta(alpha))
+   mssmi_norm_deriv_potential = gmssmi_norm_deriv_potential(x,alpha,mssmi_beta(alpha))
 
   end function mssmi_norm_deriv_potential
 
@@ -64,7 +64,7 @@ contains
     real(kp) :: mssmi_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
 
-    mssmi_norm_deriv_second_potential = gmssmi_gen_norm_deriv_second_potential(x,alpha,mssmi_beta(alpha))
+    mssmi_norm_deriv_second_potential = gmssmi_norm_deriv_second_potential(x,alpha,mssmi_beta(alpha))
 
   end function mssmi_norm_deriv_second_potential
 
@@ -76,7 +76,7 @@ contains
     real(kp) :: mssmi_epsilon_one
     real(kp), intent(in) :: x,alpha
     
-    mssmi_epsilon_one = gmssmi_gen_epsilon_one(x,alpha,mssmi_beta(alpha))
+    mssmi_epsilon_one = gmssmi_epsilon_one(x,alpha,mssmi_beta(alpha))
     
   end function mssmi_epsilon_one
 
@@ -87,7 +87,7 @@ contains
     real(kp) :: mssmi_epsilon_two
     real(kp), intent(in) :: x,alpha
     
-    mssmi_epsilon_two = gmssmi_gen_epsilon_two(x,alpha,mssmi_beta(alpha)) 
+    mssmi_epsilon_two = gmssmi_epsilon_two(x,alpha,mssmi_beta(alpha)) 
     
   end function mssmi_epsilon_two
 
@@ -98,7 +98,7 @@ contains
     real(kp) :: mssmi_epsilon_three
     real(kp), intent(in) :: x,alpha
     
-    mssmi_epsilon_three = gmssmi_gen_epsilon_three(x,alpha,mssmi_beta(alpha)) 
+    mssmi_epsilon_three = gmssmi_epsilon_three(x,alpha,mssmi_beta(alpha)) 
     
   end function mssmi_epsilon_three
 
@@ -109,7 +109,7 @@ contains
     real(kp), intent(in) :: alpha
     real(kp) :: mssmi_x_endinf
     
-    mssmi_x_endinf = gmssmi_gen_x_endinf(alpha,mssmi_beta(alpha))
+    mssmi_x_endinf = gmssmi_x_endinf(alpha,mssmi_beta(alpha))
    
 
   end function mssmi_x_endinf
@@ -140,7 +140,7 @@ contains
   
     mini = xend
 
-    maxi = mssmi_x_epsilon1_min(alpha)*10._kp !Scales as the position of the inflexion point
+    maxi = mssmi_x_epsonemin(alpha)*10._kp !Scales as the position of the inflexion point
 
     mssmiData%real1 = alpha
     mssmiData%real2 = -bfold + mssmi_efold_primitive(xend,alpha)
@@ -166,14 +166,14 @@ contains
 
 
 !Returns the position of the first local minimum of epsilon1
-  function mssmi_x_epsilon1_min(alpha)   
+  function mssmi_x_epsonemin(alpha)   
     implicit none
-    real(kp) :: mssmi_x_epsilon1_min
+    real(kp) :: mssmi_x_epsonemin
     real(kp), intent(in) :: alpha
 
-	mssmi_x_epsilon1_min = gmssmi_gen_x_epsilon1_min(alpha,mssmi_beta(alpha)) 
+	mssmi_x_epsonemin = gmssmi_x_epsonemin(alpha,mssmi_beta(alpha)) 
     
-  end function mssmi_x_epsilon1_min
+  end function mssmi_x_epsonemin
 
   
 end module mssmisr

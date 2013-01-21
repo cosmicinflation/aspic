@@ -117,8 +117,8 @@ contains
       xminus=(-1._kp/beta*lambert(-beta/alpha,0))**(3._kp/4._kp)
       xplus=(-1._kp/beta*lambert(-beta/alpha,-1))**(3._kp/4._kp)
     ELSE
-      xminus=kmiii_xminus_eps1max(alpha,beta)
-      xplus=kmiii_xplus_eps1max(alpha,beta)
+      xminus=kmiii_xminus_epsonemax(alpha,beta)
+      xplus=kmiii_xplus_epsonemax(alpha,beta)
     ENDIF
 
     IF(kmiii_epsilon_one(xplus,alpha,beta).gt.1._kp) THEN
@@ -157,10 +157,10 @@ contains
 
 
 !Returns the position of the smallest maximum of epsilon1
-  function kmiii_xminus_eps1max(alpha,beta)
+  function kmiii_xminus_epsonemax(alpha,beta)
     implicit none
     real(kp), intent(in) :: alpha,beta
-    real(kp) :: kmiii_xminus_eps1max
+    real(kp) :: kmiii_xminus_epsonemax
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: kmiiiData
@@ -171,15 +171,15 @@ contains
     kmiiiData%real1 = alpha
     kmiiiData%real2 = beta
 
-    kmiii_xminus_eps1max = zbrent(find_kmiiieps1max,mini,maxi,tolFind,kmiiiData)
+    kmiii_xminus_epsonemax = zbrent(find_kmiii_x_epsonemax,mini,maxi,tolFind,kmiiiData)
 
-  end function kmiii_xminus_eps1max
+  end function kmiii_xminus_epsonemax
 
 !Returns the position of the highest maximum of epsilon1
-  function kmiii_xplus_eps1max(alpha,beta)
+  function kmiii_xplus_epsonemax(alpha,beta)
     implicit none
     real(kp), intent(in) :: alpha,beta
-    real(kp) :: kmiii_xplus_eps1max
+    real(kp) :: kmiii_xplus_epsonemax
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: kmiiiData
@@ -190,26 +190,26 @@ contains
     kmiiiData%real1 = alpha
     kmiiiData%real2 = beta
 
-    kmiii_xplus_eps1max = zbrent(find_kmiiieps1max,mini,maxi,tolFind,kmiiiData)
+    kmiii_xplus_epsonemax = zbrent(find_kmiii_x_epsonemax,mini,maxi,tolFind,kmiiiData)
 
-  end function kmiii_xplus_eps1max
+  end function kmiii_xplus_epsonemax
 
-  function find_kmiiieps1max(x,kmiiiData)
+  function find_kmiii_x_epsonemax(x,kmiiiData)
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: kmiiiData
-    real(kp) :: find_kmiiieps1max
+    real(kp) :: find_kmiii_x_epsonemax
     real(kp) :: alpha,beta
     
     alpha = kmiiiData%real1
     beta = kmiiiData%real2
     
-    find_kmiiieps1max = (alpha*x**(4._kp/3._kp)*(3._kp+beta*x**(4._kp/3._kp))+ &
+    find_kmiii_x_epsonemax = (alpha*x**(4._kp/3._kp)*(3._kp+beta*x**(4._kp/3._kp))+ &
                         exp(beta*x**(4._kp/3._kp))*(1._kp-9._kp*beta*x**(4._kp/3._kp) &
                         +4._kp*beta**2*x**(8._kp/3._kp)))/(27._kp*x**(1._kp/3._kp) &
                         *(-exp(beta*x**(4._kp/3._kp))+alpha*x**(4._kp/3._kp))**3)
     
-  end function find_kmiiieps1max
+  end function find_kmiii_x_epsonemax
 
 
 !this is integral[V(phi)/V'(phi) dphi], valid in the beta x^(4/3) >> 1 and alpha x^(4/3) exp(-beta x^(4/3) ) << 1 region
@@ -272,7 +272,7 @@ contains
     alphamini=epsilon(1._kp)
     alphamaxi=(beta*exp(1._kp) - epsilon(1._kp))*(1._kp- epsilon(1._kp)) !maximum allowed value such that the potential is positive everywhere (with a numerical safety)
 
-    if(kmiii_epsilon_one(kmiii_xplus_eps1max(alphamaxi,beta),alphamaxi,beta) .lt. 1._kp) then !in that case the prior space in empty
+    if(kmiii_epsilon_one(kmiii_xplus_epsonemax(alphamaxi,beta),alphamaxi,beta) .lt. 1._kp) then !in that case the prior space in empty
          kmiii_alphamin=beta*exp(1._kp)
     else
          kmiiiData%real1 = beta
@@ -291,7 +291,7 @@ contains
 
     beta = kmiiiData%real1
 
-    find_kmiii_alphamin = kmiii_epsilon_one(kmiii_xplus_eps1max(x,beta),x,beta)-1._kp
+    find_kmiii_alphamin = kmiii_epsilon_one(kmiii_xplus_epsonemax(x,beta),x,beta)-1._kp
    
   end function find_kmiii_alphamin
 

@@ -2,7 +2,7 @@
 program mssmimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three, mssmi_x_epsilon1_min
+  use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three, mssmi_x_epsonemin
   use mssmireheat, only : mssmi_lnrhoend, mssmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev

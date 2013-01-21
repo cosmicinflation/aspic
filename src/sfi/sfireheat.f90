@@ -86,10 +86,6 @@ contains
 
     find_sfi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
-!    sr_find_reheat_sf = nuStar - CalFPlusNuCalEnd &
-!         + 1._kp/(3._kp+3._kp*w) &
-!         * log( (9._kp-3._kp*epsStar)/( 9._kp*(2._kp*epsStar)**(0.5_kp+1.5_kp*w)*potStar) )
-
   end function find_sfi_x_star
 
 

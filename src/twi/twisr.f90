@@ -18,7 +18,7 @@ module twisr
   public twi_efold_primitive, twi_x_trajectory
   public twi_norm_deriv_potential, twi_norm_deriv_second_potential
 
-  public twi_x_endsr
+  public twi_x_epstwounity
   public phi0eps1,A
 
   real(kp), parameter :: A = 0.33183220315845589991447280462623125031833134154035_kp
@@ -123,7 +123,7 @@ contains
     if (phi0.gt.phi0eps1) stop 'twi_x_epsoneunity: no slow roll solution for this value of phi0!'
 
     maxi=ymax*phi0 !if bigger, <numaccuracy errors
-    mini = twi_x_eps1max(phi0) !second maximum of eps1
+    mini = twi_x_epsonemax(phi0) !second maximum of eps1
 
     twiData%real1 = phi0
     
@@ -149,47 +149,47 @@ contains
 
 
 
-  function twi_x_endsr(phi0)
+  function twi_x_epstwounity(phi0)
     implicit none
     real(kp), intent(in) :: phi0
-    real(kp) :: twi_x_endsr
+    real(kp) :: twi_x_epstwounity
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: twiData
     
-    if (phi0.gt.phi0eps1) stop 'twi_x_endsr: no slow roll solution for this value of phi0!'
+    if (phi0.gt.phi0eps1) stop 'twi_x_epstwounity: no slow roll solution for this value of phi0!'
 
     maxi=ymax*phi0 !if bigger, <numaccuracy errors
-    mini = twi_x_eps1max(phi0) !second maximum of eps1
+    mini = twi_x_epsonemax(phi0) !second maximum of eps1
 
     twiData%real1 = phi0
     
-    twi_x_endsr = zbrent(find_twi_x_endsr,mini,maxi,tolFind,twiData)
+    twi_x_epstwounity = zbrent(find_twi_x_epstwounity,mini,maxi,tolFind,twiData)
 
 
-  end function twi_x_endsr
+  end function twi_x_epstwounity
 
 
 
-  function find_twi_x_endsr(x,twiData)    
+  function find_twi_x_epstwounity(x,twiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: twiData
-    real(kp) :: find_twi_x_endsr
+    real(kp) :: find_twi_x_epstwounity
     real(kp) :: phi0
 
     phi0 = twiData%real1
     
-    find_twi_x_endsr = twi_epsilon_two(x,phi0) - 1._kp
+    find_twi_x_epstwounity = twi_epsilon_two(x,phi0) - 1._kp
   
-  end function find_twi_x_endsr
+  end function find_twi_x_epstwounity
 
 
 !returns the position x of the second maximum of epsilon1
-  function twi_x_eps1max(phi0)
+  function twi_x_epsonemax(phi0)
     implicit none
     real(kp), intent(in) :: phi0
-    real(kp) :: twi_x_eps1max
+    real(kp) :: twi_x_epsonemax
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: twiData
@@ -199,25 +199,25 @@ contains
 
     twiData%real1 = phi0
     
-    twi_x_eps1max = zbrent(find_twieps1max,mini,maxi,tolFind,twiData)
+    twi_x_epsonemax = zbrent(find_twi_x_epsonemax,mini,maxi,tolFind,twiData)
 
 
-  end function twi_x_eps1max
+  end function twi_x_epsonemax
 
 
 
-  function find_twieps1max(x,twiData)    
+  function find_twi_x_epsonemax(x,twiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: twiData
-    real(kp) :: find_twieps1max
+    real(kp) :: find_twi_x_epsonemax
     real(kp) :: phi0
 
     phi0 = twiData%real1
     
-    find_twieps1max = 2._kp*A*(x/phi0)**2+exp(x/phi0)*((x/phi0)**2-4._kp*x/phi0+2._kp)
+    find_twi_x_epsonemax = 2._kp*A*(x/phi0)**2+exp(x/phi0)*((x/phi0)**2-4._kp*x/phi0+2._kp)
    
-  end function find_twieps1max
+  end function find_twi_x_epsonemax
 
 
 

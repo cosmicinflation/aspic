@@ -7,7 +7,7 @@ module gmssmireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use gmssmisr, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
-  use gmssmisr, only : gmssmi_norm_potential, gmssmi_x_endinf, gmssmi_x_epsilon1_min
+  use gmssmisr, only : gmssmi_norm_potential, gmssmi_x_endinf, gmssmi_x_epsonemin
   use gmssmisr, only :  gmssmi_efold_primitive
   implicit none
 
@@ -52,9 +52,9 @@ contains
     mini = xEnd
 
     if (alpha**2/beta>20._kp/9._kp) then
-	maxi = gmssmi_x_epsilon1_min(alpha,beta)!*(1._kp-1.*epsilon(1._kp)) !local maximum of the potential
+	maxi = gmssmi_x_epsonemin(alpha,beta)!*(1._kp-1.*epsilon(1._kp)) !local maximum of the potential
     else
-	maxi=100._kp*gmssmi_x_epsilon1_min(alpha,beta)
+	maxi=100._kp*gmssmi_x_epsonemin(alpha,beta)
     endif
 
     x = zbrent(find_gmssmi_x_star,mini,maxi,tolzbrent,gmssmiData)

@@ -136,24 +136,24 @@ contains
  
     else
 
-       ssi1_alphamin = zbrent(find_ssi1alphamin,mini,maxi,tolFind,ssi1Data)
+       ssi1_alphamin = zbrent(find_ssi1_alphamin,mini,maxi,tolFind,ssi1Data)
 
     endif
     
   end function ssi1_alphamin
 
-  function find_ssi1alphamin(alpha,ssi1Data)    
+  function find_ssi1_alphamin(alpha,ssi1Data)    
     implicit none
     real(kp), intent(in) :: alpha   
     type(transfert), optional, intent(inout) :: ssi1Data
-    real(kp) :: find_ssi1alphamin
+    real(kp) :: find_ssi1_alphamin
     real(kp) :: beta
 
     beta = ssi1Data%real1
     
-    find_ssi1alphamin = ssi1_epsilon_one(ssi1_x_epsonemax(alpha,beta),alpha,beta)-1._kp
+    find_ssi1_alphamin = ssi1_epsilon_one(ssi1_x_epsonemax(alpha,beta),alpha,beta)-1._kp
    
-  end function find_ssi1alphamin
+  end function find_ssi1_alphamin
 
 
 !returns x at the end of inflation defined as epsilon1=1

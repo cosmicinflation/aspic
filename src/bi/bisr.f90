@@ -163,15 +163,15 @@ contains
     kkltData%real2 = mu
     kkltData%real3 = eps2
 
-    kklt_x_epstwo = zbrent(find_kkltepstwo,mini,maxi,tolFind,kkltData)
+    kklt_x_epstwo = zbrent(find_kklt_x_epstwo,mini,maxi,tolFind,kkltData)
    
   end function kklt_x_epstwo
 
- function find_kkltepstwo(x,kkltData)    
+ function find_kklt_x_epstwo(x,kkltData)    
     implicit none
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: kkltData
-    real(kp) :: find_kkltepstwo
+    real(kp) :: find_kklt_x_epstwo
 
     real(kp) :: p,mu,eps2
 
@@ -179,8 +179,8 @@ contains
     mu = kkltData%real2
     eps2 = kkltData%real3
 
-    find_kkltepstwo  = kklt_epsilon_two(x,p,mu) - eps2
+    find_kklt_x_epstwo  = kklt_epsilon_two(x,p,mu) - eps2
 
-  end function find_kkltepstwo
+  end function find_kklt_x_epstwo
 
 end module kkltsrevol

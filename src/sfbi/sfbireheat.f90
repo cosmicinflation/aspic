@@ -8,7 +8,7 @@ module kksfreheat
   use srreheat, only : display, pi, Nzero, ln_energy_endinf
   use kksfsrevol, only : kksf_epsilon_one, kksf_epsilon_two, kksf_norm_potential
   use kksfsrevol, only : kksf_x_endinf, kksf_nufunc
-  use sfreheat, only : find_sfreheat
+  use sfreheat, only : find_sfi_x_star
   implicit none
 
   private
@@ -55,7 +55,7 @@ contains
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
-    x = zbrent(find_sfreheat,mini,maxi,tolFind,kksfData)
+    x = zbrent(find_sfi_x_star,mini,maxi,tolFind,kksfData)
     kksf_x_star = x
 
     if (present(bfold)) then

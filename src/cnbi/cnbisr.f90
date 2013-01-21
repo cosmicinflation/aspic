@@ -195,30 +195,30 @@ contains
 
     cnbiData%real1 = alpha
 
-    cnbi_x_epsoneunity(1) = zbrent(find_cnbiepsoneunity,mini,maxi,tolFind,cnbiData)
+    cnbi_x_epsoneunity(1) = zbrent(find_cnbi_x_epsoneunity,mini,maxi,tolFind,cnbiData)
 
 !second root
     mini = xeps1Min + epsilon(1._kp)
     maxi = xInfty
 
-    cnbi_x_epsoneunity(2) = zbrent(find_cnbiepsoneunity,mini,maxi,tolFind,cnbiData)
+    cnbi_x_epsoneunity(2) = zbrent(find_cnbi_x_epsoneunity,mini,maxi,tolFind,cnbiData)
 
 
   end function cnbi_x_epsoneunity
 
 
-  function find_cnbiepsoneunity(x,cnbiData)
+  function find_cnbi_x_epsoneunity(x,cnbiData)
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: cnbiData
-    real(kp) :: find_cnbiepsoneunity
+    real(kp) :: find_cnbi_x_epsoneunity
     real(kp) :: alpha
     
     alpha = cnbiData%real1
     
-    find_cnbiepsoneunity = cnbi_epsilon_one(x,alpha) - 1._kp
+    find_cnbi_x_epsoneunity = cnbi_epsilon_one(x,alpha) - 1._kp
     
-  end function find_cnbiepsoneunity
+  end function find_cnbi_x_epsoneunity
 
 
 

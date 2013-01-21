@@ -7,7 +7,7 @@ module mssmireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three
-  use mssmisr, only : mssmi_norm_potential, mssmi_x_endinf, mssmi_x_epsilon1_min
+  use mssmisr, only : mssmi_norm_potential, mssmi_x_endinf, mssmi_x_epsonemin
   use mssmisr, only :  mssmi_efold_primitive
   implicit none
 
@@ -51,7 +51,7 @@ contains
 
     mini = xEnd
 
-    maxi = mssmi_x_epsilon1_min(alpha)*(1._kp-epsilon(1._kp)) !Position of the inflexion point
+    maxi = mssmi_x_epsonemin(alpha)*(1._kp-epsilon(1._kp)) !Position of the inflexion point
 
     x = zbrent(find_mssmi_x_star,mini,maxi,tolzbrent,mssmiData)
     mssmi_x_star = x   

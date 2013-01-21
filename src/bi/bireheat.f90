@@ -13,7 +13,7 @@ module kkltreheat
   private
 
   public kklt_x_star, kklt_lnrhoend
-  public find_kkltreheat
+  public find_kklt_x_star
 
 contains
 
@@ -55,7 +55,7 @@ contains
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 
-    x = zbrent(find_kkltreheat,mini,maxi,tolFind,kkltData)
+    x = zbrent(find_kklt_x_star,mini,maxi,tolFind,kkltData)
     kklt_x_star = x
 
     if (present(bfold)) then
@@ -64,9 +64,9 @@ contains
     
   end function kklt_x_star
 
-  function find_kkltreheat(x,kkltData)   
+  function find_kklt_x_star(x,kkltData)   
     implicit none
-    real(kp) :: find_kkltreheat
+    real(kp) :: find_kklt_x_star
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: kkltData
 
@@ -81,9 +81,9 @@ contains
     epsStar = kklt_epsilon_one(x,p,mu)
     potStar = kklt_norm_potential(x,p)
 
-    find_kkltreheat = find_reheat(nuStar,calFplusNuEnd,w,epsStar,potStar)
+    find_kklt_x_star = find_reheat(nuStar,calFplusNuEnd,w,epsStar,potStar)
 
-  end function find_kkltreheat
+  end function find_kklt_x_star
 
 
 

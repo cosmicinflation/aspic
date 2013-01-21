@@ -2,8 +2,8 @@
 program gmssmimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use gmssmisr, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three, gmssmi_x_epsilon1_min
-  use gmssmisr, only : gmssmi_alpha_min, gmssmi_efold_primitive
+  use gmssmisr, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three, gmssmi_x_epsonemin
+  use gmssmisr, only : gmssmi_alphamin, gmssmi_efold_primitive
   use gmssmireheat, only : gmssmi_lnrhoend, gmssmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -44,22 +44,22 @@ program gmssmimain
 !  call delete_file('gmssmi_x_eps1min.dat')
 !  do i=1,npts
 !       alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
-!       call livewrite('gmssmi_x_eps1min.dat',alpha,gmssmi_x_epsilon1_min(alpha,0.1_kp), &
-!                 gmssmi_x_epsilon1_min(alpha,0.05_kp),gmssmi_x_epsilon1_min(alpha,0.01_kp))
+!       call livewrite('gmssmi_x_eps1min.dat',alpha,gmssmi_x_epsonemin(alpha,0.1_kp), &
+!                 gmssmi_x_epsonemin(alpha,0.05_kp),gmssmi_x_epsonemin(alpha,0.01_kp))
 !  end do
 
 !  call delete_file('gmssmi_eps1min.dat')
 !  do i=1,npts
 !       alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
-!       call livewrite('gmssmi_eps1min.dat',alpha,gmssmi_epsilon_one(gmssmi_x_epsilon1_min(alpha,0.1_kp),alpha,0.1_kp), &
-!                 gmssmi_epsilon_one(gmssmi_x_epsilon1_min(alpha,0.05_kp),alpha,0.05_kp), &
-!                 gmssmi_epsilon_one(gmssmi_x_epsilon1_min(alpha,0.01_kp),alpha,0.01_kp) )
+!       call livewrite('gmssmi_eps1min.dat',alpha,gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha,0.1_kp),alpha,0.1_kp), &
+!                 gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha,0.05_kp),alpha,0.05_kp), &
+!                 gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha,0.01_kp),alpha,0.01_kp) )
 !  end do
 
 !  call delete_file('gmssmi_alphamin.dat')
 !  do i=1,npts
 !       beta=betamin*(betamax/betamin)**(real(i,kp)/real(npts,kp))
-!       call livewrite('gmssmi_alphamin.dat',beta,gmssmi_alpha_min(beta))
+!       call livewrite('gmssmi_alphamin.dat',beta,gmssmi_alphamin(beta))
 !  end do
 
 !  call delete_file('gmssmi_PrimitiveTest.dat')
@@ -115,7 +115,7 @@ program gmssmimain
   if (j.eq.3) nalpha=20000
 
   !Prior on alpha
-  alphamin=max(gmssmi_alpha_min(beta),10._kp**(-10.))
+  alphamin=max(gmssmi_alphamin(beta),10._kp**(-10.))
 
   alphamax=sqrt(20._kp*beta/9._kp)*(1._kp-epsilon(1._kp))*10._kp
 

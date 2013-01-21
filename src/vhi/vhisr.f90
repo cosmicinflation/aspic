@@ -168,7 +168,7 @@ contains
        maxi = phihuge*p/mu
        
        vhi_x_epsoneunity(2) &
-            = zbrent(find_vhixepsoneunity,mini,maxi,tolFind,vhiData)
+            = zbrent(find_vhi_x_epsoneunity,mini,maxi,tolFind,vhiData)
        vhi_x_epsoneunity(1) = vhi_x_epsoneunity(2)
 
     elseif (p.eq.1_kp) then
@@ -192,14 +192,14 @@ contains
        maxi = xeps1max + epsilon(1._kp)
 
        vhi_x_epsoneunity(1) &
-            = zbrent(find_vhixepsoneunity,mini,maxi,tolFind,vhiData)
+            = zbrent(find_vhi_x_epsoneunity,mini,maxi,tolFind,vhiData)
 
 !largest root
        mini = xeps1max - epsilon(1._kp)
        maxi = phihuge* p/mu
            
        vhi_x_epsoneunity(2) &
-            = zbrent(find_vhixepsoneunity,mini,maxi,tolFind,vhiData)
+            = zbrent(find_vhi_x_epsoneunity,mini,maxi,tolFind,vhiData)
 
     else
 
@@ -210,19 +210,19 @@ contains
 
   end function vhi_x_epsoneunity
   
-  function find_vhixepsoneunity(x,vhiData)    
+  function find_vhi_x_epsoneunity(x,vhiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: vhiData
-    real(kp) :: find_vhixepsoneunity
+    real(kp) :: find_vhi_x_epsoneunity
     real(kp) :: p,mu
 
     p = vhiData%real1
     mu = vhiData%real2
     
-    find_vhixepsoneunity = vhi_epsilon_one(x,p,mu) - 1._kp
+    find_vhi_x_epsoneunity = vhi_epsilon_one(x,p,mu) - 1._kp
   
-  end function find_vhixepsoneunity
+  end function find_vhi_x_epsoneunity
 
 
 !returns the minimum value for xend as a function of p and mu such

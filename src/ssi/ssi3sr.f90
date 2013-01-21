@@ -145,22 +145,22 @@ contains
 !           '  eps1(xeps2maxi)=',ssi3_epsilon_one(ssi3_x_epsonemax(maxi,beta),maxi,beta)
 !    pause
 
-       ssi3_alphamin = zbrent(find_ssi3alphamin,mini,maxi,tolFind,ssi3Data)
+       ssi3_alphamin = zbrent(find_ssi3_alphamin,mini,maxi,tolFind,ssi3Data)
     
   end function ssi3_alphamin
 
-  function find_ssi3alphamin(alpha,ssi3Data)    
+  function find_ssi3_alphamin(alpha,ssi3Data)    
     implicit none
     real(kp), intent(in) :: alpha   
     type(transfert), optional, intent(inout) :: ssi3Data
-    real(kp) :: find_ssi3alphamin
+    real(kp) :: find_ssi3_alphamin
     real(kp) :: beta
 
     beta = ssi3Data%real1
     
-    find_ssi3alphamin = ssi3_epsilon_one(ssi3_x_epsonemax(alpha,beta),alpha,beta)-1._kp
+    find_ssi3_alphamin = ssi3_epsilon_one(ssi3_x_epsonemax(alpha,beta),alpha,beta)-1._kp
    
-  end function find_ssi3alphamin
+  end function find_ssi3_alphamin
 
 
 !returns x at the end of inflation defined as epsilon1=1

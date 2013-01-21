@@ -1,5 +1,5 @@
-SRC = mssmicommon.f90 mssmisr.f90 mssmireheat.f90 gmssmisr.f90 gmssmireheat.f90
-MOD = mssmicommon.$(FC_MODEXT) mssmisr.$(FC_MODEXT) mssmireheat.$(FC_MODEXT) \
+SRC = gmssmicommon.f90 mssmisr.f90 mssmireheat.f90 gmssmisr.f90 gmssmireheat.f90
+MOD = gmssmicommon.$(FC_MODEXT) mssmisr.$(FC_MODEXT) mssmireheat.$(FC_MODEXT) \
 	gmssmisr.$(FC_MODEXT) gmssmireheat.$(FC_MODEXT)
 
 check_PROGRAMS = mssmimain gmssmimain

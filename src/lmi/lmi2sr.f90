@@ -166,25 +166,25 @@ contains
     lmi2Data%real2 = beta
     
     lmi2_x_epsoneunity &
-         = zbrent(find_lmi2xepsoneunity,mini,maxi,tolFind,lmi2Data)
+         = zbrent(find_lmi2_x_epsoneunity,mini,maxi,tolFind,lmi2Data)
         
   end function lmi2_x_epsoneunity
 
 
 
-  function find_lmi2xepsoneunity(x,lmi2Data)    
+  function find_lmi2_x_epsoneunity(x,lmi2Data)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: lmi2Data
-    real(kp) :: find_lmi2xepsoneunity
+    real(kp) :: find_lmi2_x_epsoneunity
     real(kp) :: gam,beta
 
     gam = lmi2Data%real1
     beta = lmi2Data%real2
     
-    find_lmi2xepsoneunity = lmi2_epsilon_one(x,gam,beta) - 1._kp
+    find_lmi2_x_epsoneunity = lmi2_epsilon_one(x,gam,beta) - 1._kp
    
-  end function find_lmi2xepsoneunity
+  end function find_lmi2_x_epsoneunity
 
 
 
