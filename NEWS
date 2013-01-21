@@ -1,20 +1,14 @@
-* v0.0.8
+* v0.0.9
 
-- 4 new models imported
-  (ripi, ai, cnai, cnbi), check ChangeLog
+- 8 new models imported, cleaned, with some functions added the
+  fieldinf:
+  csi, oi, cnci, sbi, ssi, rmi, lpi, cndi, check ChangeLog
 
-- Remove pi from cosmopar as it is already defined in infprec
+- Clean internal messed-up convention, all find_foostuff() functions
+  have been renamed as find_foo_stuff()
 
-- Fix typos in lmi man
-
-- Adding cnai_x_potzero() function in cnaisr
-
-- Some significant changes in cnbi, coded new functions and added an
-  efold test in the trajectory to get enough efolds of inflation. The
-  new functions are:
-      cnbi_x_potzero, cnbi_x_potinfty, cnbi_x_epsoneunity,
-      cnbi_epsilon_one_min, cnbi_x_epsonemin
-  and removed cnbi_xend_max.
-
-- Adding the corresponding descriptions in the man
+- Renaming and cleaning mssmi directory. All *_gen_* functions were
+  redundant, renamed mssmi -> gmssmi. I check all generated files
+  *.dat, I am pretty sure I did not introduce any bug. However,
+  mssmimain generates a lot of NaN!?
 
