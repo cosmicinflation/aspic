@@ -1,7 +1,8 @@
 !test the reheating derivation from slow-roll
 program rcmimain
-  use infprec, only : kp
+  use infprec, only : kp, pi
   use cosmopar, only : lnRhoNuc, powerAmpScalar
+  use rcmisr, only : rcmi_norm_potential
   use rcmisr, only : rcmi_epsilon_one, rcmi_epsilon_two, rcmi_epsilon_three
   use rcmireheat, only : rcmi_lnrhoend 
   use rcmireheat, only : rcmi_x_star
@@ -15,7 +16,7 @@ program rcmimain
   integer :: i,j
   integer :: npts = 20
 
-  real(kp) :: alpha,w,bfoldstar
+  real(kp) :: alpha,w,bfoldstar,Vstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -56,7 +57,7 @@ program rcmimain
 
      xstar = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
 
-     print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar
+     print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar, 'xstar=',xstar
 
      eps1 = rcmi_epsilon_one(xstar,alpha)
      eps2 = rcmi_epsilon_two(xstar,alpha)
@@ -64,6 +65,9 @@ program rcmimain
 
      logErehGeV = log_energy_reheat_ingev(lnRhoReh)
      Treh =  10._kp**(logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp))
+
+     Vstar=(3._kp-eps1)*(Pstar*8*pi*pi*eps1)
+     print *,'M4=',Vstar/rcmi_norm_potential(xstar,alpha)
 
      ns = 1._kp - 2._kp*eps1 - eps2
      r =16._kp*eps1

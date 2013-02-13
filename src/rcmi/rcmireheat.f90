@@ -7,7 +7,7 @@ module rcmireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
   use rcmisr, only : rcmi_epsilon_one, rcmi_epsilon_two
-  use rcmisr, only : rcmi_norm_potential
+  use rcmisr, only : rcmi_norm_potential, rcmi_x_potmax
   use rcmisr, only : rcmi_x_endinf, rcmi_efold_primitive
   use specialinf, only : lambert
   implicit none
@@ -27,7 +27,7 @@ contains
     real(kp), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x
+    real(kp) :: mini,maxi,calF,x,xPotMax
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
 
     type(transfert) :: rcmiData
@@ -38,6 +38,7 @@ contains
     endif
     
     xEnd = rcmi_x_endinf(alpha)
+    xPotMax = rcmi_x_potmax(alpha)
     epsOneEnd = rcmi_epsilon_one(xEnd,alpha)
     potEnd = rcmi_norm_potential(xEnd,alpha)
     primEnd = rcmi_efold_primitive(xEnd,alpha)
@@ -49,7 +50,7 @@ contains
     rcmiData%real3 = calF + primEnd
 
     mini = xEnd
-    maxi = min((2._kp*alpha*lambert(exp(0.5_kp)/(2._kp*alpha),0))**(-0.5_kp),1._kp/epsilon(1._kp))
+    maxi = min(xPotMax,1._kp/epsilon(1._kp))
 
     x = zbrent(find_rcmi_x_star,mini,maxi,tolzbrent,rcmiData)
     rcmi_x_star = x
