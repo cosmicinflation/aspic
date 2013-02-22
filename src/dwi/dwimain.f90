@@ -18,7 +18,7 @@ program dwimain
   integer :: Nphi0
  ! real(kp) :: phi0min=2._kp*sqrt(2._kp)
   real(kp) :: phi0min=7.6_kp
-  real(kp) :: phi0max=10._kp**2
+  real(kp) :: phi0max=10._kp**3
 
   real(kp) :: phi0,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -29,7 +29,7 @@ program dwimain
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
 
 
-  Nphi0=20
+  Nphi0=26
 
   Pstar = powerAmpScalar
 

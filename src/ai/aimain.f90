@@ -19,8 +19,8 @@ program aimain
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
-  real(kp), dimension(2) :: vecbuffer
 
+  real(kp), dimension(2) :: vecbuffer
 
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
   integer :: nmu
@@ -32,7 +32,8 @@ program aimain
   call delete_file('ai_nsr.dat')
 
 
-!  w = 1._kp/3._kp
+!  w = -1._kp/3._kp
+!  w = 1._kp
   w=0._kp
 
   mumin=(10._kp)**(-3)
@@ -109,3 +110,4 @@ program aimain
 
 
 end program aimain
+

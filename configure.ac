@@ -34,8 +34,7 @@ AC_CONFIG_FILES([Makefile
                  src/gmlfi/Makefile
                  src/rcmi/Makefile
                  src/rcqi/Makefile
-                 src/pni/Makefile
-                 src/mni/Makefile
+                 src/ni/Makefile
                  src/esi/Makefile
                  src/pli/Makefile
                  src/kmii/Makefile
@@ -60,7 +59,7 @@ AC_CONFIG_FILES([Makefile
                  src/rgi/Makefile
                  src/vhi/Makefile
                  src/dsi/Makefile
-                 src/ssi/Makefile
+                 src/ssbi/Makefile
                  src/oi/Makefile
                  src/ai/Makefile
                  src/cnai/Makefile
@@ -72,5 +71,6 @@ AC_CONFIG_FILES([Makefile
                  src/rmi/Makefile
                  src/lpi/Makefile
                  src/cndi/Makefile
+                 src/rchi/Makefile
                 ])
 AC_OUTPUT

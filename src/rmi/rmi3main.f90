@@ -13,7 +13,7 @@ program rmi3main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
-  integer :: npts = 20
+  integer :: npts = 4
 
   integer :: Nc, Nphi0, Nxend
   real(kp) ::cmin, cmax, phi0min, phi0max, xendmin, xendmax, c, phi0, xend
@@ -41,8 +41,8 @@ program rmi3main
   call delete_file('rmi3_nsr.dat')
 
  Nc=10
- Nphi0=15
- Nxend=400
+ Nphi0=8
+ Nxend=50
 
 !  w = 1._kp/3._kp
   w=0._kp
@@ -58,7 +58,7 @@ program rmi3main
 !  c=-10._kp**(-2._kp)
 
    phi0max=1._kp/sqrt(abs(c))
-   phi0min=phi0max/(10._kp**2.)
+   phi0min=phi0max/(50.)
 
     do k=0,Nphi0 
       phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step

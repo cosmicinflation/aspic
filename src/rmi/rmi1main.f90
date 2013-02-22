@@ -14,7 +14,7 @@ program rmi1main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
-  integer :: npts = 20
+  integer :: npts = 4
 
   integer :: Nc, Nphi0, Nxend
   real(kp) ::cmin, cmax, phi0min, phi0max, xendmin, xendmax, c, phi0, xend
@@ -42,8 +42,8 @@ program rmi1main
   call delete_file('rmi1_nsr.dat')
 
  Nc=10
- Nphi0=10
- Nxend=50
+ Nphi0=8
+ Nxend=30
 
 !  w = 1._kp/3._kp
   w=0._kp

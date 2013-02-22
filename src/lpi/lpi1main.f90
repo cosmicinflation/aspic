@@ -61,7 +61,7 @@ program lpi1main
   phi0min=10._kp**(-3._kp)
   phi0max=10._kp**(3._kp)
 
-  k=3
+ do k=1,3
 
     p=pvalues(k)
     q=qvalues(k)
@@ -107,6 +107,8 @@ program lpi1main
     end do
 
  end do
+
+enddo
 
 
 end program lpi1main

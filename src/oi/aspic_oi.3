@@ -7,7 +7,7 @@
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 x^4 [ alpha ln^2(x) - 1 ]
+V(phi) = M^4 x^4 [ ln^2(x) - alpha ]
 .TP
 Routine units
 .I real(kp)
@@ -18,16 +18,8 @@ Routine units
 Parameters
 .I real(kp)
 ::
-.B alpha, phi0, xend
+.B alpha, phi0
 
-.SH NOTES
-The end of inflation is an additional model parameter encoded in the
-dimensionless field value
-.B xend
-at which this occurs. The Hubble flow and potential routines therefore
-take only the 
-.B alpha
-argument on entry.
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin
