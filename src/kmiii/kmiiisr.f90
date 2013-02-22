@@ -15,7 +15,7 @@ module kmiiisr
   public  kmiii_norm_potential, kmiii_epsilon_one, kmiii_epsilon_two, kmiii_epsilon_three
   public  kmiii_x_endinf, kmiii_efold_primitive, kmiii_x_trajectory
   public  kmiii_norm_deriv_potential, kmiii_norm_deriv_second_potential
-  public  kmiii_alphamin
+  public  kmiii_alphamin,kmiii_x_endinf_appr
  
 contains
 !returns V/M^4
@@ -121,23 +121,14 @@ contains
       xplus=kmiii_xplus_epsonemax(alpha,beta)
     ENDIF
 
-    IF(kmiii_epsilon_one(xplus,alpha,beta).gt.1._kp) THEN
-          mini = xplus
-          maxi = 1._kp/epsilon(1._kp)
-          kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
-
-    ELSE IF(kmiii_epsilon_one(xminus,alpha,beta).gt.1._kp) THEN
-          mini = xminus
-          maxi = xplus
-          kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
-
-    ELSE
-
-	STOP 'module kmiiisr: function kmiii_x_endinf: Inflation cannot stop by violation of slow-roll in KMIII for this set of parameters'
-
+    IF (kmiii_epsilon_one(xplus,alpha,beta).lt.1._kp) THEN
+  STOP 'module kmiiisr: function kmiii_x_endinf:Inflation cannot stop by violation of slow-roll in KMIII for this set of parameters'
     ENDIF
 
-  
+    mini = xplus*(1._kp+epsilon(1._kp))
+    maxi = 1._kp/epsilon(1._kp)
+    kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
+
   end function kmiii_x_endinf
 
 
@@ -154,6 +145,13 @@ contains
     find_kmiii_x_endinf = kmiii_epsilon_one(x,alpha,beta)-1._kp
     
   end function find_kmiii_x_endinf
+
+  function kmiii_x_endinf_appr(alpha,beta) !Approximated analytical formula for xend, in the large field limit
+    implicit none
+    real(kp), intent(in) :: alpha,beta
+    real(kp) :: kmiii_x_endinf_appr
+            kmiii_x_endinf_appr=(-0.25_kp/beta*lambert(-81._kp/(16*beta),-1))**(0.75_kp)
+  end function kmiii_x_endinf_appr
 
 
 !Returns the position of the smallest maximum of epsilon1
@@ -203,11 +201,8 @@ contains
     
     alpha = kmiiiData%real1
     beta = kmiiiData%real2
-    
-    find_kmiii_x_epsonemax = (alpha*x**(4._kp/3._kp)*(3._kp+beta*x**(4._kp/3._kp))+ &
-                        exp(beta*x**(4._kp/3._kp))*(1._kp-9._kp*beta*x**(4._kp/3._kp) &
-                        +4._kp*beta**2*x**(8._kp/3._kp)))/(27._kp*x**(1._kp/3._kp) &
-                        *(-exp(beta*x**(4._kp/3._kp))+alpha*x**(4._kp/3._kp))**3)
+
+    find_kmiii_x_epsonemax = kmiii_epsilon_two(x,alpha,beta)
     
   end function find_kmiii_x_epsonemax
 
@@ -218,8 +213,8 @@ contains
     real(kp), intent(in) :: x,alpha,beta
     real(kp) :: kmiii_efold_primitive
 
-    if (alpha.eq.0._kp.and.beta.eq.0._kp) stop 'kmiii_efold_primitive: alpha=0 or beta=0!'
-!1/x^2 -> -2 log(x) in exp to prevent overflowing the exponential
+    if (alpha.eq.0._kp.and.beta.eq.0._kp) stop 'kmiii_efold_primitive: alpha=0 or beta=0!' 
+    !1/x^2 -> -2 log(x) in exp to prevent overflowing the exponential
     kmiii_efold_primitive = 9._kp/(16._kp*alpha*beta**2)*exp(beta*x**(4._kp/3._kp) - 2._kp*log(x))
 
   end function kmiii_efold_primitive
@@ -262,7 +257,7 @@ contains
    
   end function find_kmiii_x_trajectory
 
-  function kmiii_alphamin(beta) !Given beta, returns the minimum value of alpha such that inflation can be stopped by violation of the slow roll conditions
+  function kmiii_alphamin(beta) !Given beta, returns the minimum value of alpha such that inflation can be stopped by violation of the slow roll conditions in the large field region of the potential
     implicit none
     real(kp), intent(in) :: beta
     real(kp) ::kmiii_alphamin,alphamini,alphamaxi
@@ -270,7 +265,12 @@ contains
     type(transfert) :: kmiiiData
 
     alphamini=epsilon(1._kp)
+    if (beta.lt.1000._kp) then
     alphamaxi=(beta*exp(1._kp) - epsilon(1._kp))*(1._kp- epsilon(1._kp)) !maximum allowed value such that the potential is positive everywhere (with a numerical safety)
+    else
+    alphamaxi=beta/1000._kp !For Numerical convergence
+    endif
+
 
     if(kmiii_epsilon_one(kmiii_xplus_epsonemax(alphamaxi,beta),alphamaxi,beta) .lt. 1._kp) then !in that case the prior space in empty
          kmiii_alphamin=beta*exp(1._kp)

@@ -48,27 +48,27 @@ program lpi2main
 
   npq=3
  
-  pvalues(1)=4._kp
+  pvalues(1)=1._kp
   qvalues(1)=2._kp
 
-  pvalues(2)=4._kp
-  qvalues(2)=4._kp
+  pvalues(2)=2._kp
+  qvalues(2)=2._kp
 
-  pvalues(3)=4._kp
-  qvalues(3)=6._kp
+  pvalues(3)=3._kp
+  qvalues(3)=4._kp
   
 
-  phi0min=10._kp**(-3._kp)
+  phi0min=10._kp**(0._kp)
   phi0max=10._kp**(3._kp)
 
-  k=3
+ do k=1,3
 
   p=pvalues(k)
   q=qvalues(k)
 
- if (k .eq. 1) nphi0=50
- if (k .eq. 2) nphi0=100
- if (k .eq. 3) nphi0=100
+ if (k .eq. 1) nphi0=80
+ if (k .eq. 2) nphi0=50
+ if (k .eq. 3) nphi0=50
 
 
   do j=0,nphi0
@@ -107,6 +107,8 @@ program lpi2main
     end do
 
  end do
+
+end do
 
 
 end program lpi2main

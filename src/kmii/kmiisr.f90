@@ -117,13 +117,14 @@ contains
                     (if inflation proceeds from the right to the left), &
                     or non slow-roll Inflation Regime (if inflation proceeds from the left to the right)'
 
-    else if (alpha.le.exp(1._kp)) then
+!    else if (alpha.le.exp(1._kp)) then
+   else
     	kmii_x_endinf = 1._kp/(1._kp+sqrt(2._kp)) &
              -lambert(-sqrt(2._kp)/(1._kp+sqrt(2._kp)) &
    	     *exp(1._kp/(1._kp+sqrt(2._kp)))/alpha,-1)
 
-    else
-        print*, 'alpha>e',':Non positive potential'
+!    else
+!        print*, 'alpha>e',':Non everywhere positive potential'
 
     end if
    

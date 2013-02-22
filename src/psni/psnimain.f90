@@ -13,11 +13,13 @@ program psnimain
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,k
-  integer :: npts,nalpha
+  integer :: i,j,k
+  integer :: npts,nalpha,nf
 
-  real(kp) :: alpha,mu,w,bfoldstar,alphamin,alphamax,alphaminlog,alphamaxlog
+  real(kp) :: alpha,f,w,bfoldstar,alphamin,alphamax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
+  real(kp), dimension(:), allocatable :: fvalues
+
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
@@ -31,75 +33,45 @@ program psnimain
 !!        Calculates the reheating predictions           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  npts = 20
-  nalpha=30
-
-!  mu=10._kp
-!  mu=1._kp
-  mu=0.5_kp
-!  mu=100._kp
-
+  call delete_file('psni_predic.dat')
+  call delete_file('psni_nsr.dat')
+  
+  npts = 20 
+  nalpha=200
   w=0._kp
 !  w = 1._kp/3._kp
 
-  call delete_file('psni_predic.dat')
-  call delete_file('psni_nsr.dat')
+   
+   nf=3
+   allocate(fvalues(1:3))
+   fvalues(3)=0.001_kp
+   fvalues(2)=0.1_kp
+   fvalues(1)=10._kp
+   
+   do j=1,nf
+   f=fvalues(j)
 
+     alphamax=10._kp**(-1._kp)*f**2
+     alphamin=10._kp**(-8._kp)*f**2
 
-      
-       alphamax=10._kp**(-1._kp)
-       alphamin=10._kp**(-3._kp)
-
-       alphaminlog=10._kp**(-7._kp)
-       alphamaxlog=10._kp**(-2.3_kp)
-
-       if (mu .eq. 10._kp) then
-       
-       nalpha=30
-       alphamax=10._kp**(1._kp)
-       alphamin=10._kp**(-3._kp)
-
-       alphaminlog=10._kp**(-6._kp)
-       alphamaxlog=10._kp**(-0.5_kp)
-
-       endif
-
-       if (mu .eq. 100._kp) then
-       
-       nalpha=30
-       alphamax=10._kp**(3._kp)
-       alphamin=10._kp**(-1._kp)
-
-       alphaminlog=10._kp**(-6._kp)
-       alphamaxlog=10._kp**(2._kp)
-
-       endif
-
-  do k=1,2*nalpha
-       if(k.lt.nalpha) then
-       alpha=alphaminlog*(alphamaxlog/alphaminlog)**(real(k,kp)/real(nalpha,kp)) !log step between alphaminlog and alphamaxlog
-       else
-       alpha=alphamin+(alphamax-alphamin)*(real(k-nalpha,kp)/real(nalpha,kp)) !arithmetic step between alphamin and alphamax
-       endif
+    do k=1,nalpha
+       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
      
+      lnRhoRehMin = lnRhoNuc
+      lnRhoRehMax = psni_lnrhoend(alpha,f,Pstar)
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = psni_lnrhoend(alpha,mu,Pstar)
+      print *,'alpha=',alpha,'f=',f,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  print *,'alpha=',alpha,'mu=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-  do i=1,npts
+      do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = psni_x_star(alpha,mu,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = psni_x_star(alpha,f,w,lnRhoReh,Pstar,bfoldstar)
 
 
-       eps1 = psni_epsilon_one(xstar,alpha,mu)
-       eps2 = psni_epsilon_two(xstar,alpha,mu)
-       eps3 = psni_epsilon_three(xstar,alpha,mu)
-
+       eps1 = psni_epsilon_one(xstar,alpha,f)
+       eps2 = psni_epsilon_two(xstar,alpha,f)
+       eps3 = psni_epsilon_three(xstar,alpha,f)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
@@ -109,16 +81,15 @@ program psnimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('psni_predic.dat',alpha,mu,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('psni_predic.dat',alpha,f,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('psni_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
     end do
 
-
+  end do
 
  end do
-
 
 
 

@@ -26,7 +26,7 @@ program iimain
 
 !Calculates the prior space
   npts=1000
-  betamin=1._kp
+  betamin=epsilon(1._kp)
   betamax=20._kp
 
   call delete_file('ii_prior.dat')

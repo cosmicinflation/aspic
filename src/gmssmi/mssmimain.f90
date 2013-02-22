@@ -2,7 +2,7 @@
 program mssmimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three, mssmi_x_epsonemin
+  use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three, mssmi_x_epsonemin, mssmi_x_endinf
   use mssmireheat, only : mssmi_lnrhoend, mssmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -14,21 +14,40 @@ program mssmimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts,nalpha
+  integer :: npts,nphi0
 
-  real(kp) :: alpha,w,bfoldstar,alphamin,alphamax
+  real(kp) :: phi0,w,bfoldstar,phi0min,phi0max
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  real(kp) ::x,xmin,xmax,Riem
+  real(kp) ::x,xmin,xmax,xendNUM,xendANAL
 
 
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
 
 
   Pstar = powerAmpScalar
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!        Tests the approximated formula for xend        !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  phi0min=10._kp**(-6.)
+  phi0max=10._kp**(-0.)
+  nphi0=100
+  call delete_file('mssmi_xend.dat')
+
+  do j=0,nphi0
+       phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
+       xendNUM=mssmi_x_endinf(phi0)
+       xendANAL=1._kp-2._kp**(-0.75_kp)*sqrt(phi0/15._kp)
+       call livewrite('mssmi_xend.dat',phi0,xendNUM,xendANAL)
+  end do
+  print*,'mssmi_xend.dat written.'
 
 
 
@@ -39,7 +58,7 @@ program mssmimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   npts = 20
-  nalpha=30
+  nphi0=50
 
   w=0._kp
 !  w = 1._kp/3._kp
@@ -48,30 +67,34 @@ program mssmimain
   call delete_file('mssmi_nsr.dat')
 
 
-  !Prior on alpha
-  alphamin=10._kp**(-8.)
-  alphamax=10._kp**(-3.)
+  !Prior on phi0
+  phi0min=10._kp**(-2.)
+  phi0max=10._kp**(3.)
 
+       call livewrite('mssmi_predic.dat',10._kp**(-4.), &
+               10._kp**(-8)/(60._kp*50._kp**2),4._kp/50._kp, &
+               1._kp/50._kp,16._kp*10._kp**(-8)/(60._kp*50._kp**2), &
+               1._kp -4._kp/50._kp,1._kp) !To prime the color bar
 
-  do j=0,nalpha
-       alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+  do j=0,nphi0
+       phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
  
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = mssmi_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = mssmi_lnrhoend(phi0,Pstar)
 
-  print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+  print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
   do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = mssmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
 
 
-       eps1 = mssmi_epsilon_one(xstar,alpha)
-       eps2 = mssmi_epsilon_two(xstar,alpha)
-       eps3 = mssmi_epsilon_three(xstar,alpha)
+       eps1 = mssmi_epsilon_one(xstar,phi0)
+       eps2 = mssmi_epsilon_two(xstar,phi0)
+       eps3 = mssmi_epsilon_three(xstar,phi0)
 
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
@@ -82,38 +105,38 @@ program mssmimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('mssmi_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('mssmi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('mssmi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
     end do
 
 
  end do
+ 
 
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('mssmi_predic_summarized.dat') 
-         nalpha=1000
-         alphamin=10._kp**(-8.)
-         alphamax=10._kp**(-3.)
+         nphi0=1000
+         phi0min=10._kp**(-2.)
+         phi0max=10._kp**(3.)
          w=0._kp
-         do j=1,nalpha
-         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+         do j=0,nphi0
+         phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
          lnRhoReh = lnRhoNuc
-         xstarA = mssmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1A = mssmi_epsilon_one(xstarA,alpha)
-         eps2A = mssmi_epsilon_two(xstarA,alpha)
-         eps3A = mssmi_epsilon_three(xstarA,alpha)
+         xstarA = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = mssmi_epsilon_one(xstarA,phi0)
+         eps2A = mssmi_epsilon_two(xstarA,phi0)
+         eps3A = mssmi_epsilon_three(xstarA,phi0)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = mssmi_lnrhoend(alpha,Pstar)
-         xstarB = mssmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1B = mssmi_epsilon_one(xstarB,alpha)
-         eps2B = mssmi_epsilon_two(xstarB,alpha)
-         eps3B = mssmi_epsilon_three(xstarB,alpha)
+         lnRhoReh = mssmi_lnrhoend(phi0,Pstar)
+         xstarB = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = mssmi_epsilon_one(xstarB,phi0)
+         eps2B = mssmi_epsilon_two(xstarB,phi0)
+         eps3B = mssmi_epsilon_three(xstarB,phi0)
          nsB = 1._kp - 2._kp*eps1B - eps2B
          rB =16._kp*eps1B
          if ((rA .gt. 0._kp) .and. (nsA .gt.0._kp) .and. &

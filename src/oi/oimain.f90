@@ -12,11 +12,12 @@ program oimain
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j,k
+  integer :: i,j,k,nphi0
   integer :: npts,nalpha
 
   real(kp) :: alpha,phi0,w,bfoldstar,alphamin,alphamax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
+  real(kp), dimension(:), allocatable :: phi0values
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
@@ -34,27 +35,16 @@ program oimain
   npts = 20
 
 
-  phi0=0.001_kp
-  phi0=1._kp
-  phi0=1000._kp
+   nphi0=3
+   allocate(phi0values(1:nphi0))
+   phi0values(1)=0.0001_kp
+   phi0values(2)=0.01_kp
+   phi0values(3)=1._kp
 
-  if (phi0 .eq. 0.001_kp) then
-  alphamin=10._kp**(-3._kp)
-  alphamax=10._kp**(-1._kp)
-  nalpha=500
-  endif
 
-  if (phi0 .eq. 1._kp) then
-  alphamin=10._kp**(-2._kp)
-  alphamax=10._kp**(1._kp)
-  nalpha=300
-  endif
-
-  if (phi0 .eq. 1000._kp) then
-  alphamin=10._kp**(-2._kp)
-  alphamax=10._kp**(8._kp)
-  nalpha=100
-  endif
+   alphamin=10._kp**(-3._kp)
+   alphamax=10._kp**(-1._kp)
+   nalpha=10
 
   w=0._kp
 !  w = 1._kp/3._kp
@@ -62,11 +52,11 @@ program oimain
   call delete_file('oi_predic.dat')
   call delete_file('oi_nsr.dat')
 
-
+   do j=1,nphi0
+   phi0=phi0values(j)
 
     do k=0,nalpha
-        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))
-    
+        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))!logstep
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = oi_lnrhoend(alpha,phi0,Pstar)
@@ -101,7 +91,7 @@ program oimain
 
      end do
 
-
+ end do
 
 
 

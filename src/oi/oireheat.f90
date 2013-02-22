@@ -100,17 +100,11 @@ contains
     potEnd  = oi_norm_potential(xEnd,alpha)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
 
-!    print*,'oi_lnrhoend:   alpha=',alpha,'  phi0=',phi0, &
-!            'xEnd=',xEnd,'  potEnd=',potEnd,'   epsOneEnd=',epsOneEnd
-!    pause
-       
     x = oi_x_star(alpha,phi0,wrad,junk,Pstar)    
     potStar = oi_norm_potential(x,alpha)
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
 
-!    print*,'oi_lnrhoend:   xstar=',x,'  potStar=',potStar,'   epsOneStar=',epsOneStar
-!    pause
-    
+
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar 
         stop 'oi_lnrhoend: slow-roll violated!'

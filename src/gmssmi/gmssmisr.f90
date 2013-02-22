@@ -1,8 +1,8 @@
 !slow-roll functions for the GMSSM inflation potential
 !
-!V(phi) = M^4 [ x^2 - alpha x^6 + beta x^10 ]
+!V(phi) = M^4 [ x^2 - 2/3 alpha x^6 + alpha/5 x^10 ]
 !
-!x = phi/Mp
+!x = phi/phi0
 
 module gmssmisr
   use infprec, only : kp,tolkp,transfert
@@ -10,41 +10,40 @@ module gmssmisr
   use specialinf, only : atan_ito_log
   use gmssmicommon, only : gmssmi_norm_potential, gmssmi_norm_deriv_potential, gmssmi_norm_deriv_second_potential
   use gmssmicommon, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
-  use gmssmicommon, only : gmssmi_x_endinf, gmssmi_x_epsonemin
+  use gmssmicommon, only : gmssmi_x_endinf, gmssmi_x_epsonemin,gmssmi_x_VprimeEquals0_Minus
   implicit none
 
   private
 
-  public  gmssmi_norm_potential, gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
-  public  gmssmi_x_endinf, gmssmi_efold_primitive, gmssmi_x_trajectory
+  public  gmssmi_norm_potential, gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three,gmssmi_x_endinf
+  public  gmssmi_efold_primitive, gmssmi_x_trajectory
   public  gmssmi_norm_deriv_potential, gmssmi_norm_deriv_second_potential
-  public  gmssmi_x_epsonemin,gmssmi_alphamin
+  public  gmssmi_alphamin,gmssmi_alphamax,  gmssmi_x_epsonemin
 
  
 contains
 
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function gmssmi_efold_primitive(x,alpha,beta)
+  function gmssmi_efold_primitive(x,alpha,phi0)
     implicit none
-    real(kp), intent(in) :: x,alpha,beta
+    real(kp), intent(in) :: x,alpha,phi0
     real(kp) :: gmssmi_efold_primitive
-    complex(kp) ::aplus,aminus,bplus,bminus
+    real(kp) :: xVprime,a,b
+    complex(kp) ::aplus,aminus,bplus,bminus,test1,test2
 
-    if (beta.eq.0._kp.and.alpha.eq.0._kp) stop 'gmssmi_efold_primitive: alpha=0 and beta=0!'
-
-    if (alpha/beta.lt.10._kp**(-5.).and.beta.lt.10._kp**(-10.)) then
-    ! This is an approximated formula, valid when alpha<<1 , beta<<1 , and which leads to better numerical convergence
-       gmssmi_efold_primitive = real(x**2/4._kp)
+    if (alpha.eq.0._kp) then 
+       gmssmi_efold_primitive = x**2/4._kp
     else
 
-    aplus=-1.5_kp*alpha+0.5_kp*sqrt(complex(9._kp*alpha**2-20._kp*beta,0._kp))
-    aminus=-1.5_kp*alpha-0.5_kp*sqrt(complex(9._kp*alpha**2-20._kp*beta,0._kp))
-    bplus=(2._kp*aplus+alpha)/(aplus-aminus)
-    bminus=(2._kp*aminus+alpha)/(aminus-aplus)
+    aplus=-alpha+sqrt((alpha**2-alpha)*(1._kp,0._kp))
+    aminus=-alpha-sqrt((alpha**2-alpha)*(1._kp,0._kp))
+    bplus=2._kp*(aplus+alpha/3._kp)/(aplus-aminus)
+    bminus=2._kp*(aminus+alpha/3._kp)/(aminus-aplus)
 
-    gmssmi_efold_primitive = real(x**2/20._kp+bplus/(10._kp*sqrt(aplus))*atan_ito_log(sqrt(aplus)*x**2) &
-         +bminus/(10._kp*sqrt(aminus))*atan_ito_log(sqrt(aminus)*x**2))
+    gmssmi_efold_primitive = phi0**2*(real(x**2/20._kp &
+         +bplus/(10._kp*sqrt(aplus))*atan_ito_log(sqrt(aplus)*x**2) &
+         +bminus/(10._kp*sqrt(aminus))*atan_ito_log(sqrt(aminus)*x**2)))
 
     endif
 
@@ -53,9 +52,9 @@ contains
 
 
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function gmssmi_x_trajectory(bfold,xend,alpha,beta)
+  function gmssmi_x_trajectory(bfold,xend,alpha,phi0)
     implicit none
-    real(kp), intent(in) :: bfold, alpha, beta, xend
+    real(kp), intent(in) :: bfold, alpha, phi0, xend
     real(kp) :: gmssmi_x_trajectory
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
@@ -63,16 +62,16 @@ contains
 
   
     mini = xend
-
-    if (alpha**2/beta>20._kp/9._kp) then
-	maxi = gmssmi_x_epsonemin(alpha,beta) !local maximum of the potential
+    if (alpha .lt. 1._kp) then
+	maxi = gmssmi_x_epsonemin(alpha)*100._kp 
     else
-	maxi=100._kp*gmssmi_x_epsonemin(alpha,beta)
+	maxi = gmssmi_x_epsonemin(alpha) !local maximum of the potential
     endif
 
+
     gmssmiData%real1 = alpha
-    gmssmiData%real2 = beta
-    gmssmiData%real3 = -bfold + gmssmi_efold_primitive(xend,alpha,beta)
+    gmssmiData%real2 = phi0
+    gmssmiData%real3 = -bfold + gmssmi_efold_primitive(xend,alpha,phi0)
     
     gmssmi_x_trajectory = zbrent(find_gmssmi_x_trajectory,mini,maxi,tolFind,gmssmiData)
        
@@ -83,39 +82,34 @@ contains
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: gmssmiData
     real(kp) :: find_gmssmi_x_trajectory
-    real(kp) :: alpha,beta,NplusNuend
+    real(kp) :: alpha,phi0,NplusNuend
 
     alpha= gmssmiData%real1
-    beta = gmssmiData%real2
+    phi0 = gmssmiData%real2
     NplusNuend = gmssmiData%real3
 
-    find_gmssmi_x_trajectory = gmssmi_efold_primitive(x,alpha,beta) - NplusNuend
+    find_gmssmi_x_trajectory = gmssmi_efold_primitive(x,alpha,phi0) - NplusNuend
    
   end function find_gmssmi_x_trajectory
 
 
-!Returns the prior alphamin(beta) such that the first local minimum of epsilon1 is less than one
-  function gmssmi_alphamin(beta)    
+!Returns the prior alphamin(phi0) such that, when alpha<1, the minimum of epsilon1 is less than one
+  function gmssmi_alphamin(phi0)    
     implicit none
-    real(kp), intent(in) :: beta   
+    real(kp), intent(in) :: phi0   
     real(kp) :: gmssmi_alphamin
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: gmssmiData
 
-    if (beta<0.000796037) then 
-	gmssmi_alphamin = 0._kp
-    else
-
-    mini = 0._kp
-    maxi = 10._kp
+    mini = epsilon(1._kp)
+    mini = 0.1_kp
+    maxi = 1._kp*(1._kp-epsilon(1._kp))
   
-
-    gmssmiData%real1 = beta
+    gmssmiData%real1 = phi0
 
     gmssmi_alphamin = zbrent(find_gmssmi_alphamin,mini,maxi,tolFind,gmssmiData)
 
-    endif
    
   end function gmssmi_alphamin
 
@@ -124,13 +118,58 @@ contains
     real(kp), intent(in) :: alpha   
     type(transfert), optional, intent(inout) :: gmssmiData
     real(kp) :: find_gmssmi_alphamin
-    real(kp) :: beta
+    real(kp) :: phi0
 
-    beta= gmssmiData%real1
+    phi0= gmssmiData%real1
 
-    find_gmssmi_alphamin = gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha,beta),alpha,beta)-1._kp
+    find_gmssmi_alphamin = gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha),alpha,phi0)-1._kp
    
   end function find_gmssmi_alphamin
+
+!Returns the prior alphamax(phi0,DeltaNstar) such that, when alpha>1, at least DeltaNstar efolds can be realized
+  function gmssmi_alphamax(phi0,DeltaNstar)    
+    implicit none
+    real(kp), intent(in) :: phi0,DeltaNstar 
+    real(kp) :: gmssmi_alphamax
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: gmssmiData
+
+    mini = 1._kp*(1._kp+epsilon(1._kp))
+    mini = 1._kp*(1._kp+5._kp*epsilon(1._kp))
+    maxi = 2._kp
+  
+    gmssmiData%real1 = phi0
+    gmssmiData%real2 = DeltaNstar
+
+    gmssmi_alphamax = zbrent(find_gmssmi_alphamax,mini,maxi,tolFind,gmssmiData)
+
+    print*,'phi0=',phi0,'mini=',mini,'f(mini)=', &
+         gmssmi_efold_primitive(gmssmi_x_epsonemin(mini),mini,phi0) &
+                          -gmssmi_efold_primitive(gmssmi_x_endinf(mini,phi0),mini,phi0) &
+                          -DeltaNstar, 'maxi=',maxi,'f(maxi)=',&
+                gmssmi_efold_primitive(gmssmi_x_epsonemin(maxi),maxi,phi0) &
+                          -gmssmi_efold_primitive(gmssmi_x_endinf(maxi,phi0),maxi,phi0) &
+                          -DeltaNstar
+
+   
+  end function gmssmi_alphamax
+
+  function find_gmssmi_alphamax(alpha,gmssmiData)    
+    implicit none
+    real(kp), intent(in) :: alpha   
+    type(transfert), optional, intent(inout) :: gmssmiData
+    real(kp) :: find_gmssmi_alphamax
+    real(kp) :: phi0,DeltaNstar
+
+    phi0= gmssmiData%real1
+    DeltaNstar= gmssmiData%real2
+
+    find_gmssmi_alphamax = gmssmi_efold_primitive(gmssmi_x_epsonemin(alpha),alpha,phi0) &
+                          -gmssmi_efold_primitive(gmssmi_x_endinf(alpha,phi0),alpha,phi0) &
+                          -DeltaNstar
+   
+  end function find_gmssmi_alphamax
 
   
 end module gmssmisr

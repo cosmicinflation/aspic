@@ -13,7 +13,7 @@ program rmi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
-  integer :: npts = 20
+  integer :: npts = 2
 
   integer :: Nc, Nphi0, Nxend
   real(kp) ::cmin, cmax, phi0min, phi0max, xendmin, xendmax, c, phi0, xend
@@ -40,8 +40,8 @@ program rmi2main
   call delete_file('rmi2_nsr.dat')
 
  Nc=10
- Nphi0=10
- Nxend=500
+ Nphi0=7
+ Nxend=100
 
 !  w = 1._kp/3._kp
   w=0._kp
@@ -80,13 +80,16 @@ program rmi2main
     xendmin = rmi2_numacc_xendmin(70._kp,c,phi0)
     xendmax = exp(1._kp)
 
+
     if (xendmax .lt. xendmin) then
        print*,'xendmax<xendmin !!: not a sufficient number of efold can be realized in the region where the potential is valid!'
     endif
 
 
     do l=0,Nxend 
+      !xend=xendmin+(xendmax-xendmin)*(real(l,kp)/Nxend)  !arithmetic step
       xend=xendmin*(xendmax/xendmin)**(real(l,kp)/Nxend)  !logarithmic step
+      !xend=exp(exp((real(l,kp)/Nxend)*log(log(xendmax)/log(xendmin)))*log(xendmin)) !ultralogarithmic step
 !      xend=xendmin+(xendmax-xendmin)*atan(real(l,kp)/Nxend*5._kp)*2._kp/acos(-1._kp) !tangent step
 
       lnRhoRehMin = lnRhoNuc

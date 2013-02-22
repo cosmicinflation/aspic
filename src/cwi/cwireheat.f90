@@ -100,11 +100,9 @@ contains
     
     xEnd = cwi_x_endinf(alpha,Q)
 
-
     potEnd  = cwi_norm_potential(xEnd,alpha,Q)
 
     epsOneEnd = cwi_epsilon_one(xEnd,alpha,Q)
-
 
 
 !   Trick to return x such that rho_reh=rho_end
