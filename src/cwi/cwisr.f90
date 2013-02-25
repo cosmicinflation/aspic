@@ -22,25 +22,29 @@ contains
   function cwi_norm_potential(x,alpha,Q)
     implicit none
     real(kp) :: cwi_norm_potential
-    real(kp), intent(in) :: x,alpha,Q
+    real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: Q
 
-    cwi_norm_potential = 1._kp+alpha*x**4*log(x)
+    cwi_norm_potential = 1._kp+alpha*x**4._kp*log(x)
 
   end function cwi_norm_potential
 
 
-![ cwi_xminus_positive_potential , cwi_xplus_positive_potential ] is the interval for x in which the potential is negative, if alpha is not set to its usual value
+![ cwi_xminus_positive_potential , cwi_xplus_positive_potential ] is
+!the interval for x in which the potential is negative, if alpha is
+!not set to its usual value
 
 !Returns the lower bound of the x-interval within which the potential is negative
 function cwi_xminus_positive_potential(alpha,Q)
     implicit none
     real(kp) :: cwi_xminus_positive_potential
-    real(kp), intent(in) :: alpha,Q
+    real(kp), intent(in) :: alpha
+    real(kp), intent(in), optional :: Q
 
     if(alpha .lt. 4._kp*exp(1._kp) ) then
          cwi_xminus_positive_potential=1._kp/epsilon(1._kp)
     else
-         cwi_xminus_positive_potential=Q*exp(0.25_kp*lambert(-4._kp/(alpha),-1))
+         cwi_xminus_positive_potential=exp(0.25_kp*lambert(-4._kp/(alpha),-1))
     endif
 
 end function cwi_xminus_positive_potential
@@ -49,12 +53,13 @@ end function cwi_xminus_positive_potential
 function cwi_xplus_positive_potential(alpha,Q)
     implicit none
     real(kp) :: cwi_xplus_positive_potential
-    real(kp), intent(in) :: alpha,Q
+    real(kp), intent(in) :: alpha
+    real(kp), intent(in), optional :: Q
 
     if(alpha .lt. 4._kp*exp(1._kp) ) then
          cwi_xplus_positive_potential=0._kp
     else
-         cwi_xplus_positive_potential=Q*exp(0.25_kp*lambert(-4._kp/(alpha),0))
+         cwi_xplus_positive_potential=exp(0.25_kp*lambert(-4._kp/(alpha),0))
     endif
 
 end function cwi_xplus_positive_potential
@@ -64,7 +69,8 @@ end function cwi_xplus_positive_potential
   function cwi_norm_deriv_potential(x,alpha,Q)
     implicit none
     real(kp) :: cwi_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,Q
+    real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: Q
 
    cwi_norm_deriv_potential = alpha*x**3*(1._kp+4._kp*log(x))
 
@@ -76,7 +82,8 @@ end function cwi_xplus_positive_potential
   function cwi_norm_deriv_second_potential(x,alpha,Q)
     implicit none
     real(kp) :: cwi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,Q
+    real(kp), intent(in) :: x,alpha
+    real(kp), intent(in), optional :: Q
 
     cwi_norm_deriv_second_potential = alpha*x**2*(7._kp+12._kp*log(x))
 
