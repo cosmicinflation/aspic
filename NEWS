@@ -1,14 +1,13 @@
-* v0.0.9
+* v0.0.10
 
-- 8 new models imported, cleaned, with some functions added the
-  fieldinf:
-  csi, oi, cnci, sbi, ssi, rmi, lpi, cndi, check ChangeLog
+- Models renamed, parameter values modified. ssi->ssbi, mni et pni
+  merged into ni.
 
-- Clean internal messed-up convention, all find_foostuff() functions
-  have been renamed as find_foo_stuff()
+- Fixing rcqi to have numerical integration of the slow-roll
+  trajectory
 
-- Renaming and cleaning mssmi directory. All *_gen_* functions were
-  redundant, renamed mssmi -> gmssmi. I check all generated files
-  *.dat, I am pretty sure I did not introduce any bug. However,
-  mssmimain generates a lot of NaN!?
+- Adding numerical integration of the slow-roll trajectory for kmiii,
+  but only as an option for x beta^4/3 <= switch = 1. For the domain
+  of validity of kmiii, our approximation is fine.
+
 

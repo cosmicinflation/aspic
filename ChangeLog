@@ -1,3 +1,242 @@
+commit b2570cf643a9b7dbff3b74af619ff629e513d953
+Date:   Mon Feb 25 11:19:57 2013 +0100
+
+    adding exact integration option for kmiii
+
+ src/kmiii/kmiiimain.f90 |    2 +-
+ src/kmiii/kmiiisr.f90   |  159 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------
+ src/rgi/rgisr.f90       |   16 +++------
+ 3 files changed, 119 insertions(+), 58 deletions(-)
+
+commit f27ec325dd2f75add50c22f441d3905aa782d172
+Author: chris <chris@ringeval.com>
+Date:   Mon Feb 25 10:05:49 2013 +0100
+
+commit b2570cf643a9b7dbff3b74af619ff629e513d953
+Author: chris <chris@ringeval.com>
+Date:   Mon Feb 25 11:19:57 2013 +0100
+
+    adding exact integration option for kmiii
+
+ src/kmiii/kmiiimain.f90 |    2 +-
+ src/kmiii/kmiiisr.f90   |  159 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------
+ src/rgi/rgisr.f90       |   16 +++------
+ 3 files changed, 119 insertions(+), 58 deletions(-)
+
+commit f27ec325dd2f75add50c22f441d3905aa782d172
+Author: chris <chris@ringeval.com>
+Date:   Mon Feb 25 10:05:49 2013 +0100
+
+    Deleting ssi, mni, pni which have been merged/renamed
+
+ src/mni/Makefile.am       |   25 --------
+ src/mni/aspic_mni.3       |   26 ---------
+ src/mni/mnimain.f90       |   78 -------------------------
+ src/mni/mnireheat.f90     |  118 -------------------------------------
+ src/mni/mnisr.f90         |  125 ---------------------------------------
+ src/pni/Makefile.am       |   25 --------
+ src/pni/aspic_pni.3       |   26 ---------
+ src/pni/pnimain.f90       |  110 -----------------------------------
+ src/pni/pnireheat.f90     |  118 -------------------------------------
+ src/pni/pnisr.f90         |  124 ---------------------------------------
+ src/ssi/.deps/ssi1main.Po |    1 -
+ src/ssi/Makefile.am       |   50 ----------------
+ src/ssi/aspic_ssi.3       |  142 ---------------------------------------------
+ src/ssi/ssi1main.f90      |  126 ----------------------------------------
+ src/ssi/ssi1reheat.f90    |  127 ----------------------------------------
+ src/ssi/ssi1sr.f90        |  235 -------------------------------------------------------------------------
+ src/ssi/ssi2main.f90      |  111 -----------------------------------
+ src/ssi/ssi2reheat.f90    |  127 ----------------------------------------
+ src/ssi/ssi2sr.f90        |  186 ----------------------------------------------------------
+ src/ssi/ssi3main.f90      |  127 ----------------------------------------
+ src/ssi/ssi3reheat.f90    |  132 -----------------------------------------
+ src/ssi/ssi3sr.f90        |  239 ---------------------------------------------------------------------------
+ src/ssi/ssi4main.f90      |  114 ------------------------------------
+ src/ssi/ssi4reheat.f90    |  125 ---------------------------------------
+ src/ssi/ssi4sr.f90        |  196 -------------------------------------------------------------
+ src/ssi/ssi5main.f90      |  128 ----------------------------------------
+ src/ssi/ssi5reheat.f90    |  132 -----------------------------------------
+ src/ssi/ssi5sr.f90        |  261 ----------------------------------------------------------------------------------
+ src/ssi/ssi6main.f90      |  131 -----------------------------------------
+ src/ssi/ssi6reheat.f90    |  132 -----------------------------------------
+ src/ssi/ssi6sr.f90        |  258 ---------------------------------------------------------------------------------
+ src/ssi/ssicommon.f90     |  182 ---------------------------------------------------------
+ 32 files changed, 4037 deletions(-)
+
+commit 6b8d318dbf8b25edae922922d54fd446109d2bc0
+Date:   Fri Feb 22 20:11:47 2013 +0100
+
+    delete .Po file?
+
+ src/ssbi/.deps/ssi1main.Po |    1 -
+ 1 file changed, 1 deletion(-)
+
+commit 53482a200e028396b2134ff841aa86c3e4e33d41
+Merge: 3788953 d88e45e
+Date:   Fri Feb 22 20:08:05 2013 +0100
+
+    Merge branch 'jjvv'
+
+commit d88e45ebd36b411e2167f5bfcf31ced45c82ace8
+Date:   Fri Feb 22 20:07:18 2013 +0100
+
+    Vincent monstruous unlimited edition over v0.0.9
+
+ configure.ac                |    6 +-
+ src/Makefile.am             |   14 ++---
+ src/ai/aimain.f90           |    6 +-
+ src/cwi/aspic_cwi.3         |    6 +-
+ src/cwi/cwimain.f90         |  137 ++++++++++++++++++++++++++++++++----------
+ src/cwi/cwireheat.f90       |    2 -
+ src/cwi/cwisr.f90           |   71 ++++++++++------------
+ src/dwi/dwimain.f90         |    4 +-
+ src/gmssmi/aspic_gmssmi.3   |    6 +-
+ src/gmssmi/aspic_mssmi.3    |    6 +-
+ src/gmssmi/gmssmicommon.f90 |  204 +++++++++++++++++++++++++++++++++++++++++++++-----------------
+ src/gmssmi/gmssmimain.f90   |  219 +++++++++++++++++++++++++++++++++++++++++++++----------------------
+ src/gmssmi/gmssmireheat.f90 |   59 +++++++++---------
+ src/gmssmi/gmssmisr.f90     |  131 ++++++++++++++++++++++++++--------------
+ src/gmssmi/mssmimain.f90    |   87 +++++++++++++++++----------
+ src/gmssmi/mssmireheat.f90  |   61 ++++++++++---------
+ src/gmssmi/mssmisr.f90      |   83 +++++++++++++-------------
+ src/ii/iimain.f90           |    2 +-
+ src/kmii/kmiimain.f90       |    7 ++-
+ src/kmii/kmiisr.f90         |    7 ++-
+ src/kmiii/kmiiimain.f90     |   76 +++++++++++++++++-------
+ src/kmiii/kmiiisr.f90       |   48 +++++++--------
+ src/lpi/lpi1main.f90        |    4 +-
+ src/lpi/lpi2main.f90        |   22 +++----
+ src/lpi/lpi3main.f90        |   15 +++--
+ src/ni/Makefile.am          |   25 ++++++++
+ src/ni/aspic_ni.3           |   26 ++++++++
+ src/ni/nimain.f90           |  110 ++++++++++++++++++++++++++++++++++
+ src/ni/nireheat.f90         |  118 ++++++++++++++++++++++++++++++++++++
+ src/ni/nisr.f90             |  124 ++++++++++++++++++++++++++++++++++++++
+ src/oi/aspic_oi.3           |   12 +---
+ src/oi/oimain.f90           |   38 +++++-------
+ src/oi/oireheat.f90         |    8 +--
+ src/oi/oisr.f90             |   57 ++++++++++--------
+ src/psni/aspic_psni.3       |    4 +-
+ src/psni/psnimain.f90       |   99 +++++++++++-------------------
+ src/psni/psnireheat.f90     |   34 +++++------
+ src/psni/psnisr.f90         |   66 ++++++++++----------
+ src/rchi/Makefile.am        |   25 ++++++++
+ src/rchi/aspic_rchi.3       |   25 ++++++++
+ src/rchi/rchimain.f90       |  107 +++++++++++++++++++++++++++++++++
+ src/rchi/rchireheat.f90     |  127 +++++++++++++++++++++++++++++++++++++++
+ src/rchi/rchisr.f90         |  250 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/rmi/rmi1main.f90        |    6 +-
+ src/rmi/rmi2main.f90        |    9 ++-
+ src/rmi/rmi3main.f90        |    8 +--
+ src/rmi/rmi4main.f90        |    8 +--
+ src/ssbi/.deps/ssi1main.Po  |    1 +
+ src/ssbi/Makefile.am        |   50 ++++++++++++++++
+ src/ssbi/aspic_ssbi.3       |  142 +++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi1main.f90      |  126 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi1reheat.f90    |  127 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi1sr.f90        |  235 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi2main.f90      |  111 ++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi2reheat.f90    |  127 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi2sr.f90        |  186 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi3main.f90      |  127 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi3reheat.f90    |  132 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi3sr.f90        |  239 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi4main.f90      |  100 +++++++++++++++++++++++++++++++
+ src/ssbi/ssbi4reheat.f90    |  125 ++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi4sr.f90        |  196 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi5main.f90      |  126 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi5reheat.f90    |  132 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi5sr.f90        |  261 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi6main.f90      |  129 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi6reheat.f90    |  132 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi6sr.f90        |  258 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbicommon.f90     |  182 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 69 files changed, 5146 insertions(+), 667 deletions(-)
+
+commit 3788953a65b450db62a271aee89cce7ce9a8fbf8
+Author: chris <chris@ringeval.com>
+Date:   Fri Feb 22 19:51:22 2013 +0100
+
+    rgi check
+
+ src/rgi/rgisr.f90 |   20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+commit bb4702c7e905d6f359b1880361eb5d526ce66320
+Author: chris <chris@ringeval.com>
+Date:   Wed Feb 13 20:16:55 2013 +0100
+
+    Exact trajectory and exact endinf for rcmi
+
+ src/common/srreheat.f90 |    1 +
+ src/rcmi/rcmimain.f90   |   10 ++++--
+ src/rcmi/rcmireheat.f90 |    7 ++--
+ src/rcmi/rcmisr.f90     |  147 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ 4 files changed, 141 insertions(+), 24 deletions(-)
+ src/ssbi/.deps/ssi1main.Po  |    1 +
+ src/ssbi/Makefile.am        |   50 ++++++++++++++++
+ src/ssbi/aspic_ssbi.3       |  142 +++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi1main.f90      |  126 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi1reheat.f90    |  127 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi1sr.f90        |  235 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi2main.f90      |  111 ++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi2reheat.f90    |  127 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi2sr.f90        |  186 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi3main.f90      |  127 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi3reheat.f90    |  132 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi3sr.f90        |  239 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi4main.f90      |  100 +++++++++++++++++++++++++++++++
+ src/ssbi/ssbi4reheat.f90    |  125 ++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi4sr.f90        |  196 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi5main.f90      |  126 +++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi5reheat.f90    |  132 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi5sr.f90        |  261 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi6main.f90      |  129 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi6reheat.f90    |  132 ++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbi6sr.f90        |  258 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/ssbicommon.f90     |  182 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 69 files changed, 5146 insertions(+), 667 deletions(-)
+
+commit 3788953a65b450db62a271aee89cce7ce9a8fbf8
+Author: chris <chris@ringeval.com>
+Date:   Fri Feb 22 19:51:22 2013 +0100
+
+    rgi check
+
+ src/rgi/rgisr.f90 |   20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+commit bb4702c7e905d6f359b1880361eb5d526ce66320
+Author: chris <chris@ringeval.com>
+Date:   Wed Feb 13 20:16:55 2013 +0100
+
+    Exact trajectory and exact endinf for rcmi
+
+ src/common/srreheat.f90 |    1 +
+ src/rcmi/rcmimain.f90   |   10 ++++--
+ src/rcmi/rcmireheat.f90 |    7 ++--
+ src/rcmi/rcmisr.f90     |  147 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ 4 files changed, 141 insertions(+), 24 deletions(-)
+
+commit a82cf5a5ac87cd920575a883b8707bd1c411ee9c
+Author: chris <chris@ringeval.com>
+Date:   Mon Jan 21 17:17:45 2013 +0100
+
+    Version 0.0.9
+
+ configure.ac |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1ab3f941747e53816df36f4df45402ed1cd808c8
+Author: chris <chris@ringeval.com>
+Date:   Mon Jan 21 17:17:07 2013 +0100
+
+    Update Changelog
+
+ ChangeLog |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+
 commit b9433134acc1f011daac08e30b7dd420d50dd85d
 Date:   Mon Jan 21 17:16:14 2013 +0100
 
