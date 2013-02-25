@@ -80,7 +80,7 @@ program kmiiimain
 !  w = 1._kp/3._kp
   w=0._kp
 
-   betamin=10._kp**(9.)
+   betamin=10._kp**(9.) 
    betamax=10._kp**(15.)
 
    do i=0,nbeta
