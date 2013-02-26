@@ -7,8 +7,10 @@
 module mssmisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
-  use specialinf, only : atanh
-  use gmssmicommon, only : gmssmi_norm_potential, gmssmi_norm_deriv_potential, gmssmi_norm_deriv_second_potential
+! this exists in recent fortran
+! use specialinf, only : atanh
+  use gmssmicommon, only : gmssmi_norm_potential, gmssmi_norm_deriv_potential
+  use gmssmicommon, only : gmssmi_norm_deriv_second_potential
   use gmssmicommon, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
   use gmssmicommon, only : gmssmi_x_endinf, gmssmi_x_epsonemin
   implicit none
@@ -121,7 +123,7 @@ contains
     real(kp) :: mssmi_efold_primitive
 
     mssmi_efold_primitive = phi0**2*(x**2/20._kp-1._kp/15._kp*x**2/(x**4-1._kp) &
-               +2._kp/15._kp*real(atanh(x**2)) )
+               + 2._kp/15._kp * atanh(x**2))
 
   end function mssmi_efold_primitive
 

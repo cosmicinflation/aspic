@@ -3,9 +3,7 @@ program gmssmimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gmssmisr, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
-  use gmssmicommon, only :  gmssmi_x_VprimeEquals0_plus,gmssmi_x_VprimeEquals0_Minus, &
-                            gmssmi_x_epstwoEquals0_Plus,gmssmi_x_epstwoEquals0_Minus, &
-                            gmssmi_x_epsonemin
+  use gmssmicommon, only : gmssmi_x_epsonemin, gmssmi_x_epstwozero, gmssmi_x_epsonezero
   use gmssmisr, only : gmssmi_alphamin, gmssmi_alphamax, gmssmi_efold_primitive,gmssmi_x_endinf
   use gmssmireheat, only : gmssmi_lnrhoend, gmssmi_x_star
   use infinout, only : delete_file, livewrite
@@ -30,6 +28,7 @@ program gmssmimain
   real(kp) :: phi0A,phi0B,phi0C,phi0D,xendNumA,xendAnalA,xendNumB, &
               xendAnalB,xendNumC,xendAnalC,xendNumD,xendAnalD,alphaminAppr
 
+  real(kp), dimension(2) :: xEpsOneZero, xEpsTwoZero
 
   Pstar = powerAmpScalar
 
@@ -75,10 +74,11 @@ program gmssmimain
 
   call delete_file('gmssmi_x_eps1min.dat')
   do i=1,npts
-       alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
-       call livewrite('gmssmi_x_eps1min.dat',alpha,gmssmi_x_VprimeEquals0_plus(alpha) , &
-            gmssmi_x_VprimeEquals0_Minus(alpha) , gmssmi_x_epstwoEquals0_Plus(alpha) , &
-            gmssmi_x_epstwoEquals0_Minus(alpha) , gmssmi_x_epsonemin(alpha)  )
+     alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
+     xEpsOneZero = gmssmi_x_epsonezero(alpha)
+     xEpsTwoZero = gmssmi_x_epstwozero(alpha)
+     call livewrite('gmssmi_x_eps1min.dat',alpha,xEpsOneZero(2),xEpsOneZero(1) &
+          , xEpsTwoZero(2), xEpsTwoZero(1),gmssmi_x_epsonemin(alpha))
   end do
   print*,'gmssmi_x_eps1min.dat written'
 

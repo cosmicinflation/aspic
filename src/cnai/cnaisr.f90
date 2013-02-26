@@ -6,7 +6,7 @@
 
 module cnaisr
   use infprec, only : kp,tolkp,transfert
-  use specialinf, only : lambert, atanh
+  use specialinf, only : lambert
   use inftools, only : zbrent
   implicit none
 

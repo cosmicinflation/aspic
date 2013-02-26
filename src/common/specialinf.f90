@@ -2640,29 +2640,31 @@ END FUNCTION dei
 !                                                        !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  function acosh(x)
-  USE nrutil, ONLY : nrerror
-    implicit none
-    real(kp) ::acosh
-    real(kp), intent(in) ::x
-	if (x<1.) call nrerror('specialinf/acosh: bad argument x<1. gives non real value for acosh(x)')
-	acosh=log(x+sqrt(x**2-1._kp))
-  end function acosh
+! this exists in recent fortran
 
-  function asinh(x)
-    implicit none
-    real(kp) ::asinh
-    real(kp), intent(in) ::x
-	asinh=log(x+sqrt(x**2+1._kp))
-  end function asinh
+!  function acosh(x)
+!  USE nrutil, ONLY : nrerror
+!    implicit none
+!    real(kp) ::acosh
+!    real(kp), intent(in) ::x
+!	if (x<1.) call nrerror('specialinf/acosh: bad argument x<1. gives non real value for acosh(x)')
+!	acosh=log(x+sqrt(x**2-1._kp))
+!  end function acosh
 
-  function atanh(x)
-  USE nrutil, ONLY : nrerror
-    implicit none
-    complex(kp) ::atanh
-    real(kp), intent(in) ::x
-	atanh=0.5_kp*log((1._kp+x)/(1._kp-x))
-  end function atanh
+!  function asinh(x)
+!    implicit none
+!    real(kp) ::asinh
+!    real(kp), intent(in) ::x
+!	asinh=log(x+sqrt(x**2+1._kp))
+!  end function asinh
+
+!  function atanh(x)
+!  USE nrutil, ONLY : nrerror
+!    implicit none
+!    complex(kp) ::atanh
+!    real(kp), intent(in) ::x
+!	atanh=0.5_kp*log((1._kp+x)/(1._kp-x))
+!  end function atanh
 
   function atan_ito_log(x) !ArcTan function expressed in terms of logarithmic functions
     implicit none
