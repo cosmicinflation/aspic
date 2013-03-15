@@ -27,7 +27,7 @@ program lfimain
   call delete_file('lfi_nsr.dat')
 
   p = 0_kp 
-  do while (p<6_kp)
+  do while (p<6._kp)
     
      p=p+1_kp
      w = (p-2)/(p+2)

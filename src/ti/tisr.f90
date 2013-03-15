@@ -13,7 +13,7 @@ module tisr
 
   public ti_norm_potential, ti_norm_deriv_potential, ti_norm_deriv_second_potential
   public ti_epsilon_one, ti_epsilon_two,ti_epsilon_three
-  public ti_efold_primitive, ti_x_trajectory,ti_x_endinf
+  public ti_efold_primitive, ti_x_trajectory,ti_x_endinf,ti_x_potmax
 
  
 contains
@@ -51,6 +51,21 @@ contains
     ti_norm_deriv_second_potential = 2._kp*alpha*cos(2._kp*x)-cos(x)
 
   end function ti_norm_deriv_second_potential
+
+!x_potmax !Returns the location of the maximum of the potential
+  function ti_x_potmax(alpha,mu)    
+    implicit none
+    real(kp) :: ti_x_potmax
+    real(kp), intent(in) :: alpha
+    real(kp), intent(in), optional :: mu
+    
+    if (alpha .le. 0.5_kp) then
+      ti_x_potmax = 0._kp
+    else
+      ti_x_potmax = acos(0.5_kp/alpha)
+    endif
+    
+  end function ti_x_potmax
 
 !epsilon1(x)
   function ti_epsilon_one(x,alpha,mu)    
@@ -121,10 +136,17 @@ contains
     real(kp), intent(in) :: x,alpha,mu
     real(kp) :: ti_efold_primitive
     
-     if (alpha.eq.0.5_kp) stop 'ti_efold_primitive: alpha=1/2 is singular'
+     if (alpha.eq.0.5_kp)  then 
+
+    ti_efold_primitive = mu**2*(1._kp/(1._kp-cos(x))-0.5_kp*log(1._kp-cos(x)))
+
+     else
 
     ti_efold_primitive = mu**2*((2._kp*alpha+1._kp)/(2._kp*(1._kp-2._kp*alpha))* &
-                         log(-2._kp*alpha*cos(x)+1._kp)+log(1-cos(x))/(2._kp*alpha-1._kp))
+                         log(abs(-2._kp*alpha*cos(x)+1._kp))+log(1-cos(x))/(2._kp*alpha-1._kp))
+
+     endif
+
 
   end function ti_efold_primitive
  
@@ -139,8 +161,8 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: tiData
 
-    mini = epsilon(1._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
+    maxi = xEnd*(1._kp-epsilon(1._kp))
 
     tiData%real1 = alpha
     tiData%real2 = mu

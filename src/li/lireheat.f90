@@ -3,6 +3,7 @@
 module lireheat
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
+  use specialinf, only : lambert
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
@@ -47,8 +48,14 @@ contains
     liData%real2 = w
     liData%real3 = calF + primEnd
 
+    if (alpha .gt. 0._kp) then
     mini = xEnd
     maxi = xEnd*1000._kp
+    else
+    mini = -1._kp/sqrt(2._kp) &
+         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    maxi = xEnd
+    endif
 
     x = zbrent(find_li_x_star,mini,maxi,tolzbrent,liData)
     li_x_star = x

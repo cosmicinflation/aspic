@@ -43,33 +43,15 @@ program gmlfimain
 
   npts = 20
 
+!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!    p=2  &  q=1  !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!
+
   p=2.
   q=1.
-
-  p=2.
-  q=3.
-  
-  p=3.
-  q=2.
-
-
-  if (p .eq. 2. .and. q .eq. 1.) then
   alphamin=10._kp**(-3._kp)
   alphamax=10._kp**(3._kp)
   nalpha=20
-  endif
-
-  if (p .eq. 2. .and. q.eq. 3. ) then
-  alphamin=10._kp**(-8._kp)
-  alphamax=10._kp**(1._kp)
-  nalpha=100
-  endif
-
-  if (p .eq. 3. .and. q.eq. 2. ) then
-  alphamin=10._kp**(-6._kp)
-  alphamax=10._kp**(3._kp)
-  nalpha=50
-  endif
 
   do j=0,nalpha
     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
@@ -108,6 +90,108 @@ program gmlfimain
 
 
  end do
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!    p=2  &  q=3  !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+  p=2.
+  q=3.
+  alphamin=10._kp**(-8._kp)
+  alphamax=10._kp**(1._kp)
+  nalpha=100
+
+  do j=0,nalpha
+    alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+ 
+    lnRhoRehMin = lnRhoNuc
+    lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
+
+
+    print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+  do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+
+
+       eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
+       eps2 = gmlfi_epsilon_two(xstar,p,q,alpha)
+       eps3 = gmlfi_epsilon_three(xstar,p,q,alpha)
+
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('gmlfi_predic.dat',p,q,alpha,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('gmlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+  
+    end do
+
+
+ end do
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!    p=3  &  q=2  !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+  p=3.
+  q=2.
+  alphamin=10._kp**(-6._kp)
+  alphamax=10._kp**(3._kp)
+  nalpha=50
+
+
+  do j=0,nalpha
+    alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+ 
+    lnRhoRehMin = lnRhoNuc
+    lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
+
+
+    print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+  do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+
+
+       eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
+       eps2 = gmlfi_epsilon_two(xstar,p,q,alpha)
+       eps3 = gmlfi_epsilon_three(xstar,p,q,alpha)
+
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('gmlfi_predic.dat',p,q,alpha,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('gmlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+  
+    end do
+
+
+ end do
+
+
 
 
 

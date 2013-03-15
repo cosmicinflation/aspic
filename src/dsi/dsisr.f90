@@ -9,6 +9,7 @@ module dsisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : hypergeom_2F1
+  use cosmopar, only : powerAmpScalar
   implicit none
 
   private
@@ -16,7 +17,7 @@ module dsisr
   public dsi_norm_potential, dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three
   public dsi_efold_primitive, dsi_x_trajectory
   public dsi_norm_deriv_potential, dsi_norm_deriv_second_potential
-  public dsi_xinimin, dsi_xendmin, dsi_x_epsoneunity
+  public dsi_xinimin, dsi_xendmin, dsi_x_epsoneunity, dsi_xendmax, dsi_mumax
 
     
  
@@ -151,15 +152,38 @@ contains
   function dsi_xendmin(efold,p,mu)
     implicit none
     real(kp), intent(in) :: efold, p, mu
-    real(kp) :: dsi_xendmin, xini, xhuge
-    real(kp) :: mini,maxi
-    type(transfert) :: dsiData
+    real(kp) :: dsi_xendmin, xini
 
     xini = dsi_xinimin(p,mu)    
 
     dsi_xendmin = dsi_x_trajectory(efold,xini,p,mu)
 
   end function dsi_xendmin
+
+!the max value for xend in order for an extra non renormalizable term x^q in the potential to have no effect. The result depends on q.
+  function dsi_xendmax(p,mu,q)
+    implicit none
+    real(kp), intent(in) :: p,mu,q
+    real(kp) :: dsi_xendmax, xini
+
+    xini = dsi_xinimin(p,mu)    
+
+    dsi_xendmax = (720._kp*acos(-1._kp)**2*p**3/(q+4._kp)* &
+                  mu**(-q-6._kp)*60._kp*powerAmpScalar)**(1._kp/(3._kp*p+q+6._kp))
+
+  end function dsi_xendmax
+
+!the max value for mu in order to have dsi_xendmin<dsi_xendmax
+  function dsi_mumax(p,q,efolds)
+    implicit none
+    real(kp), intent(in) :: p,q,efolds
+    real(kp) :: dsi_mumax  
+
+    dsi_mumax = (720._kp*acos(-1._kp)**2*p**3/(q+4._kp)* &
+                60._kp*powerAmpScalar)**((p+2._kp)/(p*q))/ &
+                ((p*(p+2._kp)*efolds)**((3._kp*p+q+6._kp)/(p*q)))
+
+  end function dsi_mumax
 
  
 

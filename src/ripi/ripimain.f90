@@ -14,23 +14,23 @@ program ripimain
 
   integer :: i,j
   integer :: npts = 20
-  integer :: nalpha
+  integer :: nphi0
 
-  real(kp) :: alpha,w,bfoldstar
+  real(kp) :: phi0,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  real(kp) ::alphamin,alphamax
+  real(kp) ::phi0min,phi0max
 
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
 
 
-  nalpha = 100
+  nphi0 = 50
 
-  alphamin=10.**(-4.)
-  alphamax=10.**(0.)
+  phi0min=10.**(-5.)
+  phi0max=10.**(3.)
 
   Pstar = powerAmpScalar
 
@@ -41,25 +41,25 @@ program ripimain
   call delete_file('ripi_nsr.dat')
 
 
-  do j=1,nalpha
+  do j=1,nphi0
 
-  alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+  phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = ripi_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = ripi_lnrhoend(phi0,Pstar)
 
-  print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+  print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
   do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = ripi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = ripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
 
-       eps1 = ripi_epsilon_one(xstar,alpha)
-       eps2 = ripi_epsilon_two(xstar,alpha)
-       eps3 = ripi_epsilon_three(xstar,alpha)
+       eps1 = ripi_epsilon_one(xstar,phi0)
+       eps2 = ripi_epsilon_two(xstar,phi0)
+       eps3 = ripi_epsilon_three(xstar,phi0)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar, &
          'eps1star=',eps1,'eps2star=',eps2
@@ -70,7 +70,7 @@ program ripimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('ripi_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('ripi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('ripi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
@@ -78,29 +78,30 @@ program ripimain
 
  end do
 
+
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('ripi_predic_summarized.dat') 
-         nalpha=1000
-         alphamin=10.**(-4.)
-         alphamax=10.**(0.)
+         nphi0=1000
+         phi0min=10.**(-5.)
+         phi0max=10.**(-3.)
          w=0._kp
-         do j=1,nalpha
-         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+         do j=1,nphi0
+         phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
          lnRhoReh = lnRhoNuc
-         xstarA = ripi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1A = ripi_epsilon_one(xstarA,alpha)
-         eps2A = ripi_epsilon_two(xstarA,alpha)
-         eps3A = ripi_epsilon_three(xstarA,alpha)
+         xstarA = ripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+         eps1A = ripi_epsilon_one(xstarA,phi0)
+         eps2A = ripi_epsilon_two(xstarA,phi0)
+         eps3A = ripi_epsilon_three(xstarA,phi0)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = ripi_lnrhoend(alpha,Pstar)
-         xstarB = ripi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1B = ripi_epsilon_one(xstarB,alpha)
-         eps2B = ripi_epsilon_two(xstarB,alpha)
-         eps3B = ripi_epsilon_three(xstarB,alpha)
+         lnRhoReh = ripi_lnrhoend(phi0,Pstar)
+         xstarB = ripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+         eps1B = ripi_epsilon_one(xstarB,phi0)
+         eps2B = ripi_epsilon_two(xstarB,phi0)
+         eps3B = ripi_epsilon_three(xstarB,phi0)
          nsB = 1._kp - 2._kp*eps1B - eps2B
          rB =16._kp*eps1B
          call livewrite('ripi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)

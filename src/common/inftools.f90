@@ -1068,7 +1068,7 @@ contains
         fb=func(b,extradata)
      enddo
      !stop 'zbrent exceeding maximum iterations'
-     write(*,*) 'zbrent exceeding maximum iterations'
+     write(*,*) 'zbrent exceeding maximum iterations ITMAX=',ITMAX
      zbrent=b
      return
    end function zbrent

@@ -31,9 +31,9 @@ program rcmimain
   alphavalues(2)=5.*(10._kp)**(-5.)
   alphavalues(3)=(10._kp)**(-4.)
   alphavalues(4)=2.*(10._kp)**(-4.)
-  alphavalues(5)=3.*(10._kp)**(-4.)
-  alphavalues(6)=4.*(10._kp)**(-4.)
-  alphavalues(7)=5.*(10._kp)**(-4.)
+  alphavalues(5)=3.5*(10._kp)**(-4.)
+  alphavalues(6)=4.5*(10._kp)**(-4.)
+  alphavalues(7)=5.7*(10._kp)**(-4.)
 
   Pstar = powerAmpScalar
   w = 0._kp
@@ -41,8 +41,13 @@ program rcmimain
   call delete_file('rcmi_predic.dat')
   call delete_file('rcmi_nsr.dat')
 
-  do j=1,size(alphavalues)
-   
+!  alphamin=alphavalues(1)
+!  alphamax=alphavalues(7)
+!  do j=1,40
+!  alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/40.)
+
+
+  do j=1,size(alphavalues)  
   alpha=alphavalues(j)
 
  

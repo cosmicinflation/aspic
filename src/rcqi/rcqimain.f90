@@ -43,10 +43,6 @@ program rcqimain
   call delete_file('rcqi_predic.dat')
   call delete_file('rcqi_nsr.dat')
 
-  !do j=1,size(alphavalues)
-  !w=0._kp
-  !alpha=alphavalues(j)
-  
   do j=1,1000
   w = 1._kp/3._kp
   alpha=alphamin+(alphamax-alphamin)*(real(j-1,kp)/real(1000,kp))
@@ -76,13 +72,50 @@ program rcqimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('rcqi_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('rcqi_predic.dat',alpha,w,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('rcqi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
   
     end do
 
  end do
+
+  do j=1,size(alphavalues)
+  w=0._kp
+  alpha=alphavalues(j)
+  
+
+  lnRhoRehMin = lnRhoNuc
+  lnRhoRehMax = rcqi_lnrhoend(alpha,Pstar)
+
+  print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+  do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = rcqi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+       eps1 = rcqi_epsilon_one(xstar,alpha)
+       eps2 = rcqi_epsilon_two(xstar,alpha)
+       eps3 = rcqi_epsilon_three(xstar,alpha)
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('rcqi_predic.dat',alpha,w,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('rcqi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+  
+    end do
+
+ end do
+
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!

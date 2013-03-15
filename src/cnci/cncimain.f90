@@ -74,17 +74,17 @@ program cncimain
      if (alpha .eq. 10._kp**(-3.)) then
      xendmin=cnci_xendmin(55._kp,alpha)
      xendmax=30._kp*xendmin
-     nxend=500
+     nxend=400
      endif
      if (alpha .eq. 10._kp**(-1.)) then
      xendmin=cnci_xendmin(58._kp,alpha)
      xendmax=10._kp*xendmin
-     nxend=500
+     nxend=100
      endif
      if (alpha .eq. 0.2_kp) then
      xendmin=cnci_xendmin(60._kp,alpha)
      xendmax=2._kp*xendmin
-     nxend=500
+     nxend=100
      endif
 
 

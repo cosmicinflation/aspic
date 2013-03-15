@@ -27,12 +27,12 @@ program iimain
 !Calculates the prior space
   npts=1000
   betamin=epsilon(1._kp)
-  betamax=20._kp
+  betamax=60._kp
 
   call delete_file('ii_prior.dat')
 
   do i=1,npts
-       beta=betamin*(betamax/betamin)**(real(i,kp)/real(npts,kp))
+       beta=betamin+(betamax-betamin)*(real(i,kp)/real(npts,kp))
        call livewrite('ii_prior.dat',beta,ii_prior_xendmin(beta,-60._kp))
   end do
 

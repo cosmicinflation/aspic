@@ -23,7 +23,8 @@ program esimain
 
   real(kp), dimension(1:9) ::qvalues
 
-  real(kp)  :: alpha,alphamin,alphamax,eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  real(kp)  :: alpha,alphamin,alphamax,eps1A,eps2A,eps3A,nsA,rA
+  real(kp)  :: eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
   integer :: nalpha
 
   qvalues(1)=10._kp**(-3.)
@@ -46,7 +47,6 @@ program esimain
   q=qvalues(j)
 
   w=0._kp
-!  w = -1._kp/3._kp
  
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = esi_lnrhoend(q,Pstar)
@@ -72,9 +72,43 @@ program esimain
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
-       call livewrite('esi_predic.dat',q,eps1,eps2,eps3,r,ns,Treh)
+       call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
+  
+    end do
+ end do
 
-       call livewrite('esi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+ do j=1,size(qvalues)
+   
+  q=qvalues(j)
+
+
+  w = -1._kp/3._kp
+ 
+  lnRhoRehMin = lnRhoNuc
+  lnRhoRehMax = esi_lnrhoend(q,Pstar)
+
+  print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+  do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+       eps1 = esi_epsilon_one(xstar,q)
+       eps2 = esi_epsilon_two(xstar,q)
+       eps3 = esi_epsilon_three(xstar,q)
+
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
   
     end do
  end do

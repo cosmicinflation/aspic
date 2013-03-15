@@ -41,7 +41,6 @@ program rchimain
   do j=0,nAI
     AI=AImin*(AImax/AImin)**(real(j,kp)/real(nAI,kp)) !log step
     AI=AImin+(AImax-AImin)*(real(j,kp)/real(nAI,kp)) !arithmetic step
-
  
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = rchi_lnrhoend(AI,Pstar)
