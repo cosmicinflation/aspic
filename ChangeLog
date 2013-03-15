@@ -1,3 +1,90 @@
+commit bfce87283c82f67baefc140243e743b6a44a5460
+Merge: 82d2f27 5e140c7
+Date:   Fri Mar 15 08:38:50 2013 +0100
+
+    Merge branch 'vincent'
+
+commit 5e140c79f6cff4aaeffb8c80cbb03464cef44785
+Date:   Fri Mar 15 08:38:31 2013 +0100
+
+    Vincent polishing over 0.0.10
+
+ src/cnci/cncimain.f90   |    6 +-
+ src/cndi/cndimain.f90   |   90 +++++++++----
+ src/cndi/cndisr.f90     |    4 +-
+ src/common/inftools.f90 |    2 +-
+ src/csi/csimain.f90     |   68 +++++++---
+ src/dsi/dsimain.f90     |  105 ++++++++--------
+ src/dsi/dsireheat.f90   |    9 --
+ src/dsi/dsisr.f90       |   32 ++++-
+ src/esi/esimain.f90     |   42 ++++++-
+ src/gmlfi/gmlfimain.f90 |  110 ++++++++++++++--
+ src/ii/iimain.f90       |    4 +-
+ src/lfi/lfimain.f90     |    2 +-
+ src/li/limain.f90       |   68 +++++++++-
+ src/li/lireheat.f90     |    7 ++
+ src/li/lisr.f90         |   18 ++-
+ src/lmi/lmi1main.f90    |  121 +++++++++++++++---
+ src/lmi/lmi2main.f90    |  157 ++++++++++++++++++-----
+ src/lmi/lmi2sr.f90      |    3 +-
+ src/ncki/nckimain.f90   |   96 +++++++++-----
+ src/rchi/rchimain.f90   |    1 -
+ src/rchi/rchireheat.f90 |    4 +-
+ src/rchi/rchisr.f90     |   19 ++-
+ src/rcmi/rcmimain.f90   |   15 ++-
+ src/rcqi/rcqimain.f90   |   43 ++++++-
+ src/ripi/aspic_ripi.3   |    6 +-
+ src/ripi/ripimain.f90   |   59 ++++-----
+ src/ripi/ripireheat.f90 |   47 ++++---
+ src/ripi/ripisr.f90     |  115 ++++++++---------
+ src/sbi/sbimain.f90     |   59 +++++++--
+ src/sfi/sfimain.f90     |  112 +++++++++++++++--
+ src/ti/timain.f90       |   76 +++++++----
+ src/ti/tireheat.f90     |    7 +-
+ src/ti/tisr.f90         |   32 ++++-
+ src/twi/twimain.f90     |    7 +-
+ src/vhi/vhimain.f90     |  322 +++++++++++++++++++++++++++++++++++++++++++----
+ 35 files changed, 1439 insertions(+), 429 deletions(-)
+
+commit 82d2f27ad75ef6e35fa22b72a34d6763802caeac
+Date:   Tue Feb 26 11:10:20 2013 +0100
+
+    Polishing Vincent's new API
+
+ src/cnai/cnaisr.f90         |    2 +-
+ src/common/specialinf.f90   |   48 +++++++-------
+ src/gmssmi/gmssmicommon.f90 |  147 ++++++++++++++++---------------------------
+ src/gmssmi/gmssmimain.f90   |   14 ++---
+ src/gmssmi/gmssmisr.f90     |   71 +++++++++++++--------
+ src/gmssmi/mssmisr.f90      |    8 ++-
+ src/mhi/mhisr.f90           |    2 +-
+ 7 files changed, 138 insertions(+), 154 deletions(-)
+
+commit 5d06c9e438884419151dd095ddb62e1a603243bf
+Date:   Mon Feb 25 17:32:54 2013 +0100
+
+    Fixing extra Q in positive range bounds
+
+ src/cwi/cwisr.f90 |   25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+commit 931f75d21c98d22d1f72cfaad585bc96e5cd3747
+Date:   Mon Feb 25 11:28:38 2013 +0100
+
+    bump version number
+
+ configure.ac |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 941c59dec14d0ec2f244db175fc85b2e1cd22293
+Date:   Mon Feb 25 11:28:01 2013 +0100
+
+    Edit NEWS/ChangeLog
+
+ ChangeLog |  239 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |   19 +++--
+ 2 files changed, 248 insertions(+), 10 deletions(-)
+
 commit b2570cf643a9b7dbff3b74af619ff629e513d953
 Date:   Mon Feb 25 11:19:57 2013 +0100
 

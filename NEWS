@@ -1,13 +1,4 @@
-* v0.0.10
+* version 0.1.0
 
-- Models renamed, parameter values modified. ssi->ssbi, mni et pni
-  merged into ni.
-
-- Fixing rcqi to have numerical integration of the slow-roll
-  trajectory
-
-- Adding numerical integration of the slow-roll trajectory for kmiii,
-  but only as an option for x beta^4/3 <= switch = 1. For the domain
-  of validity of kmiii, our approximation is fine.
-
+- First public release (evaluator)
 
