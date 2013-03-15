@@ -13,7 +13,7 @@ program limain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts
 
   real(kp) :: alpha,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -31,14 +31,21 @@ program limain
   call delete_file('li_predic.dat')
   call delete_file('li_nsr.dat')
 
+!!!!!!!!!!!!!!!!!!
+!!!  alpha>0   !!!
+!!!!!!!!!!!!!!!!!!
+
+ npts = 20
+
   alphamin=0.002
   alphamax=100000._kp
+  nalpha=20
 
 !  w = 1._kp/3._kp
   w=0._kp
 
-    do k=0,20
-      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(20,kp))
+    do k=0,nalpha
+      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))
 
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = li_lnrhoend(alpha,Pstar)
@@ -48,6 +55,61 @@ program limain
   do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+       eps1 = li_epsilon_one(xstar,alpha)
+       eps2 = li_epsilon_two(xstar,alpha)
+       eps3 = li_epsilon_three(xstar,alpha)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1*=',eps1
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('li_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+  
+    end do
+
+  end do
+
+
+!!!!!!!!!!!!!!!!!!
+!!!  alpha<0   !!!
+!!!!!!!!!!!!!!!!!!
+
+ npts = 4
+
+  alphamin=-0.1
+  alphamax=-1.4*10._kp**(-3.)
+  nalpha=40
+
+!  w = 1._kp/3._kp
+  w=0._kp
+
+    do k=0,nalpha
+      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
+      alpha=-exp(log(-alphamin)/((log(-alphamin)/log(-alphamax))** &
+            (real(k,kp)/real(nalpha,kp)))) !adapted step
+
+
+
+  lnRhoRehMin = lnRhoNuc
+  lnRhoRehMax = li_lnrhoend(alpha,Pstar)
+
+  print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+
+  do i=0,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i,kp)/real(npts-1,kp)
 
        xstar = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
 

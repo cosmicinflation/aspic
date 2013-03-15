@@ -117,6 +117,7 @@ contains
     real(kp), dimension(2) :: cndi_x_epsoneunity
 
     if (alpha.lt.cndi_alphamin(beta)) then
+       print*,'alpha=',alpha,'beta=',beta,'alphamin=',cndi_alphamin(beta)
        stop 'cndi_x_epsoneunity: not root for epsilon1 = 1' 
     endif
 
@@ -138,10 +139,9 @@ contains
     real(kp) :: cndi_xinimax
 
     real(kp), dimension(2) :: xepsone
-
-    xepsone = cndi_x_epsoneunity(alpha,beta)
     
     if (beta .gt. 1._kp .or. (beta .lt. 1._kp .and. alpha.gt.cndi_alphamin(beta) ) ) then
+      xepsone = cndi_x_epsoneunity(alpha,beta)
       cndi_xinimax  = xepsone(1)
     else
       cndi_xinimax  = acos(-1._kp)/alpha*(1._kp-epsilon(1._kp))

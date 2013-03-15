@@ -47,31 +47,71 @@ program lmi1main
 !  w = 1._kp/3._kp
   w=0._kp
 
-beta=0.001
-beta=1.
-beta=50.
+!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!  beta=0.001 !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!
 
-if (beta .eq. 0.001) then
+  beta=0.001
   Ngam=20
   gammin=0.004
   gammax=0.99
-endif
-if (beta .eq. 1.) then
-  Ngam=50
-  gammin=0.001
-  gammax=0.99
-endif
-if (beta .eq. 50.) then
-  Ngam=1000
-  gammin=0.00005
-  gammax=0.1
-endif
+
 
  do j=0,Ngam 
  gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
  gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
  gam=sqrt(gammin+(gammax-gammin)*(real(j,kp)/Ngam))  !square root step
 
+!  alpha=4.*(1.-gam)
+!  w=(alpha-2.)/(alpha+2.)
+
+  lnRhoRehMin = lnRhoNuc
+  lnRhoRehMax = lmi1_lnrhoend(gam,beta,Pstar)
+
+  print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+  do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+ 
+
+       eps1 = lmi1_epsilon_one(xstar,gam,beta)
+       eps2 = lmi1_epsilon_two(xstar,gam,beta)
+       eps3 = lmi1_epsilon_three(xstar,gam,beta)
+   
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('lmi1_predic.dat',gam,beta,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('lmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+  
+    end do
+
+ end do
+
+!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!    beta=1   !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!
+
+  beta=1.
+  gammin=0.001
+  gammax=0.62
+  Ngam=30
+
+ do j=0,Ngam 
+ gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
+ gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
+ gam=sqrt(gammin+(gammax-gammin)*(real(j,kp)/Ngam))  !square root step
 
 
 !  alpha=4.*(1.-gam)
@@ -110,6 +150,59 @@ endif
     end do
 
  end do
+
+
+!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!   beta=50   !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!
+  beta=50.
+  gammin=0.005
+  gammax=0.07
+  Ngam=50
+
+ do j=0,Ngam 
+ gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
+ gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
+ gam=gammin+(gammax-gammin)*sqrt(real(j,kp)/real(Ngam,kp))  !square root step
+
+
+!  alpha=4.*(1.-gam)
+!  w=(alpha-2.)/(alpha+2.)
+
+  lnRhoRehMin = lnRhoNuc
+  lnRhoRehMax = lmi1_lnrhoend(gam,beta,Pstar)
+
+  print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+  do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+ 
+
+       eps1 = lmi1_epsilon_one(xstar,gam,beta)
+       eps2 = lmi1_epsilon_two(xstar,gam,beta)
+       eps3 = lmi1_epsilon_three(xstar,gam,beta)
+   
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       call livewrite('lmi1_predic.dat',gam,beta,eps1,eps2,eps3,r,ns,Treh)
+
+       call livewrite('lmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+  
+    end do
+
+ end do
+
 
 
  

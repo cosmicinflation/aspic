@@ -127,11 +127,12 @@ contains
        if (.not.(beta.lt.sqrt(2._kp).or.gam.lt.lmi2_gammin(beta))) then
           stop 'lmi2_xini_min: conditional tests WRONG!'
        endif
-              
+             
     else
 
       lmi2_xini_min = lmi2_x_epsoneunity(gam,beta) &
            * (1._kp+epsilon(1._kp))
+
 
     endif
 

@@ -2,7 +2,7 @@
 program dsimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three,dsi_xinimin,dsi_xendmin
+  use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three,dsi_xinimin,dsi_xendmin,dsi_xendmax,dsi_mumax
   use dsireheat, only : dsi_lnrhoend, dsi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -13,12 +13,15 @@ program dsimain
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j,k
-  integer :: npts,nmu,nxEnd
+  integer :: i,j,k,l
+  integer :: npts,nmu,nxEnd,np
 
-  real(kp) :: p,mu,xEnd,w,bfoldstar
+  real(kp) :: p,mu,xEnd,w,bfoldstar,q
   real(kp) :: mumin,mumax,xEndmin,xEndmax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
+
+  real(kp), dimension(:), allocatable ::pvalues,qvalues,muminvalues,mumaxvalues
+  integer(kp), dimension(:), allocatable ::nmuvalues, nxEndvalues
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
@@ -41,59 +44,57 @@ program dsimain
   w=0._kp
 !  w = 1._kp/3._kp
 
-  p=2._kp
-  p=3._kp
-  p=4._kp
- 
- if (p .eq. 2._kp) then
-  nmu=100
-  nxEnd=100
-  mumin=10**(-0._kp)
-  mumax=10**(3._kp)
- endif
- if (p .eq. 3._kp) then
-  nmu=70
-  nxEnd=150
-  mumin=10**(-1._kp)
-  mumax=10**(2._kp)
- endif
- if (p .eq. 4._kp) then
-  nmu=70
-  nxEnd=150
-  mumin=10**(-1._kp)
-  mumax=10**(3._kp)
- endif
+  np=3
+  allocate(pvalues(1:np))
+  pvalues(1)=2._kp
+  pvalues(2)=3._kp
+  pvalues(3)=4._kp
 
+  allocate(qvalues(1:np))
+  qvalues(1)=8._kp
+  qvalues(2)=8._kp
+  qvalues(3)=8._kp
+
+  allocate(nmuvalues(1:np))
+  nmuvalues(1)=15
+  nmuvalues(2)=15
+  nmuvalues(3)=15
+
+  allocate(mumaxvalues(1:np))
+  mumaxvalues(1)=dsi_mumax(pvalues(1),qvalues(1),60._kp)
+  mumaxvalues(2)=dsi_mumax(pvalues(2),qvalues(2),60._kp)
+  mumaxvalues(3)=dsi_mumax(pvalues(3),qvalues(3),60._kp)
+
+  allocate(muminvalues(1:np))
+  muminvalues(1)=mumaxvalues(1)*10.**(-5.)
+  muminvalues(2)=mumaxvalues(2)*10.**(-6.)
+  muminvalues(3)=mumaxvalues(3)*10.**(-7.)
+
+  allocate(nxEndvalues(1:np))
+  nxEndvalues(1)=50
+  nxEndvalues(2)=50
+  nxEndvalues(3)=50
+
+  do l=1,np
+     p=pvalues(l)
+     q=qvalues(l)
+     nmu=nmuvalues(l)
+     nxEnd=nxEndvalues(l)
+     mumin=muminvalues(l)
+     mumax=mumaxvalues(l)
 
 
   do j=0,nmu
      mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
 
- if (p .eq. 2._kp) then
-     xEndmin=dsi_xinimin(p,mu)*10.
-     xEndmax=100._kp*xEndmin
- endif
-if (p .eq. 3._kp) then
-     xEndmin=dsi_xendmin(62._kp,p,mu)
-     xEndmax=100._kp*xEndmin
- endif
-if (p .eq. 4._kp) then
-     xEndmin=dsi_xendmin(62._kp,p,mu)
-     xEndmax=100._kp*xEndmin
- endif
+     xEndmin=dsi_xendmin(70._kp,p,mu)
+     xEndmin=dsi_xendmin(60._kp,p,mu)
+     xEndmax=dsi_xendmax(p,mu,q)
+     print*,'xEndmin=',xEndmin,'xEndmax=',xEndmax
 
-
-     do k=1,nxEnd
- if (p .eq. 2._kp) then
-        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/real(nxEnd,kp)) !logarithmic step
- endif
- if (p .eq. 3._kp) then
-        xEnd=xEndmin*exp((log(xEndmax/xEndmin))**((real(k,kp)-1._kp)/real(nxEnd,kp))-1._kp) !ultralogarithmic step
- endif
- if (p .eq. 4._kp) then
-        xEnd=xEndmin*exp((log(xEndmax/xEndmin))**((real(k,kp)-1._kp)/real(nxEnd,kp))-1._kp) !ultralogarithmic step
- endif
-
+ 
+      do k=1,nxEnd
+       xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/real(nxEnd,kp)) 
 
 
         lnRhoRehMin = lnRhoNuc
@@ -130,6 +131,8 @@ if (p .eq. 4._kp) then
      end do
 
   end do
+
+end do
 
 
 

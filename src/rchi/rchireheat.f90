@@ -42,7 +42,7 @@ contains
     primEnd = rchi_efold_primitive(xEnd,AI)
 
 !   print*,'xEnd=',xEnd,'epsOneEnd=',epsOneEnd,'potEnd=',potEnd,'primEnd=',primEnd,'AI=',AI
- !  pause
+!   pause
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
@@ -65,7 +65,7 @@ contains
     endif
 
 !    print*,'xstar=',x,'epsOneStar=',rchi_epsilon_one(x,AI),'primStar=',rchi_efold_primitive(x,AI),'AI=',AI
- !   pause
+!    pause
 
   end function rchi_x_star
 

@@ -99,16 +99,19 @@ contains
     real(kp), intent(in) :: alpha
     real(kp) :: li_x_endinf
     
-
+    if (alpha .gt. 0._kp) then
     li_x_endinf = 1._kp/sqrt(2._kp) &
          /lambert(exp(1._kp/alpha)/(sqrt(2._kp)),0)
+    else
+    li_x_endinf = -1._kp/sqrt(2._kp) &
+         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),0)
+    endif
 
    
   end function li_x_endinf
 
 
-  
-
+ 
 !this is integral[V(phi)/V'(phi) dphi]
   function li_efold_primitive(x,alpha)
     implicit none
@@ -132,11 +135,14 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: liData
 
-  
+    if (alpha .gt. 0._kp) then
     mini = xEnd
     maxi = xEnd*1000._kp
-  
-
+    else
+    mini = -1._kp/sqrt(2._kp) &
+         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    maxi = xEnd
+    endif
 
     liData%real1 = alpha
     liData%real2 = -bfold + li_efold_primitive(xend,alpha)

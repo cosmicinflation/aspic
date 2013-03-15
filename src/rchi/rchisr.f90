@@ -60,15 +60,17 @@ contains
     implicit none
     real(kp) :: rchi_epsilon_one
     real(kp), intent(in) :: x,AI
-
+    
     !Approximated Formula commonly used in the litterature
     !rchi_epsilon_one = 4._kp/3._kp*(exp(-sqrt(2._kp/3._kp)*x)+ &
     !                   AI/(64._kp*acos(-1._kp)**2))**2
-    
+
     rchi_epsilon_one = (3._kp*(AI*exp(sqrt(2._kp/3._kp)*x)+ &
                        64._kp*acos(-1._kp)**2)**2)/(-192._kp*acos(-1._kp)**2+ &
                        exp(sqrt(2._kp/3._kp)*x)*(96._kp*acos(-1._kp)**2+ &
                        sqrt(6._kp)*AI*x))**2
+
+
 
 
     
@@ -80,15 +82,17 @@ contains
     implicit none
     real(kp) :: rchi_epsilon_two
     real(kp), intent(in) :: x,AI
-    
+
     !Approximated Formula commonly used in the litterature
-    !rchi_epsilon_two = -4._kp*rchi_epsilon_one(x,AI)+8._kp/3._kp*exp(-sqrt(2._kp/3._kp)*x)
+    !rchi_epsilon_two = 4._kp*rchi_epsilon_one(x,AI)+8._kp/3._kp*exp(-sqrt(2._kp/3._kp)*x)
 
     rchi_epsilon_two = (4._kp*exp(sqrt(2._kp/3._kp)*x)*(3._kp*AI**2* &
                        exp(sqrt(2._kp/3._kp)*x)+6144._kp*acos(-1._kp)**4+ &
                        64._kp*AI*acos(-1._kp)**2*(6._kp+sqrt(6._kp)*x)))/ &
                        (-192._kp*acos(-1._kp)**2+exp(sqrt(2._kp/3._kp)*x)* &
                        (96._kp*acos(-1._kp)**2+sqrt(6._kp)*AI*x))**2
+
+
 
 
     
@@ -185,8 +189,9 @@ contains
     real(kp) :: rchi_efold_primitive
 
      !Approximated Trajectory in  the vacuum dominated approximation
-     rchi_efold_primitive = 48._kp*acos(-1._kp)**2/AI*log(abs(1._kp+ & 
-                           AI/(64._kp*acos(-1._kp)**2)*exp(sqrt(2._kp/3._kp)*x)))
+     !rchi_efold_primitive = 48._kp*acos(-1._kp)**2/AI*log(abs(1._kp+ & 
+     !                      AI/(64._kp*acos(-1._kp)**2)*exp(sqrt(2._kp/3._kp)*x)))
+
 
     if (AI.eq.0._kp) then 
        rchi_efold_primitive = 0.25_kp*(3._kp*exp(sqrt(2._kp/3._kp)*x)-2._kp*sqrt(6._kp)*x)
@@ -200,6 +205,8 @@ contains
                            complex(2._kp,0._kp)),kp)
 
     endif
+
+
 
   end function rchi_efold_primitive
 

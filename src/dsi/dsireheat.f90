@@ -39,8 +39,6 @@ contains
     epsOneEnd = dsi_epsilon_one(xEnd,p,mu)
     potEnd = dsi_norm_potential(xEnd,p)
     primEnd = dsi_efold_primitive(xEnd,p,mu)
-
-!    print*,'dsi_x_star:    xEnd=',xEnd,'  epsOneEnd=',epsOneEnd,'  potEnd=',potEnd,'  primEnd=',primEnd
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
@@ -53,15 +51,8 @@ contains
     mini=dsi_xinimin(p,mu)
     maxi = xend
 
-
-!    print*,'mini=',mini,'maxi=',maxi,'f(mini)=',find_dsi_x_star(mini,dsiData) &
-!         ,'f(maxi)=',find_dsi_x_star(maxi,dsiData)
-!    pause
-
     x = zbrent(find_dsi_x_star,mini,maxi,tolzbrent,dsiData)
     dsi_x_star = x
-
-    print*,'dsi_x_star:    xEnd=',xEnd,'  epsOneEnd=',epsOneEnd,'  potEnd=',potEnd,'  primEnd=',primEnd, 'xstar=', x
 
     if (present(bfoldstar)) then
        bfoldstar = - (dsi_efold_primitive(x,p,mu) - primEnd)

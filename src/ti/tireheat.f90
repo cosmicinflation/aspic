@@ -6,7 +6,7 @@ module tireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
   use tisr, only : ti_epsilon_one, ti_epsilon_two, ti_epsilon_three
-  use tisr, only : ti_norm_potential,ti_efold_primitive,ti_x_endinf
+  use tisr, only : ti_norm_potential,ti_efold_primitive,ti_x_endinf,ti_x_potmax
   implicit none
 
   private
@@ -39,7 +39,6 @@ contains
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
     potEnd = ti_norm_potential(xEnd,alpha)
     primEnd = ti_efold_primitive(xEnd,alpha,mu)
-   
 
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
@@ -48,9 +47,8 @@ contains
     tiData%real3 = w
     tiData%real4 = calF + primEnd
 
+    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
     maxi = xEnd*(1._kp-epsilon(1._kp))
-    mini=maxi/10000._kp !To avoid numerical infinity
-
 
     x = zbrent(find_ti_x_star,mini,maxi,tolFind,tiData)
     ti_x_star = x
@@ -59,6 +57,7 @@ contains
        bfold = -(ti_efold_primitive(x,alpha,mu) - primEnd)
     endif
 
+    print*,'xStar=',x,'epsOneStar=',ti_epsilon_one(x,alpha,mu),'primStar=',ti_efold_primitive(x,alpha,mu)
 
   end function ti_x_star
 
