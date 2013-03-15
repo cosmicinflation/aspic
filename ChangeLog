@@ -1,3 +1,22 @@
+commit 1b321477e36d9677e93cd39d5e886c2a3f076402
+Date:   Fri Mar 15 09:35:49 2013 +0100
+
+    Updating libaspic man, fixing include, updating Pstar with WMAP9
+
+ include/aspic.h         |   32 ++++++++++++++++----------------
+ man/libaspic.3          |   70 +++++++++++++++++++++++++---------------------------------------------
+ src/common/cosmopar.f90 |    2 +-
+ 3 files changed, 42 insertions(+), 62 deletions(-)
+
+commit 5fb5131847e92ad9612262ade7619a8ff613ffb2
+Date:   Fri Mar 15 08:52:15 2013 +0100
+
+    Edit changelog/news
+
+ ChangeLog |   87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |   13 ++-----------
+ 2 files changed, 89 insertions(+), 11 deletions(-)
+
 commit bfce87283c82f67baefc140243e743b6a44a5460
 Merge: 82d2f27 5e140c7
 Date:   Fri Mar 15 08:38:50 2013 +0100
