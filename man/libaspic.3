@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "November 5, 2012" "version 0.0.7" "Aspic usage"
+.TH libaspic 3 "March 15, 2013" "version 0.1.0" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -413,7 +413,7 @@ stands for the COBE quadrupole moment,
 is the pivot scale at which the amplitude of the scalar primordial
 power spectrum is measured. A default amplitude is stored in the parameter
 .B PowerAmpScalar
-(best fit from WMAP7), that very same quantity has been referred to
+(mean value from WMAP9), that very same quantity has been referred to
 as 'Pstar' in some functional arguments above.
 .P
 Notice that changing any of these constants requires edition of the source
@@ -474,8 +474,14 @@ Acronym
 .B
 Model name
 .TQ
+.I rchi
+radiatively corrected Higgs inflation
+.TQ
 .I lfi
 large field inflation
+.TQ
+.I mlfi
+mixed large field inflation
 .TQ
 .I rcmi
 radiatively corrected massive inflation
@@ -483,11 +489,8 @@ radiatively corrected massive inflation
 .I rcqi
 radiatively corrected quartic inflation
 .TQ
-.I pni
-natural inflation with the plus sign
-.TQ
-.I mni
-natural inflation with the minus sign
+.I ni
+natural inflation
 .TQ
 .I esi
 exponential SUSY inflation
@@ -579,9 +582,6 @@ pseudo natural inflation
 .I ncki
 non-canonical Kahler inflation
 .TQ
-.I bi
-brane inflation
-.TQ
 .I csi
 constant spectrum inflation
 .TQ
@@ -594,23 +594,23 @@ constant spectral index inflation C
 .I sbi
 supergravity brane inflation
 .TQ
-.I ssi1 
-sneutrino supersymmetric inflation I
+.I ssbi1 
+spontaneous symmetry breaking inflation I
 .TQ
-.I ssi2
-sneutrino supersymmetric inflation II
+.I ssbi2
+spontaneous symmetry breaking inflation II
 .TQ
-.I ssi3
-sneutrino supersymmetric inflation III
+.I ssbi3
+spontaneous symmetry breaking inflation III
 .TQ
-.I ssi4
-sneutrino supersymmetric inflation IV
+.I ssbi4
+spontaneous symmetry breaking inflation IV
 .TQ
-.I ssi5
-sneutrino supersymmetric inflation V
+.I ssbi5
+spontaneous symmetry breaking inflation V
 .TQ
-.I ssi6
-sneutrino supersymmetric inflation VI
+.I ssbi6
+spontaneous symmetry breaking inflation VI
 
 .SS THREE PARAMETERS MODELS
 .TP 20
@@ -652,20 +652,6 @@ logarithmic potential inflation III
 .TQ
 .I cndi
 constant spectral index inflation D
-.TQ
-.I shi
-super hilltop inflation
-.TQ
-.I ghi
-generalized hiltop inflation
-.TQ
-.I su5i
-SU(5) inflation
-.TQ
-.I pi
-polynomial inflation
-
-
 
 .SH ADDING A MODEL
 Before deciding to add a model, you should first check that its
@@ -827,8 +813,7 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_lfi (3),
 .BR aspic_rcmi (3),
 .BR aspic_rcqi (3),
-.BR aspic_pni (3),
-.BR aspic_mni (3),
+.BR aspic_ni (3),
 .BR aspic_esi (3),
 .BR aspic_pli (3),
 .BR aspic_kmii (3),
@@ -858,12 +843,11 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_bei (3),
 .BR aspic_psni (3),
 .BR aspic_ncki (3),
-.BR aspic_bi (3),
 .BR aspic_csi (3),
 .BR aspic_oi (3),
 .BR aspic_cnci (3),
 .BR aspic_sbi (3),
-.BR aspic_ssi (3).
+.BR aspic_ssbi (3).
 .P
 .BR aspic_lmi2 (3),
 .BR aspic_rmi (3),
@@ -871,8 +855,4 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_dsi (3),
 .BR aspic_gmlfi (3),
 .BR aspic_lpi(3),
-.BR aspic_cndi (3),
-.BR aspic_shi (3),
-.BR aspic_ghi (3),
-.BR aspic_su5i(3),
-.BR aspic_pi(3).
+.BR aspic_cndi (3).

@@ -42,6 +42,6 @@ module cosmopar
   real(kp), parameter :: kstar = 0.05_kp !Mpc^-1
 
 !Best scalar amp for slow-roll (update with new constraints)
-  real(kp), parameter :: powerAmpScalar = 2.165e-9
+  real(kp), parameter :: powerAmpScalar = 2.1953e-9
 
 end module cosmopar

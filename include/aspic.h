@@ -7,14 +7,14 @@ use hisr
 use hireheat
 use lfisr
 use lfireheat
+use mssmisr
+use mssmireheat
 use rcmisr
 use rcmireheat
 use rcqisr
 use rcqireheat
-use pnisr
-use pnireheat
-use mnisr
-use mnireheat
+use nisr
+use nireheat
 use esisr
 use esireheat
 use plisr
@@ -83,18 +83,18 @@ use cncisr
 use cncireheat
 use sbisr
 use sbireheat
-use ssi1sr
-use ssi1reheat
-use ssi2sr
-use ssi2reheat
-use ssi3sr
-use ssi3reheat
-use ssi4sr
-use ssi4reheat
-use ssi5sr
-use ssi5reheat
-use ssi6sr
-use ssi6reheat
+use ssbi1sr
+use ssbi1reheat
+use ssbi2sr
+use ssbi2reheat
+use ssbi3sr
+use ssbi3reheat
+use ssbi4sr
+use ssbi4reheat
+use ssbi5sr
+use ssbi5reheat
+use ssbi6sr
+use ssbi6reheat
 
 
 
