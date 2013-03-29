@@ -201,8 +201,8 @@ contains
                            (1._kp+AI/(32._kp*acos(-1._kp)**2)* &
                            (1._kp+sqrt(2._kp/3._kp)*x))*log(abs(1._kp+AI/(64._kp*acos(-1._kp)**2)* &
                            exp(sqrt(2._kp/3._kp)*x)))+1.5_kp*real(polylog(cmplx( &
-                           -AI/(64._kp*acos(-1._kp)**2)*exp(sqrt(2._kp/3._kp)*x),0._kp), &
-                           cmplx(2._kp,0._kp)),kp)
+                           -AI/(64._kp*acos(-1._kp)**2)*exp(sqrt(2._kp/3._kp)*x),0._kp,kp), &
+                           cmplx(2._kp,0._kp,kp)),kp)
 
     endif
 

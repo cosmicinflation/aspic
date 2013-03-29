@@ -151,9 +151,10 @@ contains
 
     if (alpha.eq.0._kp) stop 'ncki_efold_primitive: alpha=0 !'
 
-    ncki_efold_primitive = (1._kp-alpha/2._kp+alpha*log(x))*log(alpha+2._kp*beta*x**2)/(4._kp*beta) &
+    ncki_efold_primitive = (1._kp-alpha/2._kp+alpha*log(x)) &
+         * log(alpha+2._kp*beta*x**2)/(4._kp*beta) &
          +x**2/4._kp-alpha/(4._kp*beta)*log(alpha)*log(x)+alpha/(8._kp*beta)* &
-         real(polylog(cmplx(-2._kp*beta/alpha*x**2,0._kp),cmplx(2._kp,0._kp)),kp)
+         real(polylog(cmplx(-2._kp*beta/alpha*x**2,0._kp,kp),cmplx(2._kp,0._kp,kp)),kp)
 
 
   end function ncki_efold_primitive

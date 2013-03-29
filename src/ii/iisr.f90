@@ -167,13 +167,13 @@ contains
 
     if (beta .gt. 9._kp/2._kp*(1._kp+sqrt(2._kp))) then
       xin=beta/(3._kp*sqrt(2._kp)) &
-         +cmplx(1._kp,sqrt(3._kp)) &
+         +cmplx(1._kp,sqrt(3._kp),kp) &
          /(3._kp*sqrt(2._kp)) &
          *beta**(4._kp/3._kp) &
-         /((cmplx(9._kp+2._kp*beta,sqrt(-81._kp-36._kp*beta+4._kp*beta**2)))**(1._kp/3._kp)) &
-         +cmplx(1._kp,-sqrt(3._kp)) &
+         /((cmplx(9._kp+2._kp*beta,sqrt(-81._kp-36._kp*beta+4._kp*beta**2),kp))**(1._kp/3._kp)) &
+         +cmplx(1._kp,-sqrt(3._kp),kp) &
          *beta**(2._kp/3._kp)/(6._kp*sqrt(2._kp))* &
-         (cmplx(9._kp+2._kp*beta,sqrt(-81._kp-36._kp*beta+4._kp*beta**2)))**(1._kp/3._kp)
+         (cmplx(9._kp+2._kp*beta,sqrt(-81._kp-36._kp*beta+4._kp*beta**2),kp))**(1._kp/3._kp)
 
 
     else

@@ -113,13 +113,13 @@ contains
        stop 'ssbi5_x_epsonemax: error: alpha^2 > 4 beta, epsilon_2 never vanishes'
     else
 
-    ssbi5_x_epsonemax = sqrt(-(alpha/(6._kp*beta))+((1._kp-cmplx(0._kp,1._kp)*sqrt(3._kp))* &
+    ssbi5_x_epsonemax = sqrt(-(alpha/(6._kp*beta))+((1._kp-cmplx(0._kp,1._kp,kp)*sqrt(3._kp))* &
          (5._kp*alpha**2*beta**2-36._kp*beta**3))/(6._kp*2._kp**(2._kp/3._kp)* &
          beta**2*(16._kp*alpha**3*beta**3+sqrt(cmplx(256._kp*alpha**6*beta**6+ &
-         4._kp*(5._kp*alpha**2*beta**2-36._kp*beta**3)**3,0._kp)))**(1._kp/3._kp))- &
-         ((1._kp+cmplx(0._kp,1._kp)*sqrt(3._kp))*(16._kp*alpha**3*beta**3+ &
+         4._kp*(5._kp*alpha**2*beta**2-36._kp*beta**3)**3,0._kp,kp)))**(1._kp/3._kp))- &
+         ((1._kp+cmplx(0._kp,1._kp,kp)*sqrt(3._kp))*(16._kp*alpha**3*beta**3+ &
          sqrt(cmplx(256._kp*alpha**6*beta**6+4._kp*(5._kp*alpha**2*beta**2- &
-         36._kp*beta**3)**3,0._kp)))**(1._kp/3._kp))/(12._kp*2._kp**(1._kp/3._kp)*beta**2))
+         36._kp*beta**3)**3,0._kp,kp)))**(1._kp/3._kp))/(12._kp*2._kp**(1._kp/3._kp)*beta**2))
 
     endif
     
