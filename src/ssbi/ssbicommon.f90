@@ -147,10 +147,10 @@ contains
     real(kp), intent(in) :: alpha,beta
 
     ssbi136_x_epstwozero = sqrt(-(alpha/(6._kp*beta))+(16._kp*alpha**3*beta**3+2._kp* &
-         sqrt(complex((64._kp*alpha**6+(5._kp*alpha**2-36._kp*beta)**3)* &
+         sqrt(cmplx((64._kp*alpha**6+(5._kp*alpha**2-36._kp*beta)**3)* &
          beta**6,0._kp)))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)*beta**2)+ &
          (-5._kp*alpha**2+36._kp*beta)/(6._kp*(8._kp*alpha**3*beta**3+ & 
-         3._kp*sqrt(3._kp)*sqrt(complex((alpha**2-4._kp*beta)*beta**6* &
+         3._kp*sqrt(3._kp)*sqrt(cmplx((alpha**2-4._kp*beta)*beta**6* &
          (7._kp*alpha**4-72._kp*alpha**2*beta+432._kp*beta**2),0._kp)))**(1._kp/3._kp)))
 
    end function ssbi136_x_epstwozero
