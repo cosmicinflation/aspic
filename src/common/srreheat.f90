@@ -28,10 +28,10 @@ module srreheat
 contains
 
 
-  function slowroll_validity(eps1,eps2)
+  function slowroll_validity(eps1,eps2,eps3)
     implicit none
     real(kp), intent(in) :: eps1
-    real(kp), intent(in), optional :: eps2
+    real(kp), intent(in), optional :: eps2, eps3
     logical :: slowroll_validity
 
     slowroll_validity = .true.
@@ -50,6 +50,12 @@ contains
 
     if (present(eps2)) then
        if (abs(eps2).gt.1._kp) then          
+          slowroll_validity = .false.
+       endif
+    endif
+
+    if (present(eps3)) then
+       if (abs(eps3).gt.1._kp) then          
           slowroll_validity = .false.
        endif
     endif
