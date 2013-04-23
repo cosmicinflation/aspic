@@ -1,3 +1,98 @@
+commit f43fa103fc50092fda66d1c5f84b563cd83bde49
+Merge: 88d2f48 e8ff157
+Date:   Tue Apr 23 15:31:23 2013 +0200
+
+    Merge branch 'vincent'
+
+commit e8ff1577c3d2a47b891b7f0ad00f9dca781817ed
+Date:   Tue Apr 23 15:30:59 2013 +0200
+
+    Merge with Vincent, 4 models inprogress
+
+ configure.ac                  |   4 +
+ src/Makefile.am               |   8 +-
+ src/bsusybi/bsusybireheat.f90 |   3 -
+ src/common/specialinf.f90     |   2 +-
+ src/gripi/Makefile.am         |  25 ++++
+ src/gripi/aspic_gripi.3       |  25 ++++
+ src/gripi/gripimain.f90       | 227 ++++++++++++++++++++++++++++++++
+ src/gripi/gripireheat.f90     | 128 ++++++++++++++++++
+ src/gripi/gripisr.f90         | 405 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ii/iisr.f90               |   8 +-
+ src/imi/Makefile.am           |  24 ++++
+ src/imi/aspic_imi.3           |  32 +++++
+ src/imi/imimain.f90           |  80 ++++++++++++
+ src/imi/imireheat.f90         | 114 ++++++++++++++++
+ src/imi/imisr.f90             | 132 +++++++++++++++++++
+ src/mhi/mhisr.f90             |   4 +-
+ src/ncki/nckisr.f90           |   5 +-
+ src/osti/Makefile.am          |  25 ++++
+ src/osti/aspic_osti.3         |  25 ++++
+ src/osti/ostimain.f90         |  81 ++++++++++++
+ src/osti/ostireheat.f90       | 118 +++++++++++++++++
+ src/osti/ostisr.f90           | 182 ++++++++++++++++++++++++++
+ src/psni/psnisr.f90           |   2 +-
+ src/rchi/rchisr.f90           |   6 +-
+ src/ripi/ripisr.f90           |   8 +-
+ src/ssbi/ssbi5sr.f90          |  12 +-
+ src/ssbi/ssbicommon.f90       |   8 +-
+ src/twi/aspic_twi.3           |  11 +-
+ src/wrhi/Makefile.am          |  25 ++++
+ src/wrhi/aspic_wrhi.3         |  25 ++++
+ src/wrhi/wrhimain.f90         |  75 +++++++++++
+ src/wrhi/wrhireheat.f90       | 118 +++++++++++++++++
+ src/wrhi/wrhisr.f90           | 134 +++++++++++++++++++
+ 33 files changed, 2046 insertions(+), 35 deletions(-)
+
+commit 88d2f48ff91f88eaec259a1851d9ea4bcfdbea9a
+Author: chris <chris@ringeval.com>
+Date:   Tue Apr 23 15:14:18 2013 +0200
+
+    Adding eps3 in slowroll validity test
+
+ src/common/srreheat.f90 | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+commit 4abcaff9c358e714693c07be315d3aebdd8c380d
+Date:   Fri Mar 29 10:56:29 2013 +0100
+
+    Fix wrong cmplx type 4->8
+
+ src/common/specialinf.f90 | 2 +-
+ src/ii/iisr.f90           | 8 ++++----
+ src/mhi/mhisr.f90         | 4 ++--
+ src/ncki/nckisr.f90       | 5 +++--
+ src/psni/psnisr.f90       | 2 +-
+ src/rchi/rchisr.f90       | 4 ++--
+ src/ripi/ripisr.f90       | 4 ++--
+ src/ssbi/ssbi5sr.f90      | 8 ++++----
+ src/ssbi/ssbicommon.f90   | 4 ++--
+ 9 files changed, 21 insertions(+), 20 deletions(-)
+
+commit 0bbdc8f4686116329af3f8d81285dfa168a3a099
+Author: chris <chris@ringeval.com>
+Date:   Fri Mar 29 10:29:57 2013 +0100
+
+    fixing usage of non-standard complex() function
+
+ src/common/specialinf.f90 | 2 +-
+ src/ncki/nckisr.f90       | 2 +-
+ src/psni/psnisr.f90       | 2 +-
+ src/rchi/rchisr.f90       | 4 ++--
+ src/ripi/ripisr.f90       | 4 ++--
+ src/ssbi/ssbi5sr.f90      | 8 ++++----
+ src/ssbi/ssbicommon.f90   | 4 ++--
+ 7 files changed, 13 insertions(+), 13 deletions(-)
+
+commit 01ad624c2bb4ed3e50691a65b0dbeb256219fd73
+Date:   Fri Mar 15 09:44:59 2013 +0100
+
+    Updating Changelog, bumping relnum
+
+ ChangeLog    | 19 +++++++++++++++++++
+ configure.ac |  2 +-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
+
 commit 1b321477e36d9677e93cd39d5e886c2a3f076402
 Date:   Fri Mar 15 09:35:49 2013 +0100
 

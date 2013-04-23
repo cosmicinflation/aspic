@@ -1,4 +1,8 @@
-* version 0.1.0
+* version 0.2.0 (devel branch)
+- 4 new models in progress
+- preparing Rrad
 
-- First public release (evaluator)
+* version 0.1.2 (evaluator)
+- Fix usage of non-standard fortran function complex() -> cmplx()
+- Add eps3 to slow-roll validity tests
 
