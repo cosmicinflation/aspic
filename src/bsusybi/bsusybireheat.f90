@@ -55,9 +55,6 @@ contains
        bfold = -(bsusybi_efold_primitive(x,gammaBSUSYB) - primEnd)
     endif
 
- !   print*,'bsusybi_x_star:   epsOneEnd=',epsOneEnd,'  potEnd=',potEnd,'  primEnd=', &
-!            primEnd,'  xstar=',x,'  bfold=',bfold
-
   end function bsusybi_x_star
 
   function find_bsusybi_x_star(x,bsusybiData)   

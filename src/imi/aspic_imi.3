@@ -1,13 +1,13 @@
-.TH libtwi 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH liblfi 3 "September 7, 2012" "libaspic" "Module convention" 
 
 .SH NAME
-.I twi
-- the twisted inflation module
+.I lfi
+- the inverse monomial inflation module
 
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 [ 1 - A (x/phi0)**2 exp(-x/phi0) ]
+V(phi) = M^4 x^(-p)
 .TP
 Routine units
 .I real(kp)
@@ -18,19 +18,14 @@ Routine units
 Parameters
 .I real(kp)
 ::
-.B phi0, xend
-.TP
-Constants
-.I real(kp), parameter
-::
-A = 32/[92 zeta(5)]
+.B p, xend
 .SH NOTES
 The end of inflation is an additional model parameter encoded in the
 dimensionless field value
 .B xend
 at which this occurs. The Hubble flow and potential routines therefore
 take only the 
-.B phi0
+.B p
 argument on entry.
 
 .SH AUTHORS
