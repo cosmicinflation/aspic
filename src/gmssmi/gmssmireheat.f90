@@ -100,7 +100,7 @@ contains
     real(kp) :: xEnd, potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
-    real(kp),parameter :: wrad=1_kp/3_kp
+    real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0_kp
 
     real(kp) :: lnRhoEnd
