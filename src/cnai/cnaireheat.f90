@@ -6,6 +6,8 @@ module cnaireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use cnaisr, only : cnai_epsilon_one, cnai_epsilon_two, cnai_epsilon_three
   use cnaisr, only : cnai_norm_potential
   use cnaisr, only : cnai_x_endinf, cnai_efold_primitive
@@ -13,11 +15,12 @@ module cnaireheat
 
   private
 
-  public cnai_x_star, cnai_lnrhoreh_max 
+  public cnai_x_star, cnai_lnrhoreh_max
+  public cnai_x_rrad, cnai_x_rreh
 
 contains
 
-!returns x such given potential parameters, scalar power, wreh and
+!returns x such potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
   function cnai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
@@ -78,6 +81,130 @@ contains
     find_cnai_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_cnai_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function cnai_x_rrad(alpha,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: cnai_x_rrad
+    real(kp), intent(in) :: alpha,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: cnaiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = cnai_x_endinf(alpha)
+    epsOneEnd = cnai_epsilon_one(xEnd,alpha)
+    potEnd = cnai_norm_potential(xEnd,alpha)
+    primEnd = cnai_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    cnaiData%real1 = alpha    
+    cnaiData%real2 = calF + primEnd
+
+    mini = epsilon(1._kp)
+    maxi = xEnd*(1._kp-epsilon(1._kp))
+
+    x = zbrent(find_cnai_x_rrad,mini,maxi,tolzbrent,cnaiData)
+    cnai_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (cnai_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function cnai_x_rrad
+
+  function find_cnai_x_rrad(x,cnaiData)   
+    implicit none
+    real(kp) :: find_cnai_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: cnaiData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=cnaiData%real1
+    CalFplusprimEnd = cnaiData%real2
+
+    primStar = cnai_efold_primitive(x,alpha)
+    epsOneStar = cnai_epsilon_one(x,alpha)
+    potStar = cnai_norm_potential(x,alpha)
+
+    find_cnai_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
+         ,epsOneStar,potStar)
+  
+  end function find_cnai_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function cnai_x_rreh(alpha,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: cnai_x_rreh
+    real(kp), intent(in) :: alpha,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: cnaiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = cnai_x_endinf(alpha)
+    epsOneEnd = cnai_epsilon_one(xEnd,alpha)
+    potEnd = cnai_norm_potential(xEnd,alpha)
+    primEnd = cnai_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    cnaiData%real1 = alpha    
+    cnaiData%real2 = calF + primEnd
+
+    mini = epsilon(1._kp)
+    maxi = xEnd*(1._kp-epsilon(1._kp))
+
+    x = zbrent(find_cnai_x_rreh,mini,maxi,tolzbrent,cnaiData)
+    cnai_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (cnai_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function cnai_x_rreh
+
+
+  function find_cnai_x_rreh(x,cnaiData)   
+    implicit none
+    real(kp) :: find_cnai_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: cnaiData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar
+
+    alpha=cnaiData%real1
+    CalFplusprimEnd = cnaiData%real2
+
+    primStar = cnai_efold_primitive(x,alpha)    
+    potStar = cnai_norm_potential(x,alpha)
+
+    find_cnai_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
+         ,potStar)
+  
+  end function find_cnai_x_rreh
 
 
 
