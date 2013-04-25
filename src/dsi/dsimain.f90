@@ -7,10 +7,14 @@ program dsimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use dsisr, only : dsi_norm_potential
+  use dsireheat, only : dsi_x_rreh, dsi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
@@ -26,13 +30,16 @@ program dsimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End
 
   Pstar = powerAmpScalar
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!        Calculates the reheating predictions           !!
+  !!        Calculates the reheating predictions           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -42,7 +49,7 @@ program dsimain
   npts = 20
 
   w=0._kp
-!  w = 1._kp/3._kp
+  !  w = 1._kp/3._kp
 
   np=3
   allocate(pvalues(1:np))
@@ -84,47 +91,49 @@ program dsimain
      mumax=mumaxvalues(l)
 
 
-  do j=0,nmu
-     mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
+     do j=0,nmu
+        mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
 
-     xEndmin=dsi_xendmin(70._kp,p,mu)
-     xEndmin=dsi_xendmin(60._kp,p,mu)
-     xEndmax=dsi_xendmax(p,mu,q)
-     print*,'xEndmin=',xEndmin,'xEndmax=',xEndmax
-
- 
-      do k=1,nxEnd
-       xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/real(nxEnd,kp)) 
+        xEndmin=dsi_xendmin(70._kp,p,mu)
+        xEndmin=dsi_xendmin(60._kp,p,mu)
+        xEndmax=dsi_xendmax(p,mu,q)
+        print*,'xEndmin=',xEndmin,'xEndmax=',xEndmax
 
 
-        lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = dsi_lnrhoreh_max(p,mu,xEnd,Pstar)
-
-        print *,'p=',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-        do i=1,npts
-
-           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-           xstar = dsi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+        do k=1,nxEnd
+           xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/real(nxEnd,kp)) 
 
 
-           eps1 = dsi_epsilon_one(xstar,p,mu)
-           eps2 = dsi_epsilon_two(xstar,p,mu)
-           eps3 = dsi_epsilon_three(xstar,p,mu)
+           lnRhoRehMin = lnRhoNuc
+           lnRhoRehMax = dsi_lnrhoreh_max(p,mu,xEnd,Pstar)
+
+           print *,'p=',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+           do i=1,npts
+
+              lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+              xstar = dsi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
 
 
-           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+              eps1 = dsi_epsilon_one(xstar,p,mu)
+              eps2 = dsi_epsilon_two(xstar,p,mu)
+              eps3 = dsi_epsilon_three(xstar,p,mu)
 
-           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-           ns = 1._kp - 2._kp*eps1 - eps2
-           r =16._kp*eps1
+              print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
-           call livewrite('dsi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+              logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+              Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-           call livewrite('dsi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+              ns = 1._kp - 2._kp*eps1 - eps2
+              r =16._kp*eps1
+
+              call livewrite('dsi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+              call livewrite('dsi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+           end do
 
         end do
 
@@ -132,8 +141,46 @@ program dsimain
 
   end do
 
-end do
 
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  p= 2
+  mu= 0.1
+  xend = 100
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = dsi_x_rrad(p,mu,xend,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = dsi_epsilon_one(xstar,p,mu)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     eps1end =  dsi_epsilon_one(xend,p,mu)
+     VendOverVstar = dsi_norm_potential(xend,p,mu)/dsi_norm_potential(xstar,p,mu)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = dsi_x_rreh(p,mu,xend,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = dsi_x_star(p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
 
 
 

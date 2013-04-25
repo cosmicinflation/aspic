@@ -116,23 +116,23 @@ contains
     dsiData%real1 = p
     dsiData%real2 = mu
     
-    dsi_x_epsoneunity = zbrent(find_dsixepsoneunity,mini,maxi,tolFind,dsiData)
+    dsi_x_epsoneunity = zbrent(find_dsi_x_epsoneunity,mini,maxi,tolFind,dsiData)
     
   end function dsi_x_epsoneunity
   
-  function find_dsixepsoneunity(x,dsiData)    
+  function find_dsi_x_epsoneunity(x,dsiData)    
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: dsiData
-    real(kp) :: find_dsixepsoneunity
+    real(kp) :: find_dsi_x_epsoneunity
     real(kp) :: p,mu
 
     p = dsiData%real1
     mu = dsiData%real2
     
-    find_dsixepsoneunity = dsi_epsilon_one(x,p,mu) - 1._kp
+    find_dsi_x_epsoneunity = dsi_epsilon_one(x,p,mu) - 1._kp
   
-  end function find_dsixepsoneunity
+  end function find_dsi_x_epsoneunity
 
 
 
@@ -169,7 +169,7 @@ contains
     xini = dsi_xinimin(p,mu)    
 
     dsi_xendmax = (720._kp*acos(-1._kp)**2*p**3/(q+4._kp)* &
-                  mu**(-q-6._kp)*60._kp*powerAmpScalar)**(1._kp/(3._kp*p+q+6._kp))
+         mu**(-q-6._kp)*60._kp*powerAmpScalar)**(1._kp/(3._kp*p+q+6._kp))
 
   end function dsi_xendmax
 
@@ -180,8 +180,8 @@ contains
     real(kp) :: dsi_mumax  
 
     dsi_mumax = (720._kp*acos(-1._kp)**2*p**3/(q+4._kp)* &
-                60._kp*powerAmpScalar)**((p+2._kp)/(p*q))/ &
-                ((p*(p+2._kp)*efolds)**((3._kp*p+q+6._kp)/(p*q)))
+         60._kp*powerAmpScalar)**((p+2._kp)/(p*q))/ &
+         ((p*(p+2._kp)*efolds)**((3._kp*p+q+6._kp)/(p*q)))
 
   end function dsi_mumax
 
