@@ -6,6 +6,8 @@ module lfireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : get_calfconst_rrad, find_reheat_rrad
+  use srreheat, only : get_calfconst_rreh, find_reheat_rreh
   use lfisr, only : lfi_epsilon_one, lfi_epsilon_two, lfi_epsilon_three
   use lfisr, only : lfi_norm_potential
   use lfisr, only : lfi_x_endinf, lfi_efold_primitive
@@ -13,14 +15,16 @@ module lfireheat
 
   private
 
-  public lfi_x_star, lfi_lnrhoend 
+  public lfi_x_star, lfi_lnrhoreh_max
   public lfi_xp_fromepsilon, lfi_lnrhoreh_fromepsilon 
+
+  public lfi_x_rrad, lfi_x_rreh
 
 contains
 
-!returns x such given potential parameters, scalar power, wreh and
+!returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)    
+  function lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)   
     implicit none
     real(kp) :: lfi_x_star
     real(kp), intent(in) :: p,lnRhoReh,w,Pstar
@@ -66,25 +70,153 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: lfiData
 
-    real(kp) :: primStar,p,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,p,w,CalFplusprimEnd,potStar
+    real(kp) :: epsOneStar
 
     p=lfiData%real1
     w = lfiData%real2
     CalFplusprimEnd = lfiData%real3
 
     primStar = lfi_efold_primitive(x,p)
-    epsOneStar = lfi_epsilon_one(x,p)
+    epsOneStar = lfi_epsilon_one(x,p)    
     potStar = lfi_norm_potential(x,p)
 
-    find_lfi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
+    find_lfi_x_star = find_reheat(primStar,calFplusprimEnd,w&
+         ,epsOneStar,potStar)
   
   end function find_lfi_x_star
 
-
-
-  function lfi_lnrhoend(p,Pstar) 
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function lfi_x_rrad(p,lnRrad,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: lfi_lnrhoend
+    real(kp) :: lfi_x_rrad
+    real(kp), intent(in) :: p,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: lfiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for instantaneous reheating!'
+    endif
+    
+    xEnd = lfi_x_endinf(p)
+    epsOneEnd = lfi_epsilon_one(xEnd,p)
+    potEnd = lfi_norm_potential(xEnd,p)
+    primEnd = lfi_efold_primitive(xEnd,p)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    lfiData%real1 = p    
+    lfiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_lfi_x_rrad,mini,maxi,tolzbrent,lfiData)
+    lfi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (lfi_efold_primitive(x,p) - primEnd)
+    endif
+
+  end function lfi_x_rrad
+
+  function find_lfi_x_rrad(x,lfiData)   
+    implicit none
+    real(kp) :: find_lfi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: lfiData
+
+    real(kp) :: primStar,p,w,CalFplusprimEnd
+    real(kp) :: potStar
+    real(kp) :: epsOneStar
+
+    p=lfiData%real1    
+    CalFplusprimEnd = lfiData%real2
+
+    primStar = lfi_efold_primitive(x,p)
+    epsOneStar = lfi_epsilon_one(x,p)
+    potStar = lfi_norm_potential(x,p)
+
+    find_lfi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
+         ,epsOneStar,potStar)
+  
+  end function find_lfi_x_rrad
+
+
+!returns x given potential parameters and lnR (no need of Pstar, lnR
+!is optimal for CMB). If present, returns the corresponding bfoldstar
+  function lfi_x_rreh(p,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: lfi_x_rreh
+    real(kp), intent(in) :: p,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: lfiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for instantaneous reheating!'
+    endif
+    
+    xEnd = lfi_x_endinf(p)
+    epsOneEnd = lfi_epsilon_one(xEnd,p)
+    potEnd = lfi_norm_potential(xEnd,p)
+    primEnd = lfi_efold_primitive(xEnd,p)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    lfiData%real1 = p    
+    lfiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_lfi_x_rreh,mini,maxi,tolzbrent,lfiData)
+    lfi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (lfi_efold_primitive(x,p) - primEnd)
+    endif
+
+  end function lfi_x_rreh
+
+  function find_lfi_x_rreh(x,lfiData)   
+    implicit none
+    real(kp) :: find_lfi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: lfiData
+
+    real(kp) :: primStar,p,w,CalFplusprimEnd
+    real(kp) :: potStar
+
+    p=lfiData%real1    
+    CalFplusprimEnd = lfiData%real2
+
+    primStar = lfi_efold_primitive(x,p)
+    potStar = lfi_norm_potential(x,p)
+
+    find_lfi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
+         ,potStar)
+  
+  end function find_lfi_x_rreh
+
+
+
+
+  function lfi_lnrhoreh_max(p,Pstar) 
+    implicit none
+    real(kp) :: lfi_lnrhoreh_max
     real(kp), intent(in) :: p,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -93,7 +225,6 @@ contains
     real(kp),parameter :: wrad=1_kp/3_kp
     real(kp),parameter :: junk=0_kp
 
-    real(kp) :: lnRhoEnd
     
     xEnd = lfi_x_endinf(p)
     potEnd  = lfi_norm_potential(xEnd,p)
@@ -105,13 +236,12 @@ contains
     potStar = lfi_norm_potential(x,p)
     epsOneStar = lfi_epsilon_one(x,p)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'lfi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'lfi_lnrhoreh_max: slow-roll violated!'
     
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lfi_lnrhoreh_max = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    lfi_lnrhoend = lnRhoEnd
 
-  end function lfi_lnrhoend
+  end function lfi_lnrhoreh_max
 
   
    

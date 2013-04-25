@@ -1,8 +1,9 @@
 !Some cosmological parameters used for inflation. This module sets
-!their fiducial values because observable predictions have only a weak
-!dependence in this (may change with increased data accuracy).
+!their fiducial values because observable predictions have only an
+!ultra weak dependence in this (may change with increased data
+!accuracy like 21cm).
 module cosmopar
-  use infprec, only : kp
+  use infprec, only : kp,pi
   implicit none
   
   public
@@ -29,7 +30,7 @@ module cosmopar
 
 !Tnuc=(30/pi^2)^(1/4)*0.01 GeV
   real(kp), parameter :: lnRhoNuc = log((10._kp)**(-8)/(1.2209*10._kp**19 &
-             /sqrt(8._kp*acos(-1._kp)))**4)
+             /sqrt(8._kp*pi))**4)
 
 !100MeV
 !!  real(kp), parameter :: lnRhoNuc = -178.55
