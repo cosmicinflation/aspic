@@ -7,10 +7,14 @@ program cndimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use cndisr, only : cndi_norm_potential
+  use cndireheat, only : cndi_x_rreh, cndi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
@@ -25,6 +29,10 @@ program cndimain
   real(kp), dimension(10) :: alphavalues
   integer, dimension(10) :: nxendvalues
 
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End
+  
 
   Pstar = powerAmpScalar
 
@@ -32,12 +40,12 @@ program cndimain
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!        Calculates the reheating predictions           !!
+  !!        Calculates the reheating predictions           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    w=0._kp
-!  w = 1._kp/3._kp
+  w=0._kp
+  !  w = 1._kp/3._kp
 
   call delete_file('cndi_predic.dat')
   call delete_file('cndi_nsr.dat')
@@ -52,16 +60,16 @@ program cndimain
 
   beta=5._kp
 
-     nalpha=4
-     alphavalues(1)=0.01_kp
-     alphavalues(2)=0.07_kp
-     alphavalues(3)=0.1_kp
-     alphavalues(4)=0.12_kp
+  nalpha=4
+  alphavalues(1)=0.01_kp
+  alphavalues(2)=0.07_kp
+  alphavalues(3)=0.1_kp
+  alphavalues(4)=0.12_kp
 
-     nxendvalues(1)=1000
-     nxendvalues(2)=200
-     nxendvalues(3)=200
-     nxendvalues(4)=200
+  nxendvalues(1)=1000
+  nxendvalues(2)=200
+  nxendvalues(3)=200
+  nxendvalues(4)=200
 
   do j=1,nalpha
      alpha=alphavalues(j)
@@ -115,20 +123,20 @@ program cndimain
 
   beta=0.1_kp
 
-     nalpha=6
-     alphavalues(1)=0.1_kp
-     alphavalues(2)=0.2_kp
-     alphavalues(3)=0.3_kp
-     alphavalues(4)=0.4_kp
-     alphavalues(5)=0.5_kp
-     alphavalues(6)=0.6_kp
+  nalpha=6
+  alphavalues(1)=0.1_kp
+  alphavalues(2)=0.2_kp
+  alphavalues(3)=0.3_kp
+  alphavalues(4)=0.4_kp
+  alphavalues(5)=0.5_kp
+  alphavalues(6)=0.6_kp
 
-     nxendvalues(1)=200
-     nxendvalues(2)=200
-     nxendvalues(3)=100
-     nxendvalues(4)=60
-     nxendvalues(5)=60
-     nxendvalues(6)=60
+  nxendvalues(1)=200
+  nxendvalues(2)=200
+  nxendvalues(3)=100
+  nxendvalues(4)=60
+  nxendvalues(5)=60
+  nxendvalues(6)=60
 
   do j=1,nalpha
      alpha=alphavalues(j)
@@ -175,6 +183,48 @@ program cndimain
         end do
      end do
   end do
+
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  alpha = 1e-2
+  beta = 5
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = cndi_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = cndi_epsilon_one(xstar,alpha,beta)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+
+     eps1end =  cndi_epsilon_one(xend,alpha,beta)
+     VendOverVstar = cndi_norm_potential(xend,alpha,beta)/cndi_norm_potential(xstar,alpha,beta)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = cndi_x_rreh(alpha,beta,xend,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = cndi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
+
 
 
 end program cndimain
