@@ -6,6 +6,8 @@ module mssmireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three
   use mssmisr, only : mssmi_norm_potential, mssmi_x_endinf, mssmi_x_epsonemin
   use mssmisr, only :  mssmi_efold_primitive
@@ -13,7 +15,8 @@ module mssmireheat
 
   private
 
-  public mssmi_x_star, mssmi_lnrhoreh_max 
+  public mssmi_x_star, mssmi_lnrhoreh_max
+  public mssmi_x_rrad, mssmi_x_rreh
 
 contains
 
@@ -88,6 +91,148 @@ contains
     find_mssmi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_mssmi_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function mssmi_x_rrad(phi0,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: mssmi_x_rrad
+    real(kp), intent(in) :: phi0,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: mssmiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = mssmi_x_endinf(phi0)
+    epsOneEnd = mssmi_epsilon_one(xEnd,phi0)
+    potEnd = mssmi_norm_potential(xEnd,phi0)
+    primEnd = mssmi_efold_primitive(xEnd,phi0)     
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    mssmiData%real1 = phi0 
+    mssmiData%real2 = xEnd
+    mssmiData%real3 = calF + primEnd
+
+    mini = xend
+    maxi = mssmi_x_epsonemin()*(1._kp-epsilon(1._kp))
+
+    x = zbrent(find_mssmi_x_rrad,mini,maxi,tolzbrent,mssmiData)
+    mssmi_x_rrad = x   
+
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (mssmi_efold_primitive(x,phi0) - primEnd)
+    endif
+
+    if (abs(find_reheat_rrad(mssmi_efold_primitive(x,phi0), &
+              mssmiData%real3,mssmi_epsilon_one(x,phi0),mssmi_norm_potential(x,phi0))) &
+        .gt. 0.1_kp) then
+    stop 'mssmi_x_rrad: accuracy error: xstar cannot be correctly zbrented'
+ endif
+   
+
+  end function mssmi_x_rrad
+
+  function find_mssmi_x_rrad(x,mssmiData)   
+    implicit none
+    real(kp) :: find_mssmi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: mssmiData
+
+    real(kp) :: primStar,phi0,xEnd,CalFplusprimEnd,potStar,epsOneStar
+
+    phi0=mssmiData%real1
+    xEnd=mssmiData%real2
+    CalFplusprimEnd = mssmiData%real3
+
+    primStar = mssmi_efold_primitive(x,phi0)
+    epsOneStar = mssmi_epsilon_one(x,phi0)
+    potStar = mssmi_norm_potential(x,phi0)
+
+    find_mssmi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_mssmi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function mssmi_x_rreh(phi0,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: mssmi_x_rreh
+    real(kp), intent(in) :: phi0,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: mssmiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = mssmi_x_endinf(phi0)
+    epsOneEnd = mssmi_epsilon_one(xEnd,phi0)
+    potEnd = mssmi_norm_potential(xEnd,phi0)
+    primEnd = mssmi_efold_primitive(xEnd,phi0)     
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    mssmiData%real1 = phi0 
+    mssmiData%real2 = xEnd
+    mssmiData%real3 = calF + primEnd
+
+    mini = xend
+    maxi = mssmi_x_epsonemin()*(1._kp-epsilon(1._kp))
+
+    x = zbrent(find_mssmi_x_rreh,mini,maxi,tolzbrent,mssmiData)
+    mssmi_x_rreh = x   
+
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (mssmi_efold_primitive(x,phi0) - primEnd)
+    endif
+
+    if (abs(find_reheat_rreh(mssmi_efold_primitive(x,phi0), &
+              mssmiData%real3,mssmi_norm_potential(x,phi0))) &
+        .gt. 0.1_kp) then
+    stop 'mssmi_x_rreh: accuracy error: xstar cannot be correctly zbrented'
+ endif
+   
+
+  end function mssmi_x_rreh
+
+  function find_mssmi_x_rreh(x,mssmiData)   
+    implicit none
+    real(kp) :: find_mssmi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: mssmiData
+
+    real(kp) :: primStar,phi0,xEnd,CalFplusprimEnd,potStar
+
+    phi0=mssmiData%real1
+    xEnd=mssmiData%real2
+    CalFplusprimEnd = mssmiData%real3
+
+    primStar = mssmi_efold_primitive(x,phi0)    
+    potStar = mssmi_norm_potential(x,phi0)
+
+    find_mssmi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_mssmi_x_rreh
+
 
 
 

@@ -104,7 +104,7 @@ contains
     type(transfert) :: aiData
     
 
-    if (lnRRad.eq.0._kp) then
+    if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     

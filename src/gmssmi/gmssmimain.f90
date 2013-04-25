@@ -9,10 +9,15 @@ program gmssmimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use gmssmisr, only : gmssmi_norm_potential, gmssmi_x_endinf
+  use gmssmireheat, only : gmssmi_x_rreh, gmssmi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
 
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
@@ -26,43 +31,47 @@ program gmssmimain
 
   real(kp) ::x,xmin,xmax,Riem
   real(kp) :: phi0A,phi0B,phi0C,phi0D,xendNumA,xendAnalA,xendNumB, &
-              xendAnalB,xendNumC,xendAnalC,xendNumD,xendAnalD,alphaminAppr
+       xendAnalB,xendNumC,xendAnalC,xendNumD,xendAnalD,alphaminAppr
 
   real(kp), dimension(2) :: xEpsOneZero, xEpsTwoZero
+
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End, xend
 
   Pstar = powerAmpScalar
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!            checks gmssmi_efold_primitive              !!
+  !!            checks gmssmi_efold_primitive              !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!  npts=1000
-!  alphamin=0._kp
-!  alphamax=1._kp
-!  phi0min=10._kp**(-5.)
-!  phi0max=1._kp
+  !  npts=1000
+  !  alphamin=0._kp
+  !  alphamax=1._kp
+  !  phi0min=10._kp**(-5.)
+  !  phi0max=1._kp
 
-!  call delete_file('gmssmi_PrimitiveTest.dat')
-!  alpha=10._kp**(-10.)
-!  phi0=10._kp**(-5.)
-!  xmin=0.
-!  xmax=1._kp
-!  Riem=0._kp
-!  do i=1,npts
-!       x=xmin+(xmax-xmin)*(real(i,kp)/real(npts,kp))
-!       Riem=Riem+(xmax-xmin)/real(npts,kp)*((x-alpha*x**5+phi0*x**9)/ &
-!            (2._kp-6._kp*alpha*x**4+10._kp*phi0*x**8))
-!       call livewrite('gmssmi_PrimitiveTest.dat',x,&
-!                    gmssmi_efold_primitive(x,alpha,phi0)-gmssmi_efold_primitive(xmin,alpha,phi0), &
-!                   x**2/4._kp-xmin**2/4._kp,Riem)
-!  end do
+  !  call delete_file('gmssmi_PrimitiveTest.dat')
+  !  alpha=10._kp**(-10.)
+  !  phi0=10._kp**(-5.)
+  !  xmin=0.
+  !  xmax=1._kp
+  !  Riem=0._kp
+  !  do i=1,npts
+  !       x=xmin+(xmax-xmin)*(real(i,kp)/real(npts,kp))
+  !       Riem=Riem+(xmax-xmin)/real(npts,kp)*((x-alpha*x**5+phi0*x**9)/ &
+  !            (2._kp-6._kp*alpha*x**4+10._kp*phi0*x**8))
+  !       call livewrite('gmssmi_PrimitiveTest.dat',x,&
+  !                    gmssmi_efold_primitive(x,alpha,phi0)-gmssmi_efold_primitive(xmin,alpha,phi0), &
+  !                   x**2/4._kp-xmin**2/4._kp,Riem)
+  !  end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!            Calculates the prior space                 !!
-!!                     functions                         !!
+  !!            Calculates the prior space                 !!
+  !!                     functions                         !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -85,16 +94,16 @@ program gmssmimain
 
   call delete_file('gmssmi_eps1min.dat')
   do i=1,npts
-       alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
-       call livewrite('gmssmi_eps1min.dat',alpha,gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha),alpha,1._kp))
+     alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
+     call livewrite('gmssmi_eps1min.dat',alpha,gmssmi_epsilon_one(gmssmi_x_epsonemin(alpha),alpha,1._kp))
   end do
   print*,'gmssmi_eps1min.dat'
 
- call delete_file('gmssmi_alphamin.dat')
+  call delete_file('gmssmi_alphamin.dat')
   do i=1,npts
-       phi0=phi0min*(phi0max/phi0min)**(real(i,kp)/real(npts,kp))
-       alphaminAppr=1-phi0*4._kp*sqrt(2._kp)/15._kp
-       call livewrite('gmssmi_alphamin.dat',phi0,gmssmi_alphamin(phi0),alphaminAppr)
+     phi0=phi0min*(phi0max/phi0min)**(real(i,kp)/real(npts,kp))
+     alphaminAppr=1-phi0*4._kp*sqrt(2._kp)/15._kp
+     call livewrite('gmssmi_alphamin.dat',phi0,gmssmi_alphamin(phi0),alphaminAppr)
   end do
   print*,'gmssmi_alphamin.dat'
 
@@ -103,7 +112,7 @@ program gmssmimain
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!        Calculates the reheating predictions           !!
+  !!        Calculates the reheating predictions           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -112,7 +121,7 @@ program gmssmimain
 
 
   w=0._kp
-!  w = 1._kp/3._kp
+  !  w = 1._kp/3._kp
 
   call delete_file('gmssmi_predic.dat')
   call delete_file('gmssmi_nsr.dat')
@@ -120,125 +129,164 @@ program gmssmimain
   !Case alpha>1
 
   do j=0,nphi0
-       
-       if (j.eq.0) phi0=10._kp**(-0._kp)
-       if (j.eq.1) phi0=10._kp**(-0.5_kp)
-       if (j.eq.2) phi0=10._kp**(-1._kp)
-       if (j.eq.3) phi0=10._kp**(-1.5_kp)
-       if (j.eq.4) phi0=10._kp**(-2._kp)
+
+     if (j.eq.0) phi0=10._kp**(-0._kp)
+     if (j.eq.1) phi0=10._kp**(-0.5_kp)
+     if (j.eq.2) phi0=10._kp**(-1._kp)
+     if (j.eq.3) phi0=10._kp**(-1.5_kp)
+     if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-       if (j.eq.0) nalpha=20
-       if (j.eq.1) nalpha=20
-       if (j.eq.2) nalpha=20
-       if (j.eq.3) nalpha=20
-       if (j.eq.4) nalpha=20
+     if (j.eq.0) nalpha=20
+     if (j.eq.1) nalpha=20
+     if (j.eq.2) nalpha=20
+     if (j.eq.3) nalpha=20
+     if (j.eq.4) nalpha=20
 
-       !Prior on alpha
+     !Prior on alpha
 
-       alphamin=1._kp+epsilon(1._kp)
-       alphamax=1._kp+2*phi0**4/60._kp**2*acos(-1._kp)**2/900._kp
-
-
-       do k=0,nalpha
-       alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
-       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
-     
-
-       lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
-
-       print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-       do i=1,npts
-
-         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-         xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     alphamin=1._kp+epsilon(1._kp)
+     alphamax=1._kp+2*phi0**4/60._kp**2*acos(-1._kp)**2/900._kp
 
 
-         eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
-         eps2 = gmssmi_epsilon_two(xstar,alpha,phi0)
-         eps3 = gmssmi_epsilon_three(xstar,alpha,phi0)
+     do k=0,nalpha
+        alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
+        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
 
 
-         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
 
-         logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-         Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-         ns = 1._kp - 2._kp*eps1 - eps2
-         r =16._kp*eps1
+        do i=1,npts
 
-         call livewrite('gmssmi_predic.dat',log(alpha-1._kp)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
-  
-    end do
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+
+
+           eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
+           eps2 = gmssmi_epsilon_two(xstar,alpha,phi0)
+           eps3 = gmssmi_epsilon_three(xstar,alpha,phi0)
+
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('gmssmi_predic.dat',log(alpha-1._kp)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
+
+        end do
+
+     end do
 
   end do
-
- end do
 
   !Case alpha<1
 
   do j=0,nphi0
-       
-       if (j.eq.0) phi0=10._kp**(-0._kp)
-       if (j.eq.1) phi0=10._kp**(-0.5_kp)
-       if (j.eq.2) phi0=10._kp**(-1._kp)
-       if (j.eq.3) phi0=10._kp**(-1.5_kp)
-       if (j.eq.4) phi0=10._kp**(-2._kp)
+
+     if (j.eq.0) phi0=10._kp**(-0._kp)
+     if (j.eq.1) phi0=10._kp**(-0.5_kp)
+     if (j.eq.2) phi0=10._kp**(-1._kp)
+     if (j.eq.3) phi0=10._kp**(-1.5_kp)
+     if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-       if (j.eq.0) nalpha=30
-       if (j.eq.1) nalpha=30
-       if (j.eq.2) nalpha=30
-       if (j.eq.3) nalpha=30
-       if (j.eq.4) nalpha=30
+     if (j.eq.0) nalpha=30
+     if (j.eq.1) nalpha=30
+     if (j.eq.2) nalpha=30
+     if (j.eq.3) nalpha=30
+     if (j.eq.4) nalpha=30
 
-       !Prior on alpha
+     !Prior on alpha
 
-       alphamin=1._kp-2*phi0**4/50._kp**2*acos(-1._kp)**2/900._kp
-       alphamax=1._kp-epsilon(1._kp)
-
-
-       do k=0,nalpha
-       alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
-       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
-     
-
-       lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
-
-       print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-       do i=1,npts
-
-         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-         xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     alphamin=1._kp-2*phi0**4/50._kp**2*acos(-1._kp)**2/900._kp
+     alphamax=1._kp-epsilon(1._kp)
 
 
-         eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
-         eps2 = gmssmi_epsilon_two(xstar,alpha,phi0)
-         eps3 = gmssmi_epsilon_three(xstar,alpha,phi0)
+     do k=0,nalpha
+        alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
+        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
 
 
-         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
 
-         logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-         Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-         ns = 1._kp - 2._kp*eps1 - eps2
-         r =16._kp*eps1
+        do i=1,npts
 
-         call livewrite('gmssmi_predic.dat',log(1._kp-alpha)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
-  
-    end do
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+
+
+           eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
+           eps2 = gmssmi_epsilon_two(xstar,alpha,phi0)
+           eps3 = gmssmi_epsilon_three(xstar,alpha,phi0)
+
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('gmssmi_predic.dat',log(1._kp-alpha)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
+
+        end do
+
+     end do
 
   end do
 
- end do
+   write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
 
+  lnRradmin=-42
+  lnRradmax = 10
+  alpha = 1e-2
+  phi0 = 100
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = gmssmi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = gmssmi_x_endinf(alpha,phi0)
+     eps1end =  gmssmi_epsilon_one(xend,alpha,phi0)
+     VendOverVstar = gmssmi_norm_potential(xend,alpha,phi0)/gmssmi_norm_potential(xstar,alpha,phi0)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = gmssmi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
 
 
 
