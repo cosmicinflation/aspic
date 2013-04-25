@@ -6,6 +6,8 @@ module esireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use esisr, only : esi_epsilon_one, esi_epsilon_two, esi_epsilon_three
   use esisr, only : esi_norm_potential
   use esisr, only : esi_x_endinf, esi_efold_primitive
@@ -14,6 +16,7 @@ module esireheat
   private
 
   public esi_x_star, esi_lnrhoreh_max 
+  public esi_x_rrad, esi_x_rreh
 
 contains
 
@@ -78,6 +81,129 @@ contains
     find_esi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_esi_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function esi_x_rrad(q,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: esi_x_rrad
+    real(kp), intent(in) :: q,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: esiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = esi_x_endinf(q)
+    epsOneEnd = esi_epsilon_one(xEnd,q)
+    potEnd = esi_norm_potential(xEnd,q)
+    primEnd = esi_efold_primitive(xEnd,q)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    esiData%real1 = q
+    esiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_esi_x_rrad,mini,maxi,tolzbrent,esiData)
+    esi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (esi_efold_primitive(x,q) - primEnd)
+    endif
+
+  end function esi_x_rrad
+
+  function find_esi_x_rrad(x,esiData)   
+    implicit none
+    real(kp) :: find_esi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: esiData
+
+    real(kp) :: primStar,q,CalFplusprimEnd,potStar,epsOneStar
+
+    q=esiData%real1
+    CalFplusprimEnd = esiData%real2
+
+    primStar = esi_efold_primitive(x,q)
+    epsOneStar = esi_epsilon_one(x,q)
+    potStar = esi_norm_potential(x,q)
+
+    find_esi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_esi_x_rrad
+
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function esi_x_rreh(q,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: esi_x_rreh
+    real(kp), intent(in) :: q,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: esiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = esi_x_endinf(q)
+    epsOneEnd = esi_epsilon_one(xEnd,q)
+    potEnd = esi_norm_potential(xEnd,q)
+    primEnd = esi_efold_primitive(xEnd,q)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    esiData%real1 = q
+    esiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_esi_x_rreh,mini,maxi,tolzbrent,esiData)
+    esi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (esi_efold_primitive(x,q) - primEnd)
+    endif
+
+  end function esi_x_rreh
+
+  function find_esi_x_rreh(x,esiData)   
+    implicit none
+    real(kp) :: find_esi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: esiData
+
+    real(kp) :: primStar,q,CalFplusprimEnd,potStar
+
+    q=esiData%real1
+    CalFplusprimEnd = esiData%real2
+
+    primStar = esi_efold_primitive(x,q)
+    potStar = esi_norm_potential(x,q)
+
+    find_esi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_esi_x_rreh
+
 
 
 

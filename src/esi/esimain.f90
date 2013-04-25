@@ -7,9 +7,15 @@ program esimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use esisr, only : esi_norm_potential, esi_x_endinf
+  use esireheat, only : esi_x_rreh, esi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
+
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
@@ -27,6 +33,10 @@ program esimain
   real(kp)  :: eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
   integer :: nalpha
 
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End, xend
+
   qvalues(1)=10._kp**(-3.)
   qvalues(2)=5._kp*10._kp**(-2.)
   qvalues(3)=10._kp**(-1.)
@@ -43,103 +53,142 @@ program esimain
   call delete_file('esi_nsr.dat')
 
   do j=1,size(qvalues)
-   
-  q=qvalues(j)
 
-  w=0._kp
- 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
+     q=qvalues(j)
 
-  print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     w=0._kp
 
-  do i=1,npts
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+     print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-       xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+     do i=1,npts
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       eps1 = esi_epsilon_one(xstar,q)
-       eps2 = esi_epsilon_two(xstar,q)
-       eps3 = esi_epsilon_three(xstar,q)
+        xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
 
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
-
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
-
-       call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
-  
-    end do
- end do
-
- do j=1,size(qvalues)
-   
-  q=qvalues(j)
+        eps1 = esi_epsilon_one(xstar,q)
+        eps2 = esi_epsilon_two(xstar,q)
+        eps3 = esi_epsilon_three(xstar,q)
 
 
-  w = -1._kp/3._kp
- 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-  print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
 
-  do i=1,npts
+        call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+     end do
+  end do
 
-       xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+  do j=1,size(qvalues)
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
-
-       eps1 = esi_epsilon_one(xstar,q)
-       eps2 = esi_epsilon_two(xstar,q)
-       eps3 = esi_epsilon_three(xstar,q)
+     q=qvalues(j)
 
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+     w = -1._kp/3._kp
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
 
-       call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
-  
-    end do
- end do
+     print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+        eps1 = esi_epsilon_one(xstar,q)
+        eps2 = esi_epsilon_two(xstar,q)
+        eps3 = esi_epsilon_three(xstar,q)
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
+
+     end do
+  end do
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('esi_predic_summarized.dat') 
-         nalpha=1000
-         alphamin=10._kp**(-3.)
-         alphamax=10._kp**(1.)
-         w=0._kp
-         do j=1,nalpha
-         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
-         lnRhoReh = lnRhoNuc
-         xstarA = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1A = esi_epsilon_one(xstarA,alpha)
-         eps2A = esi_epsilon_two(xstarA,alpha)
-         eps3A = esi_epsilon_three(xstarA,alpha)
-         nsA = 1._kp - 2._kp*eps1A - eps2A
-         rA = 16._kp*eps1A
-         lnRhoReh = esi_lnrhoreh_max(alpha,Pstar)
-         xstarB = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1B = esi_epsilon_one(xstarB,alpha)
-         eps2B = esi_epsilon_two(xstarB,alpha)
-         eps3B = esi_epsilon_three(xstarB,alpha)
-         nsB = 1._kp - 2._kp*eps1B - eps2B
-         rB =16._kp*eps1B
-         call livewrite('esi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
-         enddo
+  nalpha=1000
+  alphamin=10._kp**(-3.)
+  alphamax=10._kp**(1.)
+  w=0._kp
+  do j=1,nalpha
+     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+     lnRhoReh = lnRhoNuc
+     xstarA = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     eps1A = esi_epsilon_one(xstarA,alpha)
+     eps2A = esi_epsilon_two(xstarA,alpha)
+     eps3A = esi_epsilon_three(xstarA,alpha)
+     nsA = 1._kp - 2._kp*eps1A - eps2A
+     rA = 16._kp*eps1A
+     lnRhoReh = esi_lnrhoreh_max(alpha,Pstar)
+     xstarB = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     eps1B = esi_epsilon_one(xstarB,alpha)
+     eps2B = esi_epsilon_two(xstarB,alpha)
+     eps3B = esi_epsilon_three(xstarB,alpha)
+     nsB = 1._kp - 2._kp*eps1B - eps2B
+     rB =16._kp*eps1B
+     call livewrite('esi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+  enddo
 
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  q = 1.
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = esi_x_rrad(q,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = esi_epsilon_one(xstar,q)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = esi_x_endinf(q)
+     eps1end =  esi_epsilon_one(xend,q)
+     VendOverVstar = esi_norm_potential(xend,q)/esi_norm_potential(xstar,q)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = esi_x_rreh(q,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
 
 end program esimain
