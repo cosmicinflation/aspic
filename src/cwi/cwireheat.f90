@@ -6,6 +6,8 @@ module cwireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use cwisr, only : cwi_epsilon_one, cwi_epsilon_two, cwi_epsilon_three
   use cwisr, only : cwi_norm_potential
   use cwisr, only : cwi_x_endinf, cwi_efold_primitive
@@ -13,7 +15,8 @@ module cwireheat
 
   private
 
-  public cwi_x_star, cwi_lnrhoreh_max 
+  public cwi_x_star, cwi_lnrhoreh_max
+  public cwi_x_rrad, cwi_x_rreh
 
 contains
 
@@ -82,6 +85,133 @@ contains
     find_cwi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_cwi_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function cwi_x_rrad(alpha,Q,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: cwi_x_rrad
+    real(kp), intent(in) :: alpha,Q,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: cwiData
+    
+    if (lnRRad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = cwi_x_endinf(alpha,Q)
+
+    epsOneEnd = cwi_epsilon_one(xEnd,alpha,Q)
+    potEnd = cwi_norm_potential(xEnd,alpha,Q)
+
+    primEnd = cwi_efold_primitive(xEnd,alpha,Q)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    cwiData%real1 = alpha
+    cwiData%real2 = Q
+    cwiData%real3 = calF + primEnd
+
+    mini = epsilon(1._kp)
+    maxi = cwi_x_endinf(alpha,Q)
+
+    x = zbrent(find_cwi_x_rrad,mini,maxi,tolzbrent,cwiData)
+    cwi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (cwi_efold_primitive(x,alpha,Q) - primEnd)
+    endif
+
+  end function cwi_x_rrad
+
+  function find_cwi_x_rrad(x,cwiData)   
+    implicit none
+    real(kp) :: find_cwi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: cwiData
+
+    real(kp) :: primStar,alpha,Q,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=cwiData%real1
+    Q=cwiData%real2
+    CalFplusprimEnd = cwiData%real3
+
+    primStar = cwi_efold_primitive(x,alpha,Q)
+    epsOneStar = cwi_epsilon_one(x,alpha,Q)
+    potStar = cwi_norm_potential(x,alpha,Q)
+
+    find_cwi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_cwi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function cwi_x_rreh(alpha,Q,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: cwi_x_rreh
+    real(kp), intent(in) :: alpha,Q,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: cwiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = cwi_x_endinf(alpha,Q)
+
+    epsOneEnd = cwi_epsilon_one(xEnd,alpha,Q)
+    potEnd = cwi_norm_potential(xEnd,alpha,Q)
+
+    primEnd = cwi_efold_primitive(xEnd,alpha,Q)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    cwiData%real1 = alpha
+    cwiData%real2 = Q
+    cwiData%real3 = calF + primEnd
+
+    mini = epsilon(1._kp)
+    maxi = cwi_x_endinf(alpha,Q)
+
+    x = zbrent(find_cwi_x_rreh,mini,maxi,tolzbrent,cwiData)
+    cwi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (cwi_efold_primitive(x,alpha,Q) - primEnd)
+    endif
+
+  end function cwi_x_rreh
+
+  function find_cwi_x_rreh(x,cwiData)   
+    implicit none
+    real(kp) :: find_cwi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: cwiData
+
+    real(kp) :: primStar,alpha,Q,CalFplusprimEnd,potStar
+
+    alpha=cwiData%real1
+    Q=cwiData%real2
+    CalFplusprimEnd = cwiData%real3
+
+    primStar = cwi_efold_primitive(x,alpha,Q)
+    potStar = cwi_norm_potential(x,alpha,Q)
+
+    find_cwi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_cwi_x_rreh
 
 
 
