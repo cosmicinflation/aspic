@@ -3,7 +3,7 @@ program ripimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use ripisr, only : ripi_epsilon_one, ripi_epsilon_two, ripi_epsilon_three
-  use ripireheat, only : ripi_lnrhoend, ripi_x_star
+  use ripireheat, only : ripi_lnrhoreh_max, ripi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -47,7 +47,7 @@ program ripimain
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = ripi_lnrhoend(phi0,Pstar)
+  lnRhoRehMax = ripi_lnrhoreh_max(phi0,Pstar)
 
   print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -97,7 +97,7 @@ program ripimain
          eps3A = ripi_epsilon_three(xstarA,phi0)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = ripi_lnrhoend(phi0,Pstar)
+         lnRhoReh = ripi_lnrhoreh_max(phi0,Pstar)
          xstarB = ripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = ripi_epsilon_one(xstarB,phi0)
          eps2B = ripi_epsilon_two(xstarB,phi0)

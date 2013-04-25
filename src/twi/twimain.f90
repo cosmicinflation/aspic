@@ -3,7 +3,7 @@ program twimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use twisr, only : twi_epsilon_one, twi_epsilon_two, twi_epsilon_three
-  use twireheat, only : twi_lnrhoend, twi_x_star
+  use twireheat, only : twi_lnrhoreh_max, twi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -50,7 +50,7 @@ program twimain
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = twi_lnrhoend(phi0,xEnd,Pstar)
+  lnRhoRehMax = twi_lnrhoreh_max(phi0,xEnd,Pstar)
 
   print *,'phi0=',phi0,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

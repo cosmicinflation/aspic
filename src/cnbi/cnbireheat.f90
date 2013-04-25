@@ -13,7 +13,7 @@ module cnbireheat
 
   private
 
-  public cnbi_x_star, cnbi_lnrhoend 
+  public cnbi_x_star, cnbi_lnrhoreh_max 
 
 contains
 
@@ -90,9 +90,9 @@ contains
 
 
 
-  function cnbi_lnrhoend(alpha,Pstar) 
+  function cnbi_lnrhoreh_max(alpha,Pstar) 
     implicit none
-    real(kp) :: cnbi_lnrhoend
+    real(kp) :: cnbi_lnrhoreh_max
     real(kp), intent(in) :: alpha,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -119,13 +119,13 @@ contains
     epsOneStar = cnbi_epsilon_one(x,alpha)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'cnbi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'cnbi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    cnbi_lnrhoend = lnRhoEnd
+    cnbi_lnrhoreh_max = lnRhoEnd
 
-  end function cnbi_lnrhoend
+  end function cnbi_lnrhoreh_max
 
   
 end module cnbireheat

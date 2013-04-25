@@ -3,7 +3,7 @@ program ssbi6main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use ssbi6sr, only : ssbi6_epsilon_one, ssbi6_epsilon_two, ssbi6_epsilon_three, ssbi6_alphamax
-  use ssbi6reheat, only : ssbi6_lnrhoend, ssbi6_x_star
+  use ssbi6reheat, only : ssbi6_lnrhoreh_max, ssbi6_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -89,7 +89,7 @@ print *,'Priors Written'
       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/Nalpha)  !logarithmic step
 
       lnRhoRehMin = lnRhoNuc
-      lnRhoRehMax = ssbi6_lnrhoend(alpha,beta,Pstar)
+      lnRhoRehMax = ssbi6_lnrhoreh_max(alpha,beta,Pstar)
 
 
       print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax

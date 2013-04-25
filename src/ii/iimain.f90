@@ -3,7 +3,7 @@ program iimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use iisr, only : ii_epsilon_one, ii_epsilon_two, ii_epsilon_three, ii_prior_xendmin
-  use iireheat, only : ii_lnrhoend, ii_x_star
+  use iireheat, only : ii_lnrhoreh_max, ii_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -62,7 +62,7 @@ program iimain
        xendinf=xendmin*(xendmax/xendmin)**(real(k,kp)/real(20,kp))
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = ii_lnrhoend(beta,xendinf,Pstar)
+  lnRhoRehMax = ii_lnrhoreh_max(beta,xendinf,Pstar)
 
   print *,'beta=',beta,'xendinf=',xendinf,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

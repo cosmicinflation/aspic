@@ -3,7 +3,7 @@ program mssmimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use mssmisr, only : mssmi_epsilon_one, mssmi_epsilon_two, mssmi_epsilon_three, mssmi_x_epsonemin, mssmi_x_endinf
-  use mssmireheat, only : mssmi_lnrhoend, mssmi_x_star
+  use mssmireheat, only : mssmi_lnrhoreh_max, mssmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -81,7 +81,7 @@ program mssmimain
  
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = mssmi_lnrhoend(phi0,Pstar)
+  lnRhoRehMax = mssmi_lnrhoreh_max(phi0,Pstar)
 
   print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -132,7 +132,7 @@ program mssmimain
          eps3A = mssmi_epsilon_three(xstarA,phi0)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = mssmi_lnrhoend(phi0,Pstar)
+         lnRhoReh = mssmi_lnrhoreh_max(phi0,Pstar)
          xstarB = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = mssmi_epsilon_one(xstarB,phi0)
          eps2B = mssmi_epsilon_two(xstarB,phi0)

@@ -3,7 +3,7 @@ program cnaimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use cnaisr, only : cnai_epsilon_one, cnai_epsilon_two, cnai_epsilon_three
-  use cnaireheat, only : cnai_lnrhoend, cnai_x_star
+  use cnaireheat, only : cnai_lnrhoreh_max, cnai_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -44,7 +44,7 @@ program cnaimain
   alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = cnai_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = cnai_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -93,7 +93,7 @@ program cnaimain
          eps3A = cnai_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = cnai_lnrhoend(alpha,Pstar)
+         lnRhoReh = cnai_lnrhoreh_max(alpha,Pstar)
          xstarB = cnai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = cnai_epsilon_one(xstarB,alpha)
          eps2B = cnai_epsilon_two(xstarB,alpha)

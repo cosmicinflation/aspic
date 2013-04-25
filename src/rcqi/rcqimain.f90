@@ -3,7 +3,7 @@ program rcqimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rcqisr, only : rcqi_epsilon_one, rcqi_epsilon_two, rcqi_epsilon_three
-  use rcqireheat, only : rcqi_lnrhoend, rcqi_x_star
+  use rcqireheat, only : rcqi_lnrhoreh_max, rcqi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -50,7 +50,7 @@ program rcqimain
 
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = rcqi_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = rcqi_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -86,7 +86,7 @@ program rcqimain
   
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = rcqi_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = rcqi_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -135,7 +135,7 @@ program rcqimain
          eps3A = rcqi_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = rcqi_lnrhoend(alpha,Pstar)
+         lnRhoReh = rcqi_lnrhoreh_max(alpha,Pstar)
          xstarB = rcqi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = rcqi_epsilon_one(xstarB,alpha)
          eps2B = rcqi_epsilon_two(xstarB,alpha)

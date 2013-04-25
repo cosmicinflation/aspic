@@ -3,7 +3,7 @@ program hf1imain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use hf1isr, only : hf1i_epsilon_one, hf1i_epsilon_two, hf1i_epsilon_three
-  use hf1ireheat, only : hf1i_lnrhoend, hf1i_x_star
+  use hf1ireheat, only : hf1i_lnrhoreh_max, hf1i_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -44,7 +44,7 @@ program hf1imain
 
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = hf1i_lnrhoend(A1,Pstar)
+  lnRhoRehMax = hf1i_lnrhoreh_max(A1,Pstar)
 
   print *,'A1=',A1,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -92,7 +92,7 @@ program hf1imain
          eps3A = hf1i_epsilon_three(xstarA,A1)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = hf1i_lnrhoend(A1,Pstar)
+         lnRhoReh = hf1i_lnrhoreh_max(A1,Pstar)
          xstarB = hf1i_x_star(A1,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = hf1i_epsilon_one(xstarB,A1)
          eps2B = hf1i_epsilon_two(xstarB,A1)

@@ -5,17 +5,20 @@ module beireheat
   use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use beisr, only : bei_epsilon_one, bei_epsilon_two, bei_epsilon_three
   use beisr, only : bei_norm_potential,bei_efold_primitive,bei_x_endinf
   implicit none
 
   private
 
-  public bei_x_star, bei_lnrhoend,find_bei_x_star
+  public bei_x_star, bei_lnrhoreh_max,find_bei_x_star
+  public bei_x_rrad, bei_x_rreh
 
 contains
 
-!returns x given potential parameters, scalar power, wreh and
+!returns x potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
   function bei_x_star(lambda,beta,w,lnRhoReh,Pstar,bfold)    
     implicit none
@@ -91,10 +94,144 @@ contains
 
   end function find_bei_x_star
 
-
-  function bei_lnrhoend(lambda,beta,Pstar) 
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function bei_x_rrad(lambda,beta,lnRrad,Pstar,bfold)    
     implicit none
-    real(kp) :: bei_lnrhoend
+    real(kp) :: bei_x_rrad
+    real(kp), intent(in) :: lambda,beta,lnRrad,Pstar
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+
+    type(transfert) :: beiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    xEnd=bei_x_endinf(lambda,beta)
+    
+    epsOneEnd = bei_epsilon_one(xEnd,lambda,beta)
+    potEnd = bei_norm_potential(xEnd,lambda,beta)
+    primEnd = bei_efold_primitive(xEnd,lambda,beta)
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    beiData%real1 = lambda
+    beiData%real2 = beta
+    beiData%real3 = calF + primEnd
+
+    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini=maxi-1000._kp
+
+    x = zbrent(find_bei_x_rrad,mini,maxi,tolFind,beiData)
+    bei_x_rrad = x
+
+    if (present(bfold)) then
+       bfold = -(bei_efold_primitive(x,lambda,beta) - primEnd)
+    endif
+
+
+  end function bei_x_rrad
+
+  function find_bei_x_rrad(x,beiData)   
+    implicit none
+    real(kp) :: find_bei_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: beiData
+
+    real(kp) :: primStar,lambda,beta,CalFplusPrimEnd,potStar,epsOneStar
+
+    lambda=beiData%real1
+    beta=beiData%real2
+    CalFplusPrimEnd = beiData%real3
+
+    primStar = bei_efold_primitive(x,lambda,beta)
+    epsOneStar = bei_epsilon_one(x,lambda,beta)
+    potStar = bei_norm_potential(x,lambda,beta)
+
+
+    find_bei_x_rrad = find_reheat_rrad(PrimStar,calFplusPrimEnd &
+         ,epsOneStar,potStar)
+
+  end function find_bei_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function bei_x_rreh(lambda,beta,lnRreh,bfold)    
+    implicit none
+    real(kp) :: bei_x_rreh
+    real(kp), intent(in) :: lambda,beta,lnRreh
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+
+    type(transfert) :: beiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    xEnd=bei_x_endinf(lambda,beta)
+    
+    epsOneEnd = bei_epsilon_one(xEnd,lambda,beta)
+    potEnd = bei_norm_potential(xEnd,lambda,beta)
+    primEnd = bei_efold_primitive(xEnd,lambda,beta)
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    beiData%real1 = lambda
+    beiData%real2 = beta
+    beiData%real3 = calF + primEnd
+
+    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini=maxi-1000._kp
+
+    x = zbrent(find_bei_x_rreh,mini,maxi,tolFind,beiData)
+    bei_x_rreh = x
+
+    if (present(bfold)) then
+       bfold = -(bei_efold_primitive(x,lambda,beta) - primEnd)
+    endif
+
+
+  end function bei_x_rreh
+
+  function find_bei_x_rreh(x,beiData)   
+    implicit none
+    real(kp) :: find_bei_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: beiData
+
+    real(kp) :: primStar,lambda,beta,CalFplusPrimEnd,potStar
+
+    lambda=beiData%real1
+    beta=beiData%real2
+    CalFplusPrimEnd = beiData%real3
+
+    primStar = bei_efold_primitive(x,lambda,beta)    
+    potStar = bei_norm_potential(x,lambda,beta)
+
+
+    find_bei_x_rreh = find_reheat_rreh(PrimStar,calFplusPrimEnd &
+         ,potStar)
+
+  end function find_bei_x_rreh
+
+
+
+
+  function bei_lnrhoreh_max(lambda,beta,Pstar) 
+    implicit none
+    real(kp) :: bei_lnrhoreh_max
     real(kp), intent(in) :: lambda,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -108,25 +245,25 @@ contains
     potEnd  = bei_norm_potential(xEnd,lambda,beta)
     epsOneEnd = bei_epsilon_one(xEnd,lambda,beta)
 
-!    print*,'bei_lnrhoend:   xEnd=',xEnd,'  potEnd=',potEnd,'  epsOneEnd=',epsOneEnd
+!    print*,'bei_lnrhoreh_max:   xEnd=',xEnd,'  potEnd=',potEnd,'  epsOneEnd=',epsOneEnd
 
        
     x = bei_x_star(lambda,beta,wrad,junk,Pstar)    
     potStar = bei_norm_potential(x,lambda,beta)
     epsOneStar = bei_epsilon_one(x,lambda,beta)
 
-!    print*,'bei_lnrhoend:   xstar=',x,'  potStar=',potStar,'  epsOneStar=',epsOneStar
+!    print*,'bei_lnrhoreh_max:   xstar=',x,'  potStar=',potStar,'  epsOneStar=',epsOneStar
     
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar 
-        stop 'bei_lnrhoend: slow-roll violated!'
+        stop 'bei_lnrhoreh_max: slow-roll violated!'
     endif
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    bei_lnrhoend = lnRhoEnd
+    bei_lnrhoreh_max = lnRhoEnd
 
-  end function bei_lnrhoend
+  end function bei_lnrhoreh_max
 
   
   

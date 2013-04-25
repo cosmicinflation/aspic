@@ -11,10 +11,11 @@ module bsusybisr
 
   private
 
-  public bsusybi_norm_potential, bsusybi_norm_deriv_potential, bsusybi_norm_deriv_second_potential
+  public bsusybi_norm_potential, bsusybi_norm_deriv_potential
+  public bsusybi_norm_deriv_second_potential
   public bsusybi_epsilon_one, bsusybi_epsilon_two,bsusybi_epsilon_three
   public bsusybi_efold_primitive, bsusybi_x_trajectory
-  public bsusybi_xendmax
+  public bsusybi_xendmax, bsusybi_x_epsoneunity
 
  
 contains
@@ -91,6 +92,32 @@ contains
   end function bsusybi_epsilon_three
 
 
+  function bsusybi_x_epsoneunity(gammaBSUSYB)
+    implicit none
+    real(kp) :: bsusybi_x_epsoneunity
+    real(kp), intent(in) :: gammaBSUSYB
+
+    real(kp) :: sqrt3
+
+    sqrt3 = sqrt(3._kp)
+
+    if (sqrt3*gammaBSUSYB.eq.1._kp) then
+       write(*,*)'gamma= ',gammaBSUSYB
+       stop 'bsusy_x_epsoneunity: gamma=1/sqrt(3)!'
+    endif
+
+    if (gammaBSUSYB.eq.1._kp) then
+       write(*,*)'gamma= ',gammaBSUSYB
+       stop 'bsusy_x_epsoneunity: gamma=1!'
+    endif
+
+    bsusybi_x_epsoneunity = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
+           log((sqrt3-1._kp)/(1._kp-gammaBSUSYB*sqrt3))
+
+
+  end function bsusybi_x_epsoneunity
+
+
 !this is integral[V(phi)/V'(phi) dphi]
   function bsusybi_efold_primitive(x,gammaBSUSYB)
     implicit none
@@ -99,8 +126,8 @@ contains
     
      if (gammaBSUSYB.eq.1._kp) stop 'bsusybi_efold_primitive: gamma=1 is singular'
 
-    bsusybi_efold_primitive = 1/sqrt(6._kp)*x-1._kp/(6._kp*gammaBSUSYB) *&
-                              log(abs(1._kp+gammaBSUSYB*exp(sqrt(6._kp)*(gammaBSUSYB-1._kp)*x)))
+    bsusybi_efold_primitive = 1._kp/sqrt(6._kp)*x-1._kp/(6._kp*gammaBSUSYB) *&
+         log(abs(1._kp+gammaBSUSYB*exp(sqrt(6._kp)*(gammaBSUSYB-1._kp)*x)))
 
   end function bsusybi_efold_primitive
  
@@ -116,15 +143,20 @@ contains
     type(transfert) :: bsusybiData
 
     mini = xend
-    maxi = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
-           log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))    !Value of x such that epsilon1=1
+!Value of x such that epsilon1=1
+!    maxi = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
+!           log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))
+
+    maxi = bsusybi_x_epsoneunity(gammaBSUSYB)
 
     bsusybiData%real1 = gammaBSUSYB
     bsusybiData%real2 = -bfold + bsusybi_efold_primitive(xend,gammaBSUSYB)
     
-    bsusybi_x_trajectory = zbrent(find_bsusybi_x_trajectory,mini,maxi,tolFind,bsusybiData)
+    bsusybi_x_trajectory = zbrent(find_bsusybi_x_trajectory,mini,maxi &
+         ,tolFind,bsusybiData)
     
   end function bsusybi_x_trajectory
+
 
   function find_bsusybi_x_trajectory(x,bsusybiData)    
     implicit none
@@ -140,6 +172,7 @@ contains
    
   end function find_bsusybi_x_trajectory
 
+
 !Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
   function bsusybi_xendmax(efold, gammaBSUSYB) 
     implicit none
@@ -148,15 +181,16 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini, maxi
     type(transfert) :: bsusybiData
-   
-    maxi = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
-         log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))    !Value of x such that epsilon1=1
+
+!Value of x such that epsilon1=1   
+    maxi = bsusybi_x_epsoneunity(gammaBSUSYB)
     mini = - 10._kp*sqrt(6._kp) * efold + maxi
 
     bsusybiData%real1 = gammaBSUSYB
     bsusybiData%real2 = -efold
     
     bsusybi_xendmax = zbrent(find_bsusybi_xendmax,mini,maxi,tolFind,bsusybiData)
+
 
   end function bsusybi_xendmax
 
@@ -166,15 +200,13 @@ contains
     type(transfert), optional, intent(inout) :: bsusybiData
     real(kp) :: find_bsusybi_xendmax,xmaxi
     real(kp) :: gammaBSUSYB,bfoldstar
-!Value of x such that epsilon1=1
 
-    xmaxi = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
-         log((sqrt(3._kp)-1._kp)/(1-gammaBSUSYB*sqrt(3._kp)))
+    xmaxi = bsusybi_x_epsoneunity(gammaBSUSYB)
     gammaBSUSYB=bsusybiData%real1
     bfoldstar = bsusybiData%real2
 
     find_bsusybi_xendmax = bfoldstar-(bsusybi_efold_primitive(x,gammaBSUSYB)- &
-                           bsusybi_efold_primitive(xmaxi,gammaBSUSYB))
+         bsusybi_efold_primitive(xmaxi,gammaBSUSYB))
    
   end function find_bsusybi_xendmax
 

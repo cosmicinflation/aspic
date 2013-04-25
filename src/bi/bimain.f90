@@ -2,7 +2,7 @@
 program kklttest  
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use kkltreheat, only : kklt_x_star, kklt_lnrhoend
+  use kkltreheat, only : kklt_x_star, kklt_lnrhoreh_max
   use kkltsrevol, only : kklt_x_endinf, kklt_epsilon_one, kklt_epsilon_two
   use infinout, only : delete_file, livewrite
   implicit none
@@ -33,7 +33,7 @@ program kklttest
 !chi stands for phi/mu
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = kklt_lnrhoend(p,mu,Pstar)
+  lnRhoRehMax = kklt_lnrhoreh_max(p,mu,Pstar)
 
   print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 

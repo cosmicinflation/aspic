@@ -3,7 +3,7 @@ program cwimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use cwisr, only : cwi_epsilon_one, cwi_epsilon_two, cwi_epsilon_three, cwi_x_endinf
-  use cwireheat, only : cwi_lnrhoend, cwi_x_star
+  use cwireheat, only : cwi_lnrhoreh_max, cwi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev 
   use specialinf, only : lambert 
@@ -78,7 +78,7 @@ program cwimain
   Q=Qmin*(Qmax/Qmin)**(real(j,kp)/NQ) !logarithmic step
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = cwi_lnrhoend(alpha,Q,Pstar)
+  lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,Pstar)
 
   print *,'Q=',Q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -127,7 +127,7 @@ program cwimain
   Q=Qmin*(Qmax/Qmin)**(real(j,kp)/NQ) !logarithmic step
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = cwi_lnrhoend(alpha,Q,Pstar)
+  lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,Pstar)
 
   print *,'Q=',Q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -175,7 +175,7 @@ program cwimain
          eps3A = cwi_epsilon_three(xstarA,alpha,Q)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = cwi_lnrhoend(alpha,Q,Pstar)
+         lnRhoReh = cwi_lnrhoreh_max(alpha,Q,Pstar)
          xstarB = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = cwi_epsilon_one(xstarB,alpha,Q)
          eps2B = cwi_epsilon_two(xstarB,alpha,Q)

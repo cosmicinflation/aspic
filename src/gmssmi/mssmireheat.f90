@@ -13,7 +13,7 @@ module mssmireheat
 
   private
 
-  public mssmi_x_star, mssmi_lnrhoend 
+  public mssmi_x_star, mssmi_lnrhoreh_max 
 
 contains
 
@@ -91,9 +91,9 @@ contains
 
 
 
-  function mssmi_lnrhoend(phi0,Pstar) 
+  function mssmi_lnrhoreh_max(phi0,Pstar) 
     implicit none
-    real(kp) :: mssmi_lnrhoend
+    real(kp) :: mssmi_lnrhoreh_max
     real(kp), intent(in) :: phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -114,13 +114,13 @@ contains
     potStar = mssmi_norm_potential(x,phi0)
     epsOneStar = mssmi_epsilon_one(x,phi0)
    
-!    if (.not.slowroll_validity(epsOneStar)) stop 'mssmi_lnrhoend: slow-roll violated!'
+!    if (.not.slowroll_validity(epsOneStar)) stop 'mssmi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    mssmi_lnrhoend = lnRhoEnd
+    mssmi_lnrhoreh_max = lnRhoEnd
 
-  end function mssmi_lnrhoend
+  end function mssmi_lnrhoreh_max
 
   
 end module mssmireheat

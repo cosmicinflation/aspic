@@ -3,7 +3,7 @@ program mlfimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gmlfisr, only : gmlfi_epsilon_one, gmlfi_epsilon_two, gmlfi_epsilon_three
-  use gmlfireheat, only : gmlfi_lnrhoend 
+  use gmlfireheat, only : gmlfi_lnrhoreh_max 
   use gmlfireheat, only : gmlfi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -47,7 +47,7 @@ program mlfimain
    alpha=alphavalues(j)
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
+  lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -95,7 +95,7 @@ program mlfimain
          eps3A = gmlfi_epsilon_three(xstarA,p,q,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = gmlfi_lnrhoend(p,q,alpha,Pstar)
+         lnRhoReh = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
          xstarB = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = gmlfi_epsilon_one(xstarB,p,q,alpha)
          eps2B = gmlfi_epsilon_two(xstarB,p,q,alpha)

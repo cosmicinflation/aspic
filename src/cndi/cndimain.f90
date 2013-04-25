@@ -3,7 +3,7 @@ program cndimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use cndisr, only : cndi_epsilon_one, cndi_epsilon_two, cndi_epsilon_three, cndi_xendmax
-  use cndireheat, only : cndi_lnrhoend, cndi_x_star
+  use cndireheat, only : cndi_lnrhoreh_max, cndi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -77,7 +77,7 @@ program cndimain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = cndi_lnrhoend(alpha,beta,xend,Pstar)
+        lnRhoRehMax = cndi_lnrhoreh_max(alpha,beta,xend,Pstar)
 
         print *,'alpha=',alpha,'beta=',beta,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -144,7 +144,7 @@ program cndimain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = cndi_lnrhoend(alpha,beta,xend,Pstar)
+        lnRhoRehMax = cndi_lnrhoreh_max(alpha,beta,xend,Pstar)
 
         print *,'alpha=',alpha,'beta=',beta,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

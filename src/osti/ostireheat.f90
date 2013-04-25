@@ -13,7 +13,7 @@ module ostireheat
 
   private
 
-  public osti_x_star, osti_lnrhoend 
+  public osti_x_star, osti_lnrhoreh_max 
 
 contains
 
@@ -83,9 +83,9 @@ contains
   end function find_osti_x_star
 
 
-  function osti_lnrhoend(phi0,Pstar) 
+  function osti_lnrhoreh_max(phi0,Pstar) 
     implicit none
-    real(kp) :: osti_lnrhoend
+    real(kp) :: osti_lnrhoreh_max
     real(kp), intent(in) :: phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -107,12 +107,12 @@ contains
     potStar = osti_norm_potential(x)
     epsOneStar = osti_epsilon_one(x,phi0)
    
-    if (.not.slowroll_validity(epsOneStar)) stop 'osti_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'osti_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    osti_lnrhoend = lnRhoEnd
+    osti_lnrhoreh_max = lnRhoEnd
 
-  end function osti_lnrhoend
+  end function osti_lnrhoreh_max
   
 end module ostireheat

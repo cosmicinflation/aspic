@@ -5,7 +5,7 @@ program gmssmimain
   use gmssmisr, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
   use gmssmicommon, only : gmssmi_x_epsonemin, gmssmi_x_epstwozero, gmssmi_x_epsonezero
   use gmssmisr, only : gmssmi_alphamin, gmssmi_alphamax, gmssmi_efold_primitive,gmssmi_x_endinf
-  use gmssmireheat, only : gmssmi_lnrhoend, gmssmi_x_star
+  use gmssmireheat, only : gmssmi_lnrhoreh_max, gmssmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -146,7 +146,7 @@ program gmssmimain
      
 
        lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gmssmi_lnrhoend(alpha,phi0,Pstar)
+       lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -207,7 +207,7 @@ program gmssmimain
      
 
        lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gmssmi_lnrhoend(alpha,phi0,Pstar)
+       lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

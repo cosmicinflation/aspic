@@ -3,7 +3,7 @@ program nimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use nisr, only : ni_epsilon_one, ni_epsilon_two, ni_epsilon_three
-  use nireheat, only : ni_lnrhoend 
+  use nireheat, only : ni_lnrhoreh_max 
   use nireheat, only : ni_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -46,7 +46,7 @@ program nimain
   w = 0._kp
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = ni_lnrhoend(f,Pstar)
+  lnRhoRehMax = ni_lnrhoreh_max(f,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -96,7 +96,7 @@ end do
          eps3A = ni_epsilon_three(xstarA,f)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = ni_lnrhoend(f,Pstar)
+         lnRhoReh = ni_lnrhoreh_max(f,Pstar)
          xstarB = ni_x_star(f,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = ni_epsilon_one(xstarB,f)
          eps2B = ni_epsilon_two(xstarB,f)

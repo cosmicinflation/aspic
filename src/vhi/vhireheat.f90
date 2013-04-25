@@ -12,7 +12,7 @@ module vhireheat
 
   private
 
-  public vhi_x_star, vhi_lnrhoend 
+  public vhi_x_star, vhi_lnrhoreh_max 
 
 contains
 
@@ -84,9 +84,9 @@ contains
 
 
 
-  function vhi_lnrhoend(p,mu,xEnd,Pstar) 
+  function vhi_lnrhoreh_max(p,mu,xEnd,Pstar) 
     implicit none
-    real(kp) :: vhi_lnrhoend
+    real(kp) :: vhi_lnrhoreh_max
     real(kp), intent(in) :: p,mu,xEnd,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -111,13 +111,13 @@ contains
     epsOneStar = vhi_epsilon_one(x,p,mu)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'vhi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'vhi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    vhi_lnrhoend = lnRhoEnd
+    vhi_lnrhoreh_max = lnRhoEnd
 
-  end function vhi_lnrhoend
+  end function vhi_lnrhoreh_max
 
   
 end module vhireheat

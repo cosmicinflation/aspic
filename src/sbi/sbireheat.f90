@@ -13,7 +13,7 @@ module sbireheat
 
   private
 
-  public sbi_x_star, sbi_lnrhoend 
+  public sbi_x_star, sbi_lnrhoreh_max 
 
 contains
 
@@ -87,9 +87,9 @@ contains
 
 
 
-  function sbi_lnrhoend(alpha,beta,Pstar) 
+  function sbi_lnrhoreh_max(alpha,beta,Pstar) 
     implicit none
-    real(kp) :: sbi_lnrhoend
+    real(kp) :: sbi_lnrhoreh_max
     real(kp), intent(in) :: alpha,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -110,13 +110,13 @@ contains
     potStar = sbi_norm_potential(x,alpha,beta)
     epsOneStar = sbi_epsilon_one(x,alpha,beta)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'sbi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'sbi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    sbi_lnrhoend = lnRhoEnd
+    sbi_lnrhoreh_max = lnRhoEnd
 
-  end function sbi_lnrhoend
+  end function sbi_lnrhoreh_max
 
   
 end module sbireheat

@@ -13,7 +13,7 @@ module nireheat
 
   private
 
-  public ni_x_star, ni_lnrhoend 
+  public ni_x_star, ni_lnrhoreh_max 
 
 contains
 
@@ -81,9 +81,9 @@ contains
 
 
 
-  function ni_lnrhoend(f,Pstar) 
+  function ni_lnrhoreh_max(f,Pstar) 
     implicit none
-    real(kp) :: ni_lnrhoend
+    real(kp) :: ni_lnrhoreh_max
     real(kp), intent(in) :: f,Pstar
 
     real(kp) :: xEnd, potEnd, epsEnd
@@ -104,13 +104,13 @@ contains
     potStar = ni_norm_potential(x,f)
     epsOneStar = ni_epsilon_one(x,f)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ni_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ni_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsEnd,potEnd/potStar)
 
-    ni_lnrhoend = lnRhoEnd
+    ni_lnrhoreh_max = lnRhoEnd
 
-  end function ni_lnrhoend
+  end function ni_lnrhoreh_max
 
   
 

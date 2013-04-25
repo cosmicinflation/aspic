@@ -3,7 +3,7 @@ program rgimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rgisr, only : rgi_epsilon_one, rgi_epsilon_two, rgi_epsilon_three
-  use rgireheat, only : rgi_lnrhoend, rgi_lnrhoreh_fromepsilon 
+  use rgireheat, only : rgi_lnrhoreh_max, rgi_lnrhoreh_fromepsilon 
   use rgireheat, only : rgi_xp_fromepsilon, rgi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -43,7 +43,7 @@ program rgimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(Nalpha,kp))
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = rgi_lnrhoend(alpha,Pstar)
+    lnRhoRehMax = rgi_lnrhoreh_max(alpha,Pstar)
 
     print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -91,7 +91,7 @@ program rgimain
          eps3A = rgi_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = rgi_lnrhoend(alpha,Pstar)
+         lnRhoReh = rgi_lnrhoreh_max(alpha,Pstar)
          xstarB = rgi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = rgi_epsilon_one(xstarB,alpha)
          eps2B = rgi_epsilon_two(xstarB,alpha)

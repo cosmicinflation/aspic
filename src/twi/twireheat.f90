@@ -13,7 +13,7 @@ module twireheat
 
   private
 
-  public twi_x_star, twi_lnrhoend 
+  public twi_x_star, twi_lnrhoreh_max 
 
 contains
 
@@ -82,9 +82,9 @@ contains
 
 
 
-  function twi_lnrhoend(phi0,xEnd,Pstar) 
+  function twi_lnrhoreh_max(phi0,xEnd,Pstar) 
     implicit none
-    real(kp) :: twi_lnrhoend
+    real(kp) :: twi_lnrhoreh_max
     real(kp), intent(in) :: phi0,xEnd,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -111,13 +111,13 @@ contains
     epsOneStar = twi_epsilon_one(x,phi0)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'twi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'twi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    twi_lnrhoend = lnRhoEnd
+    twi_lnrhoreh_max = lnRhoEnd
 
-  end function twi_lnrhoend
+  end function twi_lnrhoreh_max
 
   
 end module twireheat

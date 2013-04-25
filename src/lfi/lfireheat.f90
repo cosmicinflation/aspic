@@ -225,6 +225,8 @@ contains
     real(kp),parameter :: wrad=1_kp/3_kp
     real(kp),parameter :: junk=0_kp
 
+    real(kp) :: lnRhoEnd
+
     
     xEnd = lfi_x_endinf(p)
     potEnd  = lfi_norm_potential(xEnd,p)
@@ -238,7 +240,9 @@ contains
     
     if (.not.slowroll_validity(epsOneStar)) stop 'lfi_lnrhoreh_max: slow-roll violated!'
     
-    lfi_lnrhoreh_max = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+    lfi_lnrhoreh_max = lnRhoEnd
 
 
   end function lfi_lnrhoreh_max

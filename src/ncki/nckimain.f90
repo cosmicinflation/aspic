@@ -3,7 +3,7 @@ program nckimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use nckisr, only : ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
-  use nckireheat, only : ncki_lnrhoend, ncki_x_star
+  use nckireheat, only : ncki_lnrhoreh_max, ncki_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -92,7 +92,7 @@ do k=0,nalpha
      
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = ncki_lnrhoend(alpha,beta,Pstar)
+  lnRhoRehMax = ncki_lnrhoreh_max(alpha,beta,Pstar)
 
   print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -165,7 +165,7 @@ do k=0,nalpha
      
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = ncki_lnrhoend(alpha,beta,Pstar)
+  lnRhoRehMax = ncki_lnrhoreh_max(alpha,beta,Pstar)
 
   print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

@@ -3,7 +3,7 @@ program timain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use tisr, only : ti_epsilon_one, ti_epsilon_two,ti_epsilon_three
-  use tireheat, only : ti_lnrhoend, ti_x_star
+  use tireheat, only : ti_lnrhoreh_max, ti_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -58,7 +58,7 @@ program timain
     
      
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = ti_lnrhoend(alpha,mu,Pstar)
+        lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,Pstar)
 
         print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -99,7 +99,7 @@ program timain
     mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = ti_lnrhoend(alpha,mu,Pstar)
+        lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,Pstar)
 
         print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

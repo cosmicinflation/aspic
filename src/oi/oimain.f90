@@ -3,7 +3,7 @@ program oimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use oisr, only : oi_epsilon_one, oi_epsilon_two,oi_epsilon_three
-  use oireheat, only : oi_lnrhoend, oi_x_star
+  use oireheat, only : oi_lnrhoreh_max, oi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -59,7 +59,7 @@ program oimain
         alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))!logstep
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = oi_lnrhoend(alpha,phi0,Pstar)
+        lnRhoRehMax = oi_lnrhoreh_max(alpha,phi0,Pstar)
 
         print *,'alpha=',alpha,'phi0/Mp=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

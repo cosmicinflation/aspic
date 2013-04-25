@@ -3,7 +3,7 @@ program mhimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use mhisr, only : mhi_epsilon_one, mhi_epsilon_two, mhi_epsilon_three,mhi_x_endinf
-  use mhireheat, only : mhi_lnrhoend, mhi_x_star
+  use mhireheat, only : mhi_lnrhoreh_max, mhi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -43,7 +43,7 @@ program mhimain
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = mhi_lnrhoend(mu,Pstar)
+  lnRhoRehMax = mhi_lnrhoreh_max(mu,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -103,7 +103,7 @@ program mhimain
          eps3A = mhi_epsilon_three(xstarA,mu)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = mhi_lnrhoend(mu,Pstar)
+         lnRhoReh = mhi_lnrhoreh_max(mu,Pstar)
          xstarB = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = mhi_epsilon_one(xstarB,mu)
          eps2B = mhi_epsilon_two(xstarB,mu)

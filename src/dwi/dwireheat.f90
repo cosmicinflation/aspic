@@ -13,7 +13,7 @@ module dwireheat
 
   private
 
-  public dwi_x_star, dwi_lnrhoend 
+  public dwi_x_star, dwi_lnrhoreh_max 
 
 contains
 
@@ -86,9 +86,9 @@ contains
 
 
 
-  function dwi_lnrhoend(phi0,Pstar) 
+  function dwi_lnrhoreh_max(phi0,Pstar) 
     implicit none
-    real(kp) :: dwi_lnrhoend
+    real(kp) :: dwi_lnrhoreh_max
     real(kp), intent(in) :: phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -115,16 +115,16 @@ contains
     potStar = dwi_norm_potential(x)
     epsOneStar = dwi_epsilon_one(x,phi0)
 
-   ! PRINT*,'dwi_lnrhoend   :xstar=',x,'  potStar=',potStar,'  epsOneStar=',epsOneStar
+   ! PRINT*,'dwi_lnrhoreh_max   :xstar=',x,'  potStar=',potStar,'  epsOneStar=',epsOneStar
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'dwi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'dwi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    dwi_lnrhoend = lnRhoEnd
+    dwi_lnrhoreh_max = lnRhoEnd
 
-  end function dwi_lnrhoend
+  end function dwi_lnrhoreh_max
 
   
 end module dwireheat

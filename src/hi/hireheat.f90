@@ -13,7 +13,7 @@ module hireheat
 
   private
 
-  public hi_x_star, hi_lnrhoend 
+  public hi_x_star, hi_lnrhoreh_max 
 
 contains
 
@@ -83,9 +83,9 @@ contains
 
 
 
-  function hi_lnrhoend(Pstar) 
+  function hi_lnrhoreh_max(Pstar) 
     implicit none
-    real(kp) :: hi_lnrhoend
+    real(kp) :: hi_lnrhoreh_max
     real(kp), intent(in) :: Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -113,13 +113,13 @@ contains
     epsOneStar = hi_epsilon_one(x)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'hi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'hi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    hi_lnrhoend = lnRhoEnd
+    hi_lnrhoreh_max = lnRhoEnd
 
-  end function hi_lnrhoend
+  end function hi_lnrhoreh_max
 
   
 end module hireheat

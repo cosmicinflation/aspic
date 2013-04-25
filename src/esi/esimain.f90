@@ -3,7 +3,7 @@ program esimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use esisr, only : esi_epsilon_one, esi_epsilon_two, esi_epsilon_three
-  use esireheat, only : esi_lnrhoend, esi_x_star
+  use esireheat, only : esi_lnrhoreh_max, esi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -49,7 +49,7 @@ program esimain
   w=0._kp
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = esi_lnrhoend(q,Pstar)
+  lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
 
   print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -85,7 +85,7 @@ program esimain
   w = -1._kp/3._kp
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = esi_lnrhoend(q,Pstar)
+  lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
 
   print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -131,7 +131,7 @@ program esimain
          eps3A = esi_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = esi_lnrhoend(alpha,Pstar)
+         lnRhoReh = esi_lnrhoreh_max(alpha,Pstar)
          xstarB = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = esi_epsilon_one(xstarB,alpha)
          eps2B = esi_epsilon_two(xstarB,alpha)

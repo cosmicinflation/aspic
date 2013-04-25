@@ -5,7 +5,7 @@ program rpi2main
   use rpicommon, only : rpi_x_potmax
   use rpi1sr, only : rpi1_x_endinf
   use rpi2sr, only : rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
-  use rpi2reheat, only : rpi2_lnrhoend, rpi2_x_star
+  use rpi2reheat, only : rpi2_lnrhoreh_max, rpi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -63,7 +63,7 @@ program rpi2main
 
        print *,'p= yend= ',p,yend
 
-       lnRhoRehMax = rpi2_lnrhoend(p,yend,Pstar)
+       lnRhoRehMax = rpi2_lnrhoreh_max(p,yend,Pstar)
 
        print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

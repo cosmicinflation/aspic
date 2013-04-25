@@ -13,7 +13,7 @@ module rpi2reheat
 
   private
 
-  public rpi2_x_star, rpi2_lnrhoend 
+  public rpi2_x_star, rpi2_lnrhoreh_max 
 
 contains
 
@@ -101,9 +101,9 @@ contains
 
 
 
-  function rpi2_lnrhoend(p,yend,Pstar) 
+  function rpi2_lnrhoreh_max(p,yend,Pstar) 
     implicit none
-    real(kp) :: rpi2_lnrhoend
+    real(kp) :: rpi2_lnrhoreh_max
     real(kp), intent(in) :: p,yend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -125,13 +125,13 @@ contains
     potStar = rpi2_norm_potential(y,p)
     epsOneStar = rpi2_epsilon_one(y,p)
    
-    if (.not.slowroll_validity(epsOneStar)) stop 'rpi2_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'rpi2_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    rpi2_lnrhoend = lnRhoEnd
+    rpi2_lnrhoreh_max = lnRhoEnd
 
-  end function rpi2_lnrhoend
+  end function rpi2_lnrhoreh_max
 
   
 end module rpi2reheat

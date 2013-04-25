@@ -15,7 +15,7 @@ module ssbi5reheat
 
   private
 
-  public ssbi5_x_star, ssbi5_lnrhoend
+  public ssbi5_x_star, ssbi5_lnrhoreh_max
 
 contains
 
@@ -89,9 +89,9 @@ contains
 
 
 
-  function ssbi5_lnrhoend(alpha,beta,Pstar) 
+  function ssbi5_lnrhoreh_max(alpha,beta,Pstar) 
     implicit none
-    real(kp) :: ssbi5_lnrhoend
+    real(kp) :: ssbi5_lnrhoreh_max
     real(kp), intent(in) :: alpha,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -108,7 +108,7 @@ contains
 
     epsOneEnd = ssbi5_epsilon_one(xEnd,alpha,beta)
 
-!   print*,'ssbi5_lnrhoend:  xEnd=',xEnd,'  potEnd=',potEnd,'   epsOneEnd=',epsOneEnd
+!   print*,'ssbi5_lnrhoreh_max:  xEnd=',xEnd,'  potEnd=',potEnd,'   epsOneEnd=',epsOneEnd
 !    pause
 
 
@@ -120,13 +120,13 @@ contains
     potStar = ssbi5_norm_potential(x,alpha,beta)
     epsOneStar = ssbi5_epsilon_one(x,alpha,beta)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ssbi5_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ssbi5_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ssbi5_lnrhoend = lnRhoEnd
+    ssbi5_lnrhoreh_max = lnRhoEnd
 
-  end function ssbi5_lnrhoend
+  end function ssbi5_lnrhoreh_max
 
   
 end module ssbi5reheat

@@ -3,7 +3,7 @@ program dsimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three,dsi_xinimin,dsi_xendmin,dsi_xendmax,dsi_mumax
-  use dsireheat, only : dsi_lnrhoend, dsi_x_star
+  use dsireheat, only : dsi_lnrhoreh_max, dsi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -98,7 +98,7 @@ program dsimain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = dsi_lnrhoend(p,mu,xEnd,Pstar)
+        lnRhoRehMax = dsi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
         print *,'p=',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

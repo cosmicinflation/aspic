@@ -13,7 +13,7 @@ module ripireheat
 
   private
 
-  public ripi_x_star, ripi_lnrhoend 
+  public ripi_x_star, ripi_lnrhoreh_max 
 
 contains
 
@@ -84,9 +84,9 @@ contains
 
 
 
-  function ripi_lnrhoend(phi0,Pstar) 
+  function ripi_lnrhoreh_max(phi0,Pstar) 
     implicit none
-    real(kp) :: ripi_lnrhoend
+    real(kp) :: ripi_lnrhoreh_max
     real(kp), intent(in) :: phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -111,13 +111,13 @@ contains
     epsOneStar = ripi_epsilon_one(x,phi0)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ripi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ripi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ripi_lnrhoend = lnRhoEnd
+    ripi_lnrhoreh_max = lnRhoEnd
 
-  end function ripi_lnrhoend
+  end function ripi_lnrhoreh_max
 
   
 end module ripireheat

@@ -4,7 +4,7 @@ program vhimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
   use vhisr, only : vhi_xinimax,vhi_xendmin,vhi_xendmax
-  use vhireheat, only : vhi_lnrhoend, vhi_x_star
+  use vhireheat, only : vhi_lnrhoreh_max, vhi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -65,7 +65,7 @@ NxEnd=50
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
   print *,'p',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -125,7 +125,7 @@ NxEnd=20
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
   print *,'p',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -186,7 +186,7 @@ NxEnd=50
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
   print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -246,7 +246,7 @@ NxEnd=100
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
   print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -307,7 +307,7 @@ NxEnd=200
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
   print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -367,7 +367,7 @@ NxEnd=200
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoend(p,mu,xEnd,Pstar)
+  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
   print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

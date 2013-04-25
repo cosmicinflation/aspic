@@ -3,7 +3,7 @@ program ostimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use ostisr, only : osti_epsilon_one, osti_epsilon_two, osti_epsilon_three
-  use ostireheat, only : osti_lnrhoend, osti_x_star
+  use ostireheat, only : osti_lnrhoreh_max, osti_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -44,7 +44,7 @@ program ostimain
    if (j .eq. Nphi0+2) phi0=10._kp**5.
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = osti_lnrhoend(phi0,Pstar)
+  lnRhoRehMax = osti_lnrhoreh_max(phi0,Pstar)
 
   print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

@@ -3,7 +3,7 @@ program gmlfimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gmlfisr, only : gmlfi_epsilon_one, gmlfi_epsilon_two, gmlfi_epsilon_three
-  use gmlfireheat, only : gmlfi_lnrhoend, gmlfi_x_star
+  use gmlfireheat, only : gmlfi_lnrhoreh_max, gmlfi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -57,7 +57,7 @@ program gmlfimain
     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
+    lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
 
 
     print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -107,7 +107,7 @@ program gmlfimain
     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
+    lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
 
 
     print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -157,7 +157,7 @@ program gmlfimain
     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = gmlfi_lnrhoend(p,q,alpha,Pstar)
+    lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
 
 
     print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax

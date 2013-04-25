@@ -3,7 +3,7 @@ program csimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use csisr, only : csi_epsilon_one, csi_epsilon_two,csi_epsilon_three,csi_xendmax
-  use csireheat, only : csi_lnrhoend, csi_x_star
+  use csireheat, only : csi_lnrhoreh_max, csi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -75,7 +75,7 @@ program csimain
         xend=xendmin+(xendmax-xendmin)*(real(k,kp)/real(nxend,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = csi_lnrhoend(alpha,xend,Pstar)
+        lnRhoRehMax = csi_lnrhoreh_max(alpha,xend,Pstar)
 
         print *,'alpha=',alpha,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -122,7 +122,7 @@ program csimain
         xend=xendmin+(xendmax-xendmin)*(real(k,kp)/real(nxend,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = csi_lnrhoend(alpha,xend,Pstar)
+        lnRhoRehMax = csi_lnrhoreh_max(alpha,xend,Pstar)
 
         print *,'alpha=',alpha,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

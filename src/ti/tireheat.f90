@@ -11,7 +11,7 @@ module tireheat
 
   private
 
-  public ti_x_star, ti_lnrhoend,find_ti_x_star
+  public ti_x_star, ti_lnrhoreh_max,find_ti_x_star
 
 contains
 
@@ -85,9 +85,9 @@ contains
   end function find_ti_x_star
 
 
-  function ti_lnrhoend(alpha,mu,Pstar) 
+  function ti_lnrhoreh_max(alpha,mu,Pstar) 
     implicit none
-    real(kp) :: ti_lnrhoend
+    real(kp) :: ti_lnrhoreh_max
     real(kp), intent(in) :: alpha,mu,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -108,14 +108,14 @@ contains
     
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar 
-        stop 'ti_lnrhoend: slow-roll violated!'
+        stop 'ti_lnrhoreh_max: slow-roll violated!'
     endif
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ti_lnrhoend = lnRhoEnd
+    ti_lnrhoreh_max = lnRhoEnd
 
-  end function ti_lnrhoend
+  end function ti_lnrhoreh_max
 
   
   

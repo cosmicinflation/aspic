@@ -13,7 +13,7 @@ module plireheat
 
   private
 
-  public pli_x_star, pli_lnrhoend 
+  public pli_x_star, pli_lnrhoreh_max 
 
 contains
 
@@ -85,9 +85,9 @@ contains
 
 
 
-  function pli_lnrhoend(alpha,Pstar) 
+  function pli_lnrhoreh_max(alpha,Pstar) 
     implicit none
-    real(kp) :: pli_lnrhoend
+    real(kp) :: pli_lnrhoreh_max
     real(kp), intent(in) :: alpha,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -111,13 +111,13 @@ contains
     epsOneStar = pli_epsilon_one(x,alpha)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'pli_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'pli_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    pli_lnrhoend = lnRhoEnd
+    pli_lnrhoreh_max = lnRhoEnd
 
-  end function pli_lnrhoend
+  end function pli_lnrhoreh_max
 
   
 end module plireheat

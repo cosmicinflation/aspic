@@ -5,7 +5,7 @@ program gripimain
   use gripisr, only : gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three
   use gripisr, only : gripi_x_epsonemin, gripi_x_epstwozero, gripi_x_epsonezero
   use gripisr, only : gripi_alphamin, gripi_alphamax, gripi_efold_primitive,gripi_x_endinf
-  use gripireheat, only : gripi_lnrhoend, gripi_x_star
+  use gripireheat, only : gripi_lnrhoreh_max, gripi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -122,7 +122,7 @@ program gripimain
      
 
        lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gripi_lnrhoend(alpha,phi0,Pstar)
+       lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,Pstar)
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -188,7 +188,7 @@ print*,'case alpha>1 done'
      
 
        lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gripi_lnrhoend(alpha,phi0,Pstar)
+       lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,Pstar)
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

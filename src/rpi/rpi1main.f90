@@ -3,7 +3,7 @@ program rpi1main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rpi1sr, only : rpi1_epsilon_one, rpi1_epsilon_two, rpi1_epsilon_three
-  use rpi1reheat, only : rpi1_lnrhoend, rpi1_x_star
+  use rpi1reheat, only : rpi1_lnrhoreh_max, rpi1_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -43,7 +43,7 @@ program rpi1main
     print *,'p= ',p
 
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = rpi1_lnrhoend(p,Pstar)
+    lnRhoRehMax = rpi1_lnrhoreh_max(p,Pstar)
 
     print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

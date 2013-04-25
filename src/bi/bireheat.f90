@@ -12,12 +12,13 @@ module kkltreheat
 
   private
 
-  public kklt_x_star, kklt_lnrhoend
+  public kklt_x_star, kklt_lnrhoreh_max
   public find_kklt_x_star
+  public kklt_x_rrad, kklt_x_rreh
 
 contains
 
-!returns x given potential parameters, scalar power, wreh and
+!returns x potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
   function kklt_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
     implicit none
@@ -86,10 +87,140 @@ contains
   end function find_kklt_x_star
 
 
-
-  function kklt_lnrhoend(p,mu,Pstar) 
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function kklt_x_rrad(p,mu,lnRrad,Pstar,bfold)    
     implicit none
-    real(kp) :: kklt_lnrhoend
+    real(kp) :: kklt_x_rrad
+    real(kp), intent(in) :: p,mu,lnRrad,Pstar
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: nuEnd,epsEnd,xend,potEnd
+
+    type(transfert) :: kkltData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = kklt_x_endinf(p,mu)
+    epsEnd = kklt_epsilon_one(xEnd,p,mu)
+
+    potEnd = kklt_norm_potential(xEnd,p)
+    nuEnd = kklt_nufunc(xEnd,p,mu)
+   
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsEnd,potEnd)
+
+    kkltData%real1 = p
+    kkltData%real2 = mu
+    kkltData%real3 = calF + nuEnd
+
+    mini = xend
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_kklt_x_rrad,mini,maxi,tolFind,kkltData)
+    kklt_x_rrad = x
+
+    if (present(bfold)) then
+       bfold = -(kklt_nufunc(x,p,mu) - nuEnd)
+    endif
+    
+  end function kklt_x_rrad
+
+  function find_kklt_x_rrad(x,kkltData)   
+    implicit none
+    real(kp) :: find_kklt_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: kkltData
+
+    real(kp) :: nuStar,p,mu,CalFplusNuEnd,potStar,epsStar
+
+    p=kkltData%real1
+    mu = kkltData%real2    
+    CalFplusNuEnd = kkltData%real3
+
+    nuStar = kklt_nufunc(x,p,mu)
+    epsStar = kklt_epsilon_one(x,p,mu)
+    potStar = kklt_norm_potential(x,p)
+
+    find_kklt_x_rrad = find_reheat_rrad(nuStar,calFplusNuEnd,epsStar,potStar)
+
+  end function find_kklt_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function kklt_x_rreh(p,mu,lnRreh,bfold)    
+    implicit none
+    real(kp) :: kklt_x_rreh
+    real(kp), intent(in) :: p,mu,lnRreh
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: nuEnd,epsEnd,xend,potEnd
+
+    type(transfert) :: kkltData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = kklt_x_endinf(p,mu)
+    epsEnd = kklt_epsilon_one(xEnd,p,mu)
+
+    potEnd = kklt_norm_potential(xEnd,p)
+    nuEnd = kklt_nufunc(xEnd,p,mu)
+   
+
+    calF = get_calfconst_rreh(lnRreh,epsEnd,potEnd)
+
+    kkltData%real1 = p
+    kkltData%real2 = mu
+    kkltData%real3 = calF + nuEnd
+
+    mini = xend
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_kklt_x_rreh,mini,maxi,tolFind,kkltData)
+    kklt_x_rreh = x
+
+    if (present(bfold)) then
+       bfold = -(kklt_nufunc(x,p,mu) - nuEnd)
+    endif
+    
+  end function kklt_x_rreh
+
+  function find_kklt_x_rreh(x,kkltData)   
+    implicit none
+    real(kp) :: find_kklt_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: kkltData
+
+    real(kp) :: nuStar,p,mu,CalFplusNuEnd,potStar
+
+    p=kkltData%real1
+    mu = kkltData%real2    
+    CalFplusNuEnd = kkltData%real3
+
+    nuStar = kklt_nufunc(x,p,mu)
+    potStar = kklt_norm_potential(x,p)
+
+    find_kklt_x_rreh = find_reheat_rreh(nuStar,calFplusNuEnd,potStar)
+
+  end function find_kklt_x_rreh
+
+
+
+
+  function kklt_lnrhoreh_max(p,mu,Pstar) 
+    implicit none
+    real(kp) :: kklt_lnrhoreh_max
     real(kp), intent(in) :: p,mu,Pstar
 
     real(kp) :: xEnd, potEnd, epsEnd
@@ -107,13 +238,13 @@ contains
     potStar = kklt_norm_potential(x,p)
     epsStar = kklt_epsilon_one(x,p,mu)
     
-    if (.not.slowroll_validity(epsStar)) stop 'kklt_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsStar)) stop 'kklt_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_energy_endinf(Pstar,epsStar,epsEnd,potEnd/potStar)
 
-    kklt_lnrhoend = lnRhoEnd
+    kklt_lnrhoreh_max = lnRhoEnd
 
-  end function kklt_lnrhoend
+  end function kklt_lnrhoreh_max
 
     
 end module kkltreheat

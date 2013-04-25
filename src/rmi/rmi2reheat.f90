@@ -14,7 +14,7 @@ module rmi2reheat
 
   private
 
-  public rmi2_x_star, rmi2_lnrhoend
+  public rmi2_x_star, rmi2_lnrhoreh_max
 
 contains
 
@@ -83,9 +83,9 @@ contains
 
 
 
-  function rmi2_lnrhoend(c,phi0,xend,Pstar) 
+  function rmi2_lnrhoreh_max(c,phi0,xend,Pstar) 
     implicit none
-    real(kp) :: rmi2_lnrhoend
+    real(kp) :: rmi2_lnrhoreh_max
     real(kp), intent(in) :: c, phi0, xend, Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -109,13 +109,13 @@ contains
     potStar = rmi2_norm_potential(x,c,phi0)
     epsOneStar = rmi2_epsilon_one(x,c,phi0)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'rmi2_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'rmi2_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    rmi2_lnrhoend = lnRhoEnd
+    rmi2_lnrhoreh_max = lnRhoEnd
 
-  end function rmi2_lnrhoend
+  end function rmi2_lnrhoreh_max
 
   
 end module rmi2reheat

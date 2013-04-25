@@ -14,7 +14,7 @@ module gmlfireheat
 
   private
 
-  public gmlfi_x_star, gmlfi_lnrhoend 
+  public gmlfi_x_star, gmlfi_lnrhoreh_max 
 
 contains
 
@@ -91,9 +91,9 @@ contains
 
 
 
-  function gmlfi_lnrhoend(p,q,alpha,Pstar) 
+  function gmlfi_lnrhoreh_max(p,q,alpha,Pstar) 
     implicit none
-    real(kp) :: gmlfi_lnrhoend
+    real(kp) :: gmlfi_lnrhoreh_max
     real(kp), intent(in) :: alpha,p,q,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -116,13 +116,13 @@ contains
 
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'gmlfi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'gmlfi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    gmlfi_lnrhoend = lnRhoEnd
+    gmlfi_lnrhoreh_max = lnRhoEnd
 
-  end function gmlfi_lnrhoend
+  end function gmlfi_lnrhoreh_max
 
   
 end module gmlfireheat

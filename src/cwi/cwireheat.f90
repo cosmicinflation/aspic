@@ -13,7 +13,7 @@ module cwireheat
 
   private
 
-  public cwi_x_star, cwi_lnrhoend 
+  public cwi_x_star, cwi_lnrhoreh_max 
 
 contains
 
@@ -85,9 +85,9 @@ contains
 
 
 
-  function cwi_lnrhoend(alpha,Q,Pstar) 
+  function cwi_lnrhoreh_max(alpha,Q,Pstar) 
     implicit none
-    real(kp) :: cwi_lnrhoend
+    real(kp) :: cwi_lnrhoreh_max
     real(kp), intent(in) :: alpha,Q,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -114,13 +114,13 @@ contains
     epsOneStar = cwi_epsilon_one(x,alpha,Q)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'cwi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'cwi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    cwi_lnrhoend = lnRhoEnd
+    cwi_lnrhoreh_max = lnRhoEnd
 
-  end function cwi_lnrhoend
+  end function cwi_lnrhoreh_max
 
   
 end module cwireheat

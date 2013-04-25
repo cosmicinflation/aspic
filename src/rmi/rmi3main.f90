@@ -3,7 +3,7 @@ program rmi3main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rmi3sr, only : rmi3_epsilon_one, rmi3_epsilon_two, rmi3_epsilon_three
-  use rmi3reheat, only : rmi3_lnrhoend, rmi3_x_star
+  use rmi3reheat, only : rmi3_lnrhoreh_max, rmi3_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -70,7 +70,7 @@ program rmi3main
       xend=xendmin*(xendmax/xendmin)**(real(l,kp)/Nxend)  !logarithmic step
 
       lnRhoRehMin = lnRhoNuc
-      lnRhoRehMax = rmi3_lnrhoend(c,phi0,xend,Pstar)
+      lnRhoRehMax = rmi3_lnrhoreh_max(c,phi0,xend,Pstar)
 
 
       print *,'c=',c,'phi0=',phi0,'xend=', xend, 'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax

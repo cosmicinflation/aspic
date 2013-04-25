@@ -30,7 +30,6 @@ program lfimain
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
-
   real(kp) :: VendOverVstar, eps1End, xend
 
   Pstar = powerAmpScalar
@@ -123,9 +122,6 @@ program lfimain
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
-  read(*,*)
-
-
   
   lnRradmin=-42
   lnRradmax = 10
@@ -139,13 +135,7 @@ program lfimain
        print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
        eps1 = lfi_epsilon_one(xstar,p)
-       eps2 = lfi_epsilon_two(xstar,p)
-       eps3 = lfi_epsilon_three(xstar,p)
        
-       ns = scalar_spectral_index((/eps1,eps2/))
-       r = tensor_to_scalar_ratio((/eps1/))
-
-
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
        xend = lfi_x_endinf(p)

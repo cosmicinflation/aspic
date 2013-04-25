@@ -6,6 +6,8 @@ module aireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use aisr, only : ai_epsilon_one, ai_epsilon_two, ai_epsilon_three
   use aisr, only : ai_norm_potential
   use aisr, only : ai_x_endinf, ai_efold_primitive, ai_x_trajectory
@@ -13,11 +15,12 @@ module aireheat
 
   private
 
-  public ai_x_star, ai_lnrhoend 
+  public ai_x_star, ai_lnrhoreh_max
+  public ai_x_rrad, ai_x_rreh
 
 contains
 
-!returns x=phi/mu such given potential parameters, scalar power, wreh and
+!returns x=phi/mu such potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
   function ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
@@ -86,10 +89,138 @@ contains
   end function find_ai_x_star
 
 
-
-  function ai_lnrhoend(mu,Pstar) 
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function ai_x_rrad(mu,lnRRad,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: ai_lnrhoend
+    real(kp) :: ai_x_rrad
+    real(kp), intent(in) :: mu,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: aiData
+    
+
+    if (lnRRad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = ai_x_endinf(mu)
+
+    epsOneEnd = ai_epsilon_one(xEnd,mu)
+    potEnd = ai_norm_potential(xEnd)
+
+    primEnd = ai_efold_primitive(xEnd,mu)
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+
+    aiData%real1 = mu
+    aiData%real2 = calF + primEnd
+
+    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
+    maxi = xend*(1._kp-epsilon(1._kp))
+
+    x = zbrent(find_ai_x_rrad,mini,maxi,tolzbrent,aiData)
+    ai_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (ai_efold_primitive(x,mu) - primEnd)
+    endif
+
+  end function ai_x_rrad
+
+  function find_ai_x_rrad(x,aiData)   
+    implicit none
+    real(kp) :: find_ai_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: aiData
+
+    real(kp) :: primStar,mu,CalFplusprimEnd,potStar,epsOneStar
+
+    mu = aiData%real1
+    CalFplusprimEnd = aiData%real2
+
+    primStar = ai_efold_primitive(x,mu)
+    epsOneStar = ai_epsilon_one(x,mu)
+    potStar = ai_norm_potential(x)
+
+    find_ai_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
+         ,epsOneStar,potStar)
+  
+  end function find_ai_x_rrad
+
+
+  !returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function ai_x_rreh(mu,lnRReh,bfoldstar)    
+    implicit none
+    real(kp) :: ai_x_rreh
+    real(kp), intent(in) :: mu,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: aiData
+    
+
+    if (lnRReh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = ai_x_endinf(mu)
+
+    epsOneEnd = ai_epsilon_one(xEnd,mu)
+    potEnd = ai_norm_potential(xEnd)
+
+    primEnd = ai_efold_primitive(xEnd,mu)
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+
+    aiData%real1 = mu
+    aiData%real2 = calF + primEnd
+
+    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
+    maxi = xend*(1._kp-epsilon(1._kp))
+
+    x = zbrent(find_ai_x_rreh,mini,maxi,tolzbrent,aiData)
+    ai_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (ai_efold_primitive(x,mu) - primEnd)
+    endif
+
+  end function ai_x_rreh
+
+  function find_ai_x_rreh(x,aiData)   
+    implicit none
+    real(kp) :: find_ai_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: aiData
+
+    real(kp) :: primStar,mu,CalFplusprimEnd,potStar
+
+    mu = aiData%real1
+    CalFplusprimEnd = aiData%real2
+
+    primStar = ai_efold_primitive(x,mu)    
+    potStar = ai_norm_potential(x)
+
+    find_ai_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
+         ,potStar)
+  
+  end function find_ai_x_rreh
+
+
+  function ai_lnrhoreh_max(mu,Pstar) 
+    implicit none
+    real(kp) :: ai_lnrhoreh_max
     real(kp), intent(in) :: mu,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -116,13 +247,13 @@ contains
     epsOneStar = ai_epsilon_one(x,mu)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ai_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ai_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ai_lnrhoend = lnRhoEnd
+    ai_lnrhoreh_max = lnRhoEnd
 
-  end function ai_lnrhoend
+  end function ai_lnrhoreh_max
 
   
 end module aireheat

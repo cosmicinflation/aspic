@@ -2,7 +2,7 @@
 program kksftest  
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use kksfreheat, only : kksf_x_star, kksf_lnrhoend
+  use kksfreheat, only : kksf_x_star, kksf_lnrhoreh_max
   use kksfsrevol, only : kksf_x_endinf, kksf_epsilon_one, kksf_epsilon_two
   use infinout, only : delete_file, livewrite
   implicit none
@@ -34,7 +34,7 @@ program kksftest
 !chi stands for phi/mu
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = kksf_lnrhoend(p,mu,Pstar)
+  lnRhoRehMax = kksf_lnrhoreh_max(p,mu,Pstar)
 
   print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 

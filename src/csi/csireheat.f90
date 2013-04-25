@@ -11,7 +11,7 @@ module csireheat
 
   private
 
-  public csi_x_star, csi_lnrhoend,find_csi_x_star
+  public csi_x_star, csi_lnrhoreh_max,find_csi_x_star
 
 contains
 
@@ -79,9 +79,9 @@ contains
   end function find_csi_x_star
 
 
-  function csi_lnrhoend(alpha,xEnd,Pstar) 
+  function csi_lnrhoreh_max(alpha,xEnd,Pstar) 
     implicit none
-    real(kp) :: csi_lnrhoend
+    real(kp) :: csi_lnrhoreh_max
     real(kp), intent(in) :: alpha,xEnd,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -100,14 +100,14 @@ contains
     
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar 
-        stop 'csi_lnrhoend: slow-roll violated!'
+        stop 'csi_lnrhoreh_max: slow-roll violated!'
     endif
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    csi_lnrhoend = lnRhoEnd
+    csi_lnrhoreh_max = lnRhoEnd
 
-  end function csi_lnrhoend
+  end function csi_lnrhoreh_max
 
   
   

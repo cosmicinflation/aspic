@@ -3,7 +3,7 @@ program kmiimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use kmiisr, only : kmii_epsilon_one, kmii_epsilon_two, kmii_epsilon_three
-  use kmiireheat, only : kmii_lnrhoend, kmii_x_star
+  use kmiireheat, only : kmii_lnrhoreh_max, kmii_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -44,7 +44,7 @@ program kmiimain
    
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = kmii_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = kmii_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -92,7 +92,7 @@ program kmiimain
          eps3A = kmii_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = kmii_lnrhoend(alpha,Pstar)
+         lnRhoReh = kmii_lnrhoreh_max(alpha,Pstar)
          xstarB = kmii_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = kmii_epsilon_one(xstarB,alpha)
          eps2B = kmii_epsilon_two(xstarB,alpha)

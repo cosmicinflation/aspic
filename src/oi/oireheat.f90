@@ -11,7 +11,7 @@ module oireheat
 
   private
 
-  public oi_x_star, oi_lnrhoend,find_oi_x_star
+  public oi_x_star, oi_lnrhoreh_max,find_oi_x_star
 
 contains
 
@@ -84,9 +84,9 @@ contains
   end function find_oi_x_star
 
 
-  function oi_lnrhoend(alpha,phi0,Pstar) 
+  function oi_lnrhoreh_max(alpha,phi0,Pstar) 
     implicit none
-    real(kp) :: oi_lnrhoend
+    real(kp) :: oi_lnrhoreh_max
     real(kp), intent(in) :: alpha,phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -107,14 +107,14 @@ contains
 
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar 
-        stop 'oi_lnrhoend: slow-roll violated!'
+        stop 'oi_lnrhoreh_max: slow-roll violated!'
     endif
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    oi_lnrhoend = lnRhoEnd
+    oi_lnrhoreh_max = lnRhoEnd
 
-  end function oi_lnrhoend
+  end function oi_lnrhoreh_max
 
   
   

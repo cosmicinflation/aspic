@@ -14,7 +14,7 @@ module lmi2reheat
 
   private
 
-  public lmi2_x_star, lmi2_lnrhoend
+  public lmi2_x_star, lmi2_lnrhoreh_max
 
 contains
 
@@ -83,9 +83,9 @@ contains
 
 
 
-  function lmi2_lnrhoend(gam,beta,xEnd,Pstar) 
+  function lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar) 
     implicit none
-    real(kp) :: lmi2_lnrhoend
+    real(kp) :: lmi2_lnrhoreh_max
     real(kp), intent(in) :: gam,beta,xEnd,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -108,13 +108,13 @@ contains
     epsOneStar = lmi2_epsilon_one(x,gam,beta)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'lmi2_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'lmi2_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    lmi2_lnrhoend = lnRhoEnd
+    lmi2_lnrhoreh_max = lnRhoEnd
 
-  end function lmi2_lnrhoend
+  end function lmi2_lnrhoreh_max
 
   
 end module lmi2reheat

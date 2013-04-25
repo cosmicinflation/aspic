@@ -3,7 +3,7 @@ program rchimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rchisr, only : rchi_epsilon_one, rchi_epsilon_two, rchi_epsilon_three
-  use rchireheat, only : rchi_lnrhoend, rchi_x_star
+  use rchireheat, only : rchi_lnrhoreh_max, rchi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -43,7 +43,7 @@ program rchimain
     AI=AImin+(AImax-AImin)*(real(j,kp)/real(nAI,kp)) !arithmetic step
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = rchi_lnrhoend(AI,Pstar)
+  lnRhoRehMax = rchi_lnrhoreh_max(AI,Pstar)
 
   print *,'AI=',AI,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -91,7 +91,7 @@ program rchimain
          eps3A = rchi_epsilon_three(xstarA,AI)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = rchi_lnrhoend(AI,Pstar)
+         lnRhoReh = rchi_lnrhoreh_max(AI,Pstar)
          xstarB = rchi_x_star(AI,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = rchi_epsilon_one(xstarB,AI)
          eps2B = rchi_epsilon_two(xstarB,AI)

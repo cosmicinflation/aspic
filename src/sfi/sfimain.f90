@@ -2,7 +2,7 @@
 program sfimain
   use infprec, only : kp, transfert
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use sfireheat, only : sfi_x_star, sfi_lnrhoend
+  use sfireheat, only : sfi_x_star, sfi_lnrhoreh_max
   use sfireheat, only : sfi_xpmu_fromepsilon, sfi_lnrhoreh_fromepsilon
   use sfisr, only : sfi_epsilon_one, sfi_epsilon_two,sfi_epsilon_three
   use infinout, only : delete_file, livewrite
@@ -52,7 +52,7 @@ program sfimain
 !xstar stands for phistar/mu
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = sfi_lnrhoend(p,mu,Pstar)
+  lnRhoRehMax = sfi_lnrhoreh_max(p,mu,Pstar)
 
   print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -100,7 +100,7 @@ program sfimain
 !xstar stands for phistar/mu
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = sfi_lnrhoend(p,mu,Pstar)
+  lnRhoRehMax = sfi_lnrhoreh_max(p,mu,Pstar)
 
   print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -148,7 +148,7 @@ program sfimain
 !xstar stands for phistar/mu
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = sfi_lnrhoend(p,mu,Pstar)
+  lnRhoRehMax = sfi_lnrhoreh_max(p,mu,Pstar)
 
   print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 

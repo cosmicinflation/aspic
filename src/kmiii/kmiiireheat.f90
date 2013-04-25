@@ -13,7 +13,7 @@ module kmiiireheat
 
   private
 
-  public kmiii_x_star, kmiii_lnrhoend 
+  public kmiii_x_star, kmiii_lnrhoreh_max 
 
 contains
 
@@ -83,9 +83,9 @@ contains
 
 
 
-  function kmiii_lnrhoend(alpha,beta,Pstar) 
+  function kmiii_lnrhoreh_max(alpha,beta,Pstar) 
     implicit none
-    real(kp) :: kmiii_lnrhoend
+    real(kp) :: kmiii_lnrhoreh_max
     real(kp), intent(in) :: alpha,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -108,13 +108,13 @@ contains
     epsOneStar = kmiii_epsilon_one(x,alpha,beta)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'kmiii_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'kmiii_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    kmiii_lnrhoend = lnRhoEnd
+    kmiii_lnrhoreh_max = lnRhoEnd
 
-  end function kmiii_lnrhoend
+  end function kmiii_lnrhoreh_max
 
   
 end module kmiiireheat

@@ -4,7 +4,7 @@ program kmiiimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use kmiiisr, only : kmiii_epsilon_one, kmiii_epsilon_two, kmiii_epsilon_three
   use kmiiisr, only : kmiii_alphamin, kmiii_x_endinf, kmiii_x_endinf_appr
-  use kmiiireheat, only : kmiii_lnrhoend, kmiii_x_star
+  use kmiiireheat, only : kmiii_lnrhoreh_max, kmiii_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -91,7 +91,7 @@ program kmiiimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))! logarithmic step
 
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = kmiii_lnrhoend(alpha,beta,Pstar)
+    lnRhoRehMax = kmiii_lnrhoreh_max(alpha,beta,Pstar)
   
 
     print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax

@@ -13,7 +13,7 @@ module rchireheat
 
   private
 
-  public rchi_x_star, rchi_lnrhoend 
+  public rchi_x_star, rchi_lnrhoreh_max 
 
 contains
 
@@ -91,9 +91,9 @@ contains
 
 
 
-  function rchi_lnrhoend(AI,Pstar) 
+  function rchi_lnrhoreh_max(AI,Pstar) 
     implicit none
-    real(kp) :: rchi_lnrhoend
+    real(kp) :: rchi_lnrhoreh_max
     real(kp), intent(in) :: AI,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -115,13 +115,13 @@ contains
     epsOneStar = rchi_epsilon_one(x,AI)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'rchi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'rchi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    rchi_lnrhoend = lnRhoEnd
+    rchi_lnrhoreh_max = lnRhoEnd
 
-  end function rchi_lnrhoend
+  end function rchi_lnrhoreh_max
 
   
 end module rchireheat

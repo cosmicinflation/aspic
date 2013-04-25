@@ -12,7 +12,7 @@ module cndireheat
 
   private
 
-  public cndi_x_star, cndi_lnrhoend 
+  public cndi_x_star, cndi_lnrhoreh_max 
 
 contains
 
@@ -85,9 +85,9 @@ contains
 
 
 
-  function cndi_lnrhoend(alpha,beta,xend,Pstar) 
+  function cndi_lnrhoreh_max(alpha,beta,xend,Pstar) 
     implicit none
-    real(kp) :: cndi_lnrhoend
+    real(kp) :: cndi_lnrhoreh_max
     real(kp), intent(in) :: alpha,beta,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -110,13 +110,13 @@ contains
 
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'cndi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'cndi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    cndi_lnrhoend = lnRhoEnd
+    cndi_lnrhoreh_max = lnRhoEnd
 
-  end function cndi_lnrhoend
+  end function cndi_lnrhoreh_max
 
   
 end module cndireheat

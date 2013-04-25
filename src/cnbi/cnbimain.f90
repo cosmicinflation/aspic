@@ -3,7 +3,7 @@ program cnbimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use cnbisr, only : cnbi_epsilon_one, cnbi_epsilon_two, cnbi_epsilon_three
-  use cnbireheat, only : cnbi_lnrhoend, cnbi_x_star
+  use cnbireheat, only : cnbi_lnrhoreh_max, cnbi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -45,7 +45,7 @@ program cnbimain
   alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = cnbi_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = cnbi_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -96,7 +96,7 @@ program cnbimain
          eps3A = cnbi_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = cnbi_lnrhoend(alpha,Pstar)
+         lnRhoReh = cnbi_lnrhoreh_max(alpha,Pstar)
          xstarB = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = cnbi_epsilon_one(xstarB,alpha)
          eps2B = cnbi_epsilon_two(xstarB,alpha)

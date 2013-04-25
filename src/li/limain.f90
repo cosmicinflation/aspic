@@ -3,7 +3,7 @@ program limain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use lisr, only : li_epsilon_one, li_epsilon_two, li_epsilon_three
-  use lireheat, only : li_lnrhoend, li_x_star
+  use lireheat, only : li_lnrhoreh_max, li_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -48,7 +48,7 @@ program limain
       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = li_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = li_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -102,7 +102,7 @@ program limain
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = li_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = li_lnrhoreh_max(alpha,Pstar)
 
   print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -154,7 +154,7 @@ program limain
          eps3A = li_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = li_lnrhoend(alpha,Pstar)
+         lnRhoReh = li_lnrhoreh_max(alpha,Pstar)
          xstarB = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = li_epsilon_one(xstarB,alpha)
          eps2B = li_epsilon_two(xstarB,alpha)

@@ -13,7 +13,7 @@ module kksfreheat
 
   private
 
-  public kksf_x_star, kksf_lnrhoend
+  public kksf_x_star, kksf_lnrhoreh_max
 
 contains
 
@@ -69,9 +69,9 @@ contains
 
 
 
-  function kksf_lnrhoend(p,mu,Pstar) 
+  function kksf_lnrhoreh_max(p,mu,Pstar) 
     implicit none
-    real(kp) :: kksf_lnrhoend
+    real(kp) :: kksf_lnrhoreh_max
     real(kp), intent(in) :: p,mu,Pstar
 
     real(kp) :: xEnd, potEnd, epsEnd
@@ -89,13 +89,13 @@ contains
     potStar = kksf_norm_potential(x,p)
     epsStar = kksf_epsilon_one(x,p,mu)
     
-    if (.not.slowroll_validity(epsStar)) stop 'kksf_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsStar)) stop 'kksf_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_energy_endinf(Pstar,epsStar,epsEnd,potEnd/potStar)
 
-    kksf_lnrhoend = lnRhoEnd
+    kksf_lnrhoreh_max = lnRhoEnd
 
-  end function kksf_lnrhoend
+  end function kksf_lnrhoreh_max
 
     
 

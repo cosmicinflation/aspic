@@ -3,7 +3,7 @@ program psnimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use psnisr, only : psni_epsilon_one, psni_epsilon_two, psni_epsilon_three
-  use psnireheat, only : psni_lnrhoend, psni_x_star
+  use psnireheat, only : psni_lnrhoreh_max, psni_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -58,7 +58,7 @@ program psnimain
        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
      
       lnRhoRehMin = lnRhoNuc
-      lnRhoRehMax = psni_lnrhoend(alpha,f,Pstar)
+      lnRhoRehMax = psni_lnrhoreh_max(alpha,f,Pstar)
 
       print *,'alpha=',alpha,'f=',f,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

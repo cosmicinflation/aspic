@@ -3,7 +3,7 @@ program rmi2main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rmi2sr, only : rmi2_epsilon_one, rmi2_epsilon_two, rmi2_epsilon_three, rmi2_numacc_xendmin
-  use rmi2reheat, only : rmi2_lnrhoend, rmi2_x_star
+  use rmi2reheat, only : rmi2_lnrhoreh_max, rmi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -93,7 +93,7 @@ program rmi2main
 !      xend=xendmin+(xendmax-xendmin)*atan(real(l,kp)/Nxend*5._kp)*2._kp/acos(-1._kp) !tangent step
 
       lnRhoRehMin = lnRhoNuc
-      lnRhoRehMax = rmi2_lnrhoend(c,phi0,xend,Pstar)
+      lnRhoRehMax = rmi2_lnrhoreh_max(c,phi0,xend,Pstar)
 
 
       print *,'c=',c,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax, 'xend=',xend

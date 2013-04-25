@@ -14,7 +14,7 @@ module lpi3reheat
 
   private
 
-  public lpi3_x_star, lpi3_lnrhoend 
+  public lpi3_x_star, lpi3_lnrhoreh_max 
 
 contains
 
@@ -92,9 +92,9 @@ contains
 
 
 
-  function lpi3_lnrhoend(p,q,phi0,Pstar) 
+  function lpi3_lnrhoreh_max(p,q,phi0,Pstar) 
     implicit none
-    real(kp) :: lpi3_lnrhoend
+    real(kp) :: lpi3_lnrhoreh_max
     real(kp), intent(in) :: phi0,p,q,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -116,13 +116,13 @@ contains
     epsOneStar = lpi3_epsilon_one(x,p,q,phi0)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'lpi3_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'lpi3_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    lpi3_lnrhoend = lnRhoEnd
+    lpi3_lnrhoreh_max = lnRhoEnd
 
-  end function lpi3_lnrhoend
+  end function lpi3_lnrhoreh_max
 
   
 end module lpi3reheat

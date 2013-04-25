@@ -13,7 +13,7 @@ module psnireheat
 
   private
 
-  public psni_x_star, psni_lnrhoend 
+  public psni_x_star, psni_lnrhoreh_max 
 
 contains
 
@@ -88,9 +88,9 @@ contains
 
 
 
-  function psni_lnrhoend(alpha,f,Pstar) 
+  function psni_lnrhoreh_max(alpha,f,Pstar) 
     implicit none
-    real(kp) :: psni_lnrhoend
+    real(kp) :: psni_lnrhoreh_max
     real(kp), intent(in) :: alpha,f,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -113,13 +113,13 @@ contains
 
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'psni_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'psni_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    psni_lnrhoend = lnRhoEnd
+    psni_lnrhoreh_max = lnRhoEnd
 
-  end function psni_lnrhoend
+  end function psni_lnrhoreh_max
 
   
 end module psnireheat

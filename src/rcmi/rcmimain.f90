@@ -4,7 +4,7 @@ program rcmimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rcmisr, only : rcmi_norm_potential
   use rcmisr, only : rcmi_epsilon_one, rcmi_epsilon_two, rcmi_epsilon_three
-  use rcmireheat, only : rcmi_lnrhoend 
+  use rcmireheat, only : rcmi_lnrhoreh_max 
   use rcmireheat, only : rcmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -52,7 +52,7 @@ program rcmimain
 
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = rcmi_lnrhoend(alpha,Pstar)
+  lnRhoRehMax = rcmi_lnrhoreh_max(alpha,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -102,7 +102,7 @@ end do
          eps3A = rcmi_epsilon_three(xstarA,alpha)
          nsA = 1._kp - 2._kp*eps1A - eps2A
          rA = 16._kp*eps1A
-         lnRhoReh = rcmi_lnrhoend(alpha,Pstar)
+         lnRhoReh = rcmi_lnrhoreh_max(alpha,Pstar)
          xstarB = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
          eps1B = rcmi_epsilon_one(xstarB,alpha)
          eps2B = rcmi_epsilon_two(xstarB,alpha)

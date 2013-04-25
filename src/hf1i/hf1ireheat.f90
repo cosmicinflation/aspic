@@ -13,7 +13,7 @@ module hf1ireheat
 
   private
 
-  public hf1i_x_star, hf1i_lnrhoend 
+  public hf1i_x_star, hf1i_lnrhoreh_max 
 
 contains
 
@@ -81,9 +81,9 @@ contains
 
 
 
-  function hf1i_lnrhoend(A1,Pstar) 
+  function hf1i_lnrhoreh_max(A1,Pstar) 
     implicit none
-    real(kp) :: hf1i_lnrhoend
+    real(kp) :: hf1i_lnrhoreh_max
     real(kp), intent(in) :: A1,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -105,13 +105,13 @@ contains
     epsOneStar = hf1i_epsilon_one(x,A1)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'hf1i_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'hf1i_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    hf1i_lnrhoend = lnRhoEnd
+    hf1i_lnrhoreh_max = lnRhoEnd
 
-  end function hf1i_lnrhoend
+  end function hf1i_lnrhoreh_max
 
   
 end module hf1ireheat

@@ -3,7 +3,7 @@ program lmi1main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use lmi1sr, only : lmi1_epsilon_one, lmi1_epsilon_two, lmi1_epsilon_three
-  use lmi1reheat, only : lmi1_lnrhoend, lmi1_x_star
+  use lmi1reheat, only : lmi1_lnrhoreh_max, lmi1_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 !  use cosmopar, only : QrmsOverT
@@ -66,7 +66,7 @@ program lmi1main
 !  w=(alpha-2.)/(alpha+2.)
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi1_lnrhoend(gam,beta,Pstar)
+  lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,Pstar)
 
   print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -118,7 +118,7 @@ program lmi1main
 !  w=(alpha-2.)/(alpha+2.)
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi1_lnrhoend(gam,beta,Pstar)
+  lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,Pstar)
 
   print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -170,7 +170,7 @@ program lmi1main
 !  w=(alpha-2.)/(alpha+2.)
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi1_lnrhoend(gam,beta,Pstar)
+  lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,Pstar)
 
   print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

@@ -13,7 +13,7 @@ module gmssmireheat
 
   private
 
-  public gmssmi_x_star, gmssmi_lnrhoend 
+  public gmssmi_x_star, gmssmi_lnrhoreh_max 
 
 contains
 
@@ -92,9 +92,9 @@ contains
 
 
 
-  function gmssmi_lnrhoend(alpha,phi0,Pstar) 
+  function gmssmi_lnrhoreh_max(alpha,phi0,Pstar) 
     implicit none
-    real(kp) :: gmssmi_lnrhoend
+    real(kp) :: gmssmi_lnrhoreh_max
     real(kp), intent(in) :: alpha,phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -116,13 +116,13 @@ contains
     epsOneStar = gmssmi_epsilon_one(x,alpha,phi0)
 
     
-!    if (.not.slowroll_validity(epsOneStar)) stop 'gmssmi_lnrhoend: slow-roll violated!'
+!    if (.not.slowroll_validity(epsOneStar)) stop 'gmssmi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    gmssmi_lnrhoend = lnRhoEnd
+    gmssmi_lnrhoreh_max = lnRhoEnd
 
-  end function gmssmi_lnrhoend
+  end function gmssmi_lnrhoreh_max
 
   
 end module gmssmireheat

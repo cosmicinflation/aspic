@@ -13,7 +13,7 @@ module imireheat
 
   private
 
-  public imi_x_star, imi_lnrhoend 
+  public imi_x_star, imi_lnrhoreh_max 
 
 contains
 
@@ -80,9 +80,9 @@ contains
 
 
 
-  function imi_lnrhoend(p,xend,Pstar) 
+  function imi_lnrhoreh_max(p,xend,Pstar) 
     implicit none
-    real(kp) :: imi_lnrhoend
+    real(kp) :: imi_lnrhoreh_max
     real(kp), intent(in) :: p,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
@@ -102,13 +102,13 @@ contains
     potStar = imi_norm_potential(x,p)
     epsOneStar = imi_epsilon_one(x,p)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'imi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'imi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    imi_lnrhoend = lnRhoEnd
+    imi_lnrhoreh_max = lnRhoEnd
 
-  end function imi_lnrhoend
+  end function imi_lnrhoreh_max
 
   
 end module imireheat

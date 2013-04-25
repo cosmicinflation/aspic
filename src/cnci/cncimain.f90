@@ -4,7 +4,7 @@ program cncimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use cncisr, only : cnci_epsilon_one, cnci_epsilon_two,cnci_epsilon_three
   use cncisr, only : cnci_xendmin, cnci_x_epsoneunity
-  use cncireheat, only : cnci_lnrhoend, cnci_x_star
+  use cncireheat, only : cnci_lnrhoreh_max, cnci_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -93,7 +93,7 @@ program cncimain
         xend=xendmin+(xendmax-xendmin)*(real(k,kp)/real(nxend,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = cnci_lnrhoend(alpha,xend,Pstar)
+        lnRhoRehMax = cnci_lnrhoreh_max(alpha,xend,Pstar)
 
         print *,'alpha=',alpha,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

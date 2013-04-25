@@ -13,7 +13,7 @@ module nckireheat
 
   private
 
-  public ncki_x_star, ncki_lnrhoend 
+  public ncki_x_star, ncki_lnrhoreh_max 
 
 contains
 
@@ -94,9 +94,9 @@ contains
 
 
 
-  function ncki_lnrhoend(alpha,beta,Pstar) 
+  function ncki_lnrhoreh_max(alpha,beta,Pstar) 
     implicit none
-    real(kp) :: ncki_lnrhoend
+    real(kp) :: ncki_lnrhoreh_max
     real(kp), intent(in) :: alpha,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -119,13 +119,13 @@ contains
 
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ncki_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ncki_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ncki_lnrhoend = lnRhoEnd
+    ncki_lnrhoreh_max = lnRhoEnd
 
-  end function ncki_lnrhoend
+  end function ncki_lnrhoreh_max
 
   
 end module nckireheat

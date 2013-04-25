@@ -13,7 +13,7 @@ module iireheat
 
   private
 
-  public ii_x_star, ii_lnrhoend 
+  public ii_x_star, ii_lnrhoreh_max 
 
 contains
 
@@ -84,9 +84,9 @@ contains
 
 
 
-  function ii_lnrhoend(beta,xendinf,Pstar) 
+  function ii_lnrhoreh_max(beta,xendinf,Pstar) 
     implicit none
-    real(kp) :: ii_lnrhoend
+    real(kp) :: ii_lnrhoreh_max
     real(kp), intent(in) :: beta,xendinf,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -110,13 +110,13 @@ contains
 
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ii_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ii_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ii_lnrhoend = lnRhoEnd
+    ii_lnrhoreh_max = lnRhoEnd
 
-  end function ii_lnrhoend
+  end function ii_lnrhoreh_max
 
   
 end module iireheat

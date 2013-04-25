@@ -4,7 +4,7 @@ program rmi1main
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rmi1sr, only : rmi1_epsilon_one, rmi1_epsilon_two, rmi1_epsilon_three
   use rmi1sr, only : rmi1_numacc_xendmax
-  use rmi1reheat, only : rmi1_lnrhoend, rmi1_x_star
+  use rmi1reheat, only : rmi1_lnrhoreh_max, rmi1_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -79,7 +79,7 @@ program rmi1main
       xend=xendmin+(xendmax-xendmin)*atan(real(l,kp)/Nxend*10._kp)*2._kp/acos(-1._kp) !tangent step
 
       lnRhoRehMin = lnRhoNuc
-      lnRhoRehMax = rmi1_lnrhoend(c,phi0,xend,Pstar)
+      lnRhoRehMax = rmi1_lnrhoreh_max(c,phi0,xend,Pstar)
 
 
       print *,'c=',c,'phi0=',phi0,'xEnd=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax

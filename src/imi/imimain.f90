@@ -3,7 +3,7 @@ program imimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use imisr, only : imi_epsilon_one, imi_epsilon_two, imi_epsilon_three, imi_xendmin
-  use imireheat, only : imi_lnrhoend, imi_x_star
+  use imireheat, only : imi_lnrhoreh_max, imi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
   implicit none
@@ -46,7 +46,7 @@ program imimain
     xend=xendmin*(xendmax/xendmin)**(real(k,kp)/real(nxend,kp))
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = imi_lnrhoend(p,xend,Pstar)
+    lnRhoRehMax = imi_lnrhoreh_max(p,xend,Pstar)
 
     print *,'p=',p,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

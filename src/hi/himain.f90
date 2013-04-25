@@ -3,7 +3,7 @@ program himain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use hisr, only : hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
-  use hireheat, only : hi_lnrhoend, hi_x_star
+  use hireheat, only : hi_lnrhoreh_max, hi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -34,7 +34,7 @@ program himain
 
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = hi_lnrhoend(Pstar)
+  lnRhoRehMax = hi_lnrhoreh_max(Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

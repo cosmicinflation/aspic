@@ -3,7 +3,7 @@ program wrhimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use wrhisr, only : wrhi_epsilon_one, wrhi_epsilon_two, wrhi_epsilon_three
-  use wrhireheat, only : wrhi_lnrhoend, wrhi_x_star
+  use wrhireheat, only : wrhi_lnrhoreh_max, wrhi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -41,7 +41,7 @@ program wrhimain
  phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
 
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = wrhi_lnrhoend(phi0,Pstar)
+  lnRhoRehMax = wrhi_lnrhoreh_max(phi0,Pstar)
 
   print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

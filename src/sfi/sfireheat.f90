@@ -12,7 +12,7 @@ module sfireheat
 
   private
 
-  public sfi_x_star, sfi_lnrhoend, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
+  public sfi_x_star, sfi_lnrhoreh_max, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
 
   public find_sfi_x_star
 
@@ -89,9 +89,9 @@ contains
   end function find_sfi_x_star
 
 
-  function sfi_lnrhoend(p,mu,Pstar) 
+  function sfi_lnrhoreh_max(p,mu,Pstar) 
     implicit none
-    real(kp) :: sfi_lnrhoend
+    real(kp) :: sfi_lnrhoreh_max
     real(kp), intent(in) :: p,mu,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -109,13 +109,13 @@ contains
     potStar = sfi_norm_potential(x,p)
     epsOneStar = sfi_epsilon_one(x,p,mu)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'sfi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'sfi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    sfi_lnrhoend = lnRhoEnd
+    sfi_lnrhoreh_max = lnRhoEnd
 
-  end function sfi_lnrhoend
+  end function sfi_lnrhoreh_max
 
   
    

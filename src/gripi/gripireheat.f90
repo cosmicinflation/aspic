@@ -13,7 +13,7 @@ module gripireheat
 
   private
 
-  public gripi_x_star, gripi_lnrhoend 
+  public gripi_x_star, gripi_lnrhoreh_max 
 
 contains
 
@@ -92,9 +92,9 @@ contains
 
 
 
-  function gripi_lnrhoend(alpha,phi0,Pstar) 
+  function gripi_lnrhoreh_max(alpha,phi0,Pstar) 
     implicit none
-    real(kp) :: gripi_lnrhoend
+    real(kp) :: gripi_lnrhoreh_max
     real(kp), intent(in) :: alpha,phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -116,13 +116,13 @@ contains
     epsOneStar = gripi_epsilon_one(x,alpha,phi0)
 
     
-!    if (.not.slowroll_validity(epsOneStar)) stop 'gripi_lnrhoend: slow-roll violated!'
+!    if (.not.slowroll_validity(epsOneStar)) stop 'gripi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    gripi_lnrhoend = lnRhoEnd
+    gripi_lnrhoreh_max = lnRhoEnd
 
-  end function gripi_lnrhoend
+  end function gripi_lnrhoreh_max
 
   
 end module gripireheat

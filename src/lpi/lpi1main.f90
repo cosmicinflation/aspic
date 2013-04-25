@@ -3,7 +3,7 @@ program lpi1main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use lpi1sr, only : lpi1_epsilon_one, lpi1_epsilon_two, lpi1_epsilon_three
-  use lpi1reheat, only : lpi1_lnrhoend, lpi1_x_star
+  use lpi1reheat, only : lpi1_lnrhoreh_max, lpi1_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -75,7 +75,7 @@ program lpi1main
     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = lpi1_lnrhoend(p,q,phi0,Pstar)
+    lnRhoRehMax = lpi1_lnrhoreh_max(p,q,phi0,Pstar)
 
 
     print *,'phi0=',phi0,'p=',p,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax

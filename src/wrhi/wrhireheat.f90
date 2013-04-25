@@ -13,7 +13,7 @@ module wrhireheat
 
   private
 
-  public wrhi_x_star, wrhi_lnrhoend 
+  public wrhi_x_star, wrhi_lnrhoreh_max 
 
 contains
 
@@ -83,9 +83,9 @@ contains
   end function find_wrhi_x_star
 
 
-  function wrhi_lnrhoend(phi0,Pstar) 
+  function wrhi_lnrhoreh_max(phi0,Pstar) 
     implicit none
-    real(kp) :: wrhi_lnrhoend
+    real(kp) :: wrhi_lnrhoreh_max
     real(kp), intent(in) :: phi0,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -107,12 +107,12 @@ contains
     potStar = wrhi_norm_potential(x)
     epsOneStar = wrhi_epsilon_one(x,phi0)
    
-    if (.not.slowroll_validity(epsOneStar)) stop 'wrhi_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'wrhi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    wrhi_lnrhoend = lnRhoEnd
+    wrhi_lnrhoreh_max = lnRhoEnd
 
-  end function wrhi_lnrhoend
+  end function wrhi_lnrhoreh_max
   
 end module wrhireheat

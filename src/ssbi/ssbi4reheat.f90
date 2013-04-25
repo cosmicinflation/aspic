@@ -14,7 +14,7 @@ module ssbi4reheat
 
   private
 
-  public ssbi4_x_star, ssbi4_lnrhoend
+  public ssbi4_x_star, ssbi4_lnrhoreh_max
 
 contains
 
@@ -85,9 +85,9 @@ contains
 
 
 
-  function ssbi4_lnrhoend(alpha,beta,Pstar) 
+  function ssbi4_lnrhoreh_max(alpha,beta,Pstar) 
     implicit none
-    real(kp) :: ssbi4_lnrhoend
+    real(kp) :: ssbi4_lnrhoreh_max
     real(kp), intent(in) :: alpha,beta,Pstar
 
     real(kp) :: xEnd, potEnd, epsOneEnd
@@ -113,13 +113,13 @@ contains
     potStar = ssbi4_norm_potential(x,alpha,beta)
     epsOneStar = ssbi4_epsilon_one(x,alpha,beta)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'ssbi4_lnrhoend: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'ssbi4_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    ssbi4_lnrhoend = lnRhoEnd
+    ssbi4_lnrhoreh_max = lnRhoEnd
 
-  end function ssbi4_lnrhoend
+  end function ssbi4_lnrhoreh_max
 
   
 end module ssbi4reheat
