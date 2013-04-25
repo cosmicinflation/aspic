@@ -7,6 +7,8 @@ module gmlfireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use gmlfisr, only : gmlfi_epsilon_one, gmlfi_epsilon_two, gmlfi_epsilon_three
   use gmlfisr, only : gmlfi_norm_potential, gmlfi_x_endinf
   use gmlfisr, only :  gmlfi_efold_primitive
@@ -14,7 +16,8 @@ module gmlfireheat
 
   private
 
-  public gmlfi_x_star, gmlfi_lnrhoreh_max 
+  public gmlfi_x_star, gmlfi_lnrhoreh_max
+  public gmlfi_x_rrad, gmlfi_x_rreh
 
 contains
 
@@ -88,6 +91,143 @@ contains
     find_gmlfi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_gmlfi_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function gmlfi_x_rrad(p,q,alpha,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: gmlfi_x_rrad
+    real(kp), intent(in) :: alpha,p,q,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: gmlfiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+        
+    xEnd = gmlfi_x_endinf(p,q,alpha)
+    epsOneEnd = gmlfi_epsilon_one(xEnd,p,q,alpha)
+    potEnd = gmlfi_norm_potential(xEnd,p,q,alpha)
+    primEnd = gmlfi_efold_primitive(xEnd,p,q,alpha) 
+    
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    gmlfiData%real1 = alpha
+    gmlfiData%real2 = p
+    gmlfiData%real3 = q
+    gmlfiData%real4 = xEnd
+    gmlfiData%real5 = calF + primEnd
+
+    mini = xend
+    maxi = xend*10._kp**(6._kp)
+
+    x = zbrent(find_gmlfi_x_rrad,mini,maxi,tolzbrent,gmlfiData)
+    gmlfi_x_rrad = x  
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (gmlfi_efold_primitive(x,p,q,alpha) - primEnd)
+    endif
+
+  end function gmlfi_x_rrad
+
+  function find_gmlfi_x_rrad(x,gmlfiData)   
+    implicit none
+    real(kp) :: find_gmlfi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: gmlfiData
+
+    real(kp) :: primStar,alpha,p,q,xEnd,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=gmlfiData%real1
+    p=gmlfiData%real2
+    q=gmlfiData%real3
+    xEnd=gmlfiData%real4
+    CalFplusprimEnd = gmlfiData%real5
+
+    primStar = gmlfi_efold_primitive(x,p,q,alpha)
+    epsOneStar = gmlfi_epsilon_one(x,p,q,alpha)
+    potStar = gmlfi_norm_potential(x,p,q,alpha)
+
+    find_gmlfi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_gmlfi_x_rrad
+
+
+
+  
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function gmlfi_x_rreh(p,q,alpha,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: gmlfi_x_rreh
+    real(kp), intent(in) :: alpha,p,q,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: gmlfiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+        
+    xEnd = gmlfi_x_endinf(p,q,alpha)
+    epsOneEnd = gmlfi_epsilon_one(xEnd,p,q,alpha)
+    potEnd = gmlfi_norm_potential(xEnd,p,q,alpha)
+    primEnd = gmlfi_efold_primitive(xEnd,p,q,alpha) 
+    
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    gmlfiData%real1 = alpha
+    gmlfiData%real2 = p
+    gmlfiData%real3 = q
+    gmlfiData%real4 = xEnd
+    gmlfiData%real5 = calF + primEnd
+
+    mini = xend
+    maxi = xend*10._kp**(6._kp)
+
+    x = zbrent(find_gmlfi_x_rreh,mini,maxi,tolzbrent,gmlfiData)
+    gmlfi_x_rreh = x  
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (gmlfi_efold_primitive(x,p,q,alpha) - primEnd)
+    endif
+
+  end function gmlfi_x_rreh
+
+  function find_gmlfi_x_rreh(x,gmlfiData)   
+    implicit none
+    real(kp) :: find_gmlfi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: gmlfiData
+
+    real(kp) :: primStar,alpha,p,q,xEnd,CalFplusprimEnd,potStar
+
+    alpha=gmlfiData%real1
+    p=gmlfiData%real2
+    q=gmlfiData%real3
+    xEnd=gmlfiData%real4
+    CalFplusprimEnd = gmlfiData%real5
+
+    primStar = gmlfi_efold_primitive(x,p,q,alpha)
+    potStar = gmlfi_norm_potential(x,p,q,alpha)
+
+    find_gmlfi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_gmlfi_x_rreh
+
+
 
 
 
