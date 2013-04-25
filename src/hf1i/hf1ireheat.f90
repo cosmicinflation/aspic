@@ -6,6 +6,8 @@ module hf1ireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+   use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use hf1isr, only : hf1i_epsilon_one, hf1i_epsilon_two, hf1i_epsilon_three
   use hf1isr, only : hf1i_norm_potential
   use hf1isr, only : hf1i_x_endinf, hf1i_efold_primitive
@@ -13,7 +15,8 @@ module hf1ireheat
 
   private
 
-  public hf1i_x_star, hf1i_lnrhoreh_max 
+  public hf1i_x_star, hf1i_lnrhoreh_max
+  public hf1i_x_rrad, hf1i_x_rreh
 
 contains
 
@@ -78,6 +81,129 @@ contains
     find_hf1i_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_hf1i_x_star
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function hf1i_x_rrad(A1,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: hf1i_x_rrad
+    real(kp), intent(in) :: A1,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: hf1iData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = hf1i_x_endinf(A1)
+    epsOneEnd = hf1i_epsilon_one(xEnd,A1)
+    potEnd = hf1i_norm_potential(xEnd,A1)
+    primEnd = hf1i_efold_primitive(xEnd,A1)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    hf1iData%real1 = A1    
+    hf1iData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_hf1i_x_rrad,mini,maxi,tolzbrent,hf1iData)
+    hf1i_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (hf1i_efold_primitive(x,A1) - primEnd)
+    endif
+
+  end function hf1i_x_rrad
+
+  function find_hf1i_x_rrad(x,hf1iData)   
+    implicit none
+    real(kp) :: find_hf1i_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: hf1iData
+
+    real(kp) :: primStar,A1,CalFplusprimEnd,potStar,epsOneStar
+
+    A1=hf1iData%real1
+    CalFplusprimEnd = hf1iData%real2
+
+    primStar = hf1i_efold_primitive(x,A1)
+    epsOneStar = hf1i_epsilon_one(x,A1)
+    potStar = hf1i_norm_potential(x,A1)
+
+    find_hf1i_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_hf1i_x_rrad
+
+
+  
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function hf1i_x_rreh(A1,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: hf1i_x_rreh
+    real(kp), intent(in) :: A1,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: hf1iData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = hf1i_x_endinf(A1)
+    epsOneEnd = hf1i_epsilon_one(xEnd,A1)
+    potEnd = hf1i_norm_potential(xEnd,A1)
+    primEnd = hf1i_efold_primitive(xEnd,A1)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    hf1iData%real1 = A1    
+    hf1iData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+
+    x = zbrent(find_hf1i_x_rreh,mini,maxi,tolzbrent,hf1iData)
+    hf1i_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (hf1i_efold_primitive(x,A1) - primEnd)
+    endif
+
+  end function hf1i_x_rreh
+
+  function find_hf1i_x_rreh(x,hf1iData)   
+    implicit none
+    real(kp) :: find_hf1i_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: hf1iData
+
+    real(kp) :: primStar,A1,CalFplusprimEnd,potStar
+
+    A1=hf1iData%real1
+    CalFplusprimEnd = hf1iData%real2
+
+    primStar = hf1i_efold_primitive(x,A1)    
+    potStar = hf1i_norm_potential(x,A1)
+
+    find_hf1i_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_hf1i_x_rreh
+
+
 
 
 
