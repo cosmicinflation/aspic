@@ -169,7 +169,7 @@ contains
     type(transfert) :: aiData
     
 
-    if (lnRReh.eq.0._kp) then
+    if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     

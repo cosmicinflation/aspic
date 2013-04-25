@@ -6,6 +6,8 @@ module hireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use hisr, only : hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
   use hisr, only : hi_norm_potential
   use hisr, only : hi_x_endinf, hi_efold_primitive
@@ -13,7 +15,8 @@ module hireheat
 
   private
 
-  public hi_x_star, hi_lnrhoreh_max 
+  public hi_x_star, hi_lnrhoreh_max
+  public hi_x_rrad, hi_x_rreh
 
 contains
 
@@ -81,6 +84,126 @@ contains
   
   end function find_hi_x_star
 
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function hi_x_rrad(lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: hi_x_rrad
+    real(kp), intent(in) :: lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: hiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    
+    xEnd = hi_x_endinf()
+
+    epsOneEnd = hi_epsilon_one(xEnd)
+    potEnd = hi_norm_potential(xEnd)
+
+    primEnd = hi_efold_primitive(xEnd)
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    hiData%real1 = calF + primEnd
+
+    mini = hi_x_endinf()
+    maxi = 1./epsilon(1._kp)
+
+    x = zbrent(find_hi_x_rrad,mini,maxi,tolzbrent,hiData)
+    hi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (hi_efold_primitive(x) - primEnd)
+    endif
+
+  end function hi_x_rrad
+
+  function find_hi_x_rrad(x,hiData)   
+    implicit none
+    real(kp) :: find_hi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: hiData
+
+    real(kp) :: primStar,CalFplusprimEnd,potStar,epsOneStar
+
+    CalFplusprimEnd = hiData%real1
+
+    primStar = hi_efold_primitive(x)
+    epsOneStar = hi_epsilon_one(x)
+    potStar = hi_norm_potential(x)
+
+    find_hi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_hi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function hi_x_rreh(lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: hi_x_rreh
+    real(kp), intent(in) :: lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: hiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+  
+    xEnd = hi_x_endinf()
+
+    epsOneEnd = hi_epsilon_one(xEnd)
+    potEnd = hi_norm_potential(xEnd)
+
+    primEnd = hi_efold_primitive(xEnd)
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    hiData%real1 = calF + primEnd
+
+    mini = hi_x_endinf()
+    maxi = 1./epsilon(1._kp)
+
+    x = zbrent(find_hi_x_rreh,mini,maxi,tolzbrent,hiData)
+    hi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (hi_efold_primitive(x) - primEnd)
+    endif
+
+  end function hi_x_rreh
+
+  function find_hi_x_rreh(x,hiData)   
+    implicit none
+    real(kp) :: find_hi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: hiData
+
+    real(kp) :: primStar,CalFplusprimEnd,potStar
+
+    CalFplusprimEnd = hiData%real1
+
+    primStar = hi_efold_primitive(x)    
+    potStar = hi_norm_potential(x)
+
+    find_hi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_hi_x_rreh
+
 
 
   function hi_lnrhoreh_max(Pstar) 
@@ -101,9 +224,6 @@ contains
     potEnd  = hi_norm_potential(xEnd)
 
     epsOneEnd = hi_epsilon_one(xEnd)
-
-
-
 
 !   Trick to return x such that rho_reh=rho_end
 
