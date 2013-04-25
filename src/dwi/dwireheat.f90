@@ -6,6 +6,8 @@ module dwireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use dwisr, only : dwi_epsilon_one, dwi_epsilon_two, dwi_epsilon_three
   use dwisr, only : dwi_norm_potential
   use dwisr, only : dwi_x_endinf, dwi_efold_primitive
@@ -13,7 +15,9 @@ module dwireheat
 
   private
 
-  public dwi_x_star, dwi_lnrhoreh_max 
+  public dwi_x_star, dwi_lnrhoreh_max
+  public dwi_x_rrad, dwi_x_rreh
+  
 
 contains
 
@@ -83,6 +87,135 @@ contains
     find_dwi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_dwi_x_star
+
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function dwi_x_rrad(phi0,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: dwi_x_rrad
+    real(kp), intent(in) :: phi0,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: dwiData
+    
+
+    if (lnRRad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    xEnd = dwi_x_endinf(phi0)
+
+    epsOneEnd = dwi_epsilon_one(xEnd,phi0)
+    potEnd = dwi_norm_potential(xEnd)
+
+    primEnd = dwi_efold_primitive(xEnd,phi0)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    dwiData%real1 = phi0
+    dwiData%real2 = calF + primEnd
+
+    mini = epsilon(1._kp)
+    maxi = xEnd
+   
+    x = zbrent(find_dwi_x_rrad,mini,maxi,tolzbrent,dwiData)
+    dwi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (dwi_efold_primitive(x,phi0) - primEnd)
+    endif
+
+  end function dwi_x_rrad
+
+
+  function find_dwi_x_rrad(x,dwiData)   
+    implicit none
+    real(kp) :: find_dwi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: dwiData
+
+    real(kp) :: primStar,phi0,CalFplusprimEnd,potStar,epsOneStar
+
+    phi0=dwiData%real1
+    CalFplusprimEnd = dwiData%real2
+
+    primStar = dwi_efold_primitive(x,phi0)
+    epsOneStar = dwi_epsilon_one(x,phi0)
+    potStar = dwi_norm_potential(x)
+
+    find_dwi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_dwi_x_rrad
+
+
+  
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function dwi_x_rreh(phi0,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: dwi_x_rreh
+    real(kp), intent(in) :: phi0,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: dwiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    xEnd = dwi_x_endinf(phi0)
+
+    epsOneEnd = dwi_epsilon_one(xEnd,phi0)
+    potEnd = dwi_norm_potential(xEnd)
+
+    primEnd = dwi_efold_primitive(xEnd,phi0)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    dwiData%real1 = phi0
+    dwiData%real2 = calF + primEnd
+
+    mini = epsilon(1._kp)
+    maxi = xEnd
+   
+    x = zbrent(find_dwi_x_rreh,mini,maxi,tolzbrent,dwiData)
+    dwi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (dwi_efold_primitive(x,phi0) - primEnd)
+    endif
+
+  end function dwi_x_rreh
+
+
+  function find_dwi_x_rreh(x,dwiData)   
+    implicit none
+    real(kp) :: find_dwi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: dwiData
+
+    real(kp) :: primStar,phi0,CalFplusprimEnd,potStar
+
+    phi0=dwiData%real1
+    CalFplusprimEnd = dwiData%real2
+
+    primStar = dwi_efold_primitive(x,phi0)    
+    potStar = dwi_norm_potential(x)
+
+    find_dwi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_dwi_x_rreh
 
 
 
