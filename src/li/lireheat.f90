@@ -7,6 +7,8 @@ module lireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use lisr, only : li_epsilon_one, li_epsilon_two, li_epsilon_three
   use lisr, only : li_norm_potential
   use lisr, only : li_x_endinf, li_efold_primitive
@@ -14,7 +16,8 @@ module lireheat
 
   private
 
-  public li_x_star, li_lnrhoreh_max 
+  public li_x_star, li_lnrhoreh_max
+  public li_x_rrad, li_x_rreh
 
 contains
 
@@ -85,6 +88,136 @@ contains
     find_li_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_li_x_star
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function li_x_rrad(alpha,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: li_x_rrad
+    real(kp), intent(in) :: alpha,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: liData
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif    
+    
+    xEnd = li_x_endinf(alpha)
+    epsOneEnd = li_epsilon_one(xEnd,alpha)
+    potEnd = li_norm_potential(xEnd,alpha)
+    primEnd = li_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    liData%real1 = alpha
+    liData%real2 = calF + primEnd
+
+    if (alpha .gt. 0._kp) then
+    mini = xEnd
+    maxi = xEnd*1000._kp
+    else
+    mini = -1._kp/sqrt(2._kp) &
+         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    maxi = xEnd
+    endif
+
+    x = zbrent(find_li_x_rrad,mini,maxi,tolzbrent,liData)
+    li_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (li_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function li_x_rrad
+
+  function find_li_x_rrad(x,liData)   
+    implicit none
+    real(kp) :: find_li_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: liData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=liData%real1
+    CalFplusprimEnd = liData%real2
+
+    primStar = li_efold_primitive(x,alpha)
+    epsOneStar = li_epsilon_one(x,alpha)
+    potStar = li_norm_potential(x,alpha)
+
+    find_li_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_li_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function li_x_rreh(alpha,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: li_x_rreh
+    real(kp), intent(in) :: alpha,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: liData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif    
+    
+    xEnd = li_x_endinf(alpha)
+    epsOneEnd = li_epsilon_one(xEnd,alpha)
+    potEnd = li_norm_potential(xEnd,alpha)
+    primEnd = li_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    liData%real1 = alpha
+    liData%real2 = calF + primEnd
+
+    if (alpha .gt. 0._kp) then
+    mini = xEnd
+    maxi = xEnd*1000._kp
+    else
+    mini = -1._kp/sqrt(2._kp) &
+         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    maxi = xEnd
+    endif
+
+    x = zbrent(find_li_x_rreh,mini,maxi,tolzbrent,liData)
+    li_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (li_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function li_x_rreh
+
+  function find_li_x_rreh(x,liData)   
+    implicit none
+    real(kp) :: find_li_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: liData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar
+
+    alpha=liData%real1
+    CalFplusprimEnd = liData%real2
+
+    primStar = li_efold_primitive(x,alpha)
+    potStar = li_norm_potential(x,alpha)
+
+    find_li_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_li_x_rreh
 
 
 
