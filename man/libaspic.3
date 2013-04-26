@@ -218,7 +218,7 @@ module exposes the following
 of kind
 .I real(kp)
 .IP
-.BR foo_lnrhoend (...,Pstar)
+.BR foo_lnrhoreh_max (...,Pstar)
 .RS
 .BR foo_x_star (...,w,lnRhoReh,Pstar)
 .RE
@@ -234,10 +234,13 @@ parameters '...' as specified in the man pages
 and in the header of the module files 'foosr.f90' and 'fooreheat.f90'.
 .P
 The function
-.BR foo_lnrhoend ()
+.BR foo_lnrhoreh_max ()
 returns the natural logarithm of the total energy density of the
-universe at the end of inflation. This number depending on the
-physical normalization of the potential, you need to input
+universe at the end of reheating when it occurs instantaneously at the
+end of inflation. There, this is also the energy density at the end of
+inflation when reheating is instantaneous, or radiation
+dominated. This number depending on the physical normalization of the
+potential, you need to input
 .B 'Pstar'
 the measured amplitude of the scalar power spectrum evaluated at 
 .B 'kstar'

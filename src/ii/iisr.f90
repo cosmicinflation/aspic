@@ -13,7 +13,7 @@ module iisr
   private
 
   public  ii_norm_potential, ii_epsilon_one, ii_epsilon_two, ii_epsilon_three
-  public  ii_x_endinf, ii_efold_primitive, ii_x_trajectory
+  public  ii_efold_primitive, ii_x_trajectory
   public  ii_norm_deriv_potential, ii_norm_deriv_second_potential
   public  ii_prior_xendmin
  
@@ -95,7 +95,7 @@ contains
     
   end function ii_epsilon_three
 
-!returns x at the end of inflation defined as epsilon1=1
+!returns x at the end of inflation
   function ii_x_endinf(beta,xend)
     implicit none
     real(kp), intent(in) :: beta,xend
