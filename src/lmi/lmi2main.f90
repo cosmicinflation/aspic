@@ -8,14 +8,19 @@ program lmi2main
   use srreheat, only : log_energy_reheat_ingev
   use lmicommon, only : lmi_x_epsonemax
 
+  use lmi2sr, only : lmi2_norm_potential
+  use lmi2reheat, only : lmi2_x_rreh, lmi2_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,NxEnd
   integer :: npts = 20
-         
+
   real(kp), dimension(1:6) :: gamValues
 
   integer, dimension(1:6) :: NxEndValues              
@@ -33,7 +38,9 @@ program lmi2main
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End
 
   Pstar = powerAmpScalar
 
@@ -41,209 +48,250 @@ program lmi2main
   call delete_file('lmi2_nsr.dat')
 
 
-!  w = 1._kp/3._kp
+  !  w = 1._kp/3._kp
   w=0._kp
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!    beta=0.1     !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-beta=0.1
+  beta=0.1
 
-gamValues(1)=0.75_kp
-NxEndValues(1)=80
-gamValues(2)=0.85_kp
-NxEndValues(2)=80
-gamValues(3)=0.92_kp
-NxEndValues(3)=60
-gamValues(4)=0.95_kp
-NxEndValues(4)=30
-gamValues(5)=0.975_kp
-NxEndValues(5)=25
-gamValues(6)=0.995_kp
-NxEndValues(6)=20
-
-
- do j=1,size(gamValues) 
- gam=gamValues(j)
- NxEnd=nxEndValues(j)
-
-alpha=4._kp*(1._kp-gam)
-
-xEndMin=lmi2_xini_min(gam,beta)*1.1
-xEndMax=xEndMin+(lmi_x_epsonemax(gam,beta)-xEndMin)*200._kp
+  gamValues(1)=0.75_kp
+  NxEndValues(1)=80
+  gamValues(2)=0.85_kp
+  NxEndValues(2)=80
+  gamValues(3)=0.92_kp
+  NxEndValues(3)=60
+  gamValues(4)=0.95_kp
+  NxEndValues(4)=30
+  gamValues(5)=0.975_kp
+  NxEndValues(5)=25
+  gamValues(6)=0.995_kp
+  NxEndValues(6)=20
 
 
- do k=0,NxEnd
- xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
-! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
+  do j=1,size(gamValues) 
+     gam=gamValues(j)
+     NxEnd=nxEndValues(j)
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar)
+     alpha=4._kp*(1._kp-gam)
 
-  print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     xEndMin=lmi2_xini_min(gam,beta)*1.1
+     xEndMax=xEndMin+(lmi_x_epsonemax(gam,beta)-xEndMin)*200._kp
 
-  do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-       xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+     do k=0,NxEnd
+        xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
+        ! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
 
-       eps1 = lmi2_epsilon_one(xstar,gam,beta)
-       eps2 = lmi2_epsilon_two(xstar,gam,beta)
-       eps3 = lmi2_epsilon_three(xstar,gam,beta)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar)
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
-   
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        do i=1,npts
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
 
-       call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
+           eps1 = lmi2_epsilon_one(xstar,gam,beta)
+           eps2 = lmi2_epsilon_two(xstar,gam,beta)
+           eps3 = lmi2_epsilon_three(xstar,gam,beta)
 
-       call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
- end do
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
- end do
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!     beta=1       !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-beta=1.
+  beta=1.
 
-gamValues(1)=0.45_kp
-NxEndValues(1)=100
-gamValues(2)=0.5_kp
-NxEndValues(2)=50
-gamValues(3)=0.55_kp
-NxEndValues(3)=30
-gamValues(4)=0.6_kp
-NxEndValues(4)=20
-gamValues(5)=0.63_kp
-NxEndValues(5)=15
-gamValues(6)=0.68_kp
-NxEndValues(6)=15
+  gamValues(1)=0.45_kp
+  NxEndValues(1)=100
+  gamValues(2)=0.5_kp
+  NxEndValues(2)=50
+  gamValues(3)=0.55_kp
+  NxEndValues(3)=30
+  gamValues(4)=0.6_kp
+  NxEndValues(4)=20
+  gamValues(5)=0.63_kp
+  NxEndValues(5)=15
+  gamValues(6)=0.68_kp
+  NxEndValues(6)=15
 
- do j=1,size(gamValues) 
- gam=gamValues(j)
- NxEnd=nxEndValues(j)
+  do j=1,size(gamValues) 
+     gam=gamValues(j)
+     NxEnd=nxEndValues(j)
 
-alpha=4._kp*(1._kp-gam)
-xEndMin=lmi2_xini_min(gam,beta)*1.1
-xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
+     alpha=4._kp*(1._kp-gam)
+     xEndMin=lmi2_xini_min(gam,beta)*1.1
+     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
- do k=0,NxEnd
- xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
-! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
+     do k=0,NxEnd
+        xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
+        ! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar)
 
-  print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+        print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  do i=1,npts
+        do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-       xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-       eps1 = lmi2_epsilon_one(xstar,gam,beta)
-       eps2 = lmi2_epsilon_two(xstar,gam,beta)
-       eps3 = lmi2_epsilon_three(xstar,gam,beta)
-   
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           eps1 = lmi2_epsilon_one(xstar,gam,beta)
+           eps2 = lmi2_epsilon_two(xstar,gam,beta)
+           eps3 = lmi2_epsilon_three(xstar,gam,beta)
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-       call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
 
-       call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
- end do
+           call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
- end do
+        end do
+
+     end do
+
+  end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!     beta=10      !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-beta=10.
+  beta=10.
 
-gamValues(1)=0.18_kp
-NxEndValues(1)=100
-gamValues(2)=0.2_kp
-NxEndValues(2)=50
-gamValues(3)=0.22_kp
-NxEndValues(3)=20
-gamValues(4)=0.235_kp
-NxEndValues(4)=20
-gamValues(5)=0.25_kp
-NxEndValues(5)=20
-gamValues(6)=0.27_kp
-NxEndValues(6)=20
+  gamValues(1)=0.18_kp
+  NxEndValues(1)=100
+  gamValues(2)=0.2_kp
+  NxEndValues(2)=50
+  gamValues(3)=0.22_kp
+  NxEndValues(3)=20
+  gamValues(4)=0.235_kp
+  NxEndValues(4)=20
+  gamValues(5)=0.25_kp
+  NxEndValues(5)=20
+  gamValues(6)=0.27_kp
+  NxEndValues(6)=20
 
- do j=1,size(gamValues) 
- gam=gamValues(j)
- NxEnd=nxEndValues(j)
+  do j=1,size(gamValues) 
+     gam=gamValues(j)
+     NxEnd=nxEndValues(j)
 
-alpha=4._kp*(1._kp-gam)
-xEndMin=lmi2_xini_min(gam,beta)*1.1
-xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
+     alpha=4._kp*(1._kp-gam)
+     xEndMin=lmi2_xini_min(gam,beta)*1.1
+     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
- do k=0,NxEnd
- xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
-! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
+     do k=0,NxEnd
+        xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
+        ! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar)
 
-  print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+        print *,'gam=',gam,'beta=',beta,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+
+           xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+
+           eps1 = lmi2_epsilon_one(xstar,gam,beta)
+           eps2 = lmi2_epsilon_two(xstar,gam,beta)
+           eps3 = lmi2_epsilon_three(xstar,gam,beta)
+
+
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
+
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  gam = 0.7
+  beta = 1.
+  xend = lmi2_xini_min(gam,beta)*3
   do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
+     xstar = lmi2_x_rrad(gam,beta,xend,lnRrad,Pstar,bfoldstar)
 
-       xstar = lmi2_x_star(gam,beta,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
+     eps1 = lmi2_epsilon_one(xstar,gam,beta)
 
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     eps1end =  lmi2_epsilon_one(xend,gam,beta)
+     VendOverVstar = lmi2_norm_potential(xend,gam,beta)/lmi2_norm_potential(xstar,gam,beta)
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = lmi2_x_rreh(gam,beta,xend,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
-       eps1 = lmi2_epsilon_one(xstar,gam,beta)
-       eps2 = lmi2_epsilon_two(xstar,gam,beta)
-       eps3 = lmi2_epsilon_three(xstar,gam,beta)
-   
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+     xstar = lmi2_x_star(gam,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+  enddo
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
-
-       call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
-
-       call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
-
- end do
-
- end do
- 
 
 end program lmi2main

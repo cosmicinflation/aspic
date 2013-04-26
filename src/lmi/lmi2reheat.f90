@@ -6,15 +6,18 @@ module lmi2reheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use lmi2sr, only : lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three
   use lmi2sr, only : lmi2_norm_potential
   use lmi2sr, only : lmi2_xini_min, lmi2_efold_primitive
-  use cosmopar, only : QrmsOverT
+
   implicit none
 
   private
 
   public lmi2_x_star, lmi2_lnrhoreh_max
+  public lmi2_x_rrad, lmi2_x_rreh
 
 contains
 
@@ -81,6 +84,128 @@ contains
   
   end function find_lmi2_x_star
 
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function lmi2_x_rrad(gam,beta,xEnd,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: lmi2_x_rrad
+    real(kp), intent(in) :: gam,beta,xEnd,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,potEnd
+    type(transfert) :: lmi2Data
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    epsOneEnd = lmi2_epsilon_one(xEnd,gam,beta)
+    potEnd = lmi2_norm_potential(xEnd,gam,beta)
+
+    primEnd = lmi2_efold_primitive(xEnd,gam,beta)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    lmi2Data%real1 = gam
+    lmi2Data%real2 = beta
+    lmi2Data%real3 = calF + primEnd
+
+    mini = lmi2_xini_min(gam,beta)
+    maxi = xEnd*(1._kp-epsilon(1._kp))
+
+
+    x = zbrent(find_lmi2_x_rrad,mini,maxi,tolzbrent,lmi2Data)
+    lmi2_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (lmi2_efold_primitive(x,gam,beta) - primEnd)
+    endif
+
+  end function lmi2_x_rrad
+
+  function find_lmi2_x_rrad(x,lmi2Data)   
+    implicit none
+    real(kp) :: find_lmi2_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: lmi2Data
+
+    real(kp) :: primStar,gam,beta,CalFplusprimEnd,potStar,epsOneStar
+
+    gam=lmi2Data%real1
+    beta=lmi2Data%real2
+    CalFplusprimEnd = lmi2Data%real3
+
+    primStar = lmi2_efold_primitive(x,gam,beta)
+    epsOneStar = lmi2_epsilon_one(x,gam,beta)
+    potStar = lmi2_norm_potential(x,gam,beta)
+
+    find_lmi2_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_lmi2_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function lmi2_x_rreh(gam,beta,xEnd,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: lmi2_x_rreh
+    real(kp), intent(in) :: gam,beta,xEnd,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,potEnd
+    type(transfert) :: lmi2Data
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    epsOneEnd = lmi2_epsilon_one(xEnd,gam,beta)
+    potEnd = lmi2_norm_potential(xEnd,gam,beta)
+
+    primEnd = lmi2_efold_primitive(xEnd,gam,beta)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    lmi2Data%real1 = gam
+    lmi2Data%real2 = beta
+    lmi2Data%real3 = calF + primEnd
+
+    mini = lmi2_xini_min(gam,beta)
+    maxi = xEnd*(1._kp-epsilon(1._kp))
+
+
+    x = zbrent(find_lmi2_x_rreh,mini,maxi,tolzbrent,lmi2Data)
+    lmi2_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (lmi2_efold_primitive(x,gam,beta) - primEnd)
+    endif
+
+  end function lmi2_x_rreh
+
+  function find_lmi2_x_rreh(x,lmi2Data)   
+    implicit none
+    real(kp) :: find_lmi2_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: lmi2Data
+
+    real(kp) :: primStar,gam,beta,CalFplusprimEnd,potStar
+
+    gam=lmi2Data%real1
+    beta=lmi2Data%real2
+    CalFplusprimEnd = lmi2Data%real3
+
+    primStar = lmi2_efold_primitive(x,gam,beta)
+    potStar = lmi2_norm_potential(x,gam,beta)
+
+    find_lmi2_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_lmi2_x_rreh
 
 
   function lmi2_lnrhoreh_max(gam,beta,xEnd,Pstar) 
