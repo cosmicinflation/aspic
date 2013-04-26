@@ -1,6 +1,13 @@
-* version 0.2.0 (devel branch)
+* version 0.2.1 (devel branch)
 - 4 new models in progress
-- preparing Rrad
+- New module srflow for calculating ns, alpha, r
+- Massive rewriting of srreheat to implement Rrad/R reheating + test
+  the relevance of first slow-roll corrections (none), consistency
+  polishing to keep leading order calculations accurate at machine
+  precision
+- Implementing reheating predictions with Rrad and R for all models
+  Already done for: ai, bei, bi, bsusybu, cn*i, csi, cwi, dsi, dwi,
+  esi, gmlfi, gmssmi, hf1i, hi, ii, imi, kmii, kmiii, lfi, li, lmi.
 
 * version 0.1.2 (evaluator)
 - Fix usage of non-standard fortran function complex() -> cmplx()

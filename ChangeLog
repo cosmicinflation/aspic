@@ -1,3 +1,404 @@
+commit 0c990670f1b3a7757f62b134cf451eaa5a7fffae
+Date:   Fri Apr 26 19:42:18 2013 +0200
+
+    Add lnR/Rrad support to lmi1, lmi2
+
+ src/lmi/lmi1main.f90   | 229 +++++++++++++++++++++--------------
+ src/lmi/lmi1reheat.f90 | 135 ++++++++++++++++++++-
+ src/lmi/lmi2main.f90   | 316 ++++++++++++++++++++++++++++---------------------
+ src/lmi/lmi2reheat.f90 | 127 +++++++++++++++++++-
+ 4 files changed, 579 insertions(+), 228 deletions(-)
+
+commit 90efde14585a9dc96f5d0028611b3e383a721c63
+Date:   Fri Apr 26 18:53:44 2013 +0200
+
+    Add lnR/Rrad support to li
+
+ src/li/limain.f90   | 202 +++++++++++++++++++++++++++++++++-------------------
+ src/li/lireheat.f90 | 135 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 262 insertions(+), 75 deletions(-)
+
+commit 673f8bc03c43180ec09e264c5855a4b097efb14e
+Date:   Fri Apr 26 18:47:10 2013 +0200
+
+    Add lnR/Rrad support to kmiii
+
+ src/kmiii/kmiiimain.f90   | 125 ++++++++++++++++++++++++++++++--------------
+ src/kmiii/kmiiireheat.f90 | 128 +++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 215 insertions(+), 38 deletions(-)
+
+commit 1f8491ab4ab4f15a48c7202c1f060d66a182f16b
+Date:   Fri Apr 26 18:40:46 2013 +0200
+
+    Add lnR/Rrad support to kmii
+
+ src/kmii/kmiimain.f90   | 148 ++++++++++++++++++++++++++++++++----------------
+ src/kmii/kmiireheat.f90 | 128 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 225 insertions(+), 51 deletions(-)
+
+commit a9eb093e9d98c44f0332cf6b25c22be757623909
+Date:   Fri Apr 26 18:26:16 2013 +0200
+
+    Add lnR/Rrad support to imi
+
+ src/imi/imimain.f90   | 103 +++++++++++++++++++++++++++++----------
+ src/imi/imireheat.f90 | 130 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/imi/imisr.f90     |  10 ++--
+ 3 files changed, 208 insertions(+), 35 deletions(-)
+
+commit 13f3ce408240cf905d47d4461ccf356b27213779
+Date:   Fri Apr 26 18:04:26 2013 +0200
+
+    Add lnR/Rrad support to ii
+
+ man/libaspic.3      |  11 ++--
+ src/ii/aspic_ii.3   |   4 +-
+ src/ii/iimain.f90   | 105 +++++++++++++++++++++++++-----------
+ src/ii/iireheat.f90 | 150 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ src/ii/iisr.f90     |   4 +-
+ 5 files changed, 225 insertions(+), 49 deletions(-)
+
+commit f1f83e8e5cbc57aa788d40986413aee9540aa110
+Date:   Thu Apr 25 19:52:12 2013 +0200
+
+    Add lnR/Rrad support to hi
+
+ src/ai/aireheat.f90 |   2 +-
+ src/hi/himain.f90   | 117 ++++++++++++++++++++++++++++++++---------------
+ src/hi/hireheat.f90 | 128 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 205 insertions(+), 42 deletions(-)
+
+commit 5970f268089e2b4a3fb2a2dfad009f1a4e8cd46c
+Date:   Thu Apr 25 19:36:40 2013 +0200
+
+    Add lnR/Rrad support to hf1i
+
+ src/hf1i/hf1imain.f90   | 139 ++++++++++++++++++++++++++++++++----------------
+ src/hf1i/hf1ireheat.f90 | 128 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 219 insertions(+), 48 deletions(-)
+
+commit 8ddce6b9fc7c698bfe46423e933aa47918caf010
+Date:   Thu Apr 25 19:22:30 2013 +0200
+
+    Add lnR/Rrad support to (g)mssmi
+
+ src/ai/aireheat.f90         |   2 +-
+ src/gmssmi/gmssmimain.f90   | 260 ++++++++++++++++++++++++++------------------
+ src/gmssmi/gmssmireheat.f90 | 148 ++++++++++++++++++++++++-
+ src/gmssmi/mssmimain.f90    | 172 ++++++++++++++++++-----------
+ src/gmssmi/mssmireheat.f90  | 147 ++++++++++++++++++++++++-
+ 5 files changed, 557 insertions(+), 172 deletions(-)
+
+commit 5961d3dfe1ea2cd626d0caebf9bb722e4eff1343
+Date:   Thu Apr 25 18:55:45 2013 +0200
+
+    Add lnR/Rrad support for gmlfi
+
+ src/gmlfi/gmlfimain.f90   | 180 +++++++++++++++++++++++++++++-----------------
+ src/gmlfi/gmlfireheat.f90 | 142 +++++++++++++++++++++++++++++++++++-
+ 2 files changed, 254 insertions(+), 68 deletions(-)
+
+commit 14494d8151fa6de84a5cd684ba3c23faaf112261
+Date:   Thu Apr 25 18:47:31 2013 +0200
+
+    Add lnR/Rrad support for esi
+
+ src/esi/esimain.f90   | 189 +++++++++++++++++++++++++++++++-------------------
+ src/esi/esireheat.f90 | 126 +++++++++++++++++++++++++++++++++
+ 2 files changed, 245 insertions(+), 70 deletions(-)
+
+commit 0df4454b25e630c690060b29c989a71975e9bb1d
+Date:   Thu Apr 25 18:39:26 2013 +0200
+
+    Add lnR/Rrad support for dwi
+
+ src/dwi/dwimain.f90   | 158 +++++++++++++++++++++++++++++++++-----------------
+ src/dwi/dwireheat.f90 | 135 +++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 238 insertions(+), 55 deletions(-)
+
+commit 45fbe80d048e8cac0dc3a13d4ff309016d867e5e
+Date:   Thu Apr 25 18:27:41 2013 +0200
+
+    Adding lnR/Rrad to dsi + fix function name
+
+ src/dsi/dsimain.f90   | 105 ++++++++++++++++++++++++++++-----------
+ src/dsi/dsireheat.f90 | 132 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/dsi/dsisr.f90     |  16 +++---
+ 3 files changed, 216 insertions(+), 37 deletions(-)
+
+commit 0e02c88b540da8c6ce43db3c35f03515add025dd
+Date:   Thu Apr 25 17:44:30 2013 +0200
+
+    Fixing potentially dangerous 1_kp -> 1._kp
+
+ src/ai/aireheat.f90         | 2 +-
+ src/cnai/cnaireheat.f90     | 2 +-
+ src/cnbi/cnbireheat.f90     | 2 +-
+ src/cndi/cndireheat.f90     | 2 +-
+ src/cwi/cwireheat.f90       | 2 +-
+ src/dsi/dsireheat.f90       | 2 +-
+ src/dwi/dwireheat.f90       | 2 +-
+ src/esi/esireheat.f90       | 2 +-
+ src/gmlfi/gmlfireheat.f90   | 2 +-
+ src/gmssmi/gmssmireheat.f90 | 2 +-
+ src/gmssmi/mssmireheat.f90  | 2 +-
+ src/gripi/gripireheat.f90   | 2 +-
+ src/hf1i/hf1ireheat.f90     | 2 +-
+ src/hi/hireheat.f90         | 2 +-
+ src/ii/iireheat.f90         | 2 +-
+ src/imi/imireheat.f90       | 2 +-
+ src/kmii/kmiireheat.f90     | 2 +-
+ src/kmiii/kmiiireheat.f90   | 2 +-
+ src/lfi/lfireheat.f90       | 2 +-
+ src/li/lireheat.f90         | 2 +-
+ src/lmi/lmi1reheat.f90      | 2 +-
+ src/lmi/lmi2reheat.f90      | 2 +-
+ src/lpi/lpi1reheat.f90      | 2 +-
+ src/lpi/lpi2reheat.f90      | 2 +-
+ src/lpi/lpi3reheat.f90      | 2 +-
+ src/mhi/mhireheat.f90       | 2 +-
+ src/ncki/nckireheat.f90     | 2 +-
+ src/osti/ostireheat.f90     | 2 +-
+ src/pli/plireheat.f90       | 2 +-
+ src/psni/psnireheat.f90     | 2 +-
+ src/rchi/rchireheat.f90     | 2 +-
+ src/rcqi/rcqireheat.f90     | 2 +-
+ src/rgi/rgireheat.f90       | 2 +-
+ src/ripi/ripireheat.f90     | 2 +-
+ src/rmi/rmi1reheat.f90      | 2 +-
+ src/rmi/rmi2reheat.f90      | 2 +-
+ src/rmi/rmi3reheat.f90      | 2 +-
+ src/rmi/rmi4reheat.f90      | 2 +-
+ src/rpi/rpi1reheat.f90      | 2 +-
+ src/rpi/rpi2reheat.f90      | 2 +-
+ src/sbi/sbireheat.f90       | 2 +-
+ src/ssbi/ssbi1reheat.f90    | 2 +-
+ src/ssbi/ssbi2reheat.f90    | 2 +-
+ src/ssbi/ssbi3reheat.f90    | 2 +-
+ src/ssbi/ssbi4reheat.f90    | 2 +-
+ src/ssbi/ssbi5reheat.f90    | 2 +-
+ src/ssbi/ssbi6reheat.f90    | 2 +-
+ src/twi/twireheat.f90       | 2 +-
+ src/vhi/vhireheat.f90       | 2 +-
+ src/wrhi/wrhireheat.f90     | 2 +-
+ 50 files changed, 50 insertions(+), 50 deletions(-)
+
+commit c7eaae66bd0e12ee82fa5dc8825ac38864e7e7bd
+Date:   Thu Apr 25 17:39:11 2013 +0200
+
+    Adding lnR/Rrad for cwi
+
+ src/cwi/cwimain.f90   | 233 ++++++++++++++++++++++++++++++--------------------
+ src/cwi/cwireheat.f90 | 132 +++++++++++++++++++++++++++-
+ 2 files changed, 273 insertions(+), 92 deletions(-)
+
+commit 3eddd094a13da819ebddb3e153eec296027c6ba4
+Date:   Thu Apr 25 17:29:45 2013 +0200
+
+    Adding lnR/Rrad for csi
+
+ src/csi/csimain.f90   | 160 ++++++++++++++++++++++++++++++++------------------
+ src/csi/csireheat.f90 | 123 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 227 insertions(+), 56 deletions(-)
+
+commit 000c90db934debb8077379cc40d8658cb6403450
+Date:   Thu Apr 25 17:18:47 2013 +0200
+
+    Adding lnR/Rrad for cndi
+
+ src/cndi/cndimain.f90   | 104 ++++++++++++++++++++++++++++----------
+ src/cndi/cndireheat.f90 | 132 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 208 insertions(+), 28 deletions(-)
+
+commit ff2d2ba0c6c60a265730c0a308e363c17b3b3a32
+Date:   Thu Apr 25 17:09:55 2013 +0200
+
+    Adding lnR/Rrad for cnci
+
+ src/cnci/cncimain.f90   |  86 +++++++++++++++++++++++--------
+ src/cnci/cncireheat.f90 | 134 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 197 insertions(+), 23 deletions(-)
+
+commit 547b8a4a971ad8b5444e69b88cf7f46b5891ae4d
+Date:   Thu Apr 25 16:56:56 2013 +0200
+
+    Adding lnR/Rrad for cnbi (+fix main)
+
+ src/cnbi/cnbimain.f90   | 152 ++++++++++++++++++++++++++++++-----------------
+ src/cnbi/cnbireheat.f90 | 154 +++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 245 insertions(+), 61 deletions(-)
+
+commit 1d40cd8f0c4023fc26605cffc258b8722ea37f58
+Date:   Thu Apr 25 16:36:04 2013 +0200
+
+    Adding functions to return M (pot norm) in srreheat
+
+ src/common/srreheat.f90 | 88 ++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 68 insertions(+), 20 deletions(-)
+
+commit 15faa98c0e7af575c046cb2d8f8a16bf77b16993
+Date:   Thu Apr 25 15:57:48 2013 +0200
+
+    Adding lnR/Rrad for cnai
+
+ src/cnai/cnaimain.f90   | 144 ++++++++++++++++++++++++++++++++----------------
+ src/cnai/cnaireheat.f90 | 131 ++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 225 insertions(+), 50 deletions(-)
+
+commit 2a8be4f20e3d99c6ad2dde7da92a165ac31f18a5
+Date:   Thu Apr 25 15:44:43 2013 +0200
+
+    Renaming misleading lnrhoend func to lnrhoreh_max + fixing bugs in bsusybi
+
+ src/ai/aimain.f90             | 147 +++++++++++++++++++++++++--------------
+ src/ai/aireheat.f90           | 145 +++++++++++++++++++++++++++++++++++++--
+ src/bei/beimain.f90           |  76 +++++++++++++++++----
+ src/bei/beireheat.f90         | 155 +++++++++++++++++++++++++++++++++++++++---
+ src/bi/bimain.f90             |   4 +-
+ src/bi/bireheat.f90           | 145 +++++++++++++++++++++++++++++++++++++--
+ src/bsusybi/bsusybimain.f90   |  77 +++++++++++++++++----
+ src/bsusybi/bsusybireheat.f90 | 149 ++++++++++++++++++++++++++++++++++++----
+ src/bsusybi/bsusybisr.f90     |  60 ++++++++++++----
+ src/cnai/cnaimain.f90         |   6 +-
+ src/cnai/cnaireheat.f90       |  12 ++--
+ src/cnbi/cnbimain.f90         |   6 +-
+ src/cnbi/cnbireheat.f90       |  12 ++--
+ src/cnci/cncimain.f90         |   4 +-
+ src/cnci/cncireheat.f90       |  12 ++--
+ src/cndi/cndimain.f90         |   6 +-
+ src/cndi/cndireheat.f90       |  12 ++--
+ src/csi/csimain.f90           |   6 +-
+ src/csi/csireheat.f90         |  12 ++--
+ src/cwi/cwimain.f90           |   8 +--
+ src/cwi/cwireheat.f90         |  12 ++--
+ src/dsi/dsimain.f90           |   4 +-
+ src/dsi/dsireheat.f90         |  12 ++--
+ src/dwi/dwimain.f90           |   6 +-
+ src/dwi/dwireheat.f90         |  14 ++--
+ src/esi/esimain.f90           |   8 +--
+ src/esi/esireheat.f90         |  12 ++--
+ src/gmlfi/gmlfimain.f90       |   8 +--
+ src/gmlfi/gmlfireheat.f90     |  12 ++--
+ src/gmlfi/mlfimain.f90        |   6 +-
+ src/gmssmi/gmssmimain.f90     |   6 +-
+ src/gmssmi/gmssmireheat.f90   |  12 ++--
+ src/gmssmi/mssmimain.f90      |   6 +-
+ src/gmssmi/mssmireheat.f90    |  12 ++--
+ src/gripi/gripimain.f90       |   6 +-
+ src/gripi/gripireheat.f90     |  12 ++--
+ src/hf1i/hf1imain.f90         |   6 +-
+ src/hf1i/hf1ireheat.f90       |  12 ++--
+ src/hi/himain.f90             |   4 +-
+ src/hi/hireheat.f90           |  12 ++--
+ src/ii/iimain.f90             |   4 +-
+ src/ii/iireheat.f90           |  12 ++--
+ src/imi/imimain.f90           |   4 +-
+ src/imi/imireheat.f90         |  12 ++--
+ src/kmii/kmiimain.f90         |   6 +-
+ src/kmii/kmiireheat.f90       |  12 ++--
+ src/kmiii/kmiiimain.f90       |   4 +-
+ src/kmiii/kmiiireheat.f90     |  12 ++--
+ src/lfi/lfimain.f90           |  10 ---
+ src/lfi/lfireheat.f90         |   6 +-
+ src/li/limain.f90             |   8 +--
+ src/li/lireheat.f90           |  12 ++--
+ src/lmi/lmi1main.f90          |   8 +--
+ src/lmi/lmi1reheat.f90        |  12 ++--
+ src/lmi/lmi2main.f90          |   8 +--
+ src/lmi/lmi2reheat.f90        |  12 ++--
+ src/lpi/lpi1main.f90          |   4 +-
+ src/lpi/lpi1reheat.f90        |  12 ++--
+ src/lpi/lpi2main.f90          |   4 +-
+ src/lpi/lpi2reheat.f90        |  12 ++--
+ src/lpi/lpi3main.f90          |   4 +-
+ src/lpi/lpi3reheat.f90        |  12 ++--
+ src/mhi/mhimain.f90           |   6 +-
+ src/mhi/mhireheat.f90         |  12 ++--
+ src/ncki/nckimain.f90         |   6 +-
+ src/ncki/nckireheat.f90       |  12 ++--
+ src/ni/nimain.f90             |   6 +-
+ src/ni/nireheat.f90           |  12 ++--
+ src/oi/oimain.f90             |   4 +-
+ src/oi/oireheat.f90           |  12 ++--
+ src/osti/ostimain.f90         |   4 +-
+ src/osti/ostireheat.f90       |  12 ++--
+ src/pli/plimain.f90           |   6 +-
+ src/pli/plireheat.f90         |  12 ++--
+ src/psni/psnimain.f90         |   4 +-
+ src/psni/psnireheat.f90       |  12 ++--
+ src/rchi/rchimain.f90         |   6 +-
+ src/rchi/rchireheat.f90       |  12 ++--
+ src/rcmi/rcmimain.f90         |   6 +-
+ src/rcmi/rcmireheat.f90       |  12 ++--
+ src/rcqi/rcqimain.f90         |   8 +--
+ src/rcqi/rcqireheat.f90       |  12 ++--
+ src/rgi/rgimain.f90           |   6 +-
+ src/rgi/rgireheat.f90         |  12 ++--
+ src/ripi/ripimain.f90         |   6 +-
+ src/ripi/ripireheat.f90       |  12 ++--
+ src/rmi/rmi1main.f90          |   4 +-
+ src/rmi/rmi1reheat.f90        |  12 ++--
+ src/rmi/rmi2main.f90          |   4 +-
+ src/rmi/rmi2reheat.f90        |  12 ++--
+ src/rmi/rmi3main.f90          |   4 +-
+ src/rmi/rmi3reheat.f90        |  12 ++--
+ src/rmi/rmi4main.f90          |   4 +-
+ src/rmi/rmi4reheat.f90        |  12 ++--
+ src/rpi/rpi1main.f90          |   4 +-
+ src/rpi/rpi1reheat.f90        |  12 ++--
+ src/rpi/rpi2main.f90          |   4 +-
+ src/rpi/rpi2reheat.f90        |  12 ++--
+ src/sbi/sbimain.f90           |   6 +-
+ src/sbi/sbireheat.f90         |  12 ++--
+ src/sfbi/sfbimain.f90         |   4 +-
+ src/sfbi/sfbireheat.f90       |  12 ++--
+ src/sfi/sfimain.f90           |   8 +--
+ src/sfi/sfireheat.f90         |  12 ++--
+ src/ssbi/ssbi1main.f90        |   4 +-
+ src/ssbi/ssbi1reheat.f90      |  14 ++--
+ src/ssbi/ssbi2main.f90        |   4 +-
+ src/ssbi/ssbi2reheat.f90      |  14 ++--
+ src/ssbi/ssbi3main.f90        |   4 +-
+ src/ssbi/ssbi3reheat.f90      |  14 ++--
+ src/ssbi/ssbi4main.f90        |   4 +-
+ src/ssbi/ssbi4reheat.f90      |  12 ++--
+ src/ssbi/ssbi5main.f90        |   4 +-
+ src/ssbi/ssbi5reheat.f90      |  14 ++--
+ src/ssbi/ssbi6main.f90        |   4 +-
+ src/ssbi/ssbi6reheat.f90      |  14 ++--
+ src/ti/timain.f90             |   6 +-
+ src/ti/tireheat.f90           |  12 ++--
+ src/twi/twimain.f90           |   4 +-
+ src/twi/twireheat.f90         |  12 ++--
+ src/vhi/vhimain.f90           |  14 ++--
+ src/vhi/vhireheat.f90         |  12 ++--
+ src/wrhi/wrhimain.f90         |   4 +-
+ src/wrhi/wrhireheat.f90       |  12 ++--
+ 124 files changed, 1333 insertions(+), 637 deletions(-)
+
+commit 97e47e99e997972688719986ee5ac0d475a79471
+Date:   Thu Apr 25 11:53:08 2013 +0200
+
+    Add support for lnR and lnRrad + stress/test with lfi
+
+ src/common/Makefile.am  |   4 +-
+ src/common/cosmopar.f90 |   9 +-
+ src/common/infprec.f90  |   1 +
+ src/common/srflow.f90   | 149 ++++++++++++++++++++
+ src/common/srreheat.f90 | 356 ++++++++++++++++++++++++++++++++++++++++--------
+ src/lfi/lfimain.f90     | 138 +++++++++++++------
+ src/lfi/lfireheat.f90   | 156 +++++++++++++++++++--
+ 7 files changed, 696 insertions(+), 117 deletions(-)
+
+commit 5267a82cadd2af0ede2b5b917c13972a2323f7fc
+Date:   Tue Apr 23 15:36:29 2013 +0200
+
+    4 models imported, in progress
+
+ ChangeLog | 95 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |  8 ++++--
+ 2 files changed, 101 insertions(+), 2 deletions(-)
+
 commit f43fa103fc50092fda66d1c5f84b563cd83bde49
 Merge: 88d2f48 e8ff157
 Date:   Tue Apr 23 15:31:23 2013 +0200
@@ -45,7 +446,7 @@ Date:   Tue Apr 23 15:30:59 2013 +0200
  33 files changed, 2046 insertions(+), 35 deletions(-)
 
 commit 88d2f48ff91f88eaec259a1851d9ea4bcfdbea9a
-Author: chris <chris@ringeval.com>
+
 Date:   Tue Apr 23 15:14:18 2013 +0200
 
     Adding eps3 in slowroll validity test
@@ -70,7 +471,7 @@ Date:   Fri Mar 29 10:56:29 2013 +0100
  9 files changed, 21 insertions(+), 20 deletions(-)
 
 commit 0bbdc8f4686116329af3f8d81285dfa168a3a099
-Author: chris <chris@ringeval.com>
+
 Date:   Fri Mar 29 10:29:57 2013 +0100
 
     fixing usage of non-standard complex() function
@@ -210,11 +611,11 @@ Date:   Mon Feb 25 11:19:57 2013 +0100
  3 files changed, 119 insertions(+), 58 deletions(-)
 
 commit f27ec325dd2f75add50c22f441d3905aa782d172
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Feb 25 10:05:49 2013 +0100
 
 commit b2570cf643a9b7dbff3b74af619ff629e513d953
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Feb 25 11:19:57 2013 +0100
 
     adding exact integration option for kmiii
@@ -225,7 +626,7 @@ Date:   Mon Feb 25 11:19:57 2013 +0100
  3 files changed, 119 insertions(+), 58 deletions(-)
 
 commit f27ec325dd2f75add50c22f441d3905aa782d172
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Feb 25 10:05:49 2013 +0100
 
     Deleting ssi, mni, pni which have been merged/renamed
@@ -355,7 +756,7 @@ Date:   Fri Feb 22 20:07:18 2013 +0100
  69 files changed, 5146 insertions(+), 667 deletions(-)
 
 commit 3788953a65b450db62a271aee89cce7ce9a8fbf8
-Author: chris <chris@ringeval.com>
+
 Date:   Fri Feb 22 19:51:22 2013 +0100
 
     rgi check
@@ -364,7 +765,7 @@ Date:   Fri Feb 22 19:51:22 2013 +0100
  1 file changed, 13 insertions(+), 7 deletions(-)
 
 commit bb4702c7e905d6f359b1880361eb5d526ce66320
-Author: chris <chris@ringeval.com>
+
 Date:   Wed Feb 13 20:16:55 2013 +0100
 
     Exact trajectory and exact endinf for rcmi
@@ -399,7 +800,7 @@ Date:   Wed Feb 13 20:16:55 2013 +0100
  69 files changed, 5146 insertions(+), 667 deletions(-)
 
 commit 3788953a65b450db62a271aee89cce7ce9a8fbf8
-Author: chris <chris@ringeval.com>
+
 Date:   Fri Feb 22 19:51:22 2013 +0100
 
     rgi check
@@ -408,7 +809,7 @@ Date:   Fri Feb 22 19:51:22 2013 +0100
  1 file changed, 13 insertions(+), 7 deletions(-)
 
 commit bb4702c7e905d6f359b1880361eb5d526ce66320
-Author: chris <chris@ringeval.com>
+
 Date:   Wed Feb 13 20:16:55 2013 +0100
 
     Exact trajectory and exact endinf for rcmi
@@ -420,7 +821,7 @@ Date:   Wed Feb 13 20:16:55 2013 +0100
  4 files changed, 141 insertions(+), 24 deletions(-)
 
 commit a82cf5a5ac87cd920575a883b8707bd1c411ee9c
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Jan 21 17:17:45 2013 +0100
 
     Version 0.0.9
@@ -429,7 +830,7 @@ Date:   Mon Jan 21 17:17:45 2013 +0100
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 commit 1ab3f941747e53816df36f4df45402ed1cd808c8
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Jan 21 17:17:07 2013 +0100
 
     Update Changelog
@@ -458,7 +859,7 @@ Date:   Mon Jan 21 17:06:18 2013 +0100
  2 files changed, 1 insertion(+), 3 deletions(-)
 
 commit 528c2dedb23c1a0a03b551c60be6f8e9912f9eab
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Jan 21 17:01:55 2013 +0100
 
     cleaning m4
@@ -553,7 +954,6 @@ Date:   Mon Jan 21 16:22:45 2013 +0100
  20 files changed, 300 insertions(+), 399 deletions(-)
 
 commit 70cb06abf5af4535255f4e805f6ba4796832ae43
-Author: chris <chris@ringeval.com>
 Date:   Mon Jan 21 15:28:40 2013 +0100
 
     Fix convention of find endinf routines to: find_foo_x_endinf
