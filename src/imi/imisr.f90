@@ -11,7 +11,7 @@ module imisr
   private
 
   public  imi_norm_potential, imi_epsilon_one, imi_epsilon_two
-  public  imi_epsilon_three, imi_x_epsOne_Equal_One, imi_xendmin
+  public  imi_epsilon_three, imi_x_epsoneunity, imi_xendmin
   public  imi_efold_primitive, imi_x_trajectory
   public  imi_norm_deriv_potential, imi_norm_deriv_second_potential
  
@@ -84,14 +84,14 @@ contains
 
 
 !returns the value of x such that epsilon1=1
-  function imi_x_epsOne_Equal_One(p)
+  function imi_x_epsoneunity(p)
     implicit none
     real(kp), intent(in) :: p
-    real(kp) :: imi_x_epsOne_Equal_One
+    real(kp) :: imi_x_epsoneunity
    
-    imi_x_epsOne_Equal_One = p/sqrt(2._kp)
+    imi_x_epsoneunity = p/sqrt(2._kp)
    
-  end function imi_x_epsOne_Equal_One
+  end function imi_x_epsoneunity
 
 
 !this is integral[V(phi)/V'(phi) dphi]
