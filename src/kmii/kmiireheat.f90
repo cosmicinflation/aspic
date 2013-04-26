@@ -6,6 +6,8 @@ module kmiireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use kmiisr, only : kmii_epsilon_one, kmii_epsilon_two, kmii_epsilon_three
   use kmiisr, only : kmii_norm_potential
   use kmiisr, only : kmii_x_endinf, kmii_efold_primitive
@@ -13,7 +15,8 @@ module kmiireheat
 
   private
 
-  public kmii_x_star, kmii_lnrhoreh_max 
+  public kmii_x_star, kmii_lnrhoreh_max
+  public kmii_x_rrad, kmii_x_rreh
 
 contains
 
@@ -80,6 +83,129 @@ contains
     find_kmii_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_kmii_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function kmii_x_rrad(alpha,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: kmii_x_rrad
+    real(kp), intent(in) :: alpha,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: kmiiData
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = kmii_x_endinf(alpha)
+    epsOneEnd = kmii_epsilon_one(xEnd,alpha)
+    potEnd = kmii_norm_potential(xEnd,alpha)
+    primEnd = kmii_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    kmiiData%real1 = alpha    
+    kmiiData%real2 = calF + primEnd
+
+    !Assuming that inflation proceeds from the right to the left,
+    !from initial high values of the field compared with the Planck mass
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+  
+    x = zbrent(find_kmii_x_rrad,mini,maxi,tolzbrent,kmiiData)
+    kmii_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (kmii_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function kmii_x_rrad
+
+  function find_kmii_x_rrad(x,kmiiData)   
+    implicit none
+    real(kp) :: find_kmii_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: kmiiData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=kmiiData%real1
+    CalFplusprimEnd = kmiiData%real2
+
+    primStar = kmii_efold_primitive(x,alpha)
+    epsOneStar = kmii_epsilon_one(x,alpha)
+    potStar = kmii_norm_potential(x,alpha)
+
+    find_kmii_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_kmii_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function kmii_x_rreh(alpha,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: kmii_x_rreh
+    real(kp), intent(in) :: alpha,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: kmiiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = kmii_x_endinf(alpha)
+    epsOneEnd = kmii_epsilon_one(xEnd,alpha)
+    potEnd = kmii_norm_potential(xEnd,alpha)
+    primEnd = kmii_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    kmiiData%real1 = alpha    
+    kmiiData%real2 = calF + primEnd
+
+    !Assuming that inflation proceeds from the right to the left,
+    !from initial high values of the field compared with the Planck mass
+    mini = xEnd
+    maxi = 1._kp/epsilon(1._kp)
+  
+    x = zbrent(find_kmii_x_rreh,mini,maxi,tolzbrent,kmiiData)
+    kmii_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (kmii_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function kmii_x_rreh
+
+  function find_kmii_x_rreh(x,kmiiData)   
+    implicit none
+    real(kp) :: find_kmii_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: kmiiData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar
+
+    alpha=kmiiData%real1
+    CalFplusprimEnd = kmiiData%real2
+
+    primStar = kmii_efold_primitive(x,alpha)    
+    potStar = kmii_norm_potential(x,alpha)
+
+    find_kmii_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_kmii_x_rreh
 
 
 
