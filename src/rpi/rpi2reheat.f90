@@ -6,6 +6,8 @@ module rpi2reheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rpicommon, only : rpi_x_potmax
   use rpi2sr, only : rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
   use rpi2sr, only : rpi2_norm_potential, rpi2_efold_primitive
@@ -13,7 +15,10 @@ module rpi2reheat
 
   private
 
-  public rpi2_x_star, rpi2_lnrhoreh_max 
+  real(kp), parameter :: Rpi2MaxiMax = 100._kp
+
+  public rpi2_x_star, rpi2_lnrhoreh_max
+  public rpi2_x_rrad, rpi2_x_rreh
 
 contains
 
@@ -28,8 +33,6 @@ contains
     real(kp), parameter :: tolzbrent = tolkp
     real(kp) :: mini,maxi,calF,y,yVmax
     real(kp) :: primEnd,epsOneEnd,potEnd
-
-    real(kp), parameter :: maxiMax = 100
 
     type(transfert) :: rpi2Data
     
@@ -53,20 +56,17 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=maxiMax !to avoid numerical explosion
+       maxi=Rpi2MaxiMax !to avoid numerical explosion
 
     else
 
        yVmax = rpi_x_potmax(p)
        if (yend.lt.yVmax) stop 'rpi2_x_star: yend < yVmax!'
        
-!local maximum of the potential, numerical safety if inflation proceeds from the left to the right
        mini = yVmax + epsilon(1._kp)
-!*(1._kp+1._kp*epsilon(1._kp))
        maxi = yEnd
               
     endif
-
 
     y = zbrent(find_rpi2_x_star,mini,maxi,tolzbrent,rpi2Data)
 
@@ -98,6 +98,155 @@ contains
     find_rpi2_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_rpi2_x_star
+
+!returns y given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function rpi2_x_rrad(p,yend,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: rpi2_x_rrad
+    real(kp), intent(in) :: p,yend,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent = tolkp
+    real(kp) :: mini,maxi,calF,y,yVmax
+    real(kp) :: primEnd,epsOneEnd,potEnd
+
+    type(transfert) :: rpi2Data
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    epsOneEnd = rpi2_epsilon_one(yEnd,p)
+    potEnd = rpi2_norm_potential(yEnd,p)
+
+    primEnd = rpi2_efold_primitive(yEnd,p)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    rpi2Data%real1 = p
+    rpi2Data%real2 = calF + primEnd
+    
+
+    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+
+       mini = yEnd
+       maxi=Rpi2MaxiMax !to avoid numerical explosion
+
+    else
+
+       yVmax = rpi_x_potmax(p)
+       if (yend.lt.yVmax) stop 'rpi2_x_rrad: yend < yVmax!'
+       
+       mini = yVmax + epsilon(1._kp)
+       maxi = yEnd
+              
+    endif
+
+    y = zbrent(find_rpi2_x_rrad,mini,maxi,tolzbrent,rpi2Data)
+
+    rpi2_x_rrad = y
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rpi2_efold_primitive(y,p) - primEnd)
+    endif
+
+  end function rpi2_x_rrad
+
+
+  function find_rpi2_x_rrad(y,rpi2Data)   
+    implicit none
+    real(kp) :: find_rpi2_x_rrad
+    real(kp), intent(in) :: y
+    type(transfert), optional, intent(inout) :: rpi2Data
+
+    real(kp) :: primStar,p,CalFplusprimEnd,potStar,epsOneStar
+
+    p=rpi2Data%real1
+    CalFplusprimEnd = rpi2Data%real2
+
+    primStar = rpi2_efold_primitive(y,p)
+    epsOneStar = rpi2_epsilon_one(y,p)
+    potStar = rpi2_norm_potential(y,p)
+
+    find_rpi2_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_rpi2_x_rrad
+
+
+!returns y given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function rpi2_x_rreh(p,yend,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: rpi2_x_rreh
+    real(kp), intent(in) :: p,yend,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent = tolkp
+    real(kp) :: mini,maxi,calF,y,yVmax
+    real(kp) :: primEnd,epsOneEnd,potEnd
+
+    type(transfert) :: rpi2Data
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    epsOneEnd = rpi2_epsilon_one(yEnd,p)
+    potEnd = rpi2_norm_potential(yEnd,p)
+
+    primEnd = rpi2_efold_primitive(yEnd,p)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    rpi2Data%real1 = p
+    rpi2Data%real2 = calF + primEnd
+    
+
+    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+
+       mini = yEnd
+       maxi=Rpi2MaxiMax !to avoid numerical explosion
+
+    else
+
+       yVmax = rpi_x_potmax(p)
+       if (yend.lt.yVmax) stop 'rpi2_x_rreh: yend < yVmax!'
+       
+       mini = yVmax + epsilon(1._kp)
+       maxi = yEnd
+              
+    endif
+
+    y = zbrent(find_rpi2_x_rreh,mini,maxi,tolzbrent,rpi2Data)
+
+    rpi2_x_rreh = y
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rpi2_efold_primitive(y,p) - primEnd)
+    endif
+
+  end function rpi2_x_rreh
+
+
+  function find_rpi2_x_rreh(y,rpi2Data)   
+    implicit none
+    real(kp) :: find_rpi2_x_rreh
+    real(kp), intent(in) :: y
+    type(transfert), optional, intent(inout) :: rpi2Data
+
+    real(kp) :: primStar,p,CalFplusprimEnd,potStar
+
+    p=rpi2Data%real1
+    CalFplusprimEnd = rpi2Data%real2
+
+    primStar = rpi2_efold_primitive(y,p)
+    potStar = rpi2_norm_potential(y,p)
+
+    find_rpi2_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_rpi2_x_rreh
+
 
 
 
