@@ -12,14 +12,17 @@ module nckisr
 
   private
 
+  real(kp), parameter :: nMaxiInf = 1000._kp
+
+  public nMaxiInf
   public ncki_norm_potential, ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
   public ncki_x_endinf, ncki_efold_primitive, ncki_x_trajectory
   public ncki_norm_deriv_potential, ncki_norm_deriv_second_potential
-  public ncki_x_potmax
+  public ncki_x_potmax, ncki_x_inflection, ncki_x_ddpotzero
 
- 
+
 contains
-!returns V/M**4 as function of x
+  !returns V/M**4 as function of x
   function ncki_norm_potential(x,alpha,beta)
     implicit none
     real(kp) :: ncki_norm_potential
@@ -31,19 +34,19 @@ contains
 
 
 
-!returns the first derivative of the potential with respect to x
+  !returns the first derivative of the potential with respect to x
   function ncki_norm_deriv_potential(x,alpha,beta)
     implicit none
     real(kp) :: ncki_norm_deriv_potential
     real(kp), intent(in) :: x,alpha,beta
 
-   ncki_norm_deriv_potential = alpha/x+2._kp*beta*x
+    ncki_norm_deriv_potential = alpha/x+2._kp*beta*x
 
   end function ncki_norm_deriv_potential
 
 
 
-!returns the second derivative of the potential with respect to x
+  !returns the second derivative of the potential with respect to x
   function ncki_norm_deriv_second_potential(x,alpha,beta)
     implicit none
     real(kp) :: ncki_norm_deriv_second_potential
@@ -55,41 +58,41 @@ contains
 
 
 
-!epsilon_one(x)
+  !epsilon_one(x)
   function ncki_epsilon_one(x,alpha,beta)    
     implicit none
     real(kp) :: ncki_epsilon_one
     real(kp), intent(in) :: x,alpha,beta
-    
+
     ncki_epsilon_one = (alpha+2._kp*beta*x**2)**2/(2._kp*(x+beta*x**3+alpha*x*log(x))**2)
-    
+
   end function ncki_epsilon_one
 
 
-!epsilon_two(x)
+  !epsilon_two(x)
   function ncki_epsilon_two(x,alpha,beta)    
     implicit none
     real(kp) :: ncki_epsilon_two
     real(kp), intent(in) :: x,alpha,beta
-    
+
     ncki_epsilon_two = (2._kp*(alpha*(1._kp+alpha)+(-2._kp+5._kp*alpha)*beta*x**2 &
-                       +2._kp*beta**2*x**4+alpha*(alpha-2._kp*beta*x**2)*log(x)))/ &
-                       (x+beta*x**3+alpha*x*log(x))**2
-    
+         +2._kp*beta**2*x**4+alpha*(alpha-2._kp*beta*x**2)*log(x)))/ &
+         (x+beta*x**3+alpha*x*log(x))**2
+
   end function ncki_epsilon_two
 
 
-!epsilon_three(x)
+  !epsilon_three(x)
   function ncki_epsilon_three(x,alpha,beta)    
     implicit none
     real(kp) :: ncki_epsilon_three
     real(kp), intent(in) :: x,alpha,beta
-    
+
     ncki_epsilon_three = (1._kp/(x**2))*((2._kp*(alpha+2._kp*beta*x**2)**2)/(1._kp+beta*x**2 &
-                         +alpha*log(x))**2+(alpha-2._kp*beta*x**2)/(1._kp+beta*x**2+alpha*log(x)) &
-                         +(alpha**2+8._kp*alpha*beta*x**2-4._kp*beta**2*x**4)/(alpha*(1._kp+alpha) & 
-                         +(-2._kp+5._kp*alpha)*beta*x**2+2._kp*beta**2*x**4+alpha*(alpha-2._kp*beta*x**2)*log(x)))
-    
+         +alpha*log(x))**2+(alpha-2._kp*beta*x**2)/(1._kp+beta*x**2+alpha*log(x)) &
+         +(alpha**2+8._kp*alpha*beta*x**2-4._kp*beta**2*x**4)/(alpha*(1._kp+alpha) & 
+         +(-2._kp+5._kp*alpha)*beta*x**2+2._kp*beta**2*x**4+alpha*(alpha-2._kp*beta*x**2)*log(x)))
+
   end function ncki_epsilon_three
 
 
@@ -102,13 +105,35 @@ contains
 
     if (beta.gt.0._kp) stop 'ncki_x_potmax: no maximum for beta>0!'
 
-    ncki_x_potmax = sqrt(abs(alpha/2._kp/beta))
+    ncki_x_potmax = ncki_x_ddpotzero(alpha,beta)
 
   end function ncki_x_potmax
 
 
+!field value at which the potential is maximal when beta>0
+  function ncki_x_inflection(alpha,beta)
+    implicit none
+    real(kp) , intent(in) :: alpha,beta
+    real(kp) :: ncki_x_inflection
 
-!returns x at the end of inflation defined as epsilon1=1
+    if (beta.lt.0._kp) stop 'ncki_x_inflection: no inflection for beta<0!'
+
+    ncki_x_inflection = ncki_x_ddpotzero(alpha,beta)
+
+  end function ncki_x_inflection
+
+
+  function ncki_x_ddpotzero(alpha,beta)
+    implicit none
+    real(kp) , intent(in) :: alpha,beta
+    real(kp) :: ncki_x_ddpotzero
+
+    ncki_x_ddpotzero = sqrt(abs(alpha/2._kp/beta))
+
+  end function ncki_x_ddpotzero
+
+
+  !returns x at the end of inflation defined as epsilon1=1
   function ncki_x_endinf(alpha,beta)
     implicit none
     real(kp), intent(in) :: alpha,beta
@@ -117,15 +142,18 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: nckiData
 
-    !mini = sqrt(alpha/(2._kp*beta)*lambert(2._kp*beta/alpha*exp(-2._kp/alpha),0))*(1._kp+epsilon(1._kp)) !minimum value below which the potential is negative
+!mini =
+!sqrt(alpha/(2._kp*beta)*lambert(2._kp*beta/alpha*exp(-2._kp/alpha),0))*(1._kp+epsilon(1._kp))
+!minimum value below which the potential is negative
     mini=epsilon(1._kp)
-    maxi = sqrt(alpha/(2._kp*abs(beta)))*(1._kp-epsilon(1._kp)) !position of the maximum of the potential if beta<0, and of the inflexion point if beta>0
+!position of the maximum of the potential if beta<0, and of the inflexion point if beta>0
+    maxi = ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
 
     nckiData%real1 = alpha
     nckiData%real2 = beta
-    
+
     ncki_x_endinf = zbrent(find_ncki_x_endinf,mini,maxi,tolFind,nckiData)
-   
+
   end function ncki_x_endinf
 
   function find_ncki_x_endinf(x,nckiData)    
@@ -139,11 +167,11 @@ contains
     beta = nckiData%real2
 
     find_ncki_x_endinf = ncki_epsilon_one(x,alpha,beta)-1._kp
-   
+
   end function find_ncki_x_endinf
 
 
-!this is integral(V(phi)/V'(phi) dphi)
+  !this is integral(V(phi)/V'(phi) dphi)
   function ncki_efold_primitive(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
@@ -151,7 +179,8 @@ contains
 
     if (alpha.eq.0._kp) stop 'ncki_efold_primitive: alpha=0 !'
 
-    ncki_efold_primitive = (1._kp-alpha/2._kp+alpha*log(x))*log(alpha+2._kp*beta*x**2)/(4._kp*beta) &
+    ncki_efold_primitive = (1._kp-alpha/2._kp+alpha*log(x)) &
+         *log(alpha+2._kp*beta*x**2)/(4._kp*beta) &
          +x**2/4._kp-alpha/(4._kp*beta)*log(alpha)*log(x)+alpha/(8._kp*beta)* &
          real(polylog(complex(-2._kp*beta/alpha*x**2,0._kp),complex(2._kp,0._kp)),kp)
 
@@ -170,9 +199,11 @@ contains
     type(transfert) :: nckiData
 
     if (beta.lt.0._kp) then
-      maxi = sqrt(alpha/(2._kp*abs(beta)))*(1._kp-epsilon(1._kp)) !position of the maximum of the potential if beta<0
+!position of the maximum of the potential if beta<0
+       maxi =ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
     else
-      maxi = 1000._kp* sqrt(alpha/(2._kp*abs(beta))) !several times the position of the inflexion point if beta>0
+!several times the position of the inflexion point if beta>0
+       maxi = nMaxiInf * ncki_x_ddpotzero(alpha,beta)
     endif
 
     mini=epsilon(1._kp)
@@ -180,9 +211,9 @@ contains
     nckiData%real1 = alpha
     nckiData%real2 = beta
     nckiData%real3 = -bfold + ncki_efold_primitive(xend,alpha,beta)
-    
+
     ncki_x_trajectory = zbrent(find_ncki_x_trajectory,mini,maxi,tolFind,nckiData)
-       
+
   end function ncki_x_trajectory
 
   function find_ncki_x_trajectory(x,nckiData)    
@@ -197,9 +228,9 @@ contains
     NplusNuend = nckiData%real3
 
     find_ncki_x_trajectory = ncki_efold_primitive(x,alpha,beta) - NplusNuend
-   
+
   end function find_ncki_x_trajectory
 
 
-  
+
 end module nckisr
