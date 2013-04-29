@@ -135,43 +135,43 @@ contains
 
 
 !returns x at the end of inflation defined as epsilon1=1
-  function rchi_x_endinf(AI)
+  recursive function rchi_x_endinf(AI) result(xendinf)
     implicit none
     real(kp), intent(in) :: AI
-    real(kp) :: rchi_x_endinf
+    real(kp) :: xendinf
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: rchiData
 
     if (AI.gt.1._kp) then !Uses the 0 branch of the Lambert Function
-       rchi_x_endinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
+       xendinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
             pi**2)/AI+sqrt(3._kp/2._kp)* &
             lambert((64._kp*(3._kp+sqrt(3._kp))* &
             exp(-(1._kp/sqrt(3._kp))+(32._kp*pi**2)/AI)* &
             pi**2)/(3._kp*AI),0)
 
     elseif (AI.lt.-1._kp) then !Uses the -1 branch of the Lambert Function
-       rchi_x_endinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
+       xendinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
             pi**2)/AI+sqrt(3._kp/2._kp)* &
             lambert((64._kp*(3._kp+sqrt(3._kp))* &
             exp(-(1._kp/sqrt(3._kp))+(32._kp*pi**2)/AI)* &
             pi**2)/(3._kp*AI),-1)
 
     elseif (AI.eq.0._kp) then !singular
-       rchi_x_endinf = sqrt(3._kp/2._kp)*log(2._kp+2._kp/sqrt(3._kp))
+       xendinf = sqrt(3._kp/2._kp)*log(2._kp+2._kp/sqrt(3._kp))
 
     elseif (abs(AI) .le. 1._kp) then
 
-       mini=sqrt(6._kp)*log(2._kp)/2._kp
+       mini= rchi_x_endinf(0._kp) + epsilon(1._kp)
 
-       if (rchi_potmax_exists(AI)) then !maximum of the potential
+       if (rchi_potmax_exists(AI)) then 
           maxi=min(rchi_x_potmax(AI),RchiDeltaXendMax)
        else
           maxi = RchiDeltaXendMax
        endif
 
        rchiData%real1 = AI
-       rchi_x_endinf = zbrent(find_rchi_x_endinf,mini,maxi,tolFind,rchiData)
+       xendinf = zbrent(find_rchi_x_endinf,mini,maxi,tolFind,rchiData)
 
     else
        stop 'rchi_x_endinf: internal error!'
@@ -179,6 +179,9 @@ contains
     end if
 
   end function rchi_x_endinf
+
+
+
 
   function find_rchi_x_endinf(x,rchiData)    
     implicit none

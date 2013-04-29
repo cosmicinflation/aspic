@@ -8,7 +8,7 @@ program mlfimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
   implicit none
- 
+
 
   real(kp) :: Pstar, logErehGeV, Treh
 
@@ -19,12 +19,12 @@ program mlfimain
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
-!  real(kp), dimension(2) :: vecbuffer
+  !  real(kp), dimension(2) :: vecbuffer
 
   real(kp), dimension(1:6) ::alphavalues
 
   real(kp) :: alphamin,alphamax,xstarA,eps1A,eps2A,eps3A,nsA,rA, &
-              xstarB,eps1B,eps2B,eps3B,nsB,rB
+       xstarB,eps1B,eps2B,eps3B,nsB,rB
   integer :: nalpha
 
   Pstar = powerAmpScalar
@@ -44,66 +44,66 @@ program mlfimain
   w = 0._kp
 
   do j=1,size(alphavalues)
-   alpha=alphavalues(j)
- 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     alpha=alphavalues(j)
 
-  print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
 
-  do i=1,npts
+     print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+     do i=1,npts
 
-     xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar
+        xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
 
-     eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
-     eps2 = gmlfi_epsilon_two(xstar,p,q,alpha)
-     eps3 = gmlfi_epsilon_three(xstar,p,q,alpha)
+        print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar
 
-     logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-     Treh =  10._kp**(logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp))
+        eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
+        eps2 = gmlfi_epsilon_two(xstar,p,q,alpha)
+        eps3 = gmlfi_epsilon_three(xstar,p,q,alpha)
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh =  10._kp**(logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp))
 
 
-     ns = 1._kp - 2._kp*eps1 - eps2
-     r =16._kp*eps1
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
 
-     call livewrite('mlfi_predic.dat',alpha,p,q,eps1,eps2,eps3,r,ns,Treh)
+        call livewrite('mlfi_predic.dat',alpha,p,q,eps1,eps2,eps3,r,ns,Treh)
 
-     call livewrite('mlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
+        call livewrite('mlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+     end do
+
   end do
 
- end do
-
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('mlfi_predic_summarized.dat') 
-         nalpha=1000
-         alphamin=10._kp**(-5.)
-         alphamax=1._kp
-         do j=1,nalpha
-         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
-         lnRhoReh = lnRhoNuc
-         xstarA = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1A = gmlfi_epsilon_one(xstarA,p,q,alpha)
-         eps2A = gmlfi_epsilon_two(xstarA,p,q,alpha)
-         eps3A = gmlfi_epsilon_three(xstarA,p,q,alpha)
-         nsA = 1._kp - 2._kp*eps1A - eps2A
-         rA = 16._kp*eps1A
-         lnRhoReh = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
-         xstarB = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
-         eps1B = gmlfi_epsilon_one(xstarB,p,q,alpha)
-         eps2B = gmlfi_epsilon_two(xstarB,p,q,alpha)
-         eps3B = gmlfi_epsilon_three(xstarB,p,q,alpha)
-         nsB = 1._kp - 2._kp*eps1B - eps2B
-         rB =16._kp*eps1B
-         call livewrite('mlfi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
-         enddo
-  
+  nalpha=1000
+  alphamin=10._kp**(-5.)
+  alphamax=1._kp
+  do j=1,nalpha
+     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+     lnRhoReh = lnRhoNuc
+     xstarA = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+     eps1A = gmlfi_epsilon_one(xstarA,p,q,alpha)
+     eps2A = gmlfi_epsilon_two(xstarA,p,q,alpha)
+     eps3A = gmlfi_epsilon_three(xstarA,p,q,alpha)
+     nsA = 1._kp - 2._kp*eps1A - eps2A
+     rA = 16._kp*eps1A
+     lnRhoReh = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     xstarB = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+     eps1B = gmlfi_epsilon_one(xstarB,p,q,alpha)
+     eps2B = gmlfi_epsilon_two(xstarB,p,q,alpha)
+     eps3B = gmlfi_epsilon_three(xstarB,p,q,alpha)
+     nsB = 1._kp - 2._kp*eps1B - eps2B
+     rB =16._kp*eps1B
+     call livewrite('mlfi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+  enddo
+
 
 end program mlfimain

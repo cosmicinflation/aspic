@@ -6,8 +6,10 @@ module rgireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rgisr, only : rgi_epsilon_one, rgi_epsilon_two, rgi_epsilon_three
-  use rgisr, only : rgi_norm_potential
+  use rgisr, only : rgi_norm_potential, rgi_x_epsoneacc
   use rgisr, only : rgi_x_endinf, rgi_efold_primitive
   implicit none
 
@@ -15,6 +17,7 @@ module rgireheat
 
   public rgi_x_star, rgi_lnrhoreh_max 
   public rgi_xp_fromepsilon, rgi_lnrhoreh_fromepsilon 
+  public rgi_x_rrad, rgi_x_rreh
 
 contains
 
@@ -50,7 +53,7 @@ contains
     rgiData%real3 = calF + primEnd
 
     mini = xEnd
-    maxi = 100._kp*max(alpha,sqrt(alpha),alpha**(1._kp/3._kp))
+    maxi = rgi_x_epsoneacc(alpha)
 
     x = zbrent(find_rgi_x_star,mini,maxi,tolzbrent,rgiData)
     rgi_x_star = x
@@ -80,6 +83,129 @@ contains
     find_rgi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_rgi_x_star
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function rgi_x_rrad(alpha,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: rgi_x_rrad
+    real(kp), intent(in) :: alpha,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: rgiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+        
+    xEnd = rgi_x_endinf(alpha)
+    epsOneEnd = rgi_epsilon_one(xEnd,alpha)
+    potEnd = rgi_norm_potential(xEnd,alpha)
+    primEnd = rgi_efold_primitive(xEnd,alpha)
+
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    rgiData%real1 = alpha    
+    rgiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = rgi_x_epsoneacc(alpha)
+
+    x = zbrent(find_rgi_x_rrad,mini,maxi,tolzbrent,rgiData)
+    rgi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rgi_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function rgi_x_rrad
+
+  function find_rgi_x_rrad(x,rgiData)   
+    implicit none
+    real(kp) :: find_rgi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: rgiData
+
+    real(kp) :: primStar,alpha,w,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=rgiData%real1
+    CalFplusprimEnd = rgiData%real2
+
+    primStar = rgi_efold_primitive(x,alpha)
+    epsOneStar = rgi_epsilon_one(x,alpha)
+    potStar = rgi_norm_potential(x,alpha)
+
+    find_rgi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_rgi_x_rrad
+
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function rgi_x_rreh(alpha,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: rgi_x_rreh
+    real(kp), intent(in) :: alpha,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: rgiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+        
+    xEnd = rgi_x_endinf(alpha)
+    epsOneEnd = rgi_epsilon_one(xEnd,alpha)
+    potEnd = rgi_norm_potential(xEnd,alpha)
+    primEnd = rgi_efold_primitive(xEnd,alpha)
+
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    rgiData%real1 = alpha    
+    rgiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = rgi_x_epsoneacc(alpha)
+
+    x = zbrent(find_rgi_x_rreh,mini,maxi,tolzbrent,rgiData)
+    rgi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rgi_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function rgi_x_rreh
+
+  function find_rgi_x_rreh(x,rgiData)   
+    implicit none
+    real(kp) :: find_rgi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: rgiData
+
+    real(kp) :: primStar,alpha,w,CalFplusprimEnd,potStar
+
+    alpha=rgiData%real1
+    CalFplusprimEnd = rgiData%real2
+
+    primStar = rgi_efold_primitive(x,alpha)
+    potStar = rgi_norm_potential(x,alpha)
+
+    find_rgi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_rgi_x_rreh
 
 
 
