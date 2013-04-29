@@ -7,9 +7,14 @@ program oimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use oisr, only : oi_norm_potential, oi_x_endinf
+  use oireheat, only : oi_x_rreh, oi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,nphi0
@@ -22,40 +27,43 @@ program oimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End, xend
 
   Pstar = powerAmpScalar
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!        Calculates the reheaoing predicoions           !!
+  !!        Calculates the reheaoing predicoions           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   npts = 20
 
 
-   nphi0=3
-   allocate(phi0values(1:nphi0))
-   phi0values(1)=0.0001_kp
-   phi0values(2)=0.01_kp
-   phi0values(3)=1._kp
+  nphi0=3
+  allocate(phi0values(1:nphi0))
+  phi0values(1)=0.0001_kp
+  phi0values(2)=0.01_kp
+  phi0values(3)=1._kp
 
 
-   alphamin=10._kp**(-3._kp)
-   alphamax=10._kp**(-1._kp)
-   nalpha=10
+  alphamin=10._kp**(-3._kp)
+  alphamax=10._kp**(-1._kp)
+  nalpha=10
 
   w=0._kp
-!  w = 1._kp/3._kp
+  !  w = 1._kp/3._kp
 
   call delete_file('oi_predic.dat')
   call delete_file('oi_nsr.dat')
 
-   do j=1,nphi0
-   phi0=phi0values(j)
+  do j=1,nphi0
+     phi0=phi0values(j)
 
-    do k=0,nalpha
+     do k=0,nalpha
         alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))!logstep
 
         lnRhoRehMin = lnRhoNuc
@@ -86,13 +94,53 @@ program oimain
            call livewrite('oi_predic.dat',alpha,phi0,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('oi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
+
         end do
 
      end do
 
- end do
+  end do
 
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  alpha = 0.01
+  phi0 = 0.5
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = oi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = oi_epsilon_one(xstar,alpha,phi0)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = oi_x_endinf(alpha,phi0)
+     eps1end =  oi_epsilon_one(xend,alpha,phi0)
+     VendOverVstar = oi_norm_potential(xend,alpha,phi0)/oi_norm_potential(xstar,alpha,phi0)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = oi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = oi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
 
 
 end program oimain

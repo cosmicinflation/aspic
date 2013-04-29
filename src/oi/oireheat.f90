@@ -5,13 +5,16 @@ module oireheat
   use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use oisr, only : oi_epsilon_one, oi_epsilon_two, oi_epsilon_three
   use oisr, only : oi_norm_potential,oi_efold_primitive,oi_x_endinf
   implicit none
 
   private
 
-  public oi_x_star, oi_lnrhoreh_max,find_oi_x_star
+  public oi_x_star, oi_lnrhoreh_max
+  public oi_x_rrad, oi_x_rreh
 
 contains
 
@@ -49,7 +52,6 @@ contains
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = mini/epsilon(1._kp)
 
-
     x = zbrent(find_oi_x_star,mini,maxi,tolFind,oiData)
     oi_x_star = x
 
@@ -77,11 +79,137 @@ contains
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
     potStar = oi_norm_potential(x,alpha)
 
-
     find_oi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
-
   end function find_oi_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function oi_x_rrad(alpha,phi0,lnRrad,Pstar,bfold)    
+    implicit none
+    real(kp) :: oi_x_rrad
+    real(kp), intent(in) :: alpha,phi0,lnRrad,Pstar
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+
+    type(transfert) :: oiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    xEnd=oi_x_endinf(alpha,phi0)
+    epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
+    potEnd = oi_norm_potential(xEnd,alpha)
+    primEnd = oi_efold_primitive(xEnd,alpha,phi0)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    oiData%real1 = alpha
+    oiData%real2 = phi0
+    oiData%real3 = calF + primEnd
+
+    mini = xEnd*(1._kp+epsilon(1._kp))
+    maxi = mini/epsilon(1._kp)
+
+    x = zbrent(find_oi_x_rrad,mini,maxi,tolFind,oiData)
+    oi_x_rrad = x
+
+    if (present(bfold)) then
+       bfold = -(oi_efold_primitive(x,alpha,phi0) - primEnd)
+    endif
+
+
+  end function oi_x_rrad
+
+  function find_oi_x_rrad(x,oiData)   
+    implicit none
+    real(kp) :: find_oi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: oiData
+
+    real(kp) :: primStar,alpha,phi0,CalFplusPrimEnd,potStar,epsOneStar
+
+    alpha=oiData%real1
+    phi0=oiData%real2
+    CalFplusPrimEnd = oiData%real3
+
+    primStar = oi_efold_primitive(x,alpha,phi0)
+    epsOneStar = oi_epsilon_one(x,alpha,phi0)
+    potStar = oi_norm_potential(x,alpha)
+
+    find_oi_x_rrad = find_reheat_rrad(PrimStar,calFplusPrimEnd,epsOneStar,potStar)
+
+  end function find_oi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function oi_x_rreh(alpha,phi0,lnRreh,bfold)    
+    implicit none
+    real(kp) :: oi_x_rreh
+    real(kp), intent(in) :: alpha,phi0,lnRreh
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+
+    type(transfert) :: oiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    xEnd=oi_x_endinf(alpha,phi0)
+    epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
+    potEnd = oi_norm_potential(xEnd,alpha)
+    primEnd = oi_efold_primitive(xEnd,alpha,phi0)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    oiData%real1 = alpha
+    oiData%real2 = phi0
+    oiData%real3 = calF + primEnd
+
+    mini = xEnd*(1._kp+epsilon(1._kp))
+    maxi = mini/epsilon(1._kp)
+
+    x = zbrent(find_oi_x_rreh,mini,maxi,tolFind,oiData)
+    oi_x_rreh = x
+
+    if (present(bfold)) then
+       bfold = -(oi_efold_primitive(x,alpha,phi0) - primEnd)
+    endif
+
+
+  end function oi_x_rreh
+
+  function find_oi_x_rreh(x,oiData)   
+    implicit none
+    real(kp) :: find_oi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: oiData
+
+    real(kp) :: primStar,alpha,phi0,CalFplusPrimEnd,potStar
+
+    alpha=oiData%real1
+    phi0=oiData%real2
+    CalFplusPrimEnd = oiData%real3
+
+    primStar = oi_efold_primitive(x,alpha,phi0)
+    potStar = oi_norm_potential(x,alpha)
+
+    find_oi_x_rreh = find_reheat_rreh(PrimStar,calFplusPrimEnd,potStar)
+
+  end function find_oi_x_rreh
+
 
 
   function oi_lnrhoreh_max(alpha,phi0,Pstar) 
