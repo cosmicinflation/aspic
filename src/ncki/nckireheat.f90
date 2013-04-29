@@ -9,7 +9,7 @@ module nckireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use nckisr, only : ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
-  use nckisr, only : ncki_norm_potential, NckiMaxiInf, ncki_x_ddpotzero
+  use nckisr, only : ncki_norm_potential, NckiMaxiInf, ncki_x_dderivpotzero
   use nckisr, only : ncki_x_endinf, ncki_efold_primitive
   implicit none
   
@@ -55,10 +55,10 @@ contains
     mini=xEnd
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0       
-      maxi = ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
+      maxi = ncki_x_dderivpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
     else
 !several times the position of the inflexion point if beta>0       
-       maxi = NckiMaxiInf * ncki_x_ddpotzero(alpha,beta)
+       maxi = NckiMaxiInf * ncki_x_dderivpotzero(alpha,beta)
     endif
 
     x = zbrent(find_ncki_x_star,mini,maxi,tolzbrent,nckiData)
@@ -125,10 +125,10 @@ contains
     mini=xEnd
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0       
-      maxi = ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
+      maxi = ncki_x_dderivpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
     else
 !several times the position of the inflexion point if beta>0       
-       maxi = NckiMaxiInf * ncki_x_ddpotzero(alpha,beta)
+       maxi = NckiMaxiInf * ncki_x_dderivpotzero(alpha,beta)
     endif
 
     x = zbrent(find_ncki_x_rrad,mini,maxi,tolzbrent,nckiData)
@@ -195,10 +195,10 @@ contains
     mini=xEnd
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0       
-      maxi = ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
+      maxi = ncki_x_dderivpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
     else
 !several times the position of the inflexion point if beta>0       
-       maxi = NckiMaxiInf * ncki_x_ddpotzero(alpha,beta)
+       maxi = NckiMaxiInf * ncki_x_dderivpotzero(alpha,beta)
     endif
 
     x = zbrent(find_ncki_x_rreh,mini,maxi,tolzbrent,nckiData)

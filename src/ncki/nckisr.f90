@@ -18,7 +18,7 @@ module nckisr
   public ncki_norm_potential, ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
   public ncki_x_endinf, ncki_efold_primitive, ncki_x_trajectory
   public ncki_norm_deriv_potential, ncki_norm_deriv_second_potential
-  public ncki_x_potmax, ncki_x_inflection, ncki_x_ddpotzero
+  public ncki_x_potmax, ncki_x_inflection, ncki_x_dderivpotzero
 
 
 contains
@@ -105,7 +105,7 @@ contains
 
     if (beta.gt.0._kp) stop 'ncki_x_potmax: no maximum for beta>0!'
 
-    ncki_x_potmax = ncki_x_ddpotzero(alpha,beta)
+    ncki_x_potmax = ncki_x_dderivpotzero(alpha,beta)
 
   end function ncki_x_potmax
 
@@ -118,19 +118,19 @@ contains
 
     if (beta.lt.0._kp) stop 'ncki_x_inflection: no inflection for beta<0!'
 
-    ncki_x_inflection = ncki_x_ddpotzero(alpha,beta)
+    ncki_x_inflection = ncki_x_dderivpotzero(alpha,beta)
 
   end function ncki_x_inflection
 
 
-  function ncki_x_ddpotzero(alpha,beta)
+  function ncki_x_dderivpotzero(alpha,beta)
     implicit none
     real(kp) , intent(in) :: alpha,beta
-    real(kp) :: ncki_x_ddpotzero
+    real(kp) :: ncki_x_dderivpotzero
 
-    ncki_x_ddpotzero = sqrt(abs(alpha/2._kp/beta))
+    ncki_x_dderivpotzero = sqrt(abs(alpha/2._kp/beta))
 
-  end function ncki_x_ddpotzero
+  end function ncki_x_dderivpotzero
 
 
   !returns x at the end of inflation defined as epsilon1=1
@@ -147,7 +147,7 @@ contains
 !minimum value below which the potential is negative
     mini=epsilon(1._kp)
 !position of the maximum of the potential if beta<0, and of the inflexion point if beta>0
-    maxi = ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
+    maxi = ncki_x_dderivpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
 
     nckiData%real1 = alpha
     nckiData%real2 = beta
@@ -200,10 +200,10 @@ contains
 
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0
-       maxi =ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
+       maxi =ncki_x_dderivpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
     else
 !several times the position of the inflexion point if beta>0
-       maxi = NckiMaxiInf * ncki_x_ddpotzero(alpha,beta)
+       maxi = NckiMaxiInf * ncki_x_dderivpotzero(alpha,beta)
     endif
 
     mini=epsilon(1._kp)
