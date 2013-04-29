@@ -6,6 +6,8 @@ module rcqireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rcqisr, only : rcqi_epsilon_one, rcqi_epsilon_two, rcqi_epsilon_three
   use rcqisr, only : rcqi_norm_potential
   use rcqisr, only : rcqi_x_endinf, rcqi_efold_primitive
@@ -13,7 +15,8 @@ module rcqireheat
 
   private
 
-  public rcqi_x_star, rcqi_lnrhoreh_max 
+  public rcqi_x_star, rcqi_lnrhoreh_max
+  public rcqi_x_rrad, rcqi_x_rreh
 
 contains
 
@@ -78,6 +81,126 @@ contains
     find_rcqi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_rcqi_x_star
+
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function rcqi_x_rrad(alpha,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: rcqi_x_rrad
+    real(kp), intent(in) :: alpha,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: rcqiData
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = rcqi_x_endinf(alpha)
+    epsOneEnd = rcqi_epsilon_one(xEnd,alpha)
+    potEnd = rcqi_norm_potential(xEnd,alpha)
+    primEnd = rcqi_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    rcqiData%real1 = alpha    
+    rcqiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
+
+    x = zbrent(find_rcqi_x_rrad,mini,maxi,tolzbrent,rcqiData)
+    rcqi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rcqi_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function rcqi_x_rrad
+
+  function find_rcqi_x_rrad(x,rcqiData)   
+    implicit none
+    real(kp) :: find_rcqi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: rcqiData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar,epsOneStar
+
+    alpha=rcqiData%real1
+    CalFplusprimEnd = rcqiData%real2
+
+    primStar = rcqi_efold_primitive(x,alpha)
+    epsOneStar = rcqi_epsilon_one(x,alpha)
+    potStar = rcqi_norm_potential(x,alpha)
+
+    find_rcqi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_rcqi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function rcqi_x_rreh(alpha,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: rcqi_x_rreh
+    real(kp), intent(in) :: alpha,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: rcqiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = rcqi_x_endinf(alpha)
+    epsOneEnd = rcqi_epsilon_one(xEnd,alpha)
+    potEnd = rcqi_norm_potential(xEnd,alpha)
+    primEnd = rcqi_efold_primitive(xEnd,alpha)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    rcqiData%real1 = alpha    
+    rcqiData%real2 = calF + primEnd
+
+    mini = xEnd
+    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
+
+    x = zbrent(find_rcqi_x_rreh,mini,maxi,tolzbrent,rcqiData)
+    rcqi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rcqi_efold_primitive(x,alpha) - primEnd)
+    endif
+
+  end function rcqi_x_rreh
+
+  function find_rcqi_x_rreh(x,rcqiData)   
+    implicit none
+    real(kp) :: find_rcqi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: rcqiData
+
+    real(kp) :: primStar,alpha,CalFplusprimEnd,potStar
+
+    alpha=rcqiData%real1
+    CalFplusprimEnd = rcqiData%real2
+
+    primStar = rcqi_efold_primitive(x,alpha)
+    potStar = rcqi_norm_potential(x,alpha)
+
+    find_rcqi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_rcqi_x_rreh
 
 
 
