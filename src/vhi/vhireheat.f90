@@ -6,13 +6,16 @@ module vhireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use vhisr, only : vhi_epsilon_one, vhi_epsilon_two, vhi_epsilon_three
   use vhisr, only : vhi_norm_potential,vhi_efold_primitive,vhi_xinimax,vhi_xendmin
   implicit none
 
   private
 
-  public vhi_x_star, vhi_lnrhoreh_max 
+  public vhi_x_star, vhi_lnrhoreh_max
+  public vhi_x_rrad, vhi_x_rreh
 
 contains
 
@@ -30,17 +33,14 @@ contains
 
     type(transfert) :: vhiData
     
-
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-
     epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
     potEnd = vhi_norm_potential(xEnd,p)
 
     primEnd = vhi_efold_primitive(xEnd,p,mu)
-
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
@@ -81,6 +81,131 @@ contains
     find_vhi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_vhi_x_star
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function vhi_x_rrad(p,mu,xEnd,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: vhi_x_rrad
+    real(kp), intent(in) :: p,mu,xEnd,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,potEnd
+
+    type(transfert) :: vhiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
+    potEnd = vhi_norm_potential(xEnd,p)
+
+    primEnd = vhi_efold_primitive(xEnd,p,mu)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    vhiData%real1 = p
+    vhiData%real2 = mu
+    vhiData%real3 = calF + primEnd
+    
+    mini = xEnd -epsilon(1._kp)
+    maxi = vhi_xinimax(p,mu) + epsilon(1._kp)
+
+    x = zbrent(find_vhi_x_rrad,mini,maxi,tolzbrent,vhiData)
+    vhi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (vhi_efold_primitive(x,p,mu) - primEnd)
+    endif
+
+  end function vhi_x_rrad
+
+  function find_vhi_x_rrad(x,vhiData)   
+    implicit none
+    real(kp) :: find_vhi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: vhiData
+
+    real(kp) :: primStar,p,mu,CalFplusprimEnd,potStar,epsOneStar
+
+    p=vhiData%real1
+    mu=vhiData%real2
+    CalFplusprimEnd = vhiData%real3
+
+    primStar = vhi_efold_primitive(x,p,mu)
+    epsOneStar = vhi_epsilon_one(x,p,mu)
+    potStar = vhi_norm_potential(x,p)
+
+    find_vhi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_vhi_x_rrad
+
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function vhi_x_rreh(p,mu,xEnd,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: vhi_x_rreh
+    real(kp), intent(in) :: p,mu,xEnd,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,potEnd
+
+    type(transfert) :: vhiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
+    potEnd = vhi_norm_potential(xEnd,p)
+
+    primEnd = vhi_efold_primitive(xEnd,p,mu)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    vhiData%real1 = p
+    vhiData%real2 = mu
+    vhiData%real3 = calF + primEnd
+    
+    mini = xEnd -epsilon(1._kp)
+    maxi = vhi_xinimax(p,mu) + epsilon(1._kp)
+
+    x = zbrent(find_vhi_x_rreh,mini,maxi,tolzbrent,vhiData)
+    vhi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (vhi_efold_primitive(x,p,mu) - primEnd)
+    endif
+
+  end function vhi_x_rreh
+
+  function find_vhi_x_rreh(x,vhiData)   
+    implicit none
+    real(kp) :: find_vhi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: vhiData
+
+    real(kp) :: primStar,p,mu,CalFplusprimEnd,potStar
+
+    p=vhiData%real1
+    mu=vhiData%real2
+    CalFplusprimEnd = vhiData%real3
+
+    primStar = vhi_efold_primitive(x,p,mu)
+    potStar = vhi_norm_potential(x,p)
+
+    find_vhi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_vhi_x_rreh
 
 
 

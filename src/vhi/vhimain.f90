@@ -8,9 +8,14 @@ program vhimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use vhisr, only : vhi_norm_potential
+  use vhireheat, only : vhi_x_rreh, vhi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
@@ -30,7 +35,9 @@ program vhimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End
 
   Pstar = powerAmpScalar
 
@@ -38,7 +45,7 @@ program vhimain
   call delete_file('vhi_nsr.dat')
 
 
-!  w = 1._kp/3._kp
+  !  w = 1._kp/3._kp
   w=0._kp
 
 
@@ -48,363 +55,404 @@ program vhimain
 !!!!    p=0.5    !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-p=0.5_kp
-Nmu=10
-mumin=0.001_kp
-mumax=1000000._kp
-NxEnd=50
+  p=0.5_kp
+  Nmu=10
+  mumin=0.001_kp
+  mumax=1000000._kp
+  NxEnd=50
 
- do j=0,Nmu
- mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
- xEndmax=vhi_xinimax(p,mu)*0.99
+  do j=0,Nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+     xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+     xEndmax=vhi_xinimax(p,mu)*0.99
 
- do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
-! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
-
-
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
-
-  print *,'p',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-  do i=1,npts
-
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
-
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
-
- 
-
-       eps1 = vhi_epsilon_one(xstar,p,mu)
-       eps2 = vhi_epsilon_two(xstar,p,mu)
-       eps3 = vhi_epsilon_three(xstar,p,mu)
+     do k=0,NxEnd
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
+        ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
+
+        print *,'p',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
 
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           eps1 = vhi_epsilon_one(xstar,p,mu)
+           eps2 = vhi_epsilon_two(xstar,p,mu)
+           eps3 = vhi_epsilon_three(xstar,p,mu)
 
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
-       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
- end do
 
-end do
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=1     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
 
-p=1._kp
-Nmu=10
-mumin=0.001_kp
-mumax=1000._kp
-NxEnd=20
+  p=1._kp
+  Nmu=10
+  mumin=0.001_kp
+  mumax=1000._kp
+  NxEnd=20
 
- do j=0,Nmu
- mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
- xEndmax=vhi_xinimax(p,mu)*0.99
+  do j=0,Nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+     xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+     xEndmax=vhi_xinimax(p,mu)*0.99
 
- do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
-! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
-
-
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
-
-  print *,'p',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-  do i=1,npts
-
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
-
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
-
- 
-
-       eps1 = vhi_epsilon_one(xstar,p,mu)
-       eps2 = vhi_epsilon_two(xstar,p,mu)
-       eps3 = vhi_epsilon_three(xstar,p,mu)
+     do k=0,NxEnd
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
+        ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
+
+        print *,'p',p,'mu=',mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
 
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           eps1 = vhi_epsilon_one(xstar,p,mu)
+           eps2 = vhi_epsilon_two(xstar,p,mu)
+           eps3 = vhi_epsilon_three(xstar,p,mu)
 
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
-       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
- end do
 
-end do
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
 
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!    p=1.5    !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-p=1.5_kp
-Nmu=20
-mumin=0.8_kp
-mumax=1000._kp
-NxEnd=50
+  p=1.5_kp
+  Nmu=20
+  mumin=0.8_kp
+  mumax=1000._kp
+  NxEnd=50
 
- do j=0,Nmu
- mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
- xEndmax=vhi_xinimax(p,mu)*0.99
- xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
+  do j=0,Nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+     xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+     xEndmax=vhi_xinimax(p,mu)*0.99
+     xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
 
- do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
-! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
-
-
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
-
-  print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-  do i=1,npts
-
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
-
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
-
- 
-
-       eps1 = vhi_epsilon_one(xstar,p,mu)
-       eps2 = vhi_epsilon_two(xstar,p,mu)
-       eps3 = vhi_epsilon_three(xstar,p,mu)
-
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+     do k=0,NxEnd
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
+        ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
+
+        print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
 
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
 
-       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+           eps1 = vhi_epsilon_one(xstar,p,mu)
+           eps2 = vhi_epsilon_two(xstar,p,mu)
+           eps3 = vhi_epsilon_three(xstar,p,mu)
 
-       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
- end do
 
-end do
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
 
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=2     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-p=2._kp
-Nmu=20
-mumin=0.8_kp
-mumax=1000._kp
-NxEnd=100
+  p=2._kp
+  Nmu=20
+  mumin=0.8_kp
+  mumax=1000._kp
+  NxEnd=100
 
- do j=0,Nmu
- mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
- xEndmax=vhi_xinimax(p,mu)*0.99
- xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
+  do j=0,Nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+     xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+     xEndmax=vhi_xinimax(p,mu)*0.99
+     xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
 
- do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
-! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
-
-
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
-
-  print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-  do i=1,npts
-
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
-
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
-
- 
-
-       eps1 = vhi_epsilon_one(xstar,p,mu)
-       eps2 = vhi_epsilon_two(xstar,p,mu)
-       eps3 = vhi_epsilon_three(xstar,p,mu)
+     do k=0,NxEnd
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
+        ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
+
+        print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
 
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           eps1 = vhi_epsilon_one(xstar,p,mu)
+           eps2 = vhi_epsilon_two(xstar,p,mu)
+           eps3 = vhi_epsilon_three(xstar,p,mu)
 
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
-       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
- end do
 
-end do
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
 
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=3     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-p=3._kp
-Nmu=20
-mumin=0.8_kp
-mumax=1000._kp
-NxEnd=200
+  p=3._kp
+  Nmu=20
+  mumin=0.8_kp
+  mumax=1000._kp
+  NxEnd=200
 
- do j=0,Nmu
- mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
- xEndmax=vhi_xinimax(p,mu)*0.99
- xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
+  do j=0,Nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+     xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+     xEndmax=vhi_xinimax(p,mu)*0.99
+     xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
 
- do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
-! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
-
-
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
-
-  print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
-
-  do i=1,npts
-
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
-
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
-
- 
-
-       eps1 = vhi_epsilon_one(xstar,p,mu)
-       eps2 = vhi_epsilon_two(xstar,p,mu)
-       eps3 = vhi_epsilon_three(xstar,p,mu)
+     do k=0,NxEnd
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
+        ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
+
+        print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
 
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           eps1 = vhi_epsilon_one(xstar,p,mu)
+           eps2 = vhi_epsilon_two(xstar,p,mu)
+           eps3 = vhi_epsilon_three(xstar,p,mu)
 
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
-       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
-       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
- end do
 
-end do
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=3     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-p=3._kp
-Nmu=20
-mumin=0.8_kp
-mumax=1000._kp
-NxEnd=200
+  p=3._kp
+  Nmu=20
+  mumin=0.8_kp
+  mumax=1000._kp
+  NxEnd=200
 
- do j=0,Nmu
- mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
- xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
- xEndmax=vhi_xinimax(p,mu)*0.99
- xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
+  do j=0,Nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+     xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
+     xEndmax=vhi_xinimax(p,mu)*0.99
+     xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
 
- do k=0,NxEnd
- xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
-! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
+     do k=0,NxEnd
+        xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
+        ! xEnd=xEndmin+(xEndmax-xEndmin)*(real(k,kp)/NxEnd)*p,mu*(1.+epsilon(1._kp)) !arithmetic step
 
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = vhi_lnrhoreh_max(p,mu,xEnd,Pstar)
 
-  print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+        print *,'p,mu=',p,mu,'xEnd=',xEnd,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
+        do i=1,npts
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
+
+
+
+           eps1 = vhi_epsilon_one(xstar,p,mu)
+           eps2 = vhi_epsilon_two(xstar,p,mu)
+           eps3 = vhi_epsilon_three(xstar,p,mu)
+
+
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
+
+
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  p=3.
+  mu =100.
+  xend =10.
   do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-	xstar = vhi_x_star(p,mu,xEnd,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = vhi_x_rrad(p,mu,xend,lnRrad,Pstar,bfoldstar)
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',vhi_epsilon_one(xstar,p,mu)
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
- 
+     eps1 = vhi_epsilon_one(xstar,p,mu)
 
-       eps1 = vhi_epsilon_one(xstar,p,mu)
-       eps2 = vhi_epsilon_two(xstar,p,mu)
-       eps3 = vhi_epsilon_three(xstar,p,mu)
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     eps1end =  vhi_epsilon_one(xend,p,mu)
+     VendOverVstar = vhi_norm_potential(xend,p,mu)/vhi_norm_potential(xstar,p,mu)
 
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = vhi_x_rreh(p,mu,xend,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+     xstar = vhi_x_star(p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
-
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
-
-       call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
-
-       call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
-
- end do
-
-end do
-
+  enddo
 
 
 end program vhimain
