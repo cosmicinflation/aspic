@@ -7,10 +7,14 @@ program sbimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use sbisr, only : sbi_norm_potential, sbi_x_endinf
+  use sbireheat, only : sbi_x_rreh, sbi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
@@ -22,6 +26,9 @@ program sbimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End, xend
 
   Pstar = powerAmpScalar
 
@@ -29,12 +36,12 @@ program sbimain
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!        Calculates the reheating predictions           !!
+  !!        Calculates the reheating predictions           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    w=0._kp
-!  w = 1._kp/3._kp
+  w=0._kp
+  !  w = 1._kp/3._kp
 
   call delete_file('sbi_predic.dat')
   call delete_file('sbi_nsr.dat')
@@ -52,40 +59,40 @@ program sbimain
   nalpha=20
 
   do k=0,nalpha
-       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
+     alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
 
-  print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  do i=1,npts
+     do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
-
-
-       eps1 = sbi_epsilon_one(xstar,alpha,beta)
-       eps2 = sbi_epsilon_two(xstar,alpha,beta)
-       eps3 = sbi_epsilon_three(xstar,alpha,beta)
+        xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
 
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+        eps1 = sbi_epsilon_one(xstar,alpha,beta)
+        eps2 = sbi_epsilon_two(xstar,alpha,beta)
+        eps3 = sbi_epsilon_three(xstar,alpha,beta)
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
-       call livewrite('sbi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-       call livewrite('sbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
 
- end do
+        call livewrite('sbi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+
+        call livewrite('sbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+     end do
+
+  end do
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -100,39 +107,81 @@ program sbimain
 
 
   do k=0,nalpha
-       alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
+     alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
 
-  print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+
+
+        eps1 = sbi_epsilon_one(xstar,alpha,beta)
+        eps2 = sbi_epsilon_two(xstar,alpha,beta)
+        eps3 = sbi_epsilon_three(xstar,alpha,beta)
+
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('sbi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+
+        call livewrite('sbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+     end do
+
+  end do
+
+
+ write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  alpha =50.*sbi_alpha_min(beta)
+  beta =5e-3
   do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = sbi_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
 
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-       eps1 = sbi_epsilon_one(xstar,alpha,beta)
-       eps2 = sbi_epsilon_two(xstar,alpha,beta)
-       eps3 = sbi_epsilon_three(xstar,alpha,beta)
+     eps1 = sbi_epsilon_one(xstar,alpha,beta)
 
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = sbi_x_endinf(alpha,beta)
+     eps1end =  sbi_epsilon_one(xend,alpha,beta)
+     VendOverVstar = sbi_norm_potential(xend,alpha,beta)/sbi_norm_potential(xstar,alpha,beta)
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = sbi_x_rreh(alpha,beta,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-       call livewrite('sbi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+     xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
-       call livewrite('sbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
+  enddo
 
- end do
 
 end program sbimain
