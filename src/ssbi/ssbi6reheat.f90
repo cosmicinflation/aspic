@@ -6,87 +6,81 @@ module ssbi6reheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use ssbicomreh, only : ssbi_x_star, ssbi_x_rrad, ssbi_x_rreh
   use ssbi6sr, only : ssbi6_epsilon_one, ssbi6_epsilon_two, ssbi6_epsilon_three
   use ssbi6sr, only : ssbi6_norm_potential
   use ssbi6sr, only : ssbi6_x_endinf, ssbi6_efold_primitive
-  use cosmopar, only : QrmsOverT
 
   implicit none
 
   private
 
+  real(kp), parameter :: Ssbi6MaxFactor = 1e6
+
   public ssbi6_x_star, ssbi6_lnrhoreh_max
+  public ssbi6_x_rrad, ssbi6_x_rreh
 
 contains
 
+
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ssbi6_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)    
+  function ssbi6_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
     real(kp) :: ssbi6_x_star
     real(kp), intent(in) :: alpha,beta,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
-
-    real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
-    type(transfert) :: ssbi6Data
-
-  
-    if (w.eq.1._kp/3._kp) then
-       if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
-    endif
-
-    xEnd=ssbi6_x_endinf(alpha,beta)
-    epsOneEnd = ssbi6_epsilon_one(xEnd,alpha,beta)
-    potEnd = ssbi6_norm_potential(xEnd,alpha,beta)
-
-    primEnd = ssbi6_efold_primitive(xEnd,alpha,beta)
+    
+    real(kp) :: mini,maxi
+    real(kp) :: xend
    
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
-
-    ssbi6Data%real1 = alpha
-    ssbi6Data%real2 = beta
-    ssbi6Data%real3 = w
-    ssbi6Data%real4 = calF + primEnd
-
+    xEnd=ssbi6_x_endinf(alpha,beta)
     mini = ssbi6_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
-    maxi = 10._kp**(6._kp)*mini
+    maxi = Ssbi6MaxFactor*mini
 
-    x = zbrent(find_ssbi6_x_star,mini,maxi,tolzbrent,ssbi6Data)
-    ssbi6_x_star = x
-
-!   print*,'ssbi6_x_star:  xEnd=',xEnd,'  potEnd=',potEnd,'   epsOneEnd=',epsOneEnd, &
-!       '   primEnd=',primEnd,'   xstar=',x
-!    pause
-
-    if (present(bfoldstar)) then
-       bfoldstar = - (ssbi6_efold_primitive(x,alpha,beta) - primEnd)
-    endif
+    ssbi6_x_star = ssbi_x_star(alpha,beta,w,lnRhoReh,Pstar,xend,mini,maxi,bfoldstar)
 
   end function ssbi6_x_star
 
-  function find_ssbi6_x_star(x,ssbi6Data)   
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function ssbi6_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: find_ssbi6_x_star
-    real(kp), intent(in) :: x
-    type(transfert), optional, intent(inout) :: ssbi6Data
+    real(kp) :: ssbi6_x_rrad
+    real(kp), intent(in) :: alpha,beta,lnRrad,Pstar    
+    real(kp), intent(out), optional :: bfoldstar
 
-    real(kp) :: primStar,alpha,beta,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: mini,maxi
+    real(kp) :: xend
 
-    alpha=ssbi6Data%real1
-    beta=ssbi6Data%real2
-    w = ssbi6Data%real3
-    CalFplusprimEnd = ssbi6Data%real4
+    xEnd=ssbi6_x_endinf(alpha,beta)
+    mini = ssbi6_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
+    maxi = Ssbi6MaxFactor*mini
+    
+    ssbi6_x_rrad = ssbi_x_rrad(alpha,beta,lnRrad,Pstar,xend,mini,maxi,bfoldstar)
 
-    primStar = ssbi6_efold_primitive(x,alpha,beta)
-    epsOneStar = ssbi6_epsilon_one(x,alpha,beta)
-    potStar = ssbi6_norm_potential(x,alpha,beta)
+  end function ssbi6_x_rrad
 
-    find_ssbi6_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
-  end function find_ssbi6_x_star
 
+!returns x given potential parameters, scalar power, and lnR.
+!If present, returns the corresponding bfoldstar
+  function ssbi6_x_rreh(alpha,beta,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: ssbi6_x_rreh
+    real(kp), intent(in) :: alpha,beta,lnRreh 
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp) :: mini,maxi
+    real(kp) :: xend
+
+    xEnd=ssbi6_x_endinf(alpha,beta)
+    mini = ssbi6_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
+    maxi = Ssbi6MaxFactor*mini
+    
+    ssbi6_x_rreh = ssbi_x_rreh(alpha,beta,lnRreh,xend,mini,maxi,bfoldstar)
+
+  end function ssbi6_x_rreh
 
 
   function ssbi6_lnrhoreh_max(alpha,beta,Pstar) 

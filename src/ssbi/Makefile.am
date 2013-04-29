@@ -1,15 +1,17 @@
-SRC = ssbicommon.f90 ssbi1sr.f90 ssbi1reheat.f90 \
-                    ssbi2sr.f90 ssbi2reheat.f90 \
-                    ssbi3sr.f90 ssbi3reheat.f90 \
-                    ssbi4sr.f90 ssbi4reheat.f90 \
-                    ssbi5sr.f90 ssbi5reheat.f90 \
-                    ssbi6sr.f90 ssbi6reheat.f90 
-MOD = ssbicommon.$(FC_MODEXT)  ssbi1sr.$(FC_MODEXT) ssbi1reheat.$(FC_MODEXT) \
-                              ssbi2sr.$(FC_MODEXT) ssbi2reheat.$(FC_MODEXT) \
-                              ssbi3sr.$(FC_MODEXT) ssbi3reheat.$(FC_MODEXT) \
-                              ssbi4sr.$(FC_MODEXT) ssbi4reheat.$(FC_MODEXT) \
-                              ssbi5sr.$(FC_MODEXT) ssbi5reheat.$(FC_MODEXT) \
-                              ssbi6sr.$(FC_MODEXT) ssbi6reheat.$(FC_MODEXT)
+SRC = ssbicommon.f90 ssbicomreh.f90 \
+	ssbi1sr.f90 ssbi1reheat.f90 \
+	ssbi2sr.f90 ssbi2reheat.f90 \
+	ssbi3sr.f90 ssbi3reheat.f90 \
+	ssbi4sr.f90 ssbi4reheat.f90 \
+	ssbi5sr.f90 ssbi5reheat.f90 \
+	ssbi6sr.f90 ssbi6reheat.f90 
+MOD = ssbicommon.$(FC_MODEXT) ssbicomreh.$(FC_MODEXT) \
+	ssbi1sr.$(FC_MODEXT) ssbi1reheat.$(FC_MODEXT) \
+	ssbi2sr.$(FC_MODEXT) ssbi2reheat.$(FC_MODEXT) \
+	ssbi3sr.$(FC_MODEXT) ssbi3reheat.$(FC_MODEXT) \
+	ssbi4sr.$(FC_MODEXT) ssbi4reheat.$(FC_MODEXT) \
+	ssbi5sr.$(FC_MODEXT) ssbi5reheat.$(FC_MODEXT) \
+	ssbi6sr.$(FC_MODEXT) ssbi6reheat.$(FC_MODEXT)
 
 check_PROGRAMS = ssbi1main ssbi2main ssbi3main ssbi4main ssbi5main ssbi6main
 ssbi1main_SOURCES = $(SRC) ssbi1main.f90
