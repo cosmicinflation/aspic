@@ -7,9 +7,15 @@ program mhimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use mhisr, only : mhi_norm_potential, mhi_x_endinf
+  use mhireheat, only : mhi_x_rreh, mhi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
+
   implicit none
 
-  
+
   real(kp) :: Pstar, logErehGeV, Treh, mu, mumin, mumax
 
   integer :: i,j
@@ -24,7 +30,9 @@ program mhimain
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
   integer :: nmu
 
-
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End, xend
 
   Pstar = powerAmpScalar
 
@@ -32,85 +40,126 @@ program mhimain
   call delete_file('mhi_nsr.dat')
 
 
-!  w = 1._kp/3._kp
+  !  w = 1._kp/3._kp
   w=0._kp
 
   mumin=(10._kp)**(-1)
   mumax=(10._kp)**2
-  
+
   do j=0,nj
-    mu=mumin*(mumax/mumin)**(real(j,kp)/real(nj,kp))
+     mu=mumin*(mumax/mumin)**(real(j,kp)/real(nj,kp))
 
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = mhi_lnrhoreh_max(mu,Pstar)
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = mhi_lnrhoreh_max(mu,Pstar)
 
-  print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  print*,'mu=',mu,'xEnd=',mhi_x_endinf(mu)
+     print*,'mu=',mu,'xEnd=',mhi_x_endinf(mu)
 
-  do i=1,npts
+     do i=1,npts
 
-       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     
+
 
 	xstar = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
-       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',mhi_epsilon_one(xstar,mu)
- 
-
-       eps1 = mhi_epsilon_one(xstar,mu)
-       eps2 = mhi_epsilon_two(xstar,mu)
-       eps3 = mhi_epsilon_three(xstar,mu)
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',mhi_epsilon_one(xstar,mu)
 
 
-       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        eps1 = mhi_epsilon_one(xstar,mu)
+        eps2 = mhi_epsilon_two(xstar,mu)
+        eps3 = mhi_epsilon_three(xstar,mu)
 
 
-       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
 
-       ns = 1._kp - 2._kp*eps1 - eps2
-       r =16._kp*eps1
-
-       call livewrite('mhi_predic.dat',mu,eps1,eps2,eps3,r,ns,Treh)
-
-       call livewrite('mhi_nsr.dat',mu,ns,r,abs(bfoldstar),lnRhoReh)
-  
-    end do
-
- end do
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
 
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('mhi_predic.dat',mu,eps1,eps2,eps3,r,ns,Treh)
+
+        call livewrite('mhi_nsr.dat',mu,ns,r,abs(bfoldstar),lnRhoReh)
+
+     end do
+
+  end do
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('mhi_predic_summarized.dat') 
-         nmu=1000
-         mumin=(10._kp)**(-1)
-         mumax=(10._kp)**2
-         w=0._kp
-         do j=1,nmu
-         mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
-         lnRhoReh = lnRhoNuc
-         xstarA = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
-         eps1A = mhi_epsilon_one(xstarA,mu)
-         eps2A = mhi_epsilon_two(xstarA,mu)
-         eps3A = mhi_epsilon_three(xstarA,mu)
-         nsA = 1._kp - 2._kp*eps1A - eps2A
-         rA = 16._kp*eps1A
-         lnRhoReh = mhi_lnrhoreh_max(mu,Pstar)
-         xstarB = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
-         eps1B = mhi_epsilon_one(xstarB,mu)
-         eps2B = mhi_epsilon_two(xstarB,mu)
-         eps3B = mhi_epsilon_three(xstarB,mu)
-         nsB = 1._kp - 2._kp*eps1B - eps2B
-         rB =16._kp*eps1B
-         call livewrite('mhi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
-         enddo
+  nmu=1000
+  mumin=(10._kp)**(-1)
+  mumax=(10._kp)**2
+  w=0._kp
+  do j=1,nmu
+     mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
+     lnRhoReh = lnRhoNuc
+     xstarA = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     eps1A = mhi_epsilon_one(xstarA,mu)
+     eps2A = mhi_epsilon_two(xstarA,mu)
+     eps3A = mhi_epsilon_three(xstarA,mu)
+     nsA = 1._kp - 2._kp*eps1A - eps2A
+     rA = 16._kp*eps1A
+     lnRhoReh = mhi_lnrhoreh_max(mu,Pstar)
+     xstarB = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     eps1B = mhi_epsilon_one(xstarB,mu)
+     eps2B = mhi_epsilon_two(xstarB,mu)
+     eps3B = mhi_epsilon_three(xstarB,mu)
+     nsB = 1._kp - 2._kp*eps1B - eps2B
+     rB =16._kp*eps1B
+     call livewrite('mhi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+  enddo
+
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  mu = 0.5
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = mhi_x_rrad(mu,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = mhi_epsilon_one(xstar,mu)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = mhi_x_endinf(mu)
+     eps1end =  mhi_epsilon_one(xend,mu)
+     VendOverVstar = mhi_norm_potential(xend,mu)/mhi_norm_potential(xstar,mu)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = mhi_x_rreh(mu,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
+
 
 end program mhimain

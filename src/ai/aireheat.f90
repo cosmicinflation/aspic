@@ -10,7 +10,7 @@ module aireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use aisr, only : ai_epsilon_one, ai_epsilon_two, ai_epsilon_three
   use aisr, only : ai_norm_potential
-  use aisr, only : ai_x_endinf, ai_efold_primitive, ai_x_trajectory
+  use aisr, only : ai_x_endinf, ai_efold_primitive
   implicit none
 
   private

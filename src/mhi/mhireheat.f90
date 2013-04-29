@@ -6,6 +6,8 @@ module mhireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use mhisr, only : mhi_epsilon_one, mhi_epsilon_two, mhi_epsilon_three
   use mhisr, only : mhi_norm_potential
   use mhisr, only : mhi_x_endinf, mhi_efold_primitive, mhi_x_trajectory
@@ -13,7 +15,8 @@ module mhireheat
 
   private
 
-  public mhi_x_star, mhi_lnrhoreh_max 
+  public mhi_x_star, mhi_lnrhoreh_max
+  public mhi_x_rrad, mhi_x_rreh
 
 contains
 
@@ -24,6 +27,7 @@ contains
     real(kp) :: mhi_x_star
     real(kp), intent(in) :: mu,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
+    real(kp), parameter :: efoldMax = 120._kp
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -43,17 +47,15 @@ contains
 
     primEnd = mhi_efold_primitive(xEnd,mu)
 
-    
-   
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
-
 
     mhiData%real1 = mu
     mhiData%real2 = w
     mhiData%real3 = calF + primEnd
 
     mini = xEnd
-    maxi=mhi_x_trajectory(-100._kp,xEnd,mu) !Assuming bfold>-100, otherwise if one uses too much big maxi values, numerical explosion
+!Assuming bfold>-120, otherwise if one uses too much big maxi values, numerical explosion
+    maxi=mhi_x_trajectory(-efoldMax,xEnd,mu)
 
 
     x = zbrent(find_mhi_x_star,mini,maxi,tolzbrent,mhiData)
@@ -86,6 +88,135 @@ contains
   end function find_mhi_x_star
 
 
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+ function mhi_x_rrad(mu,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: mhi_x_rrad
+    real(kp), intent(in) :: mu,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+    real(kp), parameter :: efoldMax = 120._kp
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: mhiData
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif    
+    
+    xEnd = mhi_x_endinf(mu)
+
+    epsOneEnd = mhi_epsilon_one(xEnd,mu)
+    potEnd = mhi_norm_potential(xEnd)
+
+    primEnd = mhi_efold_primitive(xEnd,mu)
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    mhiData%real1 = mu
+    mhiData%real2 = calF + primEnd
+
+    mini = xEnd
+!Assuming bfold>-120, otherwise if one uses too much big maxi values, numerical explosion
+    maxi=mhi_x_trajectory(-efoldMax,xEnd,mu)
+
+
+    x = zbrent(find_mhi_x_rrad,mini,maxi,tolzbrent,mhiData)
+    mhi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (mhi_efold_primitive(x,mu) - primEnd)
+    endif
+
+  end function mhi_x_rrad
+
+  function find_mhi_x_rrad(x,mhiData)   
+    implicit none
+    real(kp) :: find_mhi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: mhiData
+
+    real(kp) :: primStar,mu,CalFplusprimEnd,potStar,epsOneStar
+
+    mu = mhiData%real1
+    CalFplusprimEnd = mhiData%real2
+
+    primStar = mhi_efold_primitive(x,mu)
+    epsOneStar = mhi_epsilon_one(x,mu)
+    potStar = mhi_norm_potential(x)
+
+    find_mhi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_mhi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+ function mhi_x_rreh(mu,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: mhi_x_rreh
+    real(kp), intent(in) :: mu,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+    real(kp), parameter :: efoldMax = 120._kp
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: mhiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif    
+    
+    xEnd = mhi_x_endinf(mu)
+
+    epsOneEnd = mhi_epsilon_one(xEnd,mu)
+    potEnd = mhi_norm_potential(xEnd)
+
+    primEnd = mhi_efold_primitive(xEnd,mu)
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    mhiData%real1 = mu
+    mhiData%real2 = calF + primEnd
+
+    mini = xEnd
+!Assuming bfold>-120, otherwise if one uses too much big maxi values, numerical explosion
+    maxi=mhi_x_trajectory(-efoldMax,xEnd,mu)
+
+
+    x = zbrent(find_mhi_x_rreh,mini,maxi,tolzbrent,mhiData)
+    mhi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (mhi_efold_primitive(x,mu) - primEnd)
+    endif
+
+  end function mhi_x_rreh
+
+  function find_mhi_x_rreh(x,mhiData)   
+    implicit none
+    real(kp) :: find_mhi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: mhiData
+
+    real(kp) :: primStar,mu,CalFplusprimEnd,potStar
+
+    mu = mhiData%real1
+    CalFplusprimEnd = mhiData%real2
+
+    primStar = mhi_efold_primitive(x,mu)
+    potStar = mhi_norm_potential(x)
+
+    find_mhi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_mhi_x_rreh
+
+
 
   function mhi_lnrhoreh_max(mu,Pstar) 
     implicit none
@@ -105,8 +236,6 @@ contains
     potEnd  = mhi_norm_potential(xEnd)
 
     epsOneEnd = mhi_epsilon_one(xEnd,mu)
-
-
 
 !   Trick to return x such that rho_reh=rho_end
 
