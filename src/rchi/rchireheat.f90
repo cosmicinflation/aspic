@@ -6,14 +6,17 @@ module rchireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rchisr, only : rchi_epsilon_one, rchi_epsilon_two, rchi_epsilon_three
-  use rchisr, only : rchi_norm_potential
-  use rchisr, only : rchi_x_endinf, rchi_efold_primitive
+  use rchisr, only : rchi_norm_potential, rchi_potmax_exists, rchi_x_potmax
+  use rchisr, only : rchi_x_endinf, rchi_efold_primitive, RchiDeltaXendMax
   implicit none
 
   private
 
-  public rchi_x_star, rchi_lnrhoreh_max 
+  public rchi_x_star, rchi_lnrhoreh_max
+  public rchi_x_rrad, rchi_x_rreh
 
 contains
 
@@ -41,9 +44,6 @@ contains
     potEnd = rchi_norm_potential(xEnd,AI)
     primEnd = rchi_efold_primitive(xEnd,AI)
 
-!   print*,'xEnd=',xEnd,'epsOneEnd=',epsOneEnd,'potEnd=',potEnd,'primEnd=',primEnd,'AI=',AI
-!   pause
-   
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
     rchiData%real1 = AI    
@@ -51,10 +51,10 @@ contains
     rchiData%real3 = calF + primEnd
 
     mini=xend*(1._kp+epsilon(1._kp))
-    if (AI .lt. 0._kp .and. abs(AI) .lt. 64._kp*acos(-1._kp)**2) then !maximum of the potential
-      maxi=min(abs(sqrt(3._kp/2._kp)*log(abs(AI)/(64._kp*acos(-1._kp)**2))),xend+100._kp)
+    if (rchi_potmax_exists(AI)) then !maximum of the potential
+      maxi=min(rchi_x_potmax(AI),xend + RchiDeltaXendMax)
     else
-      maxi = max(abs(AI)*1000._kp/(48._kp*acos(-1._kp)**2)*sqrt(3._kp/2._kp)+xend,xend+10._kp,100._kp)
+      maxi = xend + RchiDeltaXendMax
     endif
 
     x = zbrent(find_rchi_x_star,mini,maxi,tolzbrent,rchiData)
@@ -63,9 +63,6 @@ contains
     if (present(bfoldstar)) then
        bfoldstar = - (rchi_efold_primitive(x,AI) - primEnd)
     endif
-
-!    print*,'xstar=',x,'epsOneStar=',rchi_epsilon_one(x,AI),'primStar=',rchi_efold_primitive(x,AI),'AI=',AI
-!    pause
 
   end function rchi_x_star
 
@@ -88,6 +85,133 @@ contains
     find_rchi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_rchi_x_star
+
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function rchi_x_rrad(AI,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: rchi_x_rrad
+    real(kp), intent(in) :: AI,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: rchiData
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = rchi_x_endinf(AI)
+    epsOneEnd = rchi_epsilon_one(xEnd,AI)
+    potEnd = rchi_norm_potential(xEnd,AI)
+    primEnd = rchi_efold_primitive(xEnd,AI)
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    rchiData%real1 = AI    
+    rchiData%real2 = calF + primEnd
+
+    mini=xend*(1._kp+epsilon(1._kp))
+    if (rchi_potmax_exists(AI)) then !maximum of the potential
+      maxi=min(rchi_x_potmax(AI),xend + RchiDeltaXendMax)
+    else
+      maxi = xend + RchiDeltaXendMax
+    endif
+
+    x = zbrent(find_rchi_x_rrad,mini,maxi,tolzbrent,rchiData)
+    rchi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rchi_efold_primitive(x,AI) - primEnd)
+    endif
+
+  end function rchi_x_rrad
+
+  function find_rchi_x_rrad(x,rchiData)   
+    implicit none
+    real(kp) :: find_rchi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: rchiData
+
+    real(kp) :: primStar,AI,CalFplusprimEnd,potStar,epsOneStar
+
+    AI=rchiData%real1
+    CalFplusprimEnd = rchiData%real2
+
+    primStar = rchi_efold_primitive(x,AI)
+    epsOneStar = rchi_epsilon_one(x,AI)
+    potStar = rchi_norm_potential(x,AI)
+
+    find_rchi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
+  
+  end function find_rchi_x_rrad
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function rchi_x_rreh(AI,lnRreh,bfoldstar)    
+    implicit none
+    real(kp) :: rchi_x_rreh
+    real(kp), intent(in) :: AI,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: rchiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = rchi_x_endinf(AI)
+    epsOneEnd = rchi_epsilon_one(xEnd,AI)
+    potEnd = rchi_norm_potential(xEnd,AI)
+    primEnd = rchi_efold_primitive(xEnd,AI)
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    rchiData%real1 = AI    
+    rchiData%real2 = calF + primEnd
+
+    mini=xend*(1._kp+epsilon(1._kp))
+    if (rchi_potmax_exists(AI)) then !maximum of the potential
+      maxi=min(rchi_x_potmax(AI),xend + RchiDeltaXendMax)
+    else
+      maxi = xend + RchiDeltaXendMax
+    endif
+
+    x = zbrent(find_rchi_x_rreh,mini,maxi,tolzbrent,rchiData)
+    rchi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (rchi_efold_primitive(x,AI) - primEnd)
+    endif
+
+  end function rchi_x_rreh
+
+  function find_rchi_x_rreh(x,rchiData)   
+    implicit none
+    real(kp) :: find_rchi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: rchiData
+
+    real(kp) :: primStar,AI,CalFplusprimEnd,potStar
+
+    AI=rchiData%real1
+    CalFplusprimEnd = rchiData%real2
+
+    primStar = rchi_efold_primitive(x,AI)
+    potStar = rchi_norm_potential(x,AI)
+
+    find_rchi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
+  
+  end function find_rchi_x_rreh
 
 
 

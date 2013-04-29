@@ -5,26 +5,29 @@
 !x = phi/Mp
 
 module rchisr
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,tolkp,transfert,pi
   use specialinf, only : polylog, lambert
   use inftools, only : zbrent
   implicit none
-
+  
   private
 
-  public  rchi_norm_potential, rchi_epsilon_one, rchi_epsilon_two, rchi_epsilon_three
-  public  rchi_x_endinf, rchi_efold_primitive, rchi_x_trajectory
-  public  rchi_norm_deriv_potential, rchi_norm_deriv_second_potential
- 
+  real(kp), parameter :: RchiDeltaXendMax = 100._kp
+
+  public rchi_norm_potential, rchi_epsilon_one, rchi_epsilon_two, rchi_epsilon_three
+  public rchi_x_endinf, rchi_efold_primitive, rchi_x_trajectory
+  public rchi_norm_deriv_potential, rchi_norm_deriv_second_potential
+  public rchi_x_potmax, rchi_potmax_exists, RchiDeltaXendMax
+
 contains
-!returns V/M**4
+  !returns V/M**4
   function rchi_norm_potential(x,AI)
     implicit none
     real(kp) :: rchi_norm_potential
     real(kp), intent(in) :: x,AI
 
     rchi_norm_potential = 1._kp-2._kp*exp(-sqrt((2._kp/3._kp))*x)+ &
-                          (AI*x)/(16._kp*sqrt(6._kp)*acos(-1._kp)**2)
+         (AI*x)/(16._kp*sqrt(6._kp)*pi**2)
 
   end function rchi_norm_potential
 
@@ -35,8 +38,8 @@ contains
     real(kp) :: rchi_norm_deriv_potential
     real(kp), intent(in) :: x,AI
 
-   rchi_norm_deriv_potential = (64._kp*exp(-sqrt((2._kp/3._kp))*x)+ &
-                               AI/acos(-1._kp)**2)/(16._kp*sqrt(6._kp))
+    rchi_norm_deriv_potential = (64._kp*exp(-sqrt((2._kp/3._kp))*x)+ &
+         AI/pi**2)/(16._kp*sqrt(6._kp))
 
   end function rchi_norm_deriv_potential
 
@@ -53,27 +56,21 @@ contains
   end function rchi_norm_deriv_second_potential
 
 
-
-
 !epsilon_one(x)
   function rchi_epsilon_one(x,AI)    
     implicit none
     real(kp) :: rchi_epsilon_one
     real(kp), intent(in) :: x,AI
-    
-    !Approximated Formula commonly used in the litterature
-    !rchi_epsilon_one = 4._kp/3._kp*(exp(-sqrt(2._kp/3._kp)*x)+ &
-    !                   AI/(64._kp*acos(-1._kp)**2))**2
+
+!Approximated Formula commonly used in the litterature
+!rchi_epsilon_one = 4._kp/3._kp*(exp(-sqrt(2._kp/3._kp)*x)+ &
+!                   AI/(64._kp*pi**2))**2
 
     rchi_epsilon_one = (3._kp*(AI*exp(sqrt(2._kp/3._kp)*x)+ &
-                       64._kp*acos(-1._kp)**2)**2)/(-192._kp*acos(-1._kp)**2+ &
-                       exp(sqrt(2._kp/3._kp)*x)*(96._kp*acos(-1._kp)**2+ &
-                       sqrt(6._kp)*AI*x))**2
+         64._kp*pi**2)**2)/(-192._kp*pi**2+ &
+         exp(sqrt(2._kp/3._kp)*x)*(96._kp*pi**2+ &
+         sqrt(6._kp)*AI*x))**2
 
-
-
-
-    
   end function rchi_epsilon_one
 
 
@@ -83,19 +80,15 @@ contains
     real(kp) :: rchi_epsilon_two
     real(kp), intent(in) :: x,AI
 
-    !Approximated Formula commonly used in the litterature
-    !rchi_epsilon_two = 4._kp*rchi_epsilon_one(x,AI)+8._kp/3._kp*exp(-sqrt(2._kp/3._kp)*x)
+!Approximated Formula commonly used in the litterature
+!rchi_epsilon_two = 4._kp*rchi_epsilon_one(x,AI)+8._kp/3._kp*exp(-sqrt(2._kp/3._kp)*x)
 
     rchi_epsilon_two = (4._kp*exp(sqrt(2._kp/3._kp)*x)*(3._kp*AI**2* &
-                       exp(sqrt(2._kp/3._kp)*x)+6144._kp*acos(-1._kp)**4+ &
-                       64._kp*AI*acos(-1._kp)**2*(6._kp+sqrt(6._kp)*x)))/ &
-                       (-192._kp*acos(-1._kp)**2+exp(sqrt(2._kp/3._kp)*x)* &
-                       (96._kp*acos(-1._kp)**2+sqrt(6._kp)*AI*x))**2
+         exp(sqrt(2._kp/3._kp)*x)+6144._kp*pi**4+ &
+         64._kp*AI*pi**2*(6._kp+sqrt(6._kp)*x)))/ &
+         (-192._kp*pi**2+exp(sqrt(2._kp/3._kp)*x)* &
+         (96._kp*pi**2+sqrt(6._kp)*AI*x))**2
 
-
-
-
-    
   end function rchi_epsilon_two
 
 
@@ -104,20 +97,41 @@ contains
     implicit none
     real(kp) :: rchi_epsilon_three
     real(kp), intent(in) :: x,AI
-    
-    rchi_epsilon_three = (12._kp*(AI*exp(sqrt(2._kp/3._kp)*x)+64._kp*acos(-1._kp)**2)* &
-                         (3._kp*AI**3*exp(2._kp*sqrt(2._kp/3._kp)*x)+ &
-                         2048._kp*acos(-1._kp)**4*(96._kp*acos(-1._kp)**2+ &
-                         AI*(9._kp+sqrt(6._kp)*x))+32._kp*exp(sqrt(2._kp/3._kp)*x)* &
-                         acos(-1._kp)**2*(3072._kp*acos(-1._kp)**4+32._kp* &
-                         AI*acos(-1._kp)**2*(9._kp+2._kp*sqrt(6._kp)*x)+ &
-                         AI**2*(18._kp+3._kp*sqrt(6._kp)*x+2._kp*x**2))))/ &
-                         ((3._kp*AI**2*exp(sqrt(2._kp/3._kp)*x)+6144._kp*acos(-1._kp)**4+ &
-                         64._kp*AI*acos(-1._kp)**2*(6._kp+sqrt(6._kp)*x))* &
-                         (-192._kp*acos(-1._kp)**2+exp(sqrt(2._kp/3._kp)*x)* &
-                         (96._kp*acos(-1._kp)**2+sqrt(6._kp)*AI*x))**2)
-    
+
+    rchi_epsilon_three = (12._kp*(AI*exp(sqrt(2._kp/3._kp)*x)+64._kp*pi**2)* &
+         (3._kp*AI**3*exp(2._kp*sqrt(2._kp/3._kp)*x)+ &
+         2048._kp*pi**4*(96._kp*pi**2+ &
+         AI*(9._kp+sqrt(6._kp)*x))+32._kp*exp(sqrt(2._kp/3._kp)*x)* &
+         pi**2*(3072._kp*pi**4+32._kp* &
+         AI*pi**2*(9._kp+2._kp*sqrt(6._kp)*x)+ &
+         AI**2*(18._kp+3._kp*sqrt(6._kp)*x+2._kp*x**2))))/ &
+         ((3._kp*AI**2*exp(sqrt(2._kp/3._kp)*x)+6144._kp*pi**4+ &
+         64._kp*AI*pi**2*(6._kp+sqrt(6._kp)*x))* &
+         (-192._kp*pi**2+exp(sqrt(2._kp/3._kp)*x)* &
+         (96._kp*pi**2+sqrt(6._kp)*AI*x))**2)
+
   end function rchi_epsilon_three
+
+
+  function rchi_potmax_exists(AI)
+    implicit none
+    real(kp), intent(in) :: AI
+    logical :: rchi_potmax_exists
+
+    rchi_potmax_exists = ((AI .lt. 0._kp) .and. (abs(AI) .lt. 64._kp*pi**2))
+
+  end function rchi_potmax_exists
+
+
+  function rchi_x_potmax(AI)
+    implicit none
+    real(kp), intent(in) :: AI
+    real(kp) :: rchi_x_potmax
+
+    rchi_x_potmax = abs(sqrt(3._kp/2._kp)*log(abs(AI)/(64._kp*pi**2)))
+
+  end function rchi_x_potmax
+
 
 
 !returns x at the end of inflation defined as epsilon1=1
@@ -128,40 +142,39 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: rchiData
-    
-    if (AI.gt.0) then !Uses the 0 branch of the Lambert Function
-        rchi_x_endinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
-                        acos(-1._kp)**2)/AI+sqrt(3._kp/2._kp)* &
-                        lambert((64._kp*(3._kp+sqrt(3._kp))* &
-                        exp(-(1._kp/sqrt(3._kp))+(32._kp*acos(-1._kp)**2)/AI)* &
-                        acos(-1._kp)**2)/(3._kp*AI),0)
-   
-    elseif  (AI.lt.0)  then !Uses the -1 branch of the Lambert Function
-    rchi_x_endinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
-                        acos(-1._kp)**2)/AI+sqrt(3._kp/2._kp)* &
-                        lambert((64._kp*(3._kp+sqrt(3._kp))* &
-                        exp(-(1._kp/sqrt(3._kp))+(32._kp*acos(-1._kp)**2)/AI)* &
-                        acos(-1._kp)**2)/(3._kp*AI),-1)
 
-    end if
+    if (AI.gt.1._kp) then !Uses the 0 branch of the Lambert Function
+       rchi_x_endinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
+            pi**2)/AI+sqrt(3._kp/2._kp)* &
+            lambert((64._kp*(3._kp+sqrt(3._kp))* &
+            exp(-(1._kp/sqrt(3._kp))+(32._kp*pi**2)/AI)* &
+            pi**2)/(3._kp*AI),0)
 
-    if ( abs(AI) .lt. 1._kp ) then !In that case the expressions above become numerically too difficult to track down and a zbrent is used
+    elseif (AI.lt.-1._kp) then !Uses the -1 branch of the Lambert Function
+       rchi_x_endinf = 1._kp/sqrt(2._kp)-(16._kp*sqrt(6._kp)* &
+            pi**2)/AI+sqrt(3._kp/2._kp)* &
+            lambert((64._kp*(3._kp+sqrt(3._kp))* &
+            exp(-(1._kp/sqrt(3._kp))+(32._kp*pi**2)/AI)* &
+            pi**2)/(3._kp*AI),-1)
 
-    mini=sqrt(6._kp)*log(2._kp)/2._kp
-    if (AI .lt. 0._kp ) then !maximum of the potential
-      maxi=min(abs(sqrt(3._kp/2._kp)*log(abs(AI)/(64._kp*acos(-1._kp)**2))),100._kp)
-    else
-      maxi = max(abs(AI)*1000._kp/(48._kp*acos(-1._kp)**2)*sqrt(3._kp/2._kp)+10._kp,100._kp)
-    endif
-    rchiData%real1 = AI
-    
-    rchi_x_endinf = zbrent(find_rchi_x_endinf,mini,maxi,tolFind,rchiData)
-
-    if  (AI.eq.0) then !In that case the expression is singluar
-
+    elseif (AI.eq.0._kp) then !singular
        rchi_x_endinf = sqrt(3._kp/2._kp)*log(2._kp+2._kp/sqrt(3._kp))
 
-    endif
+    elseif (abs(AI) .le. 1._kp) then
+
+       mini=sqrt(6._kp)*log(2._kp)/2._kp
+
+       if (rchi_potmax_exists(AI)) then !maximum of the potential
+          maxi=min(rchi_x_potmax(AI),RchiDeltaXendMax)
+       else
+          maxi = RchiDeltaXendMax
+       endif
+
+       rchiData%real1 = AI
+       rchi_x_endinf = zbrent(find_rchi_x_endinf,mini,maxi,tolFind,rchiData)
+
+    else
+       stop 'rchi_x_endinf: internal error!'
 
     end if
 
@@ -177,32 +190,32 @@ contains
     AI = rchiData%real1
 
     find_rchi_x_endinf = rchi_epsilon_one(x,AI)-1._kp
-   
+
   end function find_rchi_x_endinf
 
 
 
-!this is integral(V(phi)/V'(phi) dphi)
+  !this is integral(V(phi)/V'(phi) dphi)
   function rchi_efold_primitive(x,AI)
     implicit none
     real(kp), intent(in) :: x,AI
     real(kp) :: rchi_efold_primitive
 
-     !Approximated Trajectory in  the vacuum dominated approximation
-     !rchi_efold_primitive = 48._kp*acos(-1._kp)**2/AI*log(abs(1._kp+ & 
-     !                      AI/(64._kp*acos(-1._kp)**2)*exp(sqrt(2._kp/3._kp)*x)))
+!Approximated Trajectory in  the vacuum dominated approximation
+!rchi_efold_primitive = 48._kp*pi**2/AI*log(abs(1._kp+ & 
+!                      AI/(64._kp*pi**2)*exp(sqrt(2._kp/3._kp)*x)))
 
 
     if (AI.eq.0._kp) then 
        rchi_efold_primitive = 0.25_kp*(3._kp*exp(sqrt(2._kp/3._kp)*x)-2._kp*sqrt(6._kp)*x)
     else
 
-    rchi_efold_primitive = -sqrt(3._kp/2._kp)*x+48._kp*acos(-1._kp)**2/AI* &
-                           (1._kp+AI/(32._kp*acos(-1._kp)**2)* &
-                           (1._kp+sqrt(2._kp/3._kp)*x))*log(abs(1._kp+AI/(64._kp*acos(-1._kp)**2)* &
-                           exp(sqrt(2._kp/3._kp)*x)))+1.5_kp*real(polylog(complex( &
-                           -AI/(64._kp*acos(-1._kp)**2)*exp(sqrt(2._kp/3._kp)*x),0._kp), &
-                           complex(2._kp,0._kp)),kp)
+       rchi_efold_primitive = -sqrt(3._kp/2._kp)*x+48._kp*pi**2/AI* &
+            (1._kp+AI/(32._kp*pi**2)* &
+            (1._kp+sqrt(2._kp/3._kp)*x))*log(abs(1._kp+AI/(64._kp*pi**2)* &
+            exp(sqrt(2._kp/3._kp)*x)))+1.5_kp*real(polylog(complex( &
+            -AI/(64._kp*pi**2)*exp(sqrt(2._kp/3._kp)*x),0._kp), &
+            complex(2._kp,0._kp)),kp)
 
     endif
 
@@ -210,8 +223,7 @@ contains
 
   end function rchi_efold_primitive
 
-
-
+  
 
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
   function rchi_x_trajectory(bfold,xend,AI)
@@ -223,17 +235,17 @@ contains
     type(transfert) :: rchiData
 
     mini=xend*(1._kp+epsilon(1._kp))
-    if (AI .lt. 0._kp .and. abs(AI) .lt. 64._kp*acos(-1._kp)**2) then !maximum of the potential
-      maxi=min(abs(sqrt(3._kp/2._kp)*log(abs(AI)/(64._kp*acos(-1._kp)**2))),xend+100._kp)
-    else
-      maxi = max(abs(AI)*1000._kp/(48._kp*acos(-1._kp)**2)*sqrt(3._kp/2._kp)+xend,xend+10._kp,100._kp)
+    maxi = xend + RchiDeltaXendMax
+
+    if (rchi_potmax_exists(AI)) then
+       maxi=min(rchi_x_potmax(AI),xend+RchiDeltaXendMax)
     endif
 
     rchiData%real1 = AI
     rchiData%real2 = -bfold + rchi_efold_primitive(xend,AI)
-    
+
     rchi_x_trajectory = zbrent(find_rchi_x_trajectory,mini,maxi,tolFind,rchiData)
-       
+
   end function rchi_x_trajectory
 
   function find_rchi_x_trajectory(x,rchiData)    
@@ -247,11 +259,11 @@ contains
     NplusNuend = rchiData%real2
 
     find_rchi_x_trajectory = rchi_efold_primitive(x,AI) - NplusNuend
-   
+
   end function find_rchi_x_trajectory
 
 
 
 
-  
+
 end module rchisr

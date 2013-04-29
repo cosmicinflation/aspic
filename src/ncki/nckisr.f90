@@ -12,9 +12,9 @@ module nckisr
 
   private
 
-  real(kp), parameter :: nMaxiInf = 1000._kp
+  real(kp), parameter :: NckiMaxiInf = 1000._kp
 
-  public nMaxiInf
+  public NckiMaxiInf
   public ncki_norm_potential, ncki_epsilon_one, ncki_epsilon_two, ncki_epsilon_three
   public ncki_x_endinf, ncki_efold_primitive, ncki_x_trajectory
   public ncki_norm_deriv_potential, ncki_norm_deriv_second_potential
@@ -203,7 +203,7 @@ contains
        maxi =ncki_x_ddpotzero(alpha,beta)*(1._kp-epsilon(1._kp))
     else
 !several times the position of the inflexion point if beta>0
-       maxi = nMaxiInf * ncki_x_ddpotzero(alpha,beta)
+       maxi = NckiMaxiInf * ncki_x_ddpotzero(alpha,beta)
     endif
 
     mini=epsilon(1._kp)
