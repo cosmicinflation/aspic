@@ -1,3 +1,232 @@
+commit 0657724c2da87c04baa6b71c206d5ece5c21115f
+Date:   Mon Apr 29 19:15:06 2013 +0200
+
+    Add lnR/Rrad support to vhi
+
+ src/vhi/vhimain.f90   | 458 ++++++++++++++++++++++++++++----------------------
+ src/vhi/vhireheat.f90 | 133 ++++++++++++++-
+ 2 files changed, 382 insertions(+), 209 deletions(-)
+
+commit ca86f6c129f29583990ef6507ed66e512cfb4747
+Date:   Mon Apr 29 19:07:31 2013 +0200
+
+    Add lnR/Rrad support to twi
+
+ src/twi/twimain.f90   | 108 ++++++++++++++++++++++++++++------------
+ src/twi/twireheat.f90 | 133 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 206 insertions(+), 35 deletions(-)
+
+commit 6b06ae3e454c35dad5f2e3177c2512ff76b0f1c1
+Date:   Mon Apr 29 19:01:08 2013 +0200
+
+    Add lnR/Rrad support to ti
+
+ src/ti/timain.f90   | 121 ++++++++++++++++++++++++++++++++--------------
+ src/ti/tireheat.f90 | 136 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 215 insertions(+), 42 deletions(-)
+
+commit 2618495782f3a69fbd32d676944167ad9532bd9d
+Date:   Mon Apr 29 18:54:51 2013 +0200
+
+    Add lnR/Rrad support to ssbi123456 + new module ssbicomreh + fix rmicomreh
+
+ src/rmi/rmicomreh.f90    | 201 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/ssbi/Makefile.am     |  26 +++---
+ src/ssbi/ssbi1main.f90   | 132 ++++++++++++++++++++----------
+ src/ssbi/ssbi1reheat.f90 |  84 ++++++++++---------
+ src/ssbi/ssbi2main.f90   | 140 +++++++++++++++++++++-----------
+ src/ssbi/ssbi2reheat.f90 |  79 +++++++++---------
+ src/ssbi/ssbi3main.f90   | 134 +++++++++++++++++++++----------
+ src/ssbi/ssbi3reheat.f90 |  92 ++++++++++-----------
+ src/ssbi/ssbi4main.f90   | 111 +++++++++++++++++--------
+ src/ssbi/ssbi4reheat.f90 |  86 ++++++++++----------
+ src/ssbi/ssbi5main.f90   | 135 +++++++++++++++++++++----------
+ src/ssbi/ssbi5reheat.f90 |  85 +++++++++-----------
+ src/ssbi/ssbi6main.f90   | 135 +++++++++++++++++++++----------
+ src/ssbi/ssbi6reheat.f90 |  92 ++++++++++-----------
+ src/ssbi/ssbicomreh.f90  | 205 +++++++++++++++++++++++++++++++++++++++++++++++
+ 15 files changed, 1203 insertions(+), 534 deletions(-)
+
+commit a356999505b2f1cdc3a4b3d333722c61889ddd7f
+Date:   Mon Apr 29 18:09:15 2013 +0200
+
+    Add lnR/Rrad support to sfi
+
+ src/sfbi/sfbireheat.f90 |   1 +
+ src/sfi/sfimain.f90     | 182 ++++++++++++++++++++++++++++++------------------
+ src/sfi/sfireheat.f90   | 138 +++++++++++++++++++++++++++++++++++-
+ 3 files changed, 253 insertions(+), 68 deletions(-)
+
+commit 0f0eae5bfb86b1607d80546811c4794f8cd84787
+Date:   Mon Apr 29 18:02:24 2013 +0200
+
+    Add lnR/Rrad support to sbi
+
+ src/sbi/sbimain.f90   | 135 ++++++++++++++++++++++++++++++++---------------
+ src/sbi/sbireheat.f90 | 142 ++++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 224 insertions(+), 53 deletions(-)
+
+commit be38546ef1550c5708d6f9aeaa6e990772e379f1
+Date:   Mon Apr 29 17:55:45 2013 +0200
+
+    Add lnR/Rrad support to rpi1, rpi2
+
+ src/rpi/aspic_rpi2.3   |   3 +-
+ src/rpi/rpi1main.f90   | 104 ++++++++++++++++++++---------
+ src/rpi/rpi1reheat.f90 | 174 +++++++++++++++++++++++++++++++++++++++++++++++--
+ src/rpi/rpi2main.f90   | 123 +++++++++++++++++++++++-----------
+ src/rpi/rpi2reheat.f90 | 163 +++++++++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 484 insertions(+), 83 deletions(-)
+
+commit a1f1a908de277955db454abc92971a8a27c86475
+Date:   Mon Apr 29 17:36:29 2013 +0200
+
+    Add lnR/Rrad support to rmi1, rmi2, rmi3, rmi4 + adding new module rmicomreh.f90
+
+ src/rmi/Makefile.am    |  18 +++---
+ src/rmi/rmi1main.f90   | 138 +++++++++++++++++++++++++++--------------
+ src/rmi/rmi1reheat.f90 |  90 ++++++++++-----------------
+ src/rmi/rmi2main.f90   | 163 +++++++++++++++++++++++++++++++------------------
+ src/rmi/rmi2reheat.f90 |  77 +++++++++++------------
+ src/rmi/rmi2sr.f90     |  10 +--
+ src/rmi/rmi3main.f90   | 131 ++++++++++++++++++++++++++-------------
+ src/rmi/rmi3reheat.f90 |  80 +++++++++++-------------
+ src/rmi/rmi4main.f90   | 155 ++++++++++++++++++++++++++++++----------------
+ src/rmi/rmi4reheat.f90 |  86 ++++++++++++--------------
+ 10 files changed, 545 insertions(+), 403 deletions(-)
+
+commit b6edc64c20684d877b0caacd8d881bb8e5945906
+Date:   Mon Apr 29 16:39:52 2013 +0200
+
+    Add lnR/Rrad support to ripi
+
+ src/ripi/ripimain.f90   | 140 ++++++++++++++++++++++++++++++++----------------
+ src/ripi/ripireheat.f90 | 134 +++++++++++++++++++++++++++++++++++++++++++--
+ src/ripi/ripisr.f90     | 117 ++++++++++++++++++++++++----------------
+ 3 files changed, 294 insertions(+), 97 deletions(-)
+
+commit 3a5656723f2214f9a7c049d927812999ccb33217
+Date:   Mon Apr 29 16:18:11 2013 +0200
+
+    Add lnR/Rrad support to rgi; resursive function in rchi
+
+ src/gmlfi/mlfimain.f90 |  96 ++++++++++++++++----------------
+ src/rchi/rchisr.f90    |  19 ++++---
+ src/rgi/rgimain.f90    | 147 ++++++++++++++++++++++++++++++++-----------------
+ src/rgi/rgireheat.f90  | 130 ++++++++++++++++++++++++++++++++++++++++++-
+ src/rgi/rgisr.f90      |  24 ++++++--
+ 5 files changed, 304 insertions(+), 112 deletions(-)
+
+commit d920addf04540534f5f2014bde21982de48fdd4f
+Date:   Mon Apr 29 15:41:14 2013 +0200
+
+    Add lnR/Rrad support to rcqi
+
+ src/rcqi/rcqimain.f90   | 187 ++++++++++++++++++++++++++++++------------------
+ src/rcqi/rcqireheat.f90 | 125 +++++++++++++++++++++++++++++++-
+ 2 files changed, 242 insertions(+), 70 deletions(-)
+
+commit d6f1ff5da368266ef14934786ec799b85d4aacfb
+Date:   Mon Apr 29 15:36:09 2013 +0200
+
+    Add lnR/Rrad support to rcmi + rename ddpotzero -> dderivpotzero in ncki
+
+ src/ncki/nckireheat.f90 |  14 ++---
+ src/ncki/nckisr.f90     |  20 +++---
+ src/rcmi/rcmimain.f90   | 157 ++++++++++++++++++++++++++++++++----------------
+ src/rcmi/rcmireheat.f90 | 126 +++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 246 insertions(+), 71 deletions(-)
+
+commit e81b8c559301961b4f0c6c4e671f790d48a20f61
+Date:   Mon Apr 29 15:26:47 2013 +0200
+
+    Add lnR/Rrad support to ni
+
+ src/ni/nimain.f90   | 146 +++++++++++++++++++++++++++++++++++-----------------
+ src/ni/nireheat.f90 | 127 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 224 insertions(+), 49 deletions(-)
+
+commit afb610e69f7fe91293ad4cfc41692e902aff44f4
+Date:   Mon Apr 29 15:22:01 2013 +0200
+
+    Add lnR/Rrad support to rchi
+
+ src/ncki/nckireheat.f90 |   8 +-
+ src/ncki/nckisr.f90     |   6 +-
+ src/rchi/rchimain.f90   | 143 ++++++++++++++++++++++------------
+ src/rchi/rchireheat.f90 | 148 ++++++++++++++++++++++++++++++++---
+ src/rchi/rchisr.f90     | 202 +++++++++++++++++++++++++-----------------------
+ 5 files changed, 345 insertions(+), 162 deletions(-)
+
+commit 13eef9c2c2e05f198f44101bf90d261cabc37d93
+Date:   Mon Apr 29 11:57:50 2013 +0200
+
+    Add lnR/Rrad support to psni
+
+ src/psni/psnimain.f90   | 120 ++++++++++++++++++++++++++++------------
+ src/psni/psnireheat.f90 | 143 ++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 217 insertions(+), 46 deletions(-)
+
+commit 1e60ac6b91330560bdec58bff13e9a343c96d7a3
+Date:   Mon Apr 29 11:46:51 2013 +0200
+
+    Add lnR/Rrad support to pli
+
+ src/pli/plimain.f90   | 144 ++++++++++++++++++++++++++++++++++----------------
+ src/pli/plireheat.f90 | 143 +++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 229 insertions(+), 58 deletions(-)
+
+commit ba9aa4871a809a7e22343a04b082f996e4e42a6d
+Date:   Mon Apr 29 11:35:04 2013 +0200
+
+    Add lnR/Rrad support to oi
+
+ src/oi/oimain.f90   |  80 ++++++++++++++++++++++++-------
+ src/oi/oireheat.f90 | 136 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 196 insertions(+), 20 deletions(-)
+
+commit 6fb35bfd986d0b4171ade0904b4620bba47d0f37
+Date:   Mon Apr 29 11:27:34 2013 +0200
+
+    Add lnR/Rrad support to ncki
+
+ src/ncki/nckimain.f90   | 281 ++++++++++++++++++++++++++++--------------------
+ src/ncki/nckireheat.f90 | 175 ++++++++++++++++++++++++++----
+ src/ncki/nckisr.f90     | 101 +++++++++++------
+ 3 files changed, 387 insertions(+), 170 deletions(-)
+
+commit 9aac278fe4b8619a1dd17a040cacbb2eba0fcd61
+Date:   Mon Apr 29 11:00:34 2013 +0200
+
+    Add lnR/Rrad support to mhi
+
+ src/ai/aireheat.f90   |   2 +-
+ src/mhi/mhimain.f90   | 149 +++++++++++++++++++++++++++++++++-----------------
+ src/mhi/mhireheat.f90 | 143 +++++++++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 236 insertions(+), 58 deletions(-)
+
+commit 1f565bb257973fe2aa06a020543ba7245f92929c
+Date:   Mon Apr 29 10:37:59 2013 +0200
+
+    Add lnR/Rrad support to lpi1, lpi2, lpi3
+
+ src/lpi/lpi1main.f90   | 118 ++++++++++++++++++++++++++-----------
+ src/lpi/lpi1reheat.f90 | 157 ++++++++++++++++++++++++++++++++++++++++++++++---
+ src/lpi/lpi2main.f90   | 119 ++++++++++++++++++++++++++-----------
+ src/lpi/lpi2reheat.f90 | 155 +++++++++++++++++++++++++++++++++++++++++++++---
+ src/lpi/lpi3main.f90   | 117 +++++++++++++++++++++++++-----------
+ src/lpi/lpi3reheat.f90 | 156 +++++++++++++++++++++++++++++++++++++++++++++---
+ 6 files changed, 696 insertions(+), 126 deletions(-)
+
+commit 607def8a36439458bcd27aac31ee1529df66eb57
+Date:   Fri Apr 26 19:51:50 2013 +0200
+
+    Updating NEWS and ChangeLog
+
+ ChangeLog | 426 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ NEWS      |  11 +-
+ 2 files changed, 422 insertions(+), 15 deletions(-)
+
 commit 0c990670f1b3a7757f62b134cf451eaa5a7fffae
 Date:   Fri Apr 26 19:42:18 2013 +0200
 
