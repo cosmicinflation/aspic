@@ -5,6 +5,8 @@ module sfireheat
   use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use sfisr, only : sfi_epsilon_one, sfi_epsilon_two, sfi_epsilon_three
   use sfisr, only : sfi_norm_potential
   use sfisr, only : sfi_x_endinf, sfi_efold_primitive
@@ -13,8 +15,8 @@ module sfireheat
   private
 
   public sfi_x_star, sfi_lnrhoreh_max, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
+  public sfi_x_rrad, sfi_x_rreh
 
-  public find_sfi_x_star
 
 contains
 
@@ -87,6 +89,140 @@ contains
     find_sfi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
   end function find_sfi_x_star
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function sfi_x_rrad(p,mu,lnRrad,Pstar,bfold)    
+    implicit none
+    real(kp) :: sfi_x_rrad
+    real(kp), intent(in) :: p,mu,lnRrad,Pstar
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: sfiData
+    
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+   
+    xEnd = sfi_x_endinf(p,mu)
+    epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
+
+    potEnd = sfi_norm_potential(xEnd,p)
+    primEnd = sfi_efold_primitive(xEnd,p,mu)
+   
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+    sfiData%real1 = p
+    sfiData%real2 = mu
+    sfiData%real3 = calF + primEnd
+
+    mini = 0._kp
+    maxi = xEnd + epsilon(1._kp)
+
+    x = zbrent(find_sfi_x_rrad,mini,maxi,tolFind,sfiData)
+    sfi_x_rrad = x
+
+    if (present(bfold)) then
+       bfold = -(sfi_efold_primitive(x,p,mu) - primEnd)
+    endif
+
+    if (x.gt.1._kp) then
+       if (display) write(*,*) 'sfi_x_rrad: phi>mu!'
+    endif
+
+  end function sfi_x_rrad
+
+  function find_sfi_x_rrad(x,sfiData)   
+    implicit none
+    real(kp) :: find_sfi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: sfiData
+
+    real(kp) :: primStar,p,mu,CalFplusPrimEnd,potStar,epsOneStar
+
+    p=sfiData%real1
+    mu = sfiData%real2
+    CalFplusPrimEnd = sfiData%real3
+
+    primStar = sfi_efold_primitive(x,p,mu)
+    epsOneStar = sfi_epsilon_one(x,p,mu)
+    potStar = sfi_norm_potential(x,p)
+
+    find_sfi_x_rrad = find_reheat_rrad(PrimStar,calFplusPrimEnd,epsOneStar,potStar)
+
+  end function find_sfi_x_rrad
+
+
+
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function sfi_x_rreh(p,mu,lnRreh,bfold)    
+    implicit none
+    real(kp) :: sfi_x_rreh
+    real(kp), intent(in) :: p,mu,lnRreh
+    real(kp), optional :: bfold
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: sfiData
+    
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+   
+    xEnd = sfi_x_endinf(p,mu)
+    epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
+
+    potEnd = sfi_norm_potential(xEnd,p)
+    primEnd = sfi_efold_primitive(xEnd,p,mu)
+   
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    sfiData%real1 = p
+    sfiData%real2 = mu
+    sfiData%real3 = calF + primEnd
+
+    mini = 0._kp
+    maxi = xEnd + epsilon(1._kp)
+
+    x = zbrent(find_sfi_x_rreh,mini,maxi,tolFind,sfiData)
+    sfi_x_rreh = x
+
+    if (present(bfold)) then
+       bfold = -(sfi_efold_primitive(x,p,mu) - primEnd)
+    endif
+
+    if (x.gt.1._kp) then
+       if (display) write(*,*) 'sfi_x_rreh: phi>mu!'
+    endif
+
+  end function sfi_x_rreh
+
+  function find_sfi_x_rreh(x,sfiData)   
+    implicit none
+    real(kp) :: find_sfi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: sfiData
+
+    real(kp) :: primStar,p,mu,CalFplusPrimEnd,potStar
+
+    p=sfiData%real1
+    mu = sfiData%real2
+    CalFplusPrimEnd = sfiData%real3
+
+    primStar = sfi_efold_primitive(x,p,mu)
+    potStar = sfi_norm_potential(x,p)
+
+    find_sfi_x_rreh = find_reheat_rreh(PrimStar,calFplusPrimEnd,potStar)
+
+  end function find_sfi_x_rreh
+
 
 
   function sfi_lnrhoreh_max(p,mu,Pstar) 

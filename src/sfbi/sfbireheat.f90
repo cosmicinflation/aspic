@@ -14,6 +14,7 @@ module kksfreheat
   private
 
   public kksf_x_star, kksf_lnrhoreh_max
+  public kksf_x_rrad, kksf_x_rreh
 
 contains
 
