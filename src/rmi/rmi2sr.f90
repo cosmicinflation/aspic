@@ -119,13 +119,13 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: rmi2Data
-
+    
     if (bfold .lt. 0._kp) then
-    mini = 1._kp*(1._kp+epsilon(1._kp))
-    maxi = xend*(1._kp-epsilon(1._kp))
+       mini = 1._kp*(1._kp+epsilon(1._kp))
+       maxi = xend*(1._kp-epsilon(1._kp))
     else
-    mini = xend
-    maxi = 2._kp
+       mini = xend
+       maxi = 2._kp
     endif
   
     rmi2Data%real1 = c

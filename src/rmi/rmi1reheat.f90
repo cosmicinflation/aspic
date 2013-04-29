@@ -6,17 +6,19 @@ module rmi1reheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use rmicomreh, only : rmi_x_star, rmi_x_rrad, rmi_x_rreh
   use rmi1sr, only : rmi1_epsilon_one, rmi1_epsilon_two, rmi1_epsilon_three
   use rmi1sr, only : rmi1_norm_potential, rmi1_efold_primitive
-  use cosmopar, only : QrmsOverT
 
   implicit none
 
   private
 
   public rmi1_x_star, rmi1_lnrhoreh_max
+  public rmi1_x_rrad, rmi1_x_rreh
 
 contains
+
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
@@ -25,76 +27,50 @@ contains
     real(kp) :: rmi1_x_star
     real(kp), intent(in) :: c,phi0,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
+    
+    real(kp) :: mini,maxi
+    
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi = 1._kp*(1._kp-epsilon(1._kp))
 
-    real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,potEnd
-    type(transfert) :: rmi1Data
+    rmi1_x_star = rmi_x_star(c,phi0,xend,w,lnRhoReh,Pstar,mini,maxi,bfoldstar)
 
-  
-    if (w.eq.1._kp/3._kp) then
-       if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
-    endif
+  end function rmi1_x_star
 
-    epsOneEnd = rmi1_epsilon_one(xEnd,c,phi0)
-    potEnd = rmi1_norm_potential(xEnd,c,phi0)
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function rmi1_x_rrad(c,phi0,xend,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: rmi1_x_rrad
+    real(kp), intent(in) :: c,phi0,xend,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
 
-    primEnd = rmi1_efold_primitive(xEnd,c,phi0)
-   
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
-
-    rmi1Data%real1 = c
-    rmi1Data%real2 = phi0
-    rmi1Data%real3 = w
-    rmi1Data%real4 = calF + primEnd
+    real(kp) :: mini,maxi
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = 1._kp*(1._kp-epsilon(1._kp))
 
-!    print*,'rmi1_x_star:   mini=',mini,'maxi=',maxi,'f(mini)=', &
-!           find_reheat(rmi1_efold_primitive(mini,c,phi0),rmi1Data%real4,w, &
-!           rmi1_epsilon_one(mini,c,phi0),rmi1_norm_potential(mini,c,phi0)), &
-!           'f(maxi)=', find_reheat(rmi1_efold_primitive(maxi,c,phi0),rmi1Data%real4,w, &
-!           rmi1_epsilon_one(maxi,c,phi0),rmi1_norm_potential(maxi,c,phi0))
-!    print*,'rmi1_x_star:   efoldprimitive(mini)=',rmi1_efold_primitive(mini,c,phi0), &
-!           'epsilonOne(mini)=',rmi1_epsilon_one(mini,c,phi0), &
-!           'pot(mini)=',rmi1_norm_potential(mini,c,phi0)
-!    print*,'rmi1_x_star:   efoldprimitive(maxi)=',rmi1_efold_primitive(maxi,c,phi0), &
-!           'epsilonOne(maxi)=',rmi1_epsilon_one(maxi,c,phi0), &
-!           'pot(maxi)=',rmi1_norm_potential(maxi,c,phi0)
-!    print*,'primEnd=',primEnd,'calF+primEnd=',calF + primEnd
+    rmi1_x_rrad = rmi_x_rrad(c,phi0,xend,lnRrad,Pstar,mini,maxi,bfoldstar)
 
-!    pause
+  end function rmi1_x_rrad
 
-    x = zbrent(find_rmi1_x_star,mini,maxi,tolzbrent,rmi1Data)
-    rmi1_x_star = x
-
-    if (present(bfoldstar)) then
-       bfoldstar = - (rmi1_efold_primitive(x,c,phi0) - primEnd)
-    endif
-
-  end function rmi1_x_star
-
-  function find_rmi1_x_star(x,rmi1Data)   
+ 
+!returns x given potential parameters, scalar power, and lnRreh.
+!If present, returns the corresponding bfoldstar
+  function rmi1_x_rreh(c,phi0,xend,lnRreh,bfoldstar)    
     implicit none
-    real(kp) :: find_rmi1_x_star
-    real(kp), intent(in) :: x
-    type(transfert), optional, intent(inout) :: rmi1Data
+    real(kp) :: rmi1_x_rreh
+    real(kp), intent(in) :: c,phi0,xend,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+    
+    real(kp) :: mini,maxi
 
-    real(kp) :: primStar,c,phi0,w,CalFplusprimEnd,potStar,epsOneStar
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi = 1._kp*(1._kp-epsilon(1._kp))
 
-    c=rmi1Data%real1
-    phi0=rmi1Data%real2
-    w = rmi1Data%real3
-    CalFplusprimEnd = rmi1Data%real4
+    rmi1_x_rreh = rmi_x_rreh(c,phi0,xend,lnRreh,mini,maxi,bfoldstar)
 
-    primStar = rmi1_efold_primitive(x,c,phi0)
-    epsOneStar = rmi1_epsilon_one(x,c,phi0)
-    potStar = rmi1_norm_potential(x,c,phi0)
-
-    find_rmi1_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
-  end function find_rmi1_x_star
+  end function rmi1_x_rreh
 
 
 

@@ -1,11 +1,13 @@
-SRC = rmicommon.f90 rmi1sr.f90 rmi1reheat.f90 \
-                    rmi2sr.f90 rmi2reheat.f90 \
-                    rmi3sr.f90 rmi3reheat.f90 \
-                    rmi4sr.f90 rmi4reheat.f90 
-MOD = rmicommon.$(FC_MODEXT)  rmi1sr.$(FC_MODEXT) rmi1reheat.$(FC_MODEXT) \
-                              rmi2sr.$(FC_MODEXT) rmi2reheat.$(FC_MODEXT) \
-                              rmi3sr.$(FC_MODEXT) rmi3reheat.$(FC_MODEXT) \
-                              rmi4sr.$(FC_MODEXT) rmi4reheat.$(FC_MODEXT) 
+SRC = rmicommon.f90 rmicomreh.f90 \
+	rmi1sr.f90 rmi1reheat.f90 \
+	rmi2sr.f90 rmi2reheat.f90 \
+	rmi3sr.f90 rmi3reheat.f90 \
+	rmi4sr.f90 rmi4reheat.f90 
+MOD = rmicommon.$(FC_MODEXT) rmicomreh.$(FC_MODEXT) \
+	rmi1sr.$(FC_MODEXT) rmi1reheat.$(FC_MODEXT) \
+	rmi2sr.$(FC_MODEXT) rmi2reheat.$(FC_MODEXT) \
+	rmi3sr.$(FC_MODEXT) rmi3reheat.$(FC_MODEXT) \
+	rmi4sr.$(FC_MODEXT) rmi4reheat.$(FC_MODEXT) 
 
 check_PROGRAMS = rmi1main rmi2main rmi3main rmi4main
 rmi1main_SOURCES = $(SRC) rmi1main.f90
