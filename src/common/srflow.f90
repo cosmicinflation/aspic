@@ -172,14 +172,14 @@ contains
     select case (neps)
 
     case (1)
-       inverse_slowroll_corrections = 0._kp
+       ln_inverse_slowroll_corrections = 0._kp
        
     case (2)
-       inverse_slowroll_corrections = 2._kp*(1._kp+Cconst)*eps(1) &
+       ln_inverse_slowroll_corrections = 2._kp*(1._kp+Cconst)*eps(1) &
             + CConst*eps(2)
 
     case (3)
-       inverse_slowroll_corrections = 2._kp*(1._kp+Cconst)*eps(1) &
+       ln_inverse_slowroll_corrections = 2._kp*(1._kp+Cconst)*eps(1) &
             + CConst*eps(2) &
             + (5._kp + 2._kp*CConst - pi**2/2._kp)*eps(1)**2 &
             + (6._kp + 3._kp*Cconst + CConst**2 - 7._kp*pi**2/12) &
