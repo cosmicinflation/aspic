@@ -127,12 +127,12 @@ contains
          phi0**2))/(phi0*(486._kp-297._kp* &
          sqrt(2._kp)*phi0+544._kp*phi0**2)+27._kp* &
          sqrt(2._kp)*(-27._kp+sqrt(3._kp)* &
-         sqrt(complex(phi0**3*(-162._kp*sqrt(2._kp)+phi0* &
+         sqrt(cmplx(phi0**3*(-162._kp*sqrt(2._kp)+phi0* &
          (99._kp+64._kp*phi0*(-sqrt(2._kp)+phi0))),0._kp))))** &
          (1._kp/3._kp)-2._kp**(1._kp/3._kp)*(phi0* &
          (486._kp-297._kp*sqrt(2._kp)*phi0+544._kp*phi0**2)+ &
          27._kp*sqrt(2._kp)*(-27._kp+sqrt(3._kp)* &
-         sqrt(complex(phi0**3*(-162._kp*sqrt(2._kp)+phi0* &
+         sqrt(cmplx(phi0**3*(-162._kp*sqrt(2._kp)+phi0* &
          (99._kp+64._kp*phi0*(-sqrt(2._kp)+ phi0))),0._kp)))) &
          **(1._kp/3._kp)))
 
