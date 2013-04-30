@@ -454,6 +454,8 @@ function ln_hsquare_by_epsone(Pstar,epsStarVec)
 
     QoverT = sqrt(60._kp*Pstar)
 
+    primscalar_to_quadrupole = QoverT
+
   end function primscalar_to_quadrupole
 
 

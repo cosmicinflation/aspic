@@ -2693,7 +2693,7 @@ END FUNCTION dei
        do i=1,Nsum
           polylog=polylog+(1._kp/z)**(real(i,kp))/(real(i,kp)**2)
        enddo
-       polylog=acos(-1._kp)**2/3._kp-0.5_kp*log(z)**2-cmplx(0._kp,1._kp)*acos(-1._kp)*log(z)-polylog
+       polylog=acos(-1._kp)**2/3._kp-0.5_kp*log(z)**2-cmplx(0._kp,1._kp,kp)*acos(-1._kp)*log(z)-polylog
     elseif (s.eq.2._kp.and.real(z,kp).lt.-1._kp) then
        do i=1,Nsum
           polylog=polylog+(1._kp/z)**(real(i,kp))/(real(i,kp)**2)

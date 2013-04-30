@@ -139,7 +139,7 @@ contains
     if (alpha.eq.0._kp) stop 'psni_efold_primitive: alpha=0 !'
 
     psni_efold_primitive = -f**2/alpha*((1._kp+alpha*log(cos(x)))*log(sin(x))+ &
-         0.25_kp*alpha*real(polylog(cmplx(cos(x)**2,0._kp),cmplx(2._kp,0._kp)),kp))
+         0.25_kp*alpha*real(polylog(cmplx(cos(x)**2,0._kp,kp),cmplx(2._kp,0._kp,kp)),kp))
 
 
   end function psni_efold_primitive

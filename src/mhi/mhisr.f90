@@ -101,9 +101,9 @@ contains
     
     sechxEnd =  -1._kp/3._kp+(1._kp-6._kp*mu**2)/3._kp* &
                   (-1._kp+36._kp*mu**2+3._kp*sqrt(6._kp)*mu* &
-                  sqrt(cmplx(4._kp*mu**4+22._kp*mu**2-1._kp,0._kp)))**(-1._kp/3._kp) &
+                  sqrt(cmplx(4._kp*mu**4+22._kp*mu**2-1._kp,0._kp,kp)))**(-1._kp/3._kp) &
                   +1._kp/3._kp*(-1._kp+36._kp*mu**2+3._kp*sqrt(6._kp)*mu* &
-                  sqrt(cmplx(4._kp*mu**4+22._kp*mu**2-1._kp,0._kp)))**(1._kp/3._kp)
+                  sqrt(cmplx(4._kp*mu**4+22._kp*mu**2-1._kp,0._kp,kp)))**(1._kp/3._kp)
 
     mhi_x_endinf=acosh(1._kp/real(sechxEnd))
 
