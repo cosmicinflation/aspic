@@ -1,5 +1,5 @@
 COMMONSRC = nrutil.f90 infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 \
-            specialinf.f90 srflow.f90 srreheat.f90
+            specialinf.F90 srflow.f90 srreheat.f90
 
 COMMONMOD = nrutil.$(FC_MODEXT) cosmopar.$(FC_MODEXT) \
             infinout.$(FC_MODEXT) infprec.$(FC_MODEXT) inftools.$(FC_MODEXT) \

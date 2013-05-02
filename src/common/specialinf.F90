@@ -101,6 +101,13 @@ END MODULE HYP_2F1_MODULE
 module specialinf
   use specialprec, only : dp,kp
   implicit none
+
+#ifdef NOF08
+  interface atan
+     module procedure atan_ito_log
+  end interface atan
+#endif
+
 contains
 
 
@@ -2666,7 +2673,10 @@ END FUNCTION dei
 !	atanh=0.5_kp*log((1._kp+x)/(1._kp-x))
 !  end function atanh
 
-  function atan_ito_log(x) !ArcTan function expressed in terms of logarithmic functions
+!ArcTan function expressed in terms of logarithmic functions, works
+!for complex z. Normally supported in fortran08, already implemented
+!in gfortran but not in ifort
+  function atan_ito_log(x)
     implicit none
     complex(kp), intent(in) :: x
     complex(kp) :: atan_ito_log

@@ -1,4 +1,4 @@
-SRC = gripisr.f90 gripireheat.f90
+SRC = gripisr.F90 gripireheat.f90
 MOD = gripisr.$(FC_MODEXT) gripireheat.$(FC_MODEXT)
 
 check_PROGRAMS = gripimain
