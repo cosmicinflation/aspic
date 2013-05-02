@@ -1,5 +1,5 @@
 !test the reheating derivation from slow-roll
-program gripimain
+program gripimgripin
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gripisr, only : gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three
@@ -9,6 +9,10 @@ program gripimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
+  use gripisr, only : gripi_norm_potential, gripi_x_endinf
+  use gripireheat, only : gripi_x_rreh, gripi_x_rrad
+  use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
   implicit none
 
@@ -23,6 +27,10 @@ program gripimain
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
+
+  real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
+  real(kp) :: lnRradMin, lnRradMax, lnRrad
+  real(kp) :: VendOverVstar, eps1End, xend
 
   real(kp), dimension(2) :: xEpsOneZero,xEpsTwoZero
 
@@ -91,7 +99,9 @@ program gripimain
   call delete_file('gripi_predic.dat')
   call delete_file('gripi_nsr.dat')
 
-  !Case alpha>1
+!!!!!!!!!!!!!!!!!!!!
+!!  Case alpha>1  !!
+!!!!!!!!!!!!!!!!!!!!
 
   do j=0,nphi0
        
@@ -119,6 +129,7 @@ program gripimain
        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
 !       alpha=1._kp-(1._kp-alphamin)*((1._kp-alphamax)/(1._kp-alphamin))** &
 !            (real(k,kp)/real(nalpha,kp))!logarithmic step on 1-alpha
+
      
 
        lnRhoRehMin = lnRhoNuc
@@ -146,6 +157,7 @@ program gripimain
          ns = 1._kp - 2._kp*eps1 - eps2
          r =16._kp*eps1
 
+
          call livewrite('gripi_predic.dat',log(alpha-1._kp)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
   
     end do
@@ -154,10 +166,59 @@ program gripimain
 
  end do
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!          Testing Rrad/Rreh           !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  phi0 = 0.1_kp
+  alphamin=1._kp+epsilon(1._kp)
+  alphamax=1._kp+2*phi0**4/60._kp**2*acos(-1._kp)**2/576._kp
+  alpha=alphamin*(alphamax/alphamin)**(0.1_kp)
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = gripi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = gripi_epsilon_one(xstar,alpha,phi0)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = gripi_x_endinf(alpha,phi0)
+     eps1end =  gripi_epsilon_one(xend,alpha,phi0)
+     VendOverVstar = gripi_norm_potential(xend,alpha)/gripi_norm_potential(xstar,alpha)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = gripi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = gripi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+
+  enddo
+
 print*,'case alpha>1 done'
 
 
-  !Case alpha<1
+!!!!!!!!!!!!!!!!!!!!
+!!  Case alpha<1  !!
+!!!!!!!!!!!!!!!!!!!!
 
   do j=0,nphi0
        
@@ -220,8 +281,54 @@ print*,'case alpha>1 done'
 
  end do
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!          Testing Rrad/Rreh           !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  phi0 = 0.1_kp
+  alphamin=1._kp-2*phi0**4/50._kp**2*acos(-1._kp)**2/576._kp
+  alphamax=1._kp-10.*epsilon(1._kp)
+  alpha=alphamin*(alphamax/alphamin)**(0.9_kp)
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = gripi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = gripi_epsilon_one(xstar,alpha,phi0)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+     xend = gripi_x_endinf(alpha,phi0)
+     eps1end =  gripi_epsilon_one(xend,alpha,phi0)
+     VendOverVstar = gripi_norm_potential(xend,alpha)/gripi_norm_potential(xstar,alpha)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = gripi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = gripi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
+
 print*,'case alpha<1 done'
 
 
 
-end program gripimain
+end program gripimgripin

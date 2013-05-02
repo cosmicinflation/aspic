@@ -54,7 +54,7 @@ contains
     if (AI .lt. 0._kp .and. abs(AI) .lt. 64._kp*acos(-1._kp)**2) then !maximum of the potential
       maxi=min(abs(sqrt(3._kp/2._kp)*log(abs(AI)/(64._kp*acos(-1._kp)**2))),xend+100._kp)
     else
-      maxi = max(abs(AI)*1000._kp/(48._kp*acos(-1._kp)**2)*sqrt(3._kp/2._kp)+xend,xend+10._kp,100._kp)
+      maxi=xend+100._kp
     endif
 
     x = zbrent(find_rchi_x_star,mini,maxi,tolzbrent,rchiData)

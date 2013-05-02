@@ -89,7 +89,7 @@ program aimain
   end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !! Write Data for the summarizing plots !!
+!! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('ai_predic_summarized.dat') 
@@ -115,6 +115,10 @@ program aimain
      rB =16._kp*eps1B
      call livewrite('ai_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
   enddo
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!          Testing Rrad/Rreh           !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

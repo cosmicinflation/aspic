@@ -94,7 +94,8 @@ contains
                           (-144._kp+x*(54._kp+alpha*(192._kp+x*(-108._kp+alpha* &
                           (-128._kp+9._kp*x*(16._kp+(-6._kp+x)*x))))))))/(x**2* &
                           (6._kp+alpha*x*(-8._kp+3._kp*x))**2*(6._kp+alpha*x* &
-                          (-16._kp+x*(3._kp+alpha*(16._kp+3._kp*(-4._kp+x)*x)))))
+                          (-16._kp+x*(3._kp+alpha*(16._kp+3._kp*(-4._kp+x)*x)))))/ &
+                          phi0**2
 
   end function gripi_epsilon_three
 

@@ -6,6 +6,8 @@ module wrhireheat
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
+  use srreheat, only : find_reheat_rrad, find_reheat_rreh
+  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use wrhisr, only : wrhi_epsilon_one, wrhi_epsilon_two, wrhi_epsilon_three
   use wrhisr, only : wrhi_norm_potential, wrhi_x_trajectory
   use wrhisr, only : wrhi_x_endinf, wrhi_efold_primitive
@@ -14,6 +16,7 @@ module wrhireheat
   private
 
   public wrhi_x_star, wrhi_lnrhoreh_max 
+  public wrhi_x_rrad, wrhi_x_rreh
 
 contains
 
@@ -81,6 +84,134 @@ contains
     find_wrhi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
   end function find_wrhi_x_star
+
+!returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function wrhi_x_rrad(phi0,lnRRad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: wrhi_x_rrad
+    real(kp), intent(in) :: phi0,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: wrhiData
+    
+
+    if (lnRrad.eq.0._kp) then
+       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = wrhi_x_endinf(phi0)
+
+    epsOneEnd = wrhi_epsilon_one(xEnd,phi0)
+    potEnd = wrhi_norm_potential(xEnd)
+
+    primEnd = wrhi_efold_primitive(xEnd,phi0)
+
+    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
+
+
+    wrhiData%real1 = phi0
+    wrhiData%real2 = calF + primEnd
+
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi =  wrhi_x_trajectory(-200._kp,xend,phi0) !Position 200 efolds before the end of inflation 
+
+    x = zbrent(find_wrhi_x_rrad,mini,maxi,tolzbrent,wrhiData)
+    wrhi_x_rrad = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (wrhi_efold_primitive(x,phi0) - primEnd)
+    endif
+
+  end function wrhi_x_rrad
+
+  function find_wrhi_x_rrad(x,wrhiData)   
+    implicit none
+    real(kp) :: find_wrhi_x_rrad
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: wrhiData
+
+    real(kp) :: primStar,phi0,CalFplusprimEnd,potStar,epsOneStar
+
+    phi0 = wrhiData%real1
+    CalFplusprimEnd = wrhiData%real2
+
+    primStar = wrhi_efold_primitive(x,phi0)
+    epsOneStar = wrhi_epsilon_one(x,phi0)
+    potStar = wrhi_norm_potential(x)
+
+    find_wrhi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
+         ,epsOneStar,potStar)
+  
+  end function find_wrhi_x_rrad
+
+
+  !returns x given potential parameters, scalar power, and lnRrad.
+!If present, returns the corresponding bfoldstar
+  function wrhi_x_rreh(phi0,lnRReh,bfoldstar)    
+    implicit none
+    real(kp) :: wrhi_x_rreh
+    real(kp), intent(in) :: phi0,lnRreh
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp), parameter :: tolzbrent=tolkp
+    real(kp) :: mini,maxi,calF,x
+    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+
+    type(transfert) :: wrhiData
+    
+
+    if (lnRreh.eq.0._kp) then
+       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+    
+    xEnd = wrhi_x_endinf(phi0)
+
+    epsOneEnd = wrhi_epsilon_one(xEnd,phi0)
+    potEnd = wrhi_norm_potential(xEnd)
+
+    primEnd = wrhi_efold_primitive(xEnd,phi0)
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+
+    wrhiData%real1 = phi0
+    wrhiData%real2 = calF + primEnd
+
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi =  wrhi_x_trajectory(-200._kp,xend,phi0) !Position 200 efolds before the end of inflation 
+
+    x = zbrent(find_wrhi_x_rreh,mini,maxi,tolzbrent,wrhiData)
+    wrhi_x_rreh = x
+
+    if (present(bfoldstar)) then
+       bfoldstar = - (wrhi_efold_primitive(x,phi0) - primEnd)
+    endif
+
+  end function wrhi_x_rreh
+
+  function find_wrhi_x_rreh(x,wrhiData)   
+    implicit none
+    real(kp) :: find_wrhi_x_rreh
+    real(kp), intent(in) :: x
+    type(transfert), optional, intent(inout) :: wrhiData
+
+    real(kp) :: primStar,phi0,CalFplusprimEnd,potStar
+
+    phi0 = wrhiData%real1
+    CalFplusprimEnd = wrhiData%real2
+
+    primStar = wrhi_efold_primitive(x,phi0)    
+    potStar = wrhi_norm_potential(x)
+
+    find_wrhi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
+         ,potStar)
+  
+  end function find_wrhi_x_rreh
 
 
   function wrhi_lnrhoreh_max(phi0,Pstar) 

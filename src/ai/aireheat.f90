@@ -40,16 +40,11 @@ contains
     endif
     
     xEnd = ai_x_endinf(mu)
-
     epsOneEnd = ai_epsilon_one(xEnd,mu)
     potEnd = ai_norm_potential(xEnd)
-
     primEnd = ai_efold_primitive(xEnd,mu)
-
-    
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
-
 
     aiData%real1 = mu
     aiData%real2 = w
@@ -232,12 +227,8 @@ contains
     real(kp) :: lnRhoEnd
     
     xEnd = ai_x_endinf(mu)
-
     potEnd  = ai_norm_potential(xEnd)
-
     epsOneEnd = ai_epsilon_one(xEnd,mu)
-
-
 
 !   Trick to return x such that rho_reh=rho_end
 
