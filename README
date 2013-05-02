@@ -29,3 +29,19 @@ along the rules specified in COPYING.
 * Checkout the MAN pages for a complete documentation
   man libaspic
 
+---------------------------------------------------------------------------
+
+* Troubleshooting
+
+- some calls to the "atan()" intrinsic functions use FORTRAN08 support
+  for complex numbers. This is supported with recent versions of open
+  source compilers such as gfortran. If you ever encounter an error
+  with these function calls try to define:
+
+  	 export FCFLAGS="-DNOF08"
+  
+ Then run the standard
+ /configure"
+ make
+ make install
+

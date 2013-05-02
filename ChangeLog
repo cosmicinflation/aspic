@@ -1,3 +1,116 @@
+commit c1cffb117eb33b3724b0515cfbbce92afacc5a41
+Date:   Thu May 2 17:17:25 2013 +0200
+
+    Fix wrong dates in man files
+
+ configure.ac            | 4 ++--
+ src/gripi/aspic_gripi.3 | 2 +-
+ src/imi/aspic_imi.3     | 4 ++--
+ src/osti/aspic_osti.3   | 2 +-
+ src/wrhi/aspic_wrhi.3   | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+commit e7dd0f466fe37b0016aea213dc407398c1c6e6e1
+Date:   Thu May 2 16:31:23 2013 +0200
+
+    Fix missing atan for no F08 compiler with NOF08 compilation directive (gripisr only)
+
+ src/common/Makefile.am    |    2 +-
+ src/common/specialinf.F90 | 2720 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/common/specialinf.f90 | 2710 -----------------------------------------------------------
+ src/gripi/Makefile.am     |    2 +-
+ src/gripi/gripisr.F90     |  410 +++++++++
+ src/gripi/gripisr.f90     |  406 ---------
+ 6 files changed, 3132 insertions(+), 3118 deletions(-)
+
+commit c58e9d222997b5eb1a1bf25a801ccf086e7f954e
+Merge: 4edbaa1 b20ea8e
+Date:   Thu May 2 16:20:10 2013 +0200
+
+    Merge with vincent corrections over 0.2.1
+
+commit b20ea8efa526215da43f0405839111c3a4c923c4
+Date:   Thu May 2 16:16:34 2013 +0200
+
+    Vincent import of 4 models
+
+ src/ai/aimain.f90         |   6 ++-
+ src/ai/aireheat.f90       |   9 ----
+ src/gripi/gripimain.f90   | 115 ++++++++++++++++++++++++++++++++++++++++++++--
+ src/gripi/gripireheat.f90 | 152 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ src/gripi/gripisr.f90     |   3 +-
+ src/osti/ostimain.f90     |  60 ++++++++++++++++++++++--
+ src/osti/ostireheat.f90   | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/rchi/rchireheat.f90   |   2 +-
+ src/wrhi/wrhimain.f90     |  58 +++++++++++++++++++++--
+ src/wrhi/wrhireheat.f90   | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 637 insertions(+), 30 deletions(-)
+
+commit 4edbaa1212ab87f66af1c2590cecaf5a442b0d46
+Author: chris <chris@ringeval.com>
+Date:   Tue Apr 30 14:59:50 2013 +0200
+
+    Fix bug in cmplx for ii
+
+ src/ii/iisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 37bae7f4f802b8e4080e9e589b713a3e6c15381d
+Date:   Tue Apr 30 14:51:47 2013 +0200
+
+    Fix regression with cmplx missing kp
+
+ src/common/specialinf.f90 | 2 +-
+ src/common/srreheat.f90   | 2 ++
+ src/ii/iisr.f90           | 8 ++++----
+ src/mhi/mhisr.f90         | 4 ++--
+ src/ncki/nckisr.f90       | 2 +-
+ src/psni/psnisr.f90       | 2 +-
+ src/rchi/rchisr.f90       | 4 ++--
+ src/ripi/ripisr.f90       | 4 ++--
+ src/ssbi/ssbi5sr.f90      | 8 ++++----
+ src/ssbi/ssbicommon.f90   | 4 ++--
+ 10 files changed, 21 insertions(+), 19 deletions(-)
+
+commit a23301aa39d95faa0d3fa7db13cdc6ce6a139ddd
+Date:   Tue Apr 30 14:34:55 2013 +0200
+
+    Fixing regression cmplx->complex bug
+
+ src/common/specialinf.f90 | 2 +-
+ src/ncki/nckisr.f90       | 2 +-
+ src/psni/psnisr.f90       | 2 +-
+ src/rchi/rchisr.f90       | 4 ++--
+ src/ripi/ripisr.f90       | 4 ++--
+ src/ssbi/ssbi5sr.f90      | 8 ++++----
+ src/ssbi/ssbicommon.f90   | 4 ++--
+ 7 files changed, 13 insertions(+), 13 deletions(-)
+
+commit bc8c5bbef98bd548ed1bb7f4c007da1644fd3378
+Date:   Tue Apr 30 13:57:46 2013 +0200
+
+    Adding ln_sr_corr in srflow
+
+ src/common/srflow.f90 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 4d69368489bc53a2705eab90076dd1c64dcf0299
+Date:   Tue Apr 30 13:42:21 2013 +0200
+
+    Adding 3rd corrections to inverse_slowroll + the log
+
+ src/common/srflow.f90 | 51 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
+
+commit be1125b85e2c1aecfc4585ebebf537c849327375
+Date:   Mon Apr 29 19:22:53 2013 +0200
+
+    Updating NEWS/ChangeLog
+
+ ChangeLog | 229 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |  13 +----
+ 2 files changed, 232 insertions(+), 10 deletions(-)
+
 commit 0657724c2da87c04baa6b71c206d5ece5c21115f
 Date:   Mon Apr 29 19:15:06 2013 +0200
 

@@ -1,6 +1,9 @@
-* version 0.2.1.1 (devel branch)
+* version 0.2.2 (devel branch)
 - Implementing reheating predictions with Rrad and R for all working
   models done.
+- Imported 4 new models: imi, gripi, wrhi and osti
+- Support for ifort implemented (see README)
+  	      	    FC=ifort FCFLAGS=-DNOF08
 
 * version 0.1.2 (evaluator)
 - Fix usage of non-standard fortran function complex() -> cmplx()
