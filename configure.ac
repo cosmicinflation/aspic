@@ -1,4 +1,4 @@
-AC_INIT([aspic], [0.1.0], [chris@ringeval.com])
+AC_INIT([aspic], [0.2.2], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -10,7 +10,7 @@ version_info="0:0:0"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
-FCFLAGS="-O"
+FCFLAGS="-O $FCFLAGS"
 
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
