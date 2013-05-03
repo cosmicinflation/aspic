@@ -1,3 +1,47 @@
+commit 3edc8cab9ede0f73f6db1f4d09fa182d44192f55
+Date:   Fri May 3 16:20:23 2013 +0200
+
+    Merging ripi into gripi with x->3/4x + rename former ripi into oripi
+
+ configure.ac              |   4 +-
+ src/Makefile.am           |   4 +-
+ src/gripi/Makefile.am     |  12 ++-
+ src/gripi/aspic_ripi.3    |  31 ++++++++
+ src/gripi/gripicommon.f90 | 261 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/gripi/gripisr.F90     | 263 +++++--------------------------------------------------------
+ src/gripi/ripimain.f90    | 160 +++++++++++++++++++++++++++++++++++++
+ src/gripi/ripireheat.f90  | 249 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/gripi/ripisr.f90      | 182 ++++++++++++++++++++++++++++++++++++++++++
+ src/oripi/Makefile.am     |  25 ++++++
+ src/oripi/aspic_oripi.3   |  24 ++++++
+ src/oripi/oripimain.f90   | 160 +++++++++++++++++++++++++++++++++++++
+ src/oripi/oripireheat.f90 | 249 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/oripi/oripisr.f90     | 198 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/ripi/Makefile.am      |  25 ------
+ src/ripi/aspic_ripi.3     |  24 ------
+ src/ripi/ripimain.f90     | 160 -------------------------------------
+ src/ripi/ripireheat.f90   | 249 ---------------------------------------------------------
+ src/ripi/ripisr.f90       | 198 ----------------------------------------------
+ 19 files changed, 1571 insertions(+), 907 deletions(-)
+
+commit 38c3360a658ae83d17f7ecae28d285aebce34452
+Date:   Fri May 3 11:50:37 2013 +0200
+
+    Fix missing optional for phi0
+
+ src/ripi/ripisr.f90 | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+commit 058d680373e22051ef1b514ceb33543bd7566542
+Date:   Thu May 2 17:23:44 2013 +0200
+
+    Editing log files
+
+ ChangeLog | 113 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |   5 +++-
+ README    |  16 +++++++++++
+ 3 files changed, 133 insertions(+), 1 deletion(-)
+
 commit c1cffb117eb33b3724b0515cfbbce92afacc5a41
 Date:   Thu May 2 17:17:25 2013 +0200
 
