@@ -20,7 +20,8 @@ contains
   function ripi_norm_potential(x,phi0)
     implicit none
     real(kp) :: ripi_norm_potential
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: phi0
 
     ripi_norm_potential = x**2-x**3+9._kp/32._kp*x**4
 
@@ -32,7 +33,8 @@ contains
   function ripi_norm_deriv_potential(x,phi0)
     implicit none
     real(kp) :: ripi_norm_deriv_potential
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: phi0
 
     ripi_norm_deriv_potential = 1._kp/8._kp*x*(4._kp-3._kp*x)**2
 
@@ -44,7 +46,8 @@ contains
   function ripi_norm_deriv_second_potential(x,phi0)
     implicit none
     real(kp) :: ripi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x
+    real(kp), intent(in), optional :: phi0
 
     ripi_norm_deriv_second_potential = 1._kp/8._kp*(-4._kp+3._kp*x)* &
          (-4._kp+9._kp*x)
