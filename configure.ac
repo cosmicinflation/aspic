@@ -10,7 +10,7 @@ version_info="0:0:0"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
-FCFLAGS="-O $FCFLAGS"
+FCFLAGS+=" "
 
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
@@ -64,7 +64,7 @@ AC_CONFIG_FILES([Makefile
                  src/ai/Makefile
                  src/cnai/Makefile
                  src/cnbi/Makefile
-                 src/ripi/Makefile
+                 src/oripi/Makefile
                  src/csi/Makefile
                  src/sbi/Makefile
                  src/cnci/Makefile

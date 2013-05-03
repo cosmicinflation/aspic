@@ -9,7 +9,7 @@ module ripireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use ripisr, only : ripi_epsilon_one, ripi_epsilon_two, ripi_epsilon_three
-  use ripisr, only : ripi_norm_potential, ripi_x_derivpotzero
+  use ripisr, only : ripi_norm_potential
   use ripisr, only : ripi_x_endinf, ripi_efold_primitive, ripi_x_trajectory
   implicit none
 
@@ -52,7 +52,7 @@ contains
     ripiData%real3 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = ripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 
 
     x = zbrent(find_ripi_x_star,mini,maxi,tolzbrent,ripiData)
@@ -115,7 +115,7 @@ contains
     ripiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = ripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 
 
     x = zbrent(find_ripi_x_rrad,mini,maxi,tolzbrent,ripiData)
@@ -178,7 +178,7 @@ contains
     ripiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = ripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 
 
     x = zbrent(find_ripi_x_rreh,mini,maxi,tolzbrent,ripiData)

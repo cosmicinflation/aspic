@@ -1,0 +1,31 @@
+.TH libripi 3 "May 3, 2013" "libaspic" "Module convention" 
+
+.SH NAME
+.I ripi
+- the renormalizable infection point inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [x^2 - 4/3 x^3 + 1/2 x^4]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/phi0
+.TP
+Parameters
+.I real(kp)
+::
+.B phi0
+.SH NOTES
+This potential has
+.B 'phi0'
+rescaled by 4/3 compared to the original version to be exactly the
+limiting case
+.B 'alpha=1'
+of the gripi models.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

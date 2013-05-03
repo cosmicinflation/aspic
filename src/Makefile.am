@@ -46,7 +46,7 @@ libaspic_la_LIBADD =                \
 	ai/libai.la \
 	cnai/libcnai.la \
 	cnbi/libcnbi.la \
-	ripi/libripi.la \
+	oripi/liboripi.la \
 	csi/libcsi.la \
 	sbi/libsbi.la \
 	cnci/libcnci.la \
@@ -63,7 +63,7 @@ libaspic_la_LIBADD =                \
 #to be build from there
 SUBDIRS = common lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi ai cnai cnbi \
-          ripi csi sbi cnci rmi lpi cndi rchi osti wrhi imi gripi
+          oripi csi sbi cnci rmi lpi cndi rchi osti wrhi imi gripi
 
 #make clean does not remove modules by default
 clean-local: clean-modules
