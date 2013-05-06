@@ -2,6 +2,9 @@
 !include file only if you are too lazy to pick up only what you
 !need.
 
+use srreheat
+use srflow
+
 !one parameter models
 use hisr
 use hireheat
@@ -45,6 +48,10 @@ use cnaisr
 use cnaireheat
 use cnbisr
 use cnbireheat
+use ostisr
+use ostireheat
+use wrhisr
+use wrhireheat
 
 !two parameters models
 use sfisr
@@ -61,6 +68,8 @@ use twireheat
 !use hf2ireheat
 use gmssmisr
 use gmssmireheat
+use gripisr
+use gripireheat
 use bsusybisr
 use bsusybireheat
 use tisr
@@ -95,6 +104,8 @@ use ssbi5sr
 use ssbi5reheat
 use ssbi6sr
 use ssbi6reheat
+use imisr
+use imireheat
 
 
 
