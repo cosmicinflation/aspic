@@ -5,13 +5,13 @@
 use srreheat
 use srflow
 
-!one parameter models
 use hisr
 use hireheat
+!one parameter models
+use rchisr
+use rchireheat
 use lfisr
 use lfireheat
-use mssmisr
-use mssmireheat
 use rcmisr
 use rcmireheat
 use rcqisr
