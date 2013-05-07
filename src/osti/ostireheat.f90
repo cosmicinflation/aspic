@@ -42,7 +42,7 @@ contains
     xEnd = osti_x_endinf(phi0)
 
     epsOneEnd = osti_epsilon_one(xEnd,phi0)
-    potEnd = osti_norm_potential(xEnd)
+    potEnd = osti_norm_potential(xEnd,phi0)
 
     primEnd = osti_efold_primitive(xEnd,phi0)
    
@@ -79,7 +79,7 @@ contains
 
     primStar = osti_efold_primitive(x,phi0)
     epsOneStar = osti_epsilon_one(x,phi0)
-    potStar = osti_norm_potential(x)
+    potStar = osti_norm_potential(x,phi0)
 
     find_osti_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -107,7 +107,7 @@ contains
     xEnd = osti_x_endinf(phi0)
 
     epsOneEnd = osti_epsilon_one(xEnd,phi0)
-    potEnd = osti_norm_potential(xEnd)
+    potEnd = osti_norm_potential(xEnd,phi0)
 
     primEnd = osti_efold_primitive(xEnd,phi0)
 
@@ -142,7 +142,7 @@ contains
 
     primStar = osti_efold_primitive(x,phi0)
     epsOneStar = osti_epsilon_one(x,phi0)
-    potStar = osti_norm_potential(x)
+    potStar = osti_norm_potential(x,phi0)
 
     find_osti_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
          ,epsOneStar,potStar)
@@ -172,7 +172,7 @@ contains
     xEnd = osti_x_endinf(phi0)
 
     epsOneEnd = osti_epsilon_one(xEnd,phi0)
-    potEnd = osti_norm_potential(xEnd)
+    potEnd = osti_norm_potential(xEnd,phi0)
 
     primEnd = osti_efold_primitive(xEnd,phi0)
 
@@ -206,7 +206,7 @@ contains
     CalFplusprimEnd = ostiData%real2
 
     primStar = osti_efold_primitive(x,phi0)    
-    potStar = osti_norm_potential(x)
+    potStar = osti_norm_potential(x,phi0)
 
     find_osti_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
          ,potStar)
@@ -228,14 +228,14 @@ contains
     real(kp) :: lnRhoEnd
     
     xEnd = osti_x_endinf(phi0)
-    potEnd  = osti_norm_potential(xEnd)
+    potEnd  = osti_norm_potential(xEnd,phi0)
     epsOneEnd = osti_epsilon_one(xEnd,phi0)
 
 !   Trick to return x such that rho_reh=rho_end
 
     x = osti_x_star(phi0,wrad,junk,Pstar)  
  
-    potStar = osti_norm_potential(x)
+    potStar = osti_norm_potential(x,phi0)
     epsOneStar = osti_epsilon_one(x,phi0)
    
     if (.not.slowroll_validity(epsOneStar)) stop 'osti_lnrhoreh_max: slow-roll violated!'

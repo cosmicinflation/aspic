@@ -43,7 +43,7 @@ contains
     xEnd = mhi_x_endinf(mu)
 
     epsOneEnd = mhi_epsilon_one(xEnd,mu)
-    potEnd = mhi_norm_potential(xEnd)
+    potEnd = mhi_norm_potential(xEnd,mu)
 
     primEnd = mhi_efold_primitive(xEnd,mu)
 
@@ -81,7 +81,7 @@ contains
 
     primStar = mhi_efold_primitive(x,mu)
     epsOneStar = mhi_epsilon_one(x,mu)
-    potStar = mhi_norm_potential(x)
+    potStar = mhi_norm_potential(x,mu)
 
     find_mhi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -110,7 +110,7 @@ contains
     xEnd = mhi_x_endinf(mu)
 
     epsOneEnd = mhi_epsilon_one(xEnd,mu)
-    potEnd = mhi_norm_potential(xEnd)
+    potEnd = mhi_norm_potential(xEnd,mu)
 
     primEnd = mhi_efold_primitive(xEnd,mu)
 
@@ -146,7 +146,7 @@ contains
 
     primStar = mhi_efold_primitive(x,mu)
     epsOneStar = mhi_epsilon_one(x,mu)
-    potStar = mhi_norm_potential(x)
+    potStar = mhi_norm_potential(x,mu)
 
     find_mhi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -175,7 +175,7 @@ contains
     xEnd = mhi_x_endinf(mu)
 
     epsOneEnd = mhi_epsilon_one(xEnd,mu)
-    potEnd = mhi_norm_potential(xEnd)
+    potEnd = mhi_norm_potential(xEnd,mu)
 
     primEnd = mhi_efold_primitive(xEnd,mu)
 
@@ -210,7 +210,7 @@ contains
     CalFplusprimEnd = mhiData%real2
 
     primStar = mhi_efold_primitive(x,mu)
-    potStar = mhi_norm_potential(x)
+    potStar = mhi_norm_potential(x,mu)
 
     find_mhi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -233,7 +233,7 @@ contains
     
     xEnd = mhi_x_endinf(mu)
 
-    potEnd  = mhi_norm_potential(xEnd)
+    potEnd  = mhi_norm_potential(xEnd,mu)
 
     epsOneEnd = mhi_epsilon_one(xEnd,mu)
 
@@ -241,7 +241,7 @@ contains
 
     x = mhi_x_star(mu,wrad,junk,Pstar)  
 
-    potStar = mhi_norm_potential(x)
+    potStar = mhi_norm_potential(x,mu)
     epsOneStar = mhi_epsilon_one(x,mu)
 
     

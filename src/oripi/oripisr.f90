@@ -21,7 +21,7 @@ contains
     implicit none
     real(kp) :: oripi_norm_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     oripi_norm_potential = x**2-x**3+9._kp/32._kp*x**4
 
@@ -34,7 +34,7 @@ contains
     implicit none
     real(kp) :: oripi_norm_deriv_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     oripi_norm_deriv_potential = 1._kp/8._kp*x*(4._kp-3._kp*x)**2
 
@@ -47,7 +47,7 @@ contains
     implicit none
     real(kp) :: oripi_norm_deriv_second_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     oripi_norm_deriv_second_potential = 1._kp/8._kp*(-4._kp+3._kp*x)* &
          (-4._kp+9._kp*x)
@@ -99,7 +99,7 @@ contains
 !
   function oripi_x_derivpotzero(phi0)
     implicit none
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
     real(kp) :: oripi_x_derivpotzero
 
     oripi_x_derivpotzero = 4._kp/3._kp
@@ -109,7 +109,7 @@ contains
 !inflection points
   function oripi_x_dderivpotzero(phi0)
     implicit none
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
     real(kp), dimension(2) :: oripi_x_dderivpotzero
 
     oripi_x_dderivpotzero(1) = 4._kp/9._kp
@@ -149,7 +149,7 @@ contains
     real(kp), intent(in) :: x,phi0
     real(kp) :: oripi_efold_primitive
 
-    if (x .eq. oripi_x_derivpotzero()) then
+    if (x .eq. oripi_x_derivpotzero(phi0)) then
        stop 'oripi_efold_primitive evaluated at x=4/3 flat inflection point position!'
     endif
 
@@ -170,7 +170,7 @@ contains
 
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = oripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
 
     oripiData%real1 = phi0
     oripiData%real2 = -bfold + oripi_efold_primitive(xend,phi0)

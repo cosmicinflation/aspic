@@ -22,7 +22,7 @@ contains
     implicit none
     real(kp) :: ti_norm_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     ti_norm_potential = 1._kp+cos(x)+alpha*sin(x)**2
   end function ti_norm_potential
@@ -33,7 +33,7 @@ contains
     implicit none
     real(kp) :: ti_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
    ti_norm_deriv_potential = sin(x)*(2._kp*alpha*cos(x)-1._kp)
 
@@ -46,7 +46,7 @@ contains
     implicit none
     real(kp) :: ti_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     ti_norm_deriv_second_potential = 2._kp*alpha*cos(2._kp*x)-cos(x)
 
@@ -57,7 +57,7 @@ contains
     implicit none
     real(kp) :: ti_x_potmax
     real(kp), intent(in) :: alpha
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
     
     if (alpha .le. 0.5_kp) then
       ti_x_potmax = 0._kp

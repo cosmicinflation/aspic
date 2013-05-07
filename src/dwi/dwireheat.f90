@@ -43,7 +43,7 @@ contains
     xEnd = dwi_x_endinf(phi0)
 
     epsOneEnd = dwi_epsilon_one(xEnd,phi0)
-    potEnd = dwi_norm_potential(xEnd)
+    potEnd = dwi_norm_potential(xEnd,phi0)
 
     primEnd = dwi_efold_primitive(xEnd,phi0)
    
@@ -82,7 +82,7 @@ contains
 
     primStar = dwi_efold_primitive(x,phi0)
     epsOneStar = dwi_epsilon_one(x,phi0)
-    potStar = dwi_norm_potential(x)
+    potStar = dwi_norm_potential(x,phi0)
 
     find_dwi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -112,7 +112,7 @@ contains
     xEnd = dwi_x_endinf(phi0)
 
     epsOneEnd = dwi_epsilon_one(xEnd,phi0)
-    potEnd = dwi_norm_potential(xEnd)
+    potEnd = dwi_norm_potential(xEnd,phi0)
 
     primEnd = dwi_efold_primitive(xEnd,phi0)
    
@@ -147,7 +147,7 @@ contains
 
     primStar = dwi_efold_primitive(x,phi0)
     epsOneStar = dwi_epsilon_one(x,phi0)
-    potStar = dwi_norm_potential(x)
+    potStar = dwi_norm_potential(x,phi0)
 
     find_dwi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -177,7 +177,7 @@ contains
     xEnd = dwi_x_endinf(phi0)
 
     epsOneEnd = dwi_epsilon_one(xEnd,phi0)
-    potEnd = dwi_norm_potential(xEnd)
+    potEnd = dwi_norm_potential(xEnd,phi0)
 
     primEnd = dwi_efold_primitive(xEnd,phi0)
    
@@ -211,7 +211,7 @@ contains
     CalFplusprimEnd = dwiData%real2
 
     primStar = dwi_efold_primitive(x,phi0)    
-    potStar = dwi_norm_potential(x)
+    potStar = dwi_norm_potential(x,phi0)
 
     find_dwi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -235,7 +235,7 @@ contains
     xEnd = dwi_x_endinf(phi0)
 
 
-    potEnd  = dwi_norm_potential(xEnd)
+    potEnd  = dwi_norm_potential(xEnd,phi0)
 
     epsOneEnd = dwi_epsilon_one(xEnd,phi0)
 
@@ -245,7 +245,7 @@ contains
     x = dwi_x_star(phi0,wrad,junk,Pstar)  
 
  
-    potStar = dwi_norm_potential(x)
+    potStar = dwi_norm_potential(x,phi0)
     epsOneStar = dwi_epsilon_one(x,phi0)
 
    ! PRINT*,'dwi_lnrhoreh_max   :xstar=',x,'  potStar=',potStar,'  epsOneStar=',epsOneStar

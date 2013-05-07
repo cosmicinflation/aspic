@@ -39,7 +39,7 @@ contains
 
     xEnd=oi_x_endinf(alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
-    potEnd = oi_norm_potential(xEnd,alpha)
+    potEnd = oi_norm_potential(xEnd,alpha,phi0)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -77,7 +77,7 @@ contains
 
     primStar = oi_efold_primitive(x,alpha,phi0)
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
-    potStar = oi_norm_potential(x,alpha)
+    potStar = oi_norm_potential(x,alpha,phi0)
 
     find_oi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
@@ -105,7 +105,7 @@ contains
 
     xEnd=oi_x_endinf(alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
-    potEnd = oi_norm_potential(xEnd,alpha)
+    potEnd = oi_norm_potential(xEnd,alpha,phi0)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
    
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
@@ -141,7 +141,7 @@ contains
 
     primStar = oi_efold_primitive(x,alpha,phi0)
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
-    potStar = oi_norm_potential(x,alpha)
+    potStar = oi_norm_potential(x,alpha,phi0)
 
     find_oi_x_rrad = find_reheat_rrad(PrimStar,calFplusPrimEnd,epsOneStar,potStar)
 
@@ -169,7 +169,7 @@ contains
 
     xEnd=oi_x_endinf(alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
-    potEnd = oi_norm_potential(xEnd,alpha)
+    potEnd = oi_norm_potential(xEnd,alpha,phi0)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -204,7 +204,7 @@ contains
     CalFplusPrimEnd = oiData%real3
 
     primStar = oi_efold_primitive(x,alpha,phi0)
-    potStar = oi_norm_potential(x,alpha)
+    potStar = oi_norm_potential(x,alpha,phi0)
 
     find_oi_x_rreh = find_reheat_rreh(PrimStar,calFplusPrimEnd,potStar)
 
@@ -225,11 +225,11 @@ contains
     real(kp) :: lnRhoEnd
         
     xEnd=oi_x_endinf(alpha,phi0) 
-    potEnd  = oi_norm_potential(xEnd,alpha)
+    potEnd  = oi_norm_potential(xEnd,alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
 
     x = oi_x_star(alpha,phi0,wrad,junk,Pstar)    
-    potStar = oi_norm_potential(x,alpha)
+    potStar = oi_norm_potential(x,alpha,phi0)
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
 
 

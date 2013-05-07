@@ -41,7 +41,7 @@ contains
     
     xEnd = ai_x_endinf(mu)
     epsOneEnd = ai_epsilon_one(xEnd,mu)
-    potEnd = ai_norm_potential(xEnd)
+    potEnd = ai_norm_potential(xEnd,mu)
     primEnd = ai_efold_primitive(xEnd,mu)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -77,7 +77,7 @@ contains
 
     primStar = ai_efold_primitive(x,mu)
     epsOneStar = ai_epsilon_one(x,mu)
-    potStar = ai_norm_potential(x)
+    potStar = ai_norm_potential(x,mu)
 
     find_ai_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -106,7 +106,7 @@ contains
     xEnd = ai_x_endinf(mu)
 
     epsOneEnd = ai_epsilon_one(xEnd,mu)
-    potEnd = ai_norm_potential(xEnd)
+    potEnd = ai_norm_potential(xEnd,mu)
 
     primEnd = ai_efold_primitive(xEnd,mu)
 
@@ -141,7 +141,7 @@ contains
 
     primStar = ai_efold_primitive(x,mu)
     epsOneStar = ai_epsilon_one(x,mu)
-    potStar = ai_norm_potential(x)
+    potStar = ai_norm_potential(x,mu)
 
     find_ai_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
          ,epsOneStar,potStar)
@@ -171,7 +171,7 @@ contains
     xEnd = ai_x_endinf(mu)
 
     epsOneEnd = ai_epsilon_one(xEnd,mu)
-    potEnd = ai_norm_potential(xEnd)
+    potEnd = ai_norm_potential(xEnd,mu)
 
     primEnd = ai_efold_primitive(xEnd,mu)
 
@@ -205,7 +205,7 @@ contains
     CalFplusprimEnd = aiData%real2
 
     primStar = ai_efold_primitive(x,mu)    
-    potStar = ai_norm_potential(x)
+    potStar = ai_norm_potential(x,mu)
 
     find_ai_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
          ,potStar)
@@ -227,14 +227,14 @@ contains
     real(kp) :: lnRhoEnd
     
     xEnd = ai_x_endinf(mu)
-    potEnd  = ai_norm_potential(xEnd)
+    potEnd  = ai_norm_potential(xEnd,mu)
     epsOneEnd = ai_epsilon_one(xEnd,mu)
 
 !   Trick to return x such that rho_reh=rho_end
 
     x = ai_x_star(mu,wrad,junk,Pstar)  
 
-    potStar = ai_norm_potential(x)
+    potStar = ai_norm_potential(x,mu)
     epsOneStar = ai_epsilon_one(x,mu)
 
     

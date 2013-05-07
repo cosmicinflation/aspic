@@ -22,7 +22,7 @@ contains
     implicit none
     real(kp) :: ai_norm_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     ai_norm_potential = 1._kp-2._kp/pi*atan(x)
 
@@ -34,7 +34,7 @@ contains
     implicit none
     real(kp) :: ai_norm_deriv_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
    ai_norm_deriv_potential = -(2._kp/(pi+pi*x**2))
 
@@ -47,7 +47,7 @@ contains
     implicit none
     real(kp) :: ai_norm_deriv_second_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     ai_norm_deriv_second_potential = (4._kp*x)/(pi*(1._kp+x**2)**2)
 

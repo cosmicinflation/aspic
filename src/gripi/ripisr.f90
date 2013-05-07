@@ -33,7 +33,7 @@ contains
     implicit none
     real(kp) :: ripi_norm_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     ripi_norm_potential = gripi_norm_potential(x,ripiAlpha,phi0)
 
@@ -46,7 +46,7 @@ contains
     implicit none
     real(kp) :: ripi_norm_deriv_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     ripi_norm_deriv_potential = gripi_norm_deriv_potential(x,ripiAlpha,phi0)
 
@@ -59,7 +59,7 @@ contains
     implicit none
     real(kp) :: ripi_norm_deriv_second_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     ripi_norm_deriv_second_potential = gripi_norm_deriv_second_potential(x,ripiAlpha,phi0)
 

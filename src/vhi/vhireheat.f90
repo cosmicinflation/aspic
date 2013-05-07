@@ -38,7 +38,7 @@ contains
     endif
     
     epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
-    potEnd = vhi_norm_potential(xEnd,p)
+    potEnd = vhi_norm_potential(xEnd,p,mu)
 
     primEnd = vhi_efold_primitive(xEnd,p,mu)
    
@@ -76,7 +76,7 @@ contains
 
     primStar = vhi_efold_primitive(x,p,mu)
     epsOneStar = vhi_epsilon_one(x,p,mu)
-    potStar = vhi_norm_potential(x,p)
+    potStar = vhi_norm_potential(x,p,mu)
 
     find_vhi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -102,7 +102,7 @@ contains
     endif
 
     epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
-    potEnd = vhi_norm_potential(xEnd,p)
+    potEnd = vhi_norm_potential(xEnd,p,mu)
 
     primEnd = vhi_efold_primitive(xEnd,p,mu)
    
@@ -138,7 +138,7 @@ contains
 
     primStar = vhi_efold_primitive(x,p,mu)
     epsOneStar = vhi_epsilon_one(x,p,mu)
-    potStar = vhi_norm_potential(x,p)
+    potStar = vhi_norm_potential(x,p,mu)
 
     find_vhi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -166,7 +166,7 @@ contains
     endif
 
     epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
-    potEnd = vhi_norm_potential(xEnd,p)
+    potEnd = vhi_norm_potential(xEnd,p,mu)
 
     primEnd = vhi_efold_primitive(xEnd,p,mu)
    
@@ -201,7 +201,7 @@ contains
     CalFplusprimEnd = vhiData%real3
 
     primStar = vhi_efold_primitive(x,p,mu)
-    potStar = vhi_norm_potential(x,p)
+    potStar = vhi_norm_potential(x,p,mu)
 
     find_vhi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -223,7 +223,7 @@ contains
     real(kp) :: lnRhoEnd
 
 
-    potEnd  = vhi_norm_potential(xEnd,p)
+    potEnd  = vhi_norm_potential(xEnd,p,mu)
 
     epsOneEnd = vhi_epsilon_one(xEnd,p,mu)
 
@@ -232,7 +232,7 @@ contains
     x = vhi_x_star(p,mu,xEnd,wrad,junk,Pstar)  
 
  
-    potStar = vhi_norm_potential(x,p)
+    potStar = vhi_norm_potential(x,p,mu)
     epsOneStar = vhi_epsilon_one(x,p,mu)
 
     

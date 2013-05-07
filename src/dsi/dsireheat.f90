@@ -40,7 +40,7 @@ contains
     endif
     
     epsOneEnd = dsi_epsilon_one(xEnd,p,mu)
-    potEnd = dsi_norm_potential(xEnd,p)
+    potEnd = dsi_norm_potential(xEnd,p,mu)
     primEnd = dsi_efold_primitive(xEnd,p,mu)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -79,7 +79,7 @@ contains
 
     primStar = dsi_efold_primitive(x,p,mu)
     epsOneStar = dsi_epsilon_one(x,p,mu)
-    potStar = dsi_norm_potential(x,p)
+    potStar = dsi_norm_potential(x,p,mu)
 
     find_dsi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -106,7 +106,7 @@ contains
     endif
     
     epsOneEnd = dsi_epsilon_one(xEnd,p,mu)
-    potEnd = dsi_norm_potential(xEnd,p)
+    potEnd = dsi_norm_potential(xEnd,p,mu)
     primEnd = dsi_efold_primitive(xEnd,p,mu)
    
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
@@ -143,7 +143,7 @@ contains
 
     primStar = dsi_efold_primitive(x,p,mu)
     epsOneStar = dsi_epsilon_one(x,p,mu)
-    potStar = dsi_norm_potential(x,p)
+    potStar = dsi_norm_potential(x,p,mu)
 
     find_dsi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -171,7 +171,7 @@ contains
     endif
     
     epsOneEnd = dsi_epsilon_one(xEnd,p,mu)
-    potEnd = dsi_norm_potential(xEnd,p)
+    potEnd = dsi_norm_potential(xEnd,p,mu)
     primEnd = dsi_efold_primitive(xEnd,p,mu)
    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -207,7 +207,7 @@ contains
     CalFplusprimEnd = dsiData%real4
 
     primStar = dsi_efold_primitive(x,p,mu)    
-    potStar = dsi_norm_potential(x,p)
+    potStar = dsi_norm_potential(x,p,mu)
 
     find_dsi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -229,13 +229,13 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    potEnd  = dsi_norm_potential(xEnd,p)
+    potEnd  = dsi_norm_potential(xEnd,p,mu)
     epsOneEnd = dsi_epsilon_one(xEnd,p,mu)
 
 !   Trick to return x such that rho_reh=rho_end
 
     x = dsi_x_star(p,mu,xEnd,wrad,junk,Pstar)    
-    potStar = dsi_norm_potential(x,p)
+    potStar = dsi_norm_potential(x,p,mu)
     epsOneStar = dsi_epsilon_one(x,p,mu)
 
 

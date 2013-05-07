@@ -42,7 +42,7 @@ contains
     xEnd = sfi_x_endinf(p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
 
-    potEnd = sfi_norm_potential(xEnd,p)
+    potEnd = sfi_norm_potential(xEnd,p,mu)
     primEnd = sfi_efold_primitive(xEnd,p,mu)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -83,7 +83,7 @@ contains
 
     primStar = sfi_efold_primitive(x,p,mu)
     epsOneStar = sfi_epsilon_one(x,p,mu)
-    potStar = sfi_norm_potential(x,p)
+    potStar = sfi_norm_potential(x,p,mu)
 
 
     find_sfi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
@@ -111,7 +111,7 @@ contains
     xEnd = sfi_x_endinf(p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
 
-    potEnd = sfi_norm_potential(xEnd,p)
+    potEnd = sfi_norm_potential(xEnd,p,mu)
     primEnd = sfi_efold_primitive(xEnd,p,mu)
    
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
@@ -150,7 +150,7 @@ contains
 
     primStar = sfi_efold_primitive(x,p,mu)
     epsOneStar = sfi_epsilon_one(x,p,mu)
-    potStar = sfi_norm_potential(x,p)
+    potStar = sfi_norm_potential(x,p,mu)
 
     find_sfi_x_rrad = find_reheat_rrad(PrimStar,calFplusPrimEnd,epsOneStar,potStar)
 
@@ -179,7 +179,7 @@ contains
     xEnd = sfi_x_endinf(p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
 
-    potEnd = sfi_norm_potential(xEnd,p)
+    potEnd = sfi_norm_potential(xEnd,p,mu)
     primEnd = sfi_efold_primitive(xEnd,p,mu)
    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -217,7 +217,7 @@ contains
     CalFplusPrimEnd = sfiData%real3
 
     primStar = sfi_efold_primitive(x,p,mu)
-    potStar = sfi_norm_potential(x,p)
+    potStar = sfi_norm_potential(x,p,mu)
 
     find_sfi_x_rreh = find_reheat_rreh(PrimStar,calFplusPrimEnd,potStar)
 
@@ -238,11 +238,11 @@ contains
     real(kp) :: lnRhoEnd
     
     xEnd = sfi_x_endinf(p,mu)       
-    potEnd  = sfi_norm_potential(xEnd,p)
+    potEnd  = sfi_norm_potential(xEnd,p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
        
     x = sfi_x_star(p,mu,wrad,junk,Pstar)    
-    potStar = sfi_norm_potential(x,p)
+    potStar = sfi_norm_potential(x,p,mu)
     epsOneStar = sfi_epsilon_one(x,p,mu)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'sfi_lnrhoreh_max: slow-roll violated!'
@@ -357,10 +357,10 @@ contains
     mu = sfistar(3)
 
     xEnd = sfi_x_endinf(p,mu)       
-    potEnd  = sfi_norm_potential(xEnd,p)
+    potEnd  = sfi_norm_potential(xEnd,p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
     
-    potStar = sfi_norm_potential(x,p)
+    potStar = sfi_norm_potential(x,p,mu)
     epsOneStar = sfi_epsilon_one(x,p,mu)
 
     if (.not.slowroll_validity(epsOneStar)) stop 'sfi_lnrhoreh_fromepsilon: slow-roll violated!'

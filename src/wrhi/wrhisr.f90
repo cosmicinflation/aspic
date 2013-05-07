@@ -24,7 +24,7 @@ contains
     implicit none
     real(kp) :: wrhi_norm_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     wrhi_norm_potential = log(x)**2
 
@@ -37,7 +37,7 @@ contains
     implicit none
     real(kp) :: wrhi_norm_deriv_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
    wrhi_norm_deriv_potential = 2._kp*log(x)/x
 
@@ -50,7 +50,7 @@ contains
     implicit none
     real(kp) :: wrhi_norm_deriv_second_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     wrhi_norm_deriv_second_potential = 2._kp*(1._kp-log(x))/(x**2)
 

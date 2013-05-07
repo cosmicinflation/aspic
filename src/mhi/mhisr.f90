@@ -23,7 +23,7 @@ contains
     implicit none
     real(kp) :: mhi_norm_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     mhi_norm_potential = 1._kp-1._kp/cosh(x)
 
@@ -35,7 +35,7 @@ contains
     implicit none
     real(kp) :: mhi_norm_deriv_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
    mhi_norm_deriv_potential = tanh(x)/cosh(x)
 
@@ -48,7 +48,7 @@ contains
     implicit none
     real(kp) :: mhi_norm_deriv_second_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     mhi_norm_deriv_second_potential = (cosh(x)**(-3)-tanh(x)**2/cosh(x))
 

@@ -34,7 +34,7 @@ contains
     implicit none
     real(kp) :: lpi2_norm_potential
     real(kp), intent(in) :: x,p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     call lpi23_sanity_check(q=q)
 
@@ -49,7 +49,7 @@ contains
     implicit none
     real(kp) :: lpi2_norm_deriv_potential
     real(kp), intent(in) :: x,p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     call lpi23_sanity_check(q=q)
 
@@ -64,7 +64,7 @@ contains
     implicit none
     real(kp) :: lpi2_norm_deriv_second_potential
     real(kp), intent(in) :: x,p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
     
     call lpi23_sanity_check(q=q)
 

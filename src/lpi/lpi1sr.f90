@@ -33,7 +33,7 @@ contains
     implicit none
     real(kp) :: lpi1_norm_potential
     real(kp), intent(in) :: x,p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     lpi1_norm_potential = lpi_norm_potential(x,p,q)
 
@@ -46,7 +46,7 @@ contains
     implicit none
     real(kp) :: lpi1_norm_deriv_potential
     real(kp), intent(in) :: x,p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
    lpi1_norm_deriv_potential = lpi_norm_deriv_potential(x,p,q)
 
@@ -59,7 +59,7 @@ contains
     implicit none
     real(kp) :: lpi1_norm_deriv_second_potential
     real(kp), intent(in) :: x,p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     lpi1_norm_deriv_second_potential = lpi_norm_deriv_second_potential(x,p,q)
 

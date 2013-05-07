@@ -23,7 +23,7 @@ contains
     implicit none
     real(kp) :: psni_norm_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: f
+    real(kp), intent(in) :: f
 
     psni_norm_potential = 1._kp + alpha*log(cos(x))
 
@@ -36,7 +36,7 @@ contains
     implicit none
     real(kp) :: psni_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: f
+    real(kp), intent(in) :: f
 
    psni_norm_deriv_potential = -alpha*tan(x)
 
@@ -49,7 +49,7 @@ contains
     implicit none
     real(kp) :: psni_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: f
+    real(kp), intent(in) :: f
 
     psni_norm_deriv_second_potential = -alpha/(cos(x))**2
 

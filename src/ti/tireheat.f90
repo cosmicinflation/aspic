@@ -39,7 +39,7 @@ contains
     xEnd=ti_x_endinf(alpha,mu)
     
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
-    potEnd = ti_norm_potential(xEnd,alpha)
+    potEnd = ti_norm_potential(xEnd,alpha,mu)
     primEnd = ti_efold_primitive(xEnd,alpha,mu)
 
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -76,7 +76,7 @@ contains
 
     primStar = ti_efold_primitive(x,alpha,mu)
     epsOneStar = ti_epsilon_one(x,alpha,mu)
-    potStar = ti_norm_potential(x,alpha)
+    potStar = ti_norm_potential(x,alpha,mu)
 
     find_ti_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
@@ -103,7 +103,7 @@ contains
     xEnd=ti_x_endinf(alpha,mu)
     
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
-    potEnd = ti_norm_potential(xEnd,alpha)
+    potEnd = ti_norm_potential(xEnd,alpha,mu)
     primEnd = ti_efold_primitive(xEnd,alpha,mu)
 
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
@@ -138,7 +138,7 @@ contains
 
     primStar = ti_efold_primitive(x,alpha,mu)
     epsOneStar = ti_epsilon_one(x,alpha,mu)
-    potStar = ti_norm_potential(x,alpha)
+    potStar = ti_norm_potential(x,alpha,mu)
 
     find_ti_x_rrad = find_reheat_rrad(PrimStar,calFplusPrimEnd,epsOneStar,potStar)
 
@@ -166,7 +166,7 @@ contains
     xEnd=ti_x_endinf(alpha,mu)
     
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
-    potEnd = ti_norm_potential(xEnd,alpha)
+    potEnd = ti_norm_potential(xEnd,alpha,mu)
     primEnd = ti_efold_primitive(xEnd,alpha,mu)
 
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -200,7 +200,7 @@ contains
     CalFplusPrimEnd = tiData%real3
 
     primStar = ti_efold_primitive(x,alpha,mu)
-    potStar = ti_norm_potential(x,alpha)
+    potStar = ti_norm_potential(x,alpha,mu)
 
     find_ti_x_rreh = find_reheat_rreh(PrimStar,calFplusPrimEnd,potStar)
 
@@ -222,12 +222,12 @@ contains
     real(kp) :: lnRhoEnd
         
     xEnd=ti_x_endinf(alpha,mu) 
-    potEnd  = ti_norm_potential(xEnd,alpha)
+    potEnd  = ti_norm_potential(xEnd,alpha,mu)
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
 
        
     x = ti_x_star(alpha,mu,wrad,junk,Pstar)    
-    potStar = ti_norm_potential(x,alpha)
+    potStar = ti_norm_potential(x,alpha,mu)
     epsOneStar = ti_epsilon_one(x,alpha,mu)
     
     if (.not.slowroll_validity(epsOneStar)) then

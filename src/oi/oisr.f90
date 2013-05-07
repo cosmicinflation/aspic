@@ -23,7 +23,7 @@ contains
     implicit none
     real(kp) :: oi_norm_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     oi_norm_potential = x**4*(log(x)**2-alpha)
 
@@ -35,7 +35,7 @@ contains
     implicit none
     real(kp) :: oi_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
    oi_norm_deriv_potential = 2._kp*x**3*(-2._kp*alpha+log(x)+ &
                              2._kp*log(x)**2)
@@ -49,7 +49,7 @@ contains
     implicit none
     real(kp) :: oi_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     oi_norm_deriv_second_potential = 2._kp*x**2*(1._kp-6._kp* &
                                      alpha+log(x)*(7._kp+6._kp*log(x)))

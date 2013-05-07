@@ -52,7 +52,7 @@ contains
     oripiData%real3 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = oripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
 
 
     x = zbrent(find_oripi_x_star,mini,maxi,tolzbrent,oripiData)
@@ -115,7 +115,7 @@ contains
     oripiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = oripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
 
 
     x = zbrent(find_oripi_x_rrad,mini,maxi,tolzbrent,oripiData)
@@ -178,7 +178,7 @@ contains
     oripiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = oripi_x_derivpotzero()*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
+    maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
 
 
     x = zbrent(find_oripi_x_rreh,mini,maxi,tolzbrent,oripiData)

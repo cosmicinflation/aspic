@@ -42,7 +42,7 @@ contains
     xEnd = wrhi_x_endinf(phi0)
 
     epsOneEnd = wrhi_epsilon_one(xEnd,phi0)
-    potEnd = wrhi_norm_potential(xEnd)
+    potEnd = wrhi_norm_potential(xEnd,phi0)
 
     primEnd = wrhi_efold_primitive(xEnd,phi0)
    
@@ -79,7 +79,7 @@ contains
 
     primStar = wrhi_efold_primitive(x,phi0)
     epsOneStar = wrhi_epsilon_one(x,phi0)
-    potStar = wrhi_norm_potential(x)
+    potStar = wrhi_norm_potential(x,phi0)
 
     find_wrhi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -107,7 +107,7 @@ contains
     xEnd = wrhi_x_endinf(phi0)
 
     epsOneEnd = wrhi_epsilon_one(xEnd,phi0)
-    potEnd = wrhi_norm_potential(xEnd)
+    potEnd = wrhi_norm_potential(xEnd,phi0)
 
     primEnd = wrhi_efold_primitive(xEnd,phi0)
 
@@ -142,7 +142,7 @@ contains
 
     primStar = wrhi_efold_primitive(x,phi0)
     epsOneStar = wrhi_epsilon_one(x,phi0)
-    potStar = wrhi_norm_potential(x)
+    potStar = wrhi_norm_potential(x,phi0)
 
     find_wrhi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
          ,epsOneStar,potStar)
@@ -172,7 +172,7 @@ contains
     xEnd = wrhi_x_endinf(phi0)
 
     epsOneEnd = wrhi_epsilon_one(xEnd,phi0)
-    potEnd = wrhi_norm_potential(xEnd)
+    potEnd = wrhi_norm_potential(xEnd,phi0)
 
     primEnd = wrhi_efold_primitive(xEnd,phi0)
 
@@ -206,7 +206,7 @@ contains
     CalFplusprimEnd = wrhiData%real2
 
     primStar = wrhi_efold_primitive(x,phi0)    
-    potStar = wrhi_norm_potential(x)
+    potStar = wrhi_norm_potential(x,phi0)
 
     find_wrhi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
          ,potStar)
@@ -228,14 +228,14 @@ contains
     real(kp) :: lnRhoEnd
     
     xEnd = wrhi_x_endinf(phi0)
-    potEnd  = wrhi_norm_potential(xEnd)
+    potEnd  = wrhi_norm_potential(xEnd,phi0)
     epsOneEnd = wrhi_epsilon_one(xEnd,phi0)
 
 !   Trick to return x such that rho_reh=rho_end
 
     x = wrhi_x_star(phi0,wrad,junk,Pstar)  
  
-    potStar = wrhi_norm_potential(x)
+    potStar = wrhi_norm_potential(x,phi0)
     epsOneStar = wrhi_epsilon_one(x,phi0)
    
     if (.not.slowroll_validity(epsOneStar)) stop 'wrhi_lnrhoreh_max: slow-roll violated!'

@@ -41,7 +41,7 @@ contains
     
     xEnd = psni_x_endinf(alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
-    potEnd = psni_norm_potential(xEnd,alpha)
+    potEnd = psni_norm_potential(xEnd,alpha,f)
     primEnd = psni_efold_primitive(xEnd,alpha,f)
 
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -79,7 +79,7 @@ contains
 
     primStar = psni_efold_primitive(x,alpha,f)
     epsOneStar = psni_epsilon_one(x,alpha,f)
-    potStar = psni_norm_potential(x,alpha)
+    potStar = psni_norm_potential(x,alpha,f)
 
     find_psni_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -105,7 +105,7 @@ contains
 
     xEnd = psni_x_endinf(alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
-    potEnd = psni_norm_potential(xEnd,alpha)
+    potEnd = psni_norm_potential(xEnd,alpha,f)
     primEnd = psni_efold_primitive(xEnd,alpha,f)
 
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
@@ -141,7 +141,7 @@ contains
 
     primStar = psni_efold_primitive(x,alpha,f)
     epsOneStar = psni_epsilon_one(x,alpha,f)
-    potStar = psni_norm_potential(x,alpha)
+    potStar = psni_norm_potential(x,alpha,f)
 
     find_psni_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -168,7 +168,7 @@ contains
 
     xEnd = psni_x_endinf(alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
-    potEnd = psni_norm_potential(xEnd,alpha)
+    potEnd = psni_norm_potential(xEnd,alpha,f)
     primEnd = psni_efold_primitive(xEnd,alpha,f)
 
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -203,7 +203,7 @@ contains
     CalFplusprimEnd = psniData%real3
 
     primStar = psni_efold_primitive(x,alpha,f)    
-    potStar = psni_norm_potential(x,alpha)
+    potStar = psni_norm_potential(x,alpha,f)
 
     find_psni_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -225,13 +225,13 @@ contains
     real(kp) :: lnRhoEnd
     
     xEnd = psni_x_endinf(alpha,f)
-    potEnd  = psni_norm_potential(xEnd,alpha)
+    potEnd  = psni_norm_potential(xEnd,alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
 
 !   Trick to return x such that rho_reh=rho_end
 
     x = psni_x_star(alpha,f,wrad,junk,Pstar)    
-    potStar = psni_norm_potential(x,alpha)
+    potStar = psni_norm_potential(x,alpha,f)
     epsOneStar = psni_epsilon_one(x,alpha,f)
 
 

@@ -25,7 +25,7 @@ contains
     implicit none
     real(kp) :: sfi_norm_potential
     real(kp), intent(in) :: x,p
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     sfi_norm_potential = 1._kp - x**p
   end function sfi_norm_potential
@@ -36,7 +36,7 @@ contains
     implicit none
     real(kp) :: sfi_norm_deriv_potential
     real(kp), intent(in) :: x,p
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
    sfi_norm_deriv_potential = -p*x**(p-1._kp)
 
@@ -49,7 +49,7 @@ contains
     implicit none
     real(kp) :: sfi_norm_deriv_second_potential
     real(kp), intent(in) :: x,p
-    real(kp), intent(in), optional :: mu
+    real(kp), intent(in) :: mu
 
     sfi_norm_deriv_second_potential = -p*(p-1._kp)*x**(p-2._kp)
 

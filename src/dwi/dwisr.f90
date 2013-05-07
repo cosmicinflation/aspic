@@ -23,7 +23,7 @@ contains
     implicit none
     real(kp) :: dwi_norm_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     dwi_norm_potential = (x**2-1._kp)**2
 
@@ -36,7 +36,7 @@ contains
     implicit none
     real(kp) :: dwi_norm_deriv_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
    dwi_norm_deriv_potential = 4._kp*x*(-1._kp+x**2)
 
@@ -49,7 +49,7 @@ contains
     implicit none
     real(kp) :: dwi_norm_deriv_second_potential
     real(kp), intent(in) :: x
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     dwi_norm_deriv_second_potential = 4._kp*(-1._kp+3._kp*x**2)
 
