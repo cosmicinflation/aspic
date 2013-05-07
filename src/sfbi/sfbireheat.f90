@@ -24,7 +24,7 @@ contains
     implicit none
     real(kp) :: kksf_x_star
     real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x

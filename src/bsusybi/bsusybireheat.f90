@@ -25,7 +25,7 @@ contains
     implicit none
     real(kp) :: bsusybi_x_star
     real(kp), intent(in) :: gammaBSUSYB,xEnd,w,lnRhoReh,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -87,7 +87,7 @@ contains
     implicit none
     real(kp) :: bsusybi_x_rrad
     real(kp), intent(in) :: gammaBSUSYB,xEnd,lnRrad,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -148,7 +148,7 @@ contains
     implicit none
     real(kp) :: bsusybi_x_rreh
     real(kp), intent(in) :: gammaBSUSYB,xEnd,lnRreh
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x

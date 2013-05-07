@@ -24,7 +24,7 @@ contains
     implicit none
     real(kp) :: bei_x_star
     real(kp), intent(in) :: lambda,beta,w,lnRhoReh,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -100,7 +100,7 @@ contains
     implicit none
     real(kp) :: bei_x_rrad
     real(kp), intent(in) :: lambda,beta,lnRrad,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -167,7 +167,7 @@ contains
     implicit none
     real(kp) :: bei_x_rreh
     real(kp), intent(in) :: lambda,beta,lnRreh
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x

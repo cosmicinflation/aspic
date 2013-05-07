@@ -249,7 +249,7 @@ contains
     implicit none
     real(kp), dimension(2) :: rgi_xp_fromepsilon
     real(kp), intent(in) :: eps1,eps2
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
     
     real(kp) :: x, xEnd, alpha
 

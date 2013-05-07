@@ -27,7 +27,7 @@ contains
     implicit none
     real(kp) :: rcmi_x_star
     real(kp), intent(in) :: alpha,lnRhoReh,w,Pstar
-    real(kp), optional :: bfoldstar
+    real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x,xPotMax
@@ -91,7 +91,7 @@ contains
     implicit none
     real(kp) :: rcmi_x_rrad
     real(kp), intent(in) :: alpha,lnRrad,Pstar
-    real(kp), optional :: bfoldstar
+    real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x,xPotMax
@@ -152,7 +152,7 @@ contains
     implicit none
     real(kp) :: rcmi_x_rreh
     real(kp), intent(in) :: alpha,lnRreh
-    real(kp), optional :: bfoldstar
+    real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x,xPotMax

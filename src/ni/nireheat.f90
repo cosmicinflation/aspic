@@ -26,7 +26,7 @@ contains
     implicit none
     real(kp) :: ni_x_star
     real(kp), intent(in) :: f,lnRhoReh,w,Pstar
-    real(kp), optional :: bfoldstar
+    real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -89,7 +89,7 @@ contains
     implicit none
     real(kp) :: ni_x_rrad
     real(kp), intent(in) :: f,lnRrad,Pstar
-    real(kp), optional :: bfoldstar
+    real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -150,7 +150,7 @@ contains
     implicit none
     real(kp) :: ni_x_rreh
     real(kp), intent(in) :: f,lnRreh
-    real(kp), optional :: bfoldstar
+    real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x

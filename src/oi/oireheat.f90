@@ -24,7 +24,7 @@ contains
     implicit none
     real(kp) :: oi_x_star
     real(kp), intent(in) :: alpha,phi0,w,lnRhoReh,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -90,7 +90,7 @@ contains
     implicit none
     real(kp) :: oi_x_rrad
     real(kp), intent(in) :: alpha,phi0,lnRrad,Pstar
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
@@ -154,7 +154,7 @@ contains
     implicit none
     real(kp) :: oi_x_rreh
     real(kp), intent(in) :: alpha,phi0,lnRreh
-    real(kp), optional :: bfold
+    real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
