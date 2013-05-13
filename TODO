@@ -1,0 +1,5 @@
+- planned change of API for the srreheat modules
+  * routines that depend on xend should have it as an argument, even
+  if xend is not a model parameter
+
+    

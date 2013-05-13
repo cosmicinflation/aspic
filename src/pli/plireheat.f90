@@ -9,13 +9,11 @@ module plireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use plisr, only : pli_epsilon_one, pli_epsilon_two, pli_epsilon_three
-  use plisr, only : pli_norm_potential
+  use plisr, only : pli_norm_potential, pli_x_endinf
   use plisr, only : pli_efold_primitive
   implicit none
 
   private
-
-  real(kp), parameter :: junkXend=100._kp
 
   public pli_x_star, pli_lnrhoreh_max
   public pli_x_rrad, pli_x_rreh
@@ -40,7 +38,7 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = junkXend
+    xEnd = pli_x_endinf(alpha)
 
     epsOneEnd = pli_epsilon_one(xEnd,alpha)
     potEnd = pli_norm_potential(xEnd,alpha)
@@ -102,7 +100,7 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = junkXend
+    xEnd = pli_x_endinf(alpha)
 
     epsOneEnd = pli_epsilon_one(xEnd,alpha)
     potEnd = pli_norm_potential(xEnd,alpha)
@@ -163,7 +161,7 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = junkXend
+    xEnd = pli_x_endinf(alpha)
 
     epsOneEnd = pli_epsilon_one(xEnd,alpha)
     potEnd = pli_norm_potential(xEnd,alpha)
@@ -221,7 +219,7 @@ contains
     real(kp) :: lnRhoEnd
     
 
-    xEnd=junkXend
+    xEnd=pli_x_endinf(alpha)
     potEnd  = pli_norm_potential(xEnd,alpha)
     epsOneEnd = pli_epsilon_one(xEnd,alpha)
 

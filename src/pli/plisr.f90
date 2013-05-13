@@ -10,8 +10,10 @@ module plisr
 
   private
 
+  real(kp), parameter :: junkXend = 100._kp
+
   public  pli_norm_potential, pli_epsilon_one, pli_epsilon_two, pli_epsilon_three
-  public  pli_efold_primitive, pli_x_trajectory
+  public  pli_efold_primitive, pli_x_trajectory, pli_x_endinf
   public  pli_norm_deriv_potential, pli_norm_deriv_second_potential
  
 contains
@@ -81,6 +83,15 @@ contains
     
   end function pli_epsilon_three
 
+
+  function pli_x_endinf(alpha)
+    implicit none
+    real(kp) :: pli_x_endinf
+    real(kp), intent(in) :: alpha
+
+    pli_x_endinf = junkXend
+
+  end function pli_x_endinf
 
 
 
