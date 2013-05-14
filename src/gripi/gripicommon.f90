@@ -26,7 +26,7 @@ contains
     implicit none
     real(kp) :: gripi_norm_potential
     real(kp), intent(in) :: x, alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     gripi_norm_potential = x**2-4._kp/3._kp*alpha*x**3+0.5_kp*alpha*x**4
 
@@ -38,7 +38,7 @@ contains
     implicit none
     real(kp) :: gripi_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     gripi_norm_deriv_potential = 2._kp*x*(1._kp+alpha*(-2._kp+x)*x)
 
@@ -51,7 +51,7 @@ contains
     implicit none
     real(kp) :: gripi_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
 
     gripi_norm_deriv_second_potential = 2._kp+2._kp*alpha*x*(-4._kp+3._kp*x)
 

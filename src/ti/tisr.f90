@@ -15,7 +15,7 @@ module tisr
   public ti_epsilon_one, ti_epsilon_two,ti_epsilon_three
   public ti_efold_primitive, ti_x_trajectory,ti_x_endinf,ti_x_potmax
 
- 
+
 contains
 !returns V/M**4
   function ti_norm_potential(x,alpha,mu)
@@ -35,7 +35,7 @@ contains
     real(kp), intent(in) :: x,alpha
     real(kp), intent(in) :: mu
 
-   ti_norm_deriv_potential = sin(x)*(2._kp*alpha*cos(x)-1._kp)
+    ti_norm_deriv_potential = sin(x)*(2._kp*alpha*cos(x)-1._kp)
 
   end function ti_norm_deriv_potential
 
@@ -58,13 +58,13 @@ contains
     real(kp) :: ti_x_potmax
     real(kp), intent(in) :: alpha
     real(kp), intent(in) :: mu
-    
+
     if (alpha .le. 0.5_kp) then
-      ti_x_potmax = 0._kp
+       ti_x_potmax = 0._kp
     else
-      ti_x_potmax = acos(0.5_kp/alpha)
+       ti_x_potmax = acos(0.5_kp/alpha)
     endif
-    
+
   end function ti_x_potmax
 
 !epsilon1(x)
@@ -72,10 +72,10 @@ contains
     implicit none
     real(kp) :: ti_epsilon_one
     real(kp), intent(in) :: x,alpha,mu
-    
+
     ti_epsilon_one = ((1._kp-2._kp*alpha*cos(x))**2*sin(x)**2)/ &
-                     (2._kp*mu**2*(1._kp+cos(x)+alpha*sin(x)**2)**2)
-    
+         (2._kp*mu**2*(1._kp+cos(x)+alpha*sin(x)**2)**2)
+
   end function ti_epsilon_one
 
 
@@ -84,11 +84,11 @@ contains
     implicit none
     real(kp) :: ti_epsilon_two
     real(kp), intent(in) :: x,alpha,mu
-    
+
     ti_epsilon_two = -((2._kp*cos(x/2._kp)**2*(-2._kp-alpha*(3._kp+4._kp*alpha) + & 
-                     alpha*((6._kp+4._kp*alpha)*cos(x)+cos(2._kp*x))))/ &
-                     (mu*(1._kp+cos(x)+alpha*sin(x)**2))**2)
-    
+         alpha*((6._kp+4._kp*alpha)*cos(x)+cos(2._kp*x))))/ &
+         (mu*(1._kp+cos(x)+alpha*sin(x)**2))**2)
+
   end function ti_epsilon_two
 
 !epsilon3(x)
@@ -96,12 +96,12 @@ contains
     implicit none
     real(kp) :: ti_epsilon_three
     real(kp), intent(in) :: x,alpha,mu
-    
+
     ti_epsilon_three = (-2._kp+(-2._kp-4._kp*alpha)/(1._kp+alpha-alpha*cos(x))**2 + &
-                       (5._kp+3._kp*alpha)/(1._kp+alpha-alpha*cos(x))+(4._kp*(1._kp+alpha+3._kp*alpha**2) &
-                       -2._kp*alpha*(7._kp+4._kp*alpha)*cos(x))/(-2._kp-alpha*(3._kp+4._kp*alpha)+ &
-                       alpha*((6._kp+4._kp*alpha)*cos(x)+cos(2._kp*x)))+1._kp/(cos(x/2._kp)**2))/mu**2
-    
+         (5._kp+3._kp*alpha)/(1._kp+alpha-alpha*cos(x))+(4._kp*(1._kp+alpha+3._kp*alpha**2) &
+         -2._kp*alpha*(7._kp+4._kp*alpha)*cos(x))/(-2._kp-alpha*(3._kp+4._kp*alpha)+ &
+         alpha*((6._kp+4._kp*alpha)*cos(x)+cos(2._kp*x)))+1._kp/(cos(x/2._kp)**2))/mu**2
+
   end function ti_epsilon_three
 
 !returns x at the end of inflation defined as epsilon1=1
@@ -114,18 +114,18 @@ contains
     Delta=-864._kp*alpha**6*(1._kp+2._kp*alpha)**3*mu**2*(2._kp+mu**2)**2*((-1._kp+2._kp*alpha)**3 + & 
          2._kp*(1._kp+2._kp*alpha)*(-2._kp+(-10._kp+alpha)*alpha)*mu**2-4._kp*(1._kp+2._kp*alpha)**2*mu**4)
     smalldelta=8._kp*alpha**3*(2._kp*(-1._kp+2._kp*alpha)**3-3._kp*(1._kp+2._kp*alpha)*(5._kp+2._kp*alpha)* &
-               (1._kp+4._kp*alpha)*mu**2-15._kp*(1._kp+alpha)*(1._kp+2._kp*alpha)**2*mu**4-2._kp* &
-               (1._kp+2._kp*alpha)**3*mu**6)
+         (1._kp+4._kp*alpha)*mu**2-15._kp*(1._kp+alpha)*(1._kp+2._kp*alpha)**2*mu**4-2._kp* &
+         (1._kp+2._kp*alpha)**3*mu**6)
     smallsigma=3._kp+4._kp*alpha-4._kp*alpha**2-2._kp*(mu+2._kp*alpha*mu)**2-8._kp/(2._kp+mu**2)
     Sigma=(2._kp+2._kp*alpha+2._kp*mu**2+alpha*mu**2)/(6._kp*alpha+3._kp*alpha*mu**2)
     smallsigmaprime=1/(2._kp*alpha**2*(2._kp+mu**2))
 
     ti_x_endinf =acos(real(Sigma+(1._kp+(0._kp,1._kp)*sqrt(3._kp))*smallsigma/(3._kp*2._kp**(2._kp/3._kp)* &
-                 (smalldelta+sqrt(Delta))**(1._kp/3._kp))-(1._kp-(0._kp,1._kp)*sqrt(3._kp))*smallsigmaprime* &
-                 (smalldelta+sqrt(Delta))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)),kp))
+         (smalldelta+sqrt(Delta))**(1._kp/3._kp))-(1._kp-(0._kp,1._kp)*sqrt(3._kp))*smallsigmaprime* &
+         (smalldelta+sqrt(Delta))**(1._kp/3._kp)/(6._kp*2._kp**(1._kp/3._kp)),kp))
 
-
-    ti_x_endinf =min(ti_x_endinf,acos(-1._kp)*(1._kp-epsilon(1._kp))) !to avoid numerical NaN when ti_x_endinf is very close to pi
+  !to avoid numerical NaN when ti_x_endinf is very close to pi
+    ti_x_endinf =min(ti_x_endinf,acos(-1._kp)*(1._kp-epsilon(1._kp)))
 
   end function ti_x_endinf
 
@@ -135,21 +135,21 @@ contains
     implicit none
     real(kp), intent(in) :: x,alpha,mu
     real(kp) :: ti_efold_primitive
-    
-     if (alpha.eq.0.5_kp)  then 
 
-    ti_efold_primitive = mu**2*(1._kp/(1._kp-cos(x))-0.5_kp*log(1._kp-cos(x)))
+    if (alpha.eq.0.5_kp)  then 
 
-     else
+       ti_efold_primitive = mu**2*(1._kp/(1._kp-cos(x))-0.5_kp*log(1._kp-cos(x)))
 
-    ti_efold_primitive = mu**2*((2._kp*alpha+1._kp)/(2._kp*(1._kp-2._kp*alpha))* &
-                         log(abs(-2._kp*alpha*cos(x)+1._kp))+log(1-cos(x))/(2._kp*alpha-1._kp))
+    else
 
-     endif
+       ti_efold_primitive = mu**2*((2._kp*alpha+1._kp)/(2._kp*(1._kp-2._kp*alpha))* &
+            log(abs(-2._kp*alpha*cos(x)+1._kp))+log(1-cos(x))/(2._kp*alpha-1._kp))
+
+    endif
 
 
   end function ti_efold_primitive
- 
+
 
 
 !returns x at bfold=-efolds before the end of inflation
@@ -167,9 +167,9 @@ contains
     tiData%real1 = alpha
     tiData%real2 = mu
     tiData%real3 = -bfold + ti_efold_primitive(xend,alpha,mu)
-    
+
     ti_x_trajectory = zbrent(find_ti_x_trajectory,mini,maxi,tolFind,tiData)
-    
+
   end function ti_x_trajectory
 
   function find_ti_x_trajectory(x,tiData)    
@@ -184,7 +184,7 @@ contains
     NplusPrimEnd = tiData%real3
 
     find_ti_x_trajectory = ti_efold_primitive(x,alpha,mu) - NplusPrimEnd
-   
+
   end function find_ti_x_trajectory
 
 
