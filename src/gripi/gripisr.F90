@@ -24,8 +24,7 @@ module gripisr
   public gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three  
   public gripi_x_epsonemin, gripi_x_endinf
   public gripi_x_epstwozero,gripi_x_epsonezero
-  
-  public gripi_norm_deriv_potential, gripi_norm_deriv_second_potential
+    
   public gripi_alphamin, gripi_alphamax
   public gripi_x_trajectory, gripi_efold_primitive
 
