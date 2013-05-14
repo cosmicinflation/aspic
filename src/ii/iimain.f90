@@ -2,7 +2,7 @@
 program iimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use iisr, only : ii_epsilon_one, ii_epsilon_two, ii_epsilon_three, ii_prior_xendmin
+  use iisr, only : ii_epsilon_one, ii_epsilon_two, ii_epsilon_three, ii_xendmin
   use iireheat, only : ii_lnrhoreh_max, ii_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -41,7 +41,7 @@ program iimain
 
   do i=1,npts
      beta=betamin+(betamax-betamin)*(real(i,kp)/real(npts,kp))
-     call livewrite('ii_prior.dat',beta,ii_prior_xendmin(beta,-60._kp))
+     call livewrite('ii_prior.dat',beta,ii_xendmin(60._kp,beta))
   end do
 
   !Calculates the CMB constraints space
@@ -63,7 +63,7 @@ program iimain
   do j=0,3
      beta=betamin*(betamax/betamin)**(real(j,kp)/real(3,kp))
 
-     xendmin=ii_prior_xendmin(beta,-60._kp)
+     xendmin=ii_xendmin(60._kp,beta)
      xendmax=100._kp*xendmin
 
      do k=1,20

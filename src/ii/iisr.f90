@@ -15,7 +15,7 @@ module iisr
   public  ii_norm_potential, ii_epsilon_one, ii_epsilon_two, ii_epsilon_three
   public  ii_efold_primitive, ii_x_trajectory
   public  ii_norm_deriv_potential, ii_norm_deriv_second_potential
-  public  ii_prior_xendmin
+  public  ii_xendmin
  
 contains
 !returns V/M^4
@@ -158,12 +158,13 @@ contains
 
  
 !Returns the minimum value of xend in order to have at least -bfolds possible
-  function ii_prior_xendmin(beta,bfold)
+  function ii_xendmin(efold,beta)
     implicit none
-    real(kp), intent(in) :: beta,bfold
-    real(kp) :: ii_prior_xendmin
+    real(kp), intent(in) :: beta,efold
+    real(kp) :: ii_xendmin,bfold
     complex(kp) ::xin
 
+    bfold = -efold
 
     if (beta .gt. 9._kp/2._kp*(1._kp+sqrt(2._kp))) then
       xin=beta/(3._kp*sqrt(2._kp)) &
@@ -181,9 +182,9 @@ contains
 
     endif
 
-    ii_prior_xendmin=sqrt((real(xin,kp))**2-2._kp*beta*bfold)
+    ii_xendmin=sqrt((real(xin,kp))**2-2._kp*beta*bfold)
 
-   end function ii_prior_xendmin
+   end function ii_xendmin
 
   
 end module iisr
