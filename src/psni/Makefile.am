@@ -12,6 +12,8 @@ libpsni_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libpsni_la_includedir = $(includedir)/$(SRINCDIR)
 libpsni_la_include_HEADERS = $(MOD)
 
+man_MANS = aspic_psni.3
+
 clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)

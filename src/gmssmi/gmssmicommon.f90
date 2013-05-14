@@ -28,7 +28,7 @@ contains
     implicit none
     real(kp) :: gmssmi_norm_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
     
     gmssmi_norm_potential = x**2-2._kp/3._kp*alpha*x**6+alpha/5._kp*x**10
 
@@ -40,7 +40,7 @@ contains
     implicit none
     real(kp) :: gmssmi_norm_deriv_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
   
    gmssmi_norm_deriv_potential = 2._kp*(x-2._kp*alpha*x**5+alpha*x**9)
 
@@ -53,7 +53,7 @@ contains
     implicit none
     real(kp) :: gmssmi_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
    
     gmssmi_norm_deriv_second_potential = 2._kp+2._kp*alpha*x**4*(-10._kp+9._kp*x**4)
 
