@@ -2,7 +2,7 @@
 program sbimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use sbisr, only : sbi_epsilon_one, sbi_epsilon_two, sbi_epsilon_three, sbi_alpha_min
+  use sbisr, only : sbi_epsilon_one, sbi_epsilon_two, sbi_epsilon_three, sbi_alphamin
   use sbireheat, only : sbi_lnrhoreh_max, sbi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -53,7 +53,7 @@ program sbimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   beta=0.00005
-  alphamin=sbi_alpha_min(beta)*(1._kp+epsilon(1._kp))
+  alphamin=sbi_alphamin(beta)*(1._kp+epsilon(1._kp))
   alphamax=1000._kp*alphamin
   alphamax=60._kp*alphamin
   nalpha=20
@@ -101,7 +101,7 @@ program sbimain
 
 
   beta=0.001
-  alphamin=sbi_alpha_min(beta)*(1._kp+epsilon(1._kp))
+  alphamin=sbi_alphamin(beta)*(1._kp+epsilon(1._kp))
   alphamax=20._kp*alphamin
   nalpha=30
 
@@ -148,7 +148,7 @@ program sbimain
 
   lnRradmin=-42
   lnRradmax = 10
-  alpha =50.*sbi_alpha_min(beta)
+  alpha =50.*sbi_alphamin(beta)
   beta =5e-3
   do i=1,npts
 

@@ -146,7 +146,7 @@ contains
 
 !Returns the prior alphamax(phi0,efold) such that, when alpha>1,
 !at least efold e-folds can be realized
-  function gripi_alphamax(phi0,efold)    
+  function gripi_alphamax(efold,phi0)
     implicit none
     real(kp), intent(in) :: phi0,efold 
     real(kp) :: gripi_alphamax
@@ -158,8 +158,8 @@ contains
     mini = 1._kp*(1._kp+5._kp*epsilon(1._kp))
     maxi = 2._kp
 
-    gripiData%real1 = phi0
-    gripiData%real2 = efold
+    gripiData%real1 = efold
+    gripiData%real2 = phi0
 
     gripi_alphamax = zbrent(find_gripi_alphamax,mini,maxi,tolFind,gripiData)
 
@@ -173,8 +173,8 @@ contains
     real(kp) :: find_gripi_alphamax
     real(kp) :: phi0,efold
 
-    phi0= gripiData%real1
-    efold= gripiData%real2
+    efold = gripiData%real1
+    phi0 = gripiData%real2
 
     find_gripi_alphamax = gripi_efold_primitive(gripi_x_epsonemin(alpha,phi0),alpha,phi0) &
          -gripi_efold_primitive(gripi_x_endinf(alpha,phi0),alpha,phi0) &

@@ -4,7 +4,7 @@ program gripimgripin
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gripisr, only : gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three
   use gripisr, only : gripi_x_epsonemin, gripi_x_epstwozero, gripi_x_epsonezero
-  use gripisr, only : gripi_alphamin, gripi_alphamax, gripi_efold_primitive,gripi_x_endinf
+  use gripisr, only : gripi_alphamin, gripi_efold_primitive,gripi_x_endinf
   use gripireheat, only : gripi_lnrhoreh_max, gripi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev

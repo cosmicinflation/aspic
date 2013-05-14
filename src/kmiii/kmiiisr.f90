@@ -15,7 +15,7 @@ module kmiiisr
   public  kmiii_norm_potential, kmiii_epsilon_one, kmiii_epsilon_two, kmiii_epsilon_three
   public  kmiii_x_endinf, kmiii_efold_primitive, kmiii_x_trajectory
   public  kmiii_norm_deriv_potential, kmiii_norm_deriv_second_potential
-  public  kmiii_alphamin,kmiii_x_endinf_appr
+  public  kmiii_alphamin, kmiii_alphamax, kmiii_x_endinf_appr
 
 
 contains
@@ -316,6 +316,16 @@ contains
    
   end function find_kmiii_x_trajectory
 
+! such that the potential is positive everywhere
+  function kmiii_alphamax(beta)
+    implicit none
+    real(kp) :: kmiii_alphamax
+    real(kp), intent(in) :: beta
+    
+    kmiii_alphamax = beta*exp(1._kp)
+
+  end function kmiii_alphamax
+
 !Given beta, returns the minimum value of alpha such that inflation
 !can be stopped by violation of the slow roll conditions in the large
 !field region of the potential
@@ -333,7 +343,7 @@ contains
 
 !maximum allowed value such that the potential is positive everywhere
 !(with a numerical safety)
-       alphamaxi=(beta*exp(1._kp) - epsilon(1._kp))*(1._kp- epsilon(1._kp))
+       alphamaxi=(kmiii_alphamax(beta) - epsilon(1._kp))*(1._kp- epsilon(1._kp))
     else
 !For Numerical convergence
        alphamaxi=beta/numCvgAt

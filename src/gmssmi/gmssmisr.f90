@@ -144,7 +144,7 @@ contains
 
 !Returns the prior alphamax(phi0,DeltaNstar) such that, when alpha>1,
 !at least efolds e-folds can be realized
-  function gmssmi_alphamax(phi0,efold)    
+  function gmssmi_alphamax(efold,phi0)    
     implicit none
     real(kp), intent(in) :: phi0,efold 
     real(kp) :: gmssmi_alphamax
@@ -156,8 +156,8 @@ contains
     mini = 1._kp*(1._kp+5._kp*epsilon(1._kp))
     maxi = 2._kp
   
-    gmssmiData%real1 = phi0
-    gmssmiData%real2 = efold
+    gmssmiData%real1 = efold
+    gmssmiData%real2 = phi0
 
     gmssmi_alphamax = zbrent(find_gmssmi_alphamax,mini,maxi,tolFind,gmssmiData)
 
@@ -179,8 +179,8 @@ contains
     real(kp) :: find_gmssmi_alphamax
     real(kp) :: phi0,efold
 
-    phi0= gmssmiData%real1
-    efold= gmssmiData%real2
+    efold= gmssmiData%real1
+    phi0= gmssmiData%real2
 
     find_gmssmi_alphamax = gmssmi_efold_primitive(gmssmi_x_epsonemin(alpha),alpha,phi0) &
          -gmssmi_efold_primitive(gmssmi_x_endinf(alpha,phi0),alpha,phi0) &

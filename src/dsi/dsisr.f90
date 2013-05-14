@@ -174,7 +174,7 @@ contains
   end function dsi_xendmax
 
 !the max value for mu in order to have dsi_xendmin<dsi_xendmax
-  function dsi_mumax(p,q,efolds)
+  function dsi_mumax(efolds,p,q)
     implicit none
     real(kp), intent(in) :: p,q,efolds
     real(kp) :: dsi_mumax  

@@ -68,9 +68,9 @@ program dsimain
   nmuvalues(3)=15
 
   allocate(mumaxvalues(1:np))
-  mumaxvalues(1)=dsi_mumax(pvalues(1),qvalues(1),60._kp)
-  mumaxvalues(2)=dsi_mumax(pvalues(2),qvalues(2),60._kp)
-  mumaxvalues(3)=dsi_mumax(pvalues(3),qvalues(3),60._kp)
+  mumaxvalues(1)=dsi_mumax(60._kp,pvalues(1),qvalues(1))
+  mumaxvalues(2)=dsi_mumax(60._kp,pvalues(2),qvalues(2))
+  mumaxvalues(3)=dsi_mumax(60._kp,pvalues(3),qvalues(3))
 
   allocate(muminvalues(1:np))
   muminvalues(1)=mumaxvalues(1)*10.**(-5.)

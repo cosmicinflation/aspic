@@ -15,7 +15,7 @@ module sbisr
   public sbi_norm_potential, sbi_epsilon_one, sbi_epsilon_two, sbi_epsilon_three
   public sbi_x_endinf, sbi_efold_primitive, sbi_x_trajectory
   public sbi_norm_deriv_potential, sbi_norm_deriv_second_potential
-  public sbi_alpha_min, sbi_x_potmin, sbi_x_potzero
+  public sbi_alphamin, sbi_x_potmin, sbi_x_potzero
 
  
 contains
@@ -109,14 +109,14 @@ contains
 
 
 !Returns the minimum value for alpha such that the minimum value of the potential is negative
-  function sbi_alpha_min(beta)
+  function sbi_alphamin(beta)
     implicit none
     real(kp) , intent(in) :: beta
-    real(kp) :: sbi_alpha_min
+    real(kp) :: sbi_alphamin
 
-    sbi_alpha_min = beta/4._kp*(1._kp-log(beta/4._kp))
+    sbi_alphamin = beta/4._kp*(1._kp-log(beta/4._kp))
 
-  end function sbi_alpha_min
+  end function sbi_alphamin
 
 
 !field value at which the potential vanishes, for 0<x<x_{V'=0}
@@ -125,7 +125,7 @@ contains
     real(kp) , intent(in) :: alpha,beta
     real(kp) :: sbi_x_potzero,L1,L2,W
 
-    if (alpha .lt. sbi_alpha_min(beta)) stop 'sbi_x_potzero: alpha<alpha_min !'
+    if (alpha .lt. sbi_alphamin(beta)) stop 'sbi_x_potzero: alpha < alphamin !'
 
 !this is moved in specialinf --->
 !!Uses an asymptotic approximation for the lambert function to avoid

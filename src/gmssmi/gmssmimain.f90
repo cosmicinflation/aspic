@@ -4,7 +4,7 @@ program gmssmimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gmssmisr, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
   use gmssmicommon, only : gmssmi_x_epsonemin, gmssmi_x_epstwozero, gmssmi_x_epsonezero
-  use gmssmisr, only : gmssmi_alphamin, gmssmi_alphamax, gmssmi_efold_primitive,gmssmi_x_endinf
+  use gmssmisr, only : gmssmi_alphamin, gmssmi_efold_primitive,gmssmi_x_endinf
   use gmssmireheat, only : gmssmi_lnrhoreh_max, gmssmi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
