@@ -98,9 +98,9 @@ contains
 
   end function gripi_epsilon_three
 
-  function gripi_x_epstwozero(alpha) 
+  function gripi_x_epstwozero(alpha,phi0) 
     real(kp), dimension(2) :: gripi_x_epstwozero
-    real(kp), intent(in) :: alpha
+    real(kp), intent(in) :: alpha,phi0
 
     if (alpha .gt. 9._kp/8._kp) then
 
@@ -173,9 +173,9 @@ contains
 
   end function gripi_x_epstwozero
 
-  function gripi_x_epsonezero(alpha)
+  function gripi_x_epsonezero(alpha,phi0)
     real(kp), dimension(2) :: gripi_x_epsonezero
-    real(kp), intent(in) :: alpha 
+    real(kp), intent(in) :: alpha,phi0
 
     if (alpha .lt. 1._kp) then
 
@@ -195,15 +195,15 @@ contains
   end function gripi_x_epsonezero
 
 !Returns the position of the first local minimum of epsilon1
-  function gripi_x_epsonemin(alpha)   
+  function gripi_x_epsonemin(alpha,phi0)   
     implicit none
     real(kp) :: gripi_x_epsonemin
-    real(kp), intent(in) :: alpha
+    real(kp), intent(in) :: alpha,phi0
     real(kp), dimension(2) :: xEpsOneZero,xEpsTwoZero
 
     if (alpha .lt. 1._kp) then
 
-       xEpsTwoZero=gripi_x_epstwozero(alpha)
+       xEpsTwoZero=gripi_x_epstwozero(alpha,phi0)
        gripi_x_epsonemin = xEpsTwoZero(1)
 
     else if (alpha .eq. 1._kp) then
@@ -212,7 +212,7 @@ contains
 
     else
 
-       xEpsOneZero = gripi_x_epsonezero(alpha)
+       xEpsOneZero = gripi_x_epsonezero(alpha,phi0)
 
        gripi_x_epsonemin = xEpsOneZero(1)
 
@@ -233,7 +233,7 @@ contains
 
     mini = epsilon(1._kp)
 !Position of the first local minimum of epsilon1
-    maxi = gripi_x_epsonemin(alpha)*(1._kp-epsilon(1._kp)) 
+    maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-epsilon(1._kp)) 
 
     gripiData%real1 = alpha
     gripiData%real2 = phi0

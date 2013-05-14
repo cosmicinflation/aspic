@@ -76,7 +76,7 @@ contains
 
     if (alpha .lt. 1._kp) then
 
-       maxi = gripi_x_epsonemin(alpha)*100._kp 
+       maxi = gripi_x_epsonemin(alpha,phi0)*100._kp 
 
     elseif (alpha.eq.1._kp) then
 
@@ -84,7 +84,7 @@ contains
 
     else
 
-       maxi = gripi_x_epsonemin(alpha) !local maximum of the potential
+       maxi = gripi_x_epsonemin(alpha,phi0) !local maximum of the potential
 
     endif
 
@@ -141,7 +141,7 @@ contains
 
     phi0= gripiData%real1
 
-    find_gripi_alphamin = gripi_epsilon_one(gripi_x_epsonemin(alpha),alpha,phi0)-1._kp
+    find_gripi_alphamin = gripi_epsilon_one(gripi_x_epsonemin(alpha,phi0),alpha,phi0)-1._kp
 
   end function find_gripi_alphamin
 
@@ -177,7 +177,7 @@ contains
     phi0= gripiData%real1
     efold= gripiData%real2
 
-    find_gripi_alphamax = gripi_efold_primitive(gripi_x_epsonemin(alpha),alpha,phi0) &
+    find_gripi_alphamax = gripi_efold_primitive(gripi_x_epsonemin(alpha,phi0),alpha,phi0) &
          -gripi_efold_primitive(gripi_x_endinf(alpha,phi0),alpha,phi0) &
          -efold
 

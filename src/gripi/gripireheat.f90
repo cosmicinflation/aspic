@@ -54,9 +54,9 @@ contains
     mini = xend
 
     if (alpha .lt. 1._kp) then
-	maxi = gripi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp))
+	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp))
     else
-	maxi = gripi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
+	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
     endif
 
     x = zbrent(find_gripi_x_star,mini,maxi,tolzbrent,gripiData)
@@ -123,9 +123,9 @@ contains
     mini = xend
 
     if (alpha .lt. 1._kp) then
-	maxi = gripi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp))
+	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp))
     else
-	maxi = gripi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
+	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
     endif
 
     x = zbrent(find_gripi_x_rrad,mini,maxi,tolzbrent,gripiData)
@@ -151,7 +151,7 @@ contains
 
     primStar = gripi_efold_primitive(x,alpha,phi0)
     epsOneStar = gripi_epsilon_one(x,alpha,phi0)
-    potStar = gripi_norm_potential(x,alpha)
+    potStar = gripi_norm_potential(x,alpha,phi0)
 
     find_gripi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd &
          ,epsOneStar,potStar)
@@ -180,7 +180,7 @@ contains
     
     xEnd = gripi_x_endinf(alpha,phi0)
     epsOneEnd = gripi_epsilon_one(xEnd,alpha,phi0)
-    potEnd = gripi_norm_potential(xEnd,alpha)
+    potEnd = gripi_norm_potential(xEnd,alpha,phi0)
     primEnd = gripi_efold_primitive(xEnd,alpha,phi0)
 
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -192,9 +192,9 @@ contains
     mini = xend
 
     if (alpha .lt. 1._kp) then
-	maxi = gripi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp))
+	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp))
     else
-	maxi = gripi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
+	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
     endif
 
     x = zbrent(find_gripi_x_rreh,mini,maxi,tolzbrent,gripiData)
@@ -219,7 +219,7 @@ contains
     CalFplusprimEnd = gripiData%real3
 
     primStar = gripi_efold_primitive(x,alpha,phi0)    
-    potStar = gripi_norm_potential(x,alpha)
+    potStar = gripi_norm_potential(x,alpha,phi0)
 
     find_gripi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd &
          ,potStar)

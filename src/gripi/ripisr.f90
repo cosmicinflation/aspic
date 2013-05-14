@@ -170,11 +170,11 @@ contains
   end function find_ripi_x_trajectory
 
 
-  function ripi_x_epsonemin()
+  function ripi_x_epsonemin(phi0)
     implicit none
-    real(kp) :: ripi_x_epsonemin
+    real(kp) :: ripi_x_epsonemin, phi0
 
-    ripi_x_epsonemin = gripi_x_epsonemin(ripiAlpha)
+    ripi_x_epsonemin = gripi_x_epsonemin(ripiAlpha,phi0)
 
   end function ripi_x_epsonemin
 

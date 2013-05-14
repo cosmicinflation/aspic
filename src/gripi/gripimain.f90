@@ -55,11 +55,11 @@ program gripimgripin
   call delete_file('gripi_x_eps1min.dat')
   do i=1,npts
      alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
-     xEpsOneZero = gripi_x_epsonezero(alpha)
-     xEpsTwoZero = gripi_x_epstwozero(alpha)
+     xEpsOneZero = gripi_x_epsonezero(alpha,phi0)
+     xEpsTwoZero = gripi_x_epstwozero(alpha,phi0)
 
      call livewrite('gripi_x_eps1min.dat',alpha,xEpsOneZero(2),xEpsOneZero(1), &
-        xEpsTwoZero(1),xEpsTwoZero(2),gripi_x_epsonemin(alpha))
+        xEpsTwoZero(1),xEpsTwoZero(2),gripi_x_epsonemin(alpha,phi0))
   end do
   print*,'gripi_x_eps1min.dat written'
 
@@ -67,7 +67,7 @@ program gripimgripin
   call delete_file('gripi_eps1min.dat')
   do i=1,npts
        alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
-       call livewrite('gripi_eps1min.dat',alpha,gripi_epsilon_one(gripi_x_epsonemin(alpha),alpha,1._kp))
+       call livewrite('gripi_eps1min.dat',alpha,gripi_epsilon_one(gripi_x_epsonemin(alpha,phi0),alpha,1._kp))
   end do
   print*,'gripi_eps1min.dat'
 
@@ -193,7 +193,7 @@ program gripimgripin
      !get lnR from lnRrad and check that it gives the same xstar
      xend = gripi_x_endinf(alpha,phi0)
      eps1end =  gripi_epsilon_one(xend,alpha,phi0)
-     VendOverVstar = gripi_norm_potential(xend,alpha)/gripi_norm_potential(xstar,alpha)
+     VendOverVstar = gripi_norm_potential(xend,alpha,phi0)/gripi_norm_potential(xstar,alpha,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
@@ -308,7 +308,7 @@ print*,'case alpha>1 done'
      !get lnR from lnRrad and check that it gives the same xstar
      xend = gripi_x_endinf(alpha,phi0)
      eps1end =  gripi_epsilon_one(xend,alpha,phi0)
-     VendOverVstar = gripi_norm_potential(xend,alpha)/gripi_norm_potential(xstar,alpha)
+     VendOverVstar = gripi_norm_potential(xend,alpha,phi0)/gripi_norm_potential(xstar,alpha,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
