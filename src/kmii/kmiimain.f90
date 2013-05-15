@@ -35,7 +35,6 @@ program kmiimain
   real(kp) :: VendOverVstar, eps1End, xend
 
   alphamin=sqrt(2.)/(sqrt(2.)+1.)*exp((2.+sqrt(2.))/(1.+sqrt(2.)))
-  alphamax=exp(1.)
   alphamax=10000._kp
 
   Pstar = powerAmpScalar
@@ -47,9 +46,9 @@ program kmiimain
   call delete_file('kmii_predic.dat')
   call delete_file('kmii_nsr.dat')
 
-  do j=0,nalpha+1
-     alpha = alphamin+(real(j-1,kp)/real(nalpha,kp))*(alphamax-alphamin) !arithmetic step
-     alpha = alphamin*(alphamax/alphamin)**(real(j-1,kp)/real(nalpha,kp)) !logarithmic step
+  do j=1,nalpha
+     alpha = alphamin+(real(j,kp)/real(nalpha,kp))*(alphamax-alphamin) !arithmetic step
+     alpha = alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp)) !logarithmic step
 
 
      lnRhoRehMin = lnRhoNuc

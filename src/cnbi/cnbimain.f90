@@ -39,7 +39,7 @@ program cnbimain
   nalpha = 300
 
   alphamin=10.**(-5)
-  alphamax=0.2975_kp*0.1_kp
+  alphamax=0.2975_kp*0.99_kp
 
   Pstar = powerAmpScalar
 

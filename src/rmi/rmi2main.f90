@@ -75,8 +75,6 @@ program rmi2main
   !  c=10._kp**(-1._kp)
   !  c=10._kp**(1._kp)
 
-
-
   phi0max=1._kp/sqrt(c)
   phi0min=phi0max/(10._kp**2.)
 
@@ -84,8 +82,8 @@ program rmi2main
   do k=0,Nphi0 
      phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
 
-     xendmin = rmi2_numacc_xendmin(70._kp,c,phi0)
-     xendmax = 0.5*exp(1._kp)
+    xendmin = rmi2_numacc_xendmin(70._kp,c,phi0)
+    xendmax = exp(1._kp)
 
 
      if (xendmax .lt. xendmin) then
