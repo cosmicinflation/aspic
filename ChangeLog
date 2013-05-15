@@ -1,3 +1,180 @@
+commit 268bf4a84955fc4830876f505ea36a8c197e65f7
+Merge: 6ba257c 3279a2c
+Date:   Wed May 15 16:23:09 2013 +0200
+
+    Merge branch 'vincent'
+
+commit 3279a2c83a51b244c385edf213cdbf04af983b51
+Date:   Wed May 15 16:22:17 2013 +0200
+
+    vincent correction over 0.2.2.1
+
+ src/cnbi/cnbimain.f90 | 2 +-
+ src/kmii/kmiimain.f90 | 7 +++----
+ src/rmi/rmi2main.f90  | 6 ++----
+ 3 files changed, 6 insertions(+), 9 deletions(-)
+
+commit 6ba257c32d9bad11443587379f23c481dd65bb2f
+Date:   Tue May 14 19:43:22 2013 +0200
+
+    Unifying API calls for dsi,gmssmi,gripi,sbi + new alphamax func for kmiii
+
+ src/dsi/dsimain.f90       |  6 +++---
+ src/dsi/dsisr.f90         |  2 +-
+ src/gmssmi/gmssmimain.f90 |  2 +-
+ src/gmssmi/gmssmisr.f90   | 10 +++++-----
+ src/gripi/gripimain.f90   |  2 +-
+ src/gripi/gripisr.F90     | 10 +++++-----
+ src/kmiii/kmiiisr.f90     | 14 ++++++++++++--
+ src/sbi/sbimain.f90       |  8 ++++----
+ src/sbi/sbisr.f90         | 12 ++++++------
+ 9 files changed, 38 insertions(+), 28 deletions(-)
+
+commit 3b2b49bc8f4ad25cbbd0ddd9d4d00a0b1c9755e1
+Date:   Tue May 14 16:43:02 2013 +0200
+
+    Changing convention for ii_xendmin function to match the others (efold,params)
+
+ src/ii/iimain.f90 |  6 +++---
+ src/ii/iisr.f90   | 13 +++++++------
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+commit 9462aa9136c529669287797736192ccd70224384
+Date:   Tue May 14 15:50:22 2013 +0200
+
+    Fix multiple public statements
+
+ src/gripi/gripisr.F90 | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 31c3b8763b2f06fff7f5393985b9db13c0571a1e
+Date:   Tue May 14 15:42:51 2013 +0200
+
+    Fix extra optional + missing phi0 for API compat in gripi/ripi
+
+ src/gripi/gripicommon.f90 | 18 +++++++++---------
+ src/gripi/gripimain.f90   | 12 ++++++------
+ src/gripi/gripireheat.f90 | 18 +++++++++---------
+ src/gripi/gripisr.F90     |  8 ++++----
+ src/gripi/ripisr.f90      |  6 +++---
+ 5 files changed, 31 insertions(+), 31 deletions(-)
+
+commit 06865e29db9248411ed01ca00e665e31f7ebf472
+Date:   Tue May 14 15:08:34 2013 +0200
+
+    Fix optional in gripi, ti man
+
+ src/gripi/gripicommon.f90 |  6 +++---
+ src/ti/aspic_ti.3         | 13 ++----------
+ src/ti/tisr.f90           | 70 +++++++++++++++++++++++++++++++-------------------------------
+ 3 files changed, 40 insertions(+), 49 deletions(-)
+
+commit 8b8ba44dc6c327016de9d2199a5f26663e91467e
+Author: chris <chris@ringeval.com>
+Date:   Tue May 14 14:59:07 2013 +0200
+
+    Fix typos in man files, psni Makefile, remaining optional in gmssmisr
+
+ src/gmssmi/gmssmicommon.f90 | 6 +++---
+ src/lmi/aspic_lmi2.3        | 4 ++++
+ src/psni/Makefile.am        | 2 ++
+ src/rmi/aspic_rmi.3         | 2 +-
+ 4 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 36516cbdc6680712cb243e4671d68061ebcb3fdd
+Date:   Mon May 13 15:49:41 2013 +0200
+
+    Adding junk x_endinf function for pli to keep API uniform
+
+ TODO                  |  5 +++++
+ src/pli/plireheat.f90 | 12 +++++-------
+ src/pli/plisr.f90     | 13 ++++++++++++-
+ 3 files changed, 22 insertions(+), 8 deletions(-)
+
+commit 1b3133643de7a59429c55eb8ad72c14e7fce6eb6
+Date:   Tue May 7 19:50:28 2013 +0200
+
+    Optional -> non optional parameters in _norm_potential()
+
+ src/ai/aireheat.f90       | 16 ++++++++--------
+ src/ai/aisr.f90           |  6 +++---
+ src/cwi/cwisr.f90         | 10 +++++-----
+ src/dsi/dsireheat.f90     | 16 ++++++++--------
+ src/dsi/dsisr.f90         |  6 +++---
+ src/dwi/dwireheat.f90     | 16 ++++++++--------
+ src/dwi/dwisr.f90         |  6 +++---
+ src/gripi/ripisr.f90      |  6 +++---
+ src/lpi/lpi1sr.f90        |  6 +++---
+ src/lpi/lpi2sr.f90        |  6 +++---
+ src/lpi/lpi3sr.f90        |  6 +++---
+ src/mhi/mhireheat.f90     | 16 ++++++++--------
+ src/mhi/mhisr.f90         |  6 +++---
+ src/oi/oireheat.f90       | 16 ++++++++--------
+ src/oi/oisr.f90           |  6 +++---
+ src/oripi/oripireheat.f90 |  6 +++---
+ src/oripi/oripisr.f90     | 14 +++++++-------
+ src/osti/ostireheat.f90   | 16 ++++++++--------
+ src/osti/ostisr.f90       |  6 +++---
+ src/psni/psnireheat.f90   | 16 ++++++++--------
+ src/psni/psnisr.f90       |  6 +++---
+ src/sfi/sfireheat.f90     | 20 ++++++++++----------
+ src/sfi/sfisr.f90         |  6 +++---
+ src/ti/tireheat.f90       | 16 ++++++++--------
+ src/ti/tisr.f90           |  8 ++++----
+ src/vhi/vhireheat.f90     | 16 ++++++++--------
+ src/vhi/vhisr.f90         |  8 ++++----
+ src/wrhi/wrhireheat.f90   | 16 ++++++++--------
+ src/wrhi/wrhisr.f90       |  6 +++---
+ 29 files changed, 152 insertions(+), 152 deletions(-)
+
+commit 6d7d49ad6cf653d09686e3bad45ab0fd89250de3
+Date:   Tue May 7 17:42:40 2013 +0200
+
+    Adding missing intent(out) to bfoldstar
+
+ src/bei/beireheat.f90         | 6 +++---
+ src/bi/bireheat.f90           | 6 +++---
+ src/bsusybi/bsusybireheat.f90 | 6 +++---
+ src/cnci/cncireheat.f90       | 6 +++---
+ src/csi/csireheat.f90         | 6 +++---
+ src/lfi/lfireheat.f90         | 2 +-
+ src/ni/nireheat.f90           | 6 +++---
+ src/oi/oireheat.f90           | 6 +++---
+ src/rcmi/rcmireheat.f90       | 6 +++---
+ src/rgi/rgireheat.f90         | 2 +-
+ src/sfbi/sfbireheat.f90       | 2 +-
+ src/sfi/sfireheat.f90         | 6 +++---
+ src/ti/tireheat.f90           | 6 +++---
+ 13 files changed, 33 insertions(+), 33 deletions(-)
+
+commit 237116311e6104954f2682d8f5f7bc3773f6fc43
+Date:   Tue May 7 17:19:14 2013 +0200
+
+    Fix include file
+
+ include/aspic.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit dc98f9b53a2945c07f60fce694c0d1cf6a48a57b
+Author: chris <chris@ringeval.com>
+Date:   Mon May 6 17:16:41 2013 +0200
+
+    Updating man and include files
+
+ include/aspic.h | 11 +++++++++++
+ man/libaspic.3  | 22 +++++++++++++++++++---
+ 2 files changed, 30 insertions(+), 3 deletions(-)
+
+commit ec42179ff42fac7ae74734ba4f12c9572f4f7166
+Author: chris <chris@ringeval.com>
+Date:   Fri May 3 16:55:13 2013 +0200
+
+    editing log files
+
+ ChangeLog | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |  3 +++
+ 2 files changed, 47 insertions(+)
+
 commit 3edc8cab9ede0f73f6db1f4d09fa182d44192f55
 Date:   Fri May 3 16:20:23 2013 +0200
 

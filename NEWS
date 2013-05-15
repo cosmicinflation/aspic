@@ -1,12 +1,11 @@
-* version 0.2.2 (devel branch)
-- Implementing reheating predictions with Rrad and R for all working
-  models done.
-- Imported 4 new models: imi, gripi, wrhi and osti
-- Support for ifort implemented (see README)
-  	      	    FC=ifort FCFLAGS=-DNOF08
-- Merging ripi into gripi with new field definition x->4/3x
-- Old ripi kept under the name oripi (tested that both predictions
-  match with the above field redefinition)
+* version 0.2.3 (devel branch)
+- A set of functions def have been unformized (see ChangeLog) to:
+	myfunc_bidulemin(efold,params)
+
+- Fix a few typos in man files
+- Fix missing modules in aspic.h
+- Fix remaining optional statements in gripi/gmssmi
+- Fix multiple public statements (invisible to gfortran)
 
 * version 0.1.2 (evaluator)
 - Fix usage of non-standard fortran function complex() -> cmplx()
