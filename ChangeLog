@@ -123,8 +123,8 @@ Date:   Tue May 7 19:50:28 2013 +0200
  src/ti/tisr.f90           |  8 ++++----
  src/vhi/vhireheat.f90     | 16 ++++++++--------
  src/vhi/vhisr.f90         |  8 ++++----
- src/wrhi/wrhireheat.f90   | 16 ++++++++--------
- src/wrhi/wrhisr.f90       |  6 +++---
+ src/wri/wrireheat.f90   | 16 ++++++++--------
+ src/wri/wrisr.f90       |  6 +++---
  29 files changed, 152 insertions(+), 152 deletions(-)
 
 commit 6d7d49ad6cf653d09686e3bad45ab0fd89250de3
@@ -228,7 +228,7 @@ Date:   Thu May 2 17:17:25 2013 +0200
  src/gripi/aspic_gripi.3 | 2 +-
  src/imi/aspic_imi.3     | 4 ++--
  src/osti/aspic_osti.3   | 2 +-
- src/wrhi/aspic_wrhi.3   | 2 +-
+ src/wri/aspic_wri.3   | 2 +-
  5 files changed, 7 insertions(+), 7 deletions(-)
 
 commit e7dd0f466fe37b0016aea213dc407398c1c6e6e1
@@ -263,8 +263,8 @@ Date:   Thu May 2 16:16:34 2013 +0200
  src/osti/ostimain.f90     |  60 ++++++++++++++++++++++--
  src/osti/ostireheat.f90   | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++
  src/rchi/rchireheat.f90   |   2 +-
- src/wrhi/wrhimain.f90     |  58 +++++++++++++++++++++--
- src/wrhi/wrhireheat.f90   | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/wri/wrimain.f90     |  58 +++++++++++++++++++++--
+ src/wri/wrireheat.f90   | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++
  10 files changed, 637 insertions(+), 30 deletions(-)
 
 commit 4edbaa1212ab87f66af1c2590cecaf5a442b0d46
@@ -743,7 +743,7 @@ Date:   Thu Apr 25 17:44:30 2013 +0200
  src/ssbi/ssbi6reheat.f90    | 2 +-
  src/twi/twireheat.f90       | 2 +-
  src/vhi/vhireheat.f90       | 2 +-
- src/wrhi/wrhireheat.f90     | 2 +-
+ src/wri/wrireheat.f90     | 2 +-
  50 files changed, 50 insertions(+), 50 deletions(-)
 
 commit c7eaae66bd0e12ee82fa5dc8825ac38864e7e7bd
@@ -935,8 +935,8 @@ Date:   Thu Apr 25 15:44:43 2013 +0200
  src/twi/twireheat.f90         |  12 ++--
  src/vhi/vhimain.f90           |  14 ++--
  src/vhi/vhireheat.f90         |  12 ++--
- src/wrhi/wrhimain.f90         |   4 +-
- src/wrhi/wrhireheat.f90       |  12 ++--
+ src/wri/wrimain.f90         |   4 +-
+ src/wri/wrireheat.f90       |  12 ++--
  124 files changed, 1333 insertions(+), 637 deletions(-)
 
 commit 97e47e99e997972688719986ee5ac0d475a79471
@@ -1001,11 +1001,11 @@ Date:   Tue Apr 23 15:30:59 2013 +0200
  src/ssbi/ssbi5sr.f90          |  12 +-
  src/ssbi/ssbicommon.f90       |   8 +-
  src/twi/aspic_twi.3           |  11 +-
- src/wrhi/Makefile.am          |  25 ++++
- src/wrhi/aspic_wrhi.3         |  25 ++++
- src/wrhi/wrhimain.f90         |  75 +++++++++++
- src/wrhi/wrhireheat.f90       | 118 +++++++++++++++++
- src/wrhi/wrhisr.f90           | 134 +++++++++++++++++++
+ src/wri/Makefile.am          |  25 ++++
+ src/wri/aspic_wri.3         |  25 ++++
+ src/wri/wrimain.f90         |  75 +++++++++++
+ src/wri/wrireheat.f90       | 118 +++++++++++++++++
+ src/wri/wrisr.f90           | 134 +++++++++++++++++++
  33 files changed, 2046 insertions(+), 35 deletions(-)
 
 commit 88d2f48ff91f88eaec259a1851d9ea4bcfdbea9a

@@ -73,7 +73,7 @@ AC_CONFIG_FILES([Makefile
                  src/cndi/Makefile
                  src/rchi/Makefile
                  src/osti/Makefile
-                 src/wrhi/Makefile
+                 src/wri/Makefile
                  src/imi/Makefile
                  src/gripi/Makefile
                 ])

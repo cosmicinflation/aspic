@@ -50,8 +50,8 @@ use cnbisr
 use cnbireheat
 use ostisr
 use ostireheat
-use wrhisr
-use wrhireheat
+use wrisr
+use wrireheat
 
 !two parameters models
 use sfisr
