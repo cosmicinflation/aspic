@@ -62,12 +62,6 @@ contains
        bfoldstar = - (mssmi_efold_primitive(x,phi0) - primEnd)
     endif
 
-    if (abs(find_reheat(mssmi_efold_primitive(x,phi0), &
-              mssmiData%real4,w,mssmi_epsilon_one(x,phi0),mssmi_norm_potential(x,phi0))) &
-        .gt. 0.1_kp) then
-    stop 'mssmi_x_star: accuracy error: xstar cannot be correctly zbrented'
-    endif
-   
 
   end function mssmi_x_star
 
@@ -134,13 +128,7 @@ contains
        bfoldstar = - (mssmi_efold_primitive(x,phi0) - primEnd)
     endif
 
-    if (abs(find_reheat_rrad(mssmi_efold_primitive(x,phi0), &
-              mssmiData%real3,mssmi_epsilon_one(x,phi0),mssmi_norm_potential(x,phi0))) &
-        .gt. 0.1_kp) then
-    stop 'mssmi_x_rrad: accuracy error: xstar cannot be correctly zbrented'
- endif
    
-
   end function mssmi_x_rrad
 
   function find_mssmi_x_rrad(x,mssmiData)   
@@ -204,12 +192,6 @@ contains
     if (present(bfoldstar)) then
        bfoldstar = - (mssmi_efold_primitive(x,phi0) - primEnd)
     endif
-
-    if (abs(find_reheat_rreh(mssmi_efold_primitive(x,phi0), &
-              mssmiData%real3,mssmi_norm_potential(x,phi0))) &
-        .gt. 0.1_kp) then
-    stop 'mssmi_x_rreh: accuracy error: xstar cannot be correctly zbrented'
- endif
    
 
   end function mssmi_x_rreh
