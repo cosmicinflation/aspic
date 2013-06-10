@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "May 6, 2013" "version 0.2.2" "Aspic usage"
+.TH libaspic 3 "June 10, 2013" "version 0.2.4" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -226,7 +226,20 @@ of kind
 .BR foo_x_star (...,w,lnRhoReh,Pstar,
 .B deltaNstar)
 .RE
-
+.RS
+.BR foo_x_rrad (...,lnRrad,Pstar)
+.RE
+.RS
+.BR foo_x_rrad (...,lnRrad,Pstar,
+.B deltaNstar)
+.RE
+.RS
+.BR foo_x_rreh (...,lnR)
+.RE
+.RS
+.BR foo_x_rreh (...,lnR,
+.B deltaNstar)
+.RE
 .P
 These functions take as first arguments the dimensionless potential
 parameters '...' as specified in the man pages
@@ -273,6 +286,23 @@ argument
 which contains on return the value of 'Nstar-Nend', the number of
 e-folds before the end of inflation at which the pivot wave-number
 crossed the Hubble radius (negative).
+
+The functions
+.BR foo_x_rrad ()
+and
+.BR foo_x_rreh ()
+are in all points similar to the previous one, i.e. they return the field value
+.B 'xstar'
+at which the pivot wave-number
+.B 'kstar'
+crossed the Hubble radius during inflation. They take as input the
+reheating parameter 'lnRrad', or the rescaled reheating
+parameter 'lnR', respectively. These parametrizations are most generic
+as they are the combination of reheating parameters the CMB is
+sensitive to. For more details, see
+.UR http://arxiv.org/abs/1004.5525
+arXiv:1004.5525
+.UE
 
 The
 .B srreheat
@@ -339,11 +369,10 @@ and
 .BR get_calfconst ()
 solve algebraic equations necessary to get the reheating parameter
 assuming slow-roll. For more details on what are these quantities,
-check out
+see also
 .UR http://arxiv.org/abs/1004.5525
 arXiv:1004.5525
 .UE
-for the original paper.
 
 
 .P
@@ -357,6 +386,44 @@ argument 'VendOverVstar' is the ratio between the field potential,
 evaluated at those two times. All those arguments are of
 .I real(kp)
 kind.
+
+The
+.B srflow
+module provides some potentially useful functions to get other
+cosmological observables from the slow-roll parameters. Its source
+file is located under the directory 'src/common/' and, together with
+some other slow-roll related functions, the module has the public
+.I functions
+of kind
+.I real(kp)
+.IP
+.BR scalar_spectral_index (eps)
+.RE
+.RS
+.BR tensor_to_scalar_ratio (eps)
+.RE
+.RS
+.BR scalar_running (eps)
+.RE
+.P
+All of these functions take as input
+.IP
+.I real(kp), dimension (:) ::
+eps
+.RS
+.RE
+.P
+vector assumed to contain the value of the successive slow-roll
+parameters 'epsilon_i', with 'i' increasing. The calculations are
+consistent with the size of the input vector. For instance, calling
+.BR scalar_spectral_index ()
+with a dimension two vector containing the values of the first and
+second slow-roll parameters returns the spectral index computed at
+first order in a slow-roll expansion. If you input a dimension three
+vector, the calculations are performed at second order in
+slow-roll. The same holds for the tensor-to-scalar ratio and the
+running of the spectral index (which is non-zero at third
+order only).
 
 .SS COSMOPAR MODULE
 
@@ -514,7 +581,7 @@ Coleman-Weinberg inflation
 global SUSY with loop inflation
 .TQ
 .I rpi1
-R + R^p inflation I
+R + R^2p inflation I
 .TQ
 .I dwi
 double well inflation
@@ -544,7 +611,7 @@ constant spectral index inflation B
 open string tachyonic inflation
 .TQ
 .I wri
-Witten-O'Raifeartaigh Higgs inflation
+Witten-O'Raifeartaigh inflation
 
 
 .SS TWO PARAMETERS MODELS
@@ -565,7 +632,7 @@ Kahler moduli inflation II
 logamediate inflation I
 .TQ
 .I rpi2
-R + R^p inflation II
+R + R^2p inflation II
 .TQ
 .I twi
 twisted inflation

@@ -1,13 +1,10 @@
-* version 0.2.3 (devel branch)
-- A set of functions def have been unformized (see ChangeLog) to:
-	myfunc_bidulemin(efold,params)
-
-- Fix a few typos in man files
-- Fix missing modules in aspic.h
-- Fix remaining optional statements in gripi/gmssmi
-- Fix multiple public statements (invisible to gfortran)
+* version 0.2.4
+- New models, gripi, osti, wri
+- Support reheating with lnRrad/lnR as input
+- New module 'srflow' to get ns, r and alphaS from the slow-roll
+  parameters
+- Fix duplicated public statements
 
 * version 0.1.2 (evaluator)
 - Fix usage of non-standard fortran function complex() -> cmplx()
-- Add eps3 to slow-roll validity tests
 
