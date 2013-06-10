@@ -1,5 +1,5 @@
 * version 0.2.4
-- New models, gripi, osti, wri
+- New models, gripi, imi, osti, wri
 - Support reheating with lnRrad/lnR as input
 - New module 'srflow' to get ns, r and alphaS from the slow-roll
   parameters
