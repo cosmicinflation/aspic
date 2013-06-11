@@ -8,7 +8,8 @@ module cosmopar
   
   public
 
-  real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.4585d-63
+!does not depend on h but on Tcmb
+  real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.5437e-63
   real(kp), parameter :: HubbleSquareRootOf2OmegaRad = sqrt(2._kp/3._kp)*HubbleSquareRootOf3OmegaRad
 
 !q: number of relativistic entropic dof
@@ -20,29 +21,25 @@ module cosmopar
 
   real(kp), parameter :: lnMpcToKappa = 130.282_kp
 
-  real(kp), parameter :: lnMpinGeV=42.334_kp
+  real(kp), parameter :: lnMpinGeV = 42.334_kp
 
 !1MeV
-!!  real(kp), parameter :: lnRhoNuc = -196.97
+!!  real(kp), parameter :: lnRhoNuc = -196.98
 
 !10MeV
-!!  real(kp), parameter :: lnRhoNuc = -187.747
-
-!Tnuc=(30/pi^2)^(1/4)*0.01 GeV
-  real(kp), parameter :: lnRhoNuc = log((10._kp)**(-8)/(1.2209*10._kp**19 &
-             /sqrt(8._kp*pi))**4)
+  real(kp), parameter :: lnRhoNuc = -187.77
 
 !100MeV
-!!  real(kp), parameter :: lnRhoNuc = -178.55
+!!  real(kp), parameter :: lnRhoNuc = -178.56
 
-!only used for reheating using slow-roll (libslowroll)
-!COBE quadrupole moment
-  real(kp), parameter :: QrmsOverT = 6e-6
 
 !pivot scale in Mpc^-1
   real(kp), parameter :: kstar = 0.05_kp !Mpc^-1
 
-!Best scalar amp for slow-roll (update with new constraints)
-  real(kp), parameter :: powerAmpScalar = 2.1953e-9
+!scalar amp at kstar from planck 2013 + slow-roll second order
+  real(kp), parameter :: powerAmpScalar = 2.2030e-09
+
+!Effective COBE normalisation given the same amplitude as Pstar
+  real(kp), parameter :: QrmsOverT = sqrt(60._kp*powerAmpScalar)
 
 end module cosmopar
