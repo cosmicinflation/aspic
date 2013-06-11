@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "June 10, 2013" "version 0.2.4" "Aspic usage"
+.TH libaspic 3 "June 11, 2013" "version 0.2.4" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -37,8 +37,11 @@ Both the library and the global include file are installed in the
 standard directory of your system.  Compiling your own source file
 with, for instance, gfortran should only require:
 .IP
-gfortran -c myfile.f90
+gfortran -c mysrcfile.f90
+.RS
+gfortran mysrcfile.o -o myprog
 .B -laspic
+.RE
 .P
 In case you have installed the library in a non-standard location,
 since most modern fortran compilers support the
@@ -51,8 +54,11 @@ itself, which can be specified with the
 command line flag. Compiling with
 gfortran would now read:
 .IP
-gfortran -c myfile.f90 -I/usr/include/aspic -L/usr/lib64
+gfortran -I/usr/include/aspic -c mysrcfile.f90
+.RS
+gfortran -L/usr/lib64 mysrcfile.o -o myprog
 .B -laspic
+.RE
 .P
 Alternatively, you can decide to only import one (or more) specific
 module with a subset of its associated routines with the fortran
@@ -299,32 +305,33 @@ crossed the Hubble radius during inflation. They take as input the
 reheating parameter 'lnRrad', or the rescaled reheating
 parameter 'lnR', respectively. These parametrizations are most generic
 as they are the combination of reheating parameters the CMB is
-sensitive to. For more details, see
-.UR http://arxiv.org/abs/1004.5525
-arXiv:1004.5525
-.UE
+sensitive to. For more details, see the references below.
 
 The
 .B srreheat
 module is not model specific and its source files are located under
-the directory 'src/common/'. When not specified, this module exposes
+the directory 'src/common/'. Unless otherwise specified, this module
+exposes
 .I functions
 of kind
 .I real(kp)
 which are called by all the above-described modules. As such their
 usage should be necessary only if you decide to add a new model:
 .IP
-.BR quadrupole_to_primscalar (QoverT)
+.I logical ::
+.BR slowroll_validity (epsOne,epsTwo)
+.RE
+.RS
+.BR ln_potential_normalization (Pstar,epsOneStar,Vstar)
 .RE
 .RS
 .BR log_energy_reheat_ingev (lnRhoReh)
 .RE
 .RS
-.I logical ::
-.BR slowroll_validity (epsOne,epsTwo)
+.BR ln_rho_endinf (Pstar,epsOneStar,epsOneEnd,VendOverVstar)
 .RE
 .RS
-.BR ln_rho_endinf (Pstar,epsOneStar,epsOneEnd,VendOverVstar)
+.BR ln_rho_reheat (w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
 .RE
 .RS
 .BR find_reheat (nuStar,calFplusNuEnd,w,epsStar,Vstar)
@@ -333,21 +340,33 @@ usage should be necessary only if you decide to add a new model:
 .BR get_calfconst (lnRhoReh,Pstar,w,epsEnd,potEnd)
 .RE
 .RS
-.BR ln_rho_reheat (w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
+.BR find_reheat_rrad (nuStar,calFplusNuEnd,epsStar,Vstar)
+.RE
+.RS
+.BR get_calfconst_rrad (lnRrad,Pstar,epsEnd,potEnd)
+.RE
+.RS
+.BR find_reheat_rreh (nuStar,calFplusNuEnd,Vstar)
+.RE
+.RS
+.BR get_calfconst_rreh (lnR,epsEnd,potEnd)
+.RE
+.RS
+.BR get_lnrrad_rhow (lnRhoReh,w,lnRhoEnd)
+.RE
+.RS
+.BR get_lnrreh_rhow (lnRhoReh,w,lnRhoEnd)
+.RE
+.RS
+.BR get_lnrrad_rreh (lnR,lnRhoEnd)
+.RE
+.RS
+.BR get_lnrreh_rrad (lnRrad,lnRhoEnd)
 .RE
 .P
 All of these functions take as input
 .I real(kp)
 kind arguments. The first function
-.B quadrupole_to_primscalar()
-returns an estimation of the amplitude of the scalar primordial power
-spectrum 'Pstar' from
-.B QoverT
-the quadrupole moment (.i.e. the COBE normalization). The second function
-.BR log_energy_reheat_ingev ()
-is for convenience and simply returns the logarithm in base 10 of the
-energy density at the end of reheating from the its natural logarithmic
-value (used elsewhere). The third,
 .BR slowroll_validity ()
 returns
 .I .true.
@@ -356,9 +375,18 @@ or
 according to the values of the first and second Hubble flow functions
 to assess the validity of the slow-roll approximation and numerical
 precision.
-
-The last four functions are at the root of the reheating related
-calculations and are fully model independent. The function
+The second function
+.BR ln_potential_normalization ()
+returns the potential normalization factor required to get the correct
+amplitude of the CMB anisotropies. This factor is commonly denoted
+as 'M^4' and this function returns the natural logarithm of 'M' in
+Planck units. The next function
+.BR log_energy_reheat_ingev ()
+is for convenience and simply returns the logarithm in base 10 of the
+energy density at the end of reheating from the its natural
+logarithmic value in Planck units (used elsewhere). The next functions
+are at the root of the reheating related calculations and are fully
+model independent. The function
 .BR ln_rho_endinf ()
 returns the logarithm of the energy density at the end of inflation,
 .B ln_rho_reheat()
@@ -368,17 +396,23 @@ while
 and
 .BR get_calfconst ()
 solve algebraic equations necessary to get the reheating parameter
-assuming slow-roll. For more details on what are these quantities,
-see also
-.UR http://arxiv.org/abs/1004.5525
-arXiv:1004.5525
-.UE
-
+assuming slow-roll. For more details on what are these quantities, see
+the references at the end of this section. The next four functions
+equally solve the reheating equations but take as input either the
+reheating parameter 'lnRrad', or the rescaled one 'lnR'. Finally, the
+last four functions allow to pass from one reheating variable to the
+others. For instance,
+.BR get_lnrrad_rhow ()
+gives the reheating parameter 'lnRrad' from the value of 'lnRhoReh'
+and 'w'. Notice that the energy scale at which inflation
+ends, 'lnRhoEnd', is a required input for all the conversion functions
+but can be computed with 
+.BR ln_rho_endinf ().
 
 .P
-These functions are valid for any slow-roll inflationary model and
-take as arguments 'Pstar', the primordial power spectrum amplitude at
-the pivot, 'w' the mean equation of state during
+All these routines are valid for any slow-roll inflationary
+models. The quantity 'Pstar' stands for the primordial power spectrum
+amplitude at the pivot, 'w' the mean equation of state during
 (pre)reheating, 'epsOneStar' and 'epsOneEnd' are the first Hubble flow
 function respectively evaluated at the time the pivot mode crossed the
 Hubble radius during inflation, and at the end of inflation. The
@@ -391,8 +425,8 @@ The
 .B srflow
 module provides some potentially useful functions to get other
 cosmological observables from the slow-roll parameters. Its source
-file is located under the directory 'src/common/' and, together with
-some other slow-roll related functions, the module has the public
+file is located under the directory 'src/common/'. In particular, the
+module has the public
 .I functions
 of kind
 .I real(kp)
@@ -424,6 +458,52 @@ vector, the calculations are performed at second order in
 slow-roll. The same holds for the tensor-to-scalar ratio and the
 running of the spectral index (which is non-zero at third
 order only).
+
+.B References on the reheating parameters:
+.IP
+.UR http://arxiv.org/abs/1303.3787
+arXiv:1303.3787 (section 2.2)
+.UE
+.RS
+.UR http://arxiv.org/abs/1302.6013
+arXiv:1302.6013 (section 2.2)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/1301.1778
+arXiv:1301.1778 (section IIA)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/1202.3022
+arXiv:1202.3022 (section 2)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/1009.4157
+arXiv:1009.4157 (section IIB)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/1004.5525
+arXiv:1004.5525 (whole paper)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/0711.4307
+arXiv:0711.4307 (section 2.4)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/astro-ph/0703486
+astro-ph/0703486 (section 4.1)
+.UE
+.RS
+.RE
+.UR http://arxiv.org/abs/astro-ph/0605367
+astro-ph/0605367 (section 4.1)
+.UE
+.RE
 
 .SS COSMOPAR MODULE
 
@@ -478,13 +558,16 @@ The parameter
 .B lnMpinGev
 is the reduced Planck mass in GeV,
 .B QrmsOverT
-stands for the COBE quadrupole moment,
+stands for the effective quadrupole moment,
 .B kpivot
 is the pivot scale at which the amplitude of the scalar primordial
 power spectrum is measured. A default amplitude is stored in the parameter
 .B PowerAmpScalar
-(mean value from WMAP9), that very same quantity has been referred to
-as 'Pstar' in some functional arguments above.
+(mean value from PLANCK 2013), that very same quantity has been referred to
+as 'Pstar' in some functional arguments above. The effective
+quadrupole moment 'QrmsOverT' is such that the amplitude of the power
+spectrum matches 'Pstar'. As such it may not correspond to the real
+quadrupole moment, which is still slightly lower :-).
 .P
 Notice that changing any of these constants requires edition of the source
 file 'src/common/cosmopar.f90' and a recompilation of the whole
@@ -861,12 +944,12 @@ the condition that you provide them enclosed into a module box with a
 maximal amount of
 .I private
 routines. If you are not (yet) familiar with
-.I fortran 90/95/03
+.I fortran 90/95/03/08
 and later revisions, check out the
 .UR http://www.idris.fr/data/cours/lang/fortran
 tutorials
 .UE
-from the IDRIS.
+from the IDRIS (in french).
 
 .SH AUTHORS
 .I libaspic
