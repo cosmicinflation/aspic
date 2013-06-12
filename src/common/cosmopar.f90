@@ -9,7 +9,7 @@ module cosmopar
   public
 
 !does not depend on h but on Tcmb
-  real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.5437e-63
+  real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.5437d-63
   real(kp), parameter :: HubbleSquareRootOf2OmegaRad = sqrt(2._kp/3._kp)*HubbleSquareRootOf3OmegaRad
 
 !q: number of relativistic entropic dof
