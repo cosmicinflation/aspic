@@ -5,6 +5,4 @@
   parameters
 - Fix duplicated public statements
 
-* version 0.1.2 (evaluator)
-- Fix usage of non-standard fortran function complex() -> cmplx()
 
