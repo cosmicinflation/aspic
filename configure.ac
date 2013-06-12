@@ -6,7 +6,7 @@ AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
 
-version_info="0:0:0"
+version_info="1:0:1"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
