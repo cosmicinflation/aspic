@@ -1,3 +1,105 @@
+commit aadb420f5376856edb37f0d7a92e896ba564117e
+Date:   Wed Jun 12 16:30:21 2013 +0200
+
+    Bumping versionning lib, interface changed
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5488c943376ac8685d4a0c1e13c85c9bc3384aa8
+Date:   Wed Jun 12 16:06:25 2013 +0200
+
+    updating constants in cosmopar
+
+ src/common/cosmopar.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8fd9e67036f5fc0f5174ecfc1027cd8aa497e4b1
+Date:   Tue Jun 11 15:55:05 2013 +0200
+
+    fixing typos in man
+
+ man/libaspic.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b7304417bd293d44a3322a256fa6ef18955b6c39
+Date:   Tue Jun 11 15:50:37 2013 +0200
+
+    Improving man
+
+ man/libaspic.3 | 165 ++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 124 insertions(+), 41 deletions(-)
+
+commit 49b0cc146e7aa439ea7f93ce864389f4ab94b78b
+Date:   Tue Jun 11 14:06:11 2013 +0200
+
+    Updating constant to Planck 2013 results
+
+ man/libaspic.3          |  2 +-
+ src/common/cosmopar.f90 | 25 +++++++++++--------------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
+
+commit 356aada7e38860bad8abec87758a95660415530c
+Date:   Mon Jun 10 19:16:36 2013 +0200
+
+    Fix NEWS
+
+ NEWS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit bde73b53dc619636a48390338d7ac55bcac2223a
+Author: chris <chris@ringeval.com>
+Date:   Mon Jun 10 19:10:55 2013 +0200
+
+    Preparing next public release, man updated
+
+ NEWS                 | 15 +++++--------
+ configure.ac         |  2 +-
+ man/libaspic.3       | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ src/rpi/aspic_rpi1.3 |  4 ++--
+ src/rpi/aspic_rpi2.3 |  4 ++--
+ 5 files changed, 85 insertions(+), 21 deletions(-)
+
+commit cd3a641676b7abfd705d3bf577fa14d2b800f81f
+Date:   Wed May 29 17:52:02 2013 +0200
+
+    remove stopping criteria in mssmi, slowroll_validity could be used instead
+
+ src/gmssmi/mssmireheat.f90 | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
+commit c363771bb198e4a637658a07064829c2aed76ab2
+Date:   Tue May 28 18:00:54 2013 +0200
+
+    Renaming wrhi->wri
+
+ ChangeLog               |  26 +++----
+ configure.ac            |   2 +-
+ include/aspic.h         |   4 +-
+ man/libaspic.3          |   4 +-
+ src/Makefile.am         |   4 +-
+ src/wrhi/Makefile.am    |  25 -------
+ src/wrhi/aspic_wrhi.3   |  25 -------
+ src/wrhi/wrhimain.f90   | 127 --------------------------------
+ src/wrhi/wrhireheat.f90 | 249 ---------------------------------------------------------------
+ src/wrhi/wrhisr.f90     | 134 ----------------------------------
+ src/wri/Makefile.am     |  25 +++++++
+ src/wri/aspic_wri.3     |  25 +++++++
+ src/wri/wrimain.f90     | 127 ++++++++++++++++++++++++++++++++
+ src/wri/wrireheat.f90   | 249 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/wri/wrisr.f90       | 134 ++++++++++++++++++++++++++++++++++
+ 15 files changed, 580 insertions(+), 580 deletions(-)
+
+commit 21cf6e0fb057d6f93ed0c92c4c93c40fec9e1548
+Author: chris <chris@ringeval.com>
+Date:   Wed May 15 16:39:19 2013 +0200
+
+    Editing Logs
+
+ ChangeLog | 177 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |  17 ++++----
+ 2
+
 commit 268bf4a84955fc4830876f505ea36a8c197e65f7
 Merge: 6ba257c 3279a2c
 Date:   Wed May 15 16:23:09 2013 +0200
