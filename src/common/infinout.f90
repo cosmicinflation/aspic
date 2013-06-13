@@ -20,7 +20,9 @@ integer, parameter :: reclUnit = 4
 
 public delete_file
 public livewrite, allwrite, binallwrite
- 
+
+public has_shifted, has_not_shifted 
+
 contains
 
 
@@ -373,6 +375,59 @@ contains
         
   end subroutine kp_binallwrite
 
+
+  function has_not_shifted(maxshift,x,y,z)
+    implicit none
+    logical :: has_not_shifted
+    real(kp), intent(in) :: maxshift,x
+    real(kp), intent(in), optional :: y,z
+    
+    has_not_shifted = .not.has_shifted(maxshift,x,y,z)
+
+  end function has_not_shifted
+
+
+  
+  function has_shifted(maxshift,x,y,z)
+    implicit none
+    logical :: has_shifted
+    real(kp), intent(in) :: maxshift,x
+    real(kp), intent(in), optional :: y,z
+
+    real(kp), save :: xold = tiny(1._kp)
+    real(kp), save :: yold = tiny(1._kp)
+    real(kp), save :: zold = tiny(1._kp)
+       
+    real(kp) :: d2
+
+    has_shifted = .true.
+
+    d2 = (x-xold)**2
+
+    if (present(y)) then
+       d2 = d2 + (y-yold)**2
+    endif
+
+    if (present(z)) then
+       d2 = d2 + (z-zold)**2
+    end if
+    
+
+    if (d2 == 0) then
+       has_shifted = .false.
+       return
+    endif
+
+    if (sqrt(d2).le.maxshift) then
+       has_shifted = .false.
+       return
+    endif
+
+    xold = x
+    if (present(y)) yold = y
+    if (present(z)) zold = z
+
+  end function has_shifted
 
 end module infinout
 

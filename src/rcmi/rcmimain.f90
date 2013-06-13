@@ -6,7 +6,7 @@ program rcmimain
   use rcmisr, only : rcmi_epsilon_one, rcmi_epsilon_two, rcmi_epsilon_three
   use rcmireheat, only : rcmi_lnrhoreh_max 
   use rcmireheat, only : rcmi_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use rcmisr, only : rcmi_norm_potential, rcmi_x_endinf
@@ -87,6 +87,14 @@ program rcmimain
 
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
+      
+        if (has_not_shifted(0.002_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+           cycle
+        endif
+
+        if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
+             .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+
 
         call livewrite('rcmi_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 

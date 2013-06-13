@@ -4,7 +4,7 @@ program ssbi5main
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use ssbi5sr, only : ssbi5_epsilon_one, ssbi5_epsilon_two, ssbi5_epsilon_three, ssbi5_alphamax
   use ssbi5reheat, only : ssbi5_lnrhoreh_max, ssbi5_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use ssbi5sr, only : ssbi5_norm_potential, ssbi5_x_endinf
@@ -44,7 +44,7 @@ program ssbi5main
 
   call delete_file('ssbi5_abs_alpha_min.dat')
 
-  Nbeta=1000
+  Nbeta=200
   betamin=0.0001_kp
   betamax=100._kp
 
@@ -73,7 +73,7 @@ program ssbi5main
   call delete_file('ssbi5_predic.dat')
   call delete_file('ssbi5_nsr.dat')
 
-  Nalpha=1000
+  Nalpha=200
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -119,6 +119,13 @@ program ssbi5main
 
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
+
+            if (has_not_shifted(0.001_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+              cycle
+           endif
+
+           if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
+                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
 
            call livewrite('ssbi5_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 

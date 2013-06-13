@@ -4,7 +4,7 @@ program dsimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use dsisr, only : dsi_epsilon_one, dsi_epsilon_two, dsi_epsilon_three,dsi_xinimin,dsi_xendmin,dsi_xendmax,dsi_mumax
   use dsireheat, only : dsi_lnrhoreh_max, dsi_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use dsisr, only : dsi_norm_potential
@@ -128,6 +128,10 @@ program dsimain
 
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
+
+              if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+                 cycle
+              endif
 
               call livewrite('dsi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 

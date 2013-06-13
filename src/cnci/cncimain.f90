@@ -5,7 +5,7 @@ program cncimain
   use cncisr, only : cnci_epsilon_one, cnci_epsilon_two,cnci_epsilon_three
   use cncisr, only : cnci_xendmin, cnci_x_epsoneunity
   use cncireheat, only : cnci_lnrhoreh_max, cnci_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use cncisr, only : cnci_norm_potential
@@ -126,6 +126,10 @@ program cncimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           if (has_not_shifted(0.0075_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+              cycle
+           endif
+          
            call livewrite('cnci_predic.dat',alpha,xend,xendmin,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('cnci_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)

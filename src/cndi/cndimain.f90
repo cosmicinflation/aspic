@@ -4,7 +4,7 @@ program cndimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use cndisr, only : cndi_epsilon_one, cndi_epsilon_two, cndi_epsilon_three, cndi_xendmax
   use cndireheat, only : cndi_lnrhoreh_max, cndi_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use cndisr, only : cndi_norm_potential
@@ -109,9 +109,20 @@ program cndimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+              cycle
+           endif
+
+           
+           if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
+                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+
            call livewrite('cndi_predic.dat',alpha,beta,xend,eps1,eps2,eps3,r,ns,Treh)
+          
 
            call livewrite('cndi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+
 
         end do
      end do
@@ -175,6 +186,15 @@ program cndimain
 
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
+
+           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+              cycle
+           endif
+
+           
+           if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
+                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+
 
            call livewrite('cndi_predic.dat',alpha,beta,xend,eps1,eps2,eps3,r,ns,Treh)
 

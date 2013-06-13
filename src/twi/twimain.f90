@@ -4,7 +4,7 @@ program twimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use twisr, only : twi_epsilon_one, twi_epsilon_two, twi_epsilon_three
   use twireheat, only : twi_lnrhoreh_max, twi_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use twisr, only : twi_norm_potential
@@ -20,11 +20,11 @@ program twimain
   integer :: i,j,k
   integer :: npts = 20
 
-  integer :: Nphi0=15
+  integer :: Nphi0=12
   real(kp) :: phi0min=0.001
   real(kp) :: phi0max=5.
 
-  integer :: NxEnd=80
+  integer :: NxEnd=60
   real(kp) :: yEndmin=2.
   real(kp) :: yEndmax=20.
 
@@ -83,6 +83,10 @@ program twimain
 
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
+
+           if (has_not_shifted(0.0075_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+              cycle
+           endif
 
            call livewrite('twi_predic.dat',phi0,xEnd,eps1,eps2,eps3,r,ns,Treh)
 

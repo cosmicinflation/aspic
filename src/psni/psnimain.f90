@@ -4,7 +4,7 @@ program psnimain
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use psnisr, only : psni_epsilon_one, psni_epsilon_two, psni_epsilon_three
   use psnireheat, only : psni_lnrhoreh_max, psni_x_star
-  use infinout, only : delete_file, livewrite
+  use infinout, only : delete_file, livewrite, has_not_shifted
   use srreheat, only : log_energy_reheat_ingev
 
   use psnisr, only : psni_norm_potential, psni_x_endinf
@@ -44,7 +44,7 @@ program psnimain
   call delete_file('psni_nsr.dat')
 
   npts = 20 
-  nalpha=200
+  nalpha=100
   w=0._kp
   !  w = 1._kp/3._kp
 
@@ -87,6 +87,12 @@ program psnimain
 
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
+
+           
+           if (has_not_shifted(0.004_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+              cycle
+           endif
+          
 
            call livewrite('psni_predic.dat',alpha,f,eps1,eps2,eps3,r,ns,Treh)
 
