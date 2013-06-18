@@ -162,7 +162,7 @@ contains
 
     elseif (abs(AI) .le. 1._kp) then
 
-       mini= rchi_x_endinf(0._kp) + epsilon(1._kp)
+       mini= rchi_x_endinf(1._kp + epsilon(1._kp))
 
        if (rchi_potmax_exists(AI)) then 
           maxi=min(rchi_x_potmax(AI),RchiDeltaXendMax)

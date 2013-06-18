@@ -18,6 +18,8 @@ module plireheat
   public pli_x_star, pli_lnrhoreh_max
   public pli_x_rrad, pli_x_rreh
 
+  real(kp), parameter :: pliXmin = -200._kp
+
 contains
 
 !returns x such given potential parameters, scalar power, wreh and
@@ -50,7 +52,7 @@ contains
     pliData%real2 = w
     pliData%real3 = calF + primEnd
 
-    mini = 1.
+    mini = pliXmin
     maxi = xend
 
     x = zbrent(find_pli_x_star,mini,maxi,tolzbrent,pliData)
@@ -111,7 +113,7 @@ contains
     pliData%real1 = alpha    
     pliData%real2 = calF + primEnd
 
-    mini = 1.
+    mini = pliXmin
     maxi = xend
 
     x = zbrent(find_pli_x_rrad,mini,maxi,tolzbrent,pliData)
@@ -172,7 +174,7 @@ contains
     pliData%real1 = alpha    
     pliData%real2 = calF + primEnd
 
-    mini = 1.
+    mini = pliXmin
     maxi = xend
 
     x = zbrent(find_pli_x_rreh,mini,maxi,tolzbrent,pliData)
