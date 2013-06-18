@@ -18,7 +18,7 @@ module plireheat
   public pli_x_star, pli_lnrhoreh_max
   public pli_x_rrad, pli_x_rreh
 
-  real(kp), parameter :: pliXmin = -200._kp
+  real(kp), parameter :: pliXmin = -250._kp
 
 contains
 
