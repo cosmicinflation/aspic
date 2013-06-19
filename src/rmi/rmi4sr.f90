@@ -23,7 +23,7 @@ module rmi4sr
 
   public rmi4_norm_potential, rmi4_norm_deriv_potential, rmi4_norm_deriv_second_potential
   public rmi4_epsilon_one, rmi4_epsilon_two, rmi4_epsilon_three
-  public rmi4_efold_primitive, rmi4_x_trajectory
+  public rmi4_efold_primitive, rmi4_x_trajectory, rmi4_numacc_xendmin
 
   
 contains
@@ -132,6 +132,18 @@ contains
     rmi4_x_trajectory = zbrent(find_rmi_x_trajectory,mini,maxi,tolFind,rmi4Data)
        
   end function rmi4_x_trajectory
- 
+
+! Return an upper bound on xend for numerica computability
+  function rmi4_numacc_xendmin(c,phi0)
+    implicit none
+    real(kp), intent(in) :: c,phi0
+    real(kp) :: rmi4_numacc_xendmin
+
+ 	rmi4_numacc_xendmin = 1._kp+sqrt(2._kp*epsilon(1._kp)* &
+                              (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
+    !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
+
+
+  end function rmi4_numacc_xendmin
 
 end module rmi4sr

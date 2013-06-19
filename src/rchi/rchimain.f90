@@ -38,6 +38,10 @@ program rchimain
   AImin=-30._kp
   AImax=100._kp
 
+  AImin=-0.5_kp
+  AImax=0.5_kp
+
+
   Pstar = powerAmpScalar
 
   !  w = 1._kp/3._kp
