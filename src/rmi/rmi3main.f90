@@ -7,7 +7,7 @@ program rmi3main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rmi3sr, only : rmi3_norm_potential
+  use rmi3sr, only : rmi3_norm_potential, rmi3_numacc_xendmax
   use rmi3reheat, only : rmi3_x_rreh, rmi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -71,7 +71,7 @@ program rmi3main
      phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
 
      xendmin = exp(-1._kp)
-     xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
+     xendmax = rmi3_numacc_xendmax(c,phi0) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
 
      do l=0,Nxend 
         xend=xendmin*(xendmax/xendmin)**(real(l,kp)/Nxend)  !logarithmic step
