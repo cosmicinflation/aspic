@@ -130,7 +130,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: lpi3Data
 
-    call lpi23_sanity_check(q=q)
+    call lpi23_sanity_check(p,q,phi0)
 
     mini = epsilon(1._kp)
     maxi = lpi_x_potmax(p,q)

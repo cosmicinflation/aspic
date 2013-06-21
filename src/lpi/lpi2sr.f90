@@ -127,7 +127,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: lpi2Data
 
-    call lpi23_sanity_check(q=q)
+    call lpi23_sanity_check(p,q,phi0)
 
     mini = lpi_x_potmax(p,q)
     maxi = 1._kp
