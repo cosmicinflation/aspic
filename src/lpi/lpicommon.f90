@@ -27,7 +27,7 @@ contains
     implicit none
     real(kp), intent(in) :: q
     real(kp), intent(in), optional :: p,phi0
-    real(kp), parameter :: epstwominMax = 1._kp
+    real(kp), parameter :: epstwominMax = 10._kp
 
     real(kp) :: vevMin
 
@@ -39,11 +39,11 @@ contains
     if (present(p).and.present(phi0)) then
 !this is phi0 such that the min of eps2 in the domain lpi23,
 !i.e. eps2(xVmax)=epstwominMax
-       vevMin = p * exp(p/q) * sqrt(2/q/epstwominMax)
+       vevMin = p * exp(q/p) * sqrt(2._kp/q/epstwominMax)
 
        if (phi0.lt.vevMin) then
           write(*,*)'vevmin= phi0= ',vevMin,phi0
-          stop 'lpi23_sanity_check: min(eps2) > 1, phi0 too small!'
+          stop 'lpi23_sanity_check: min(eps2) >> 1, phi0 too small!'
        end if
 
     end if
