@@ -51,7 +51,7 @@ contains
     lmi2Data%real4 = calF + primEnd
 
     mini = lmi2_xini_min(gam,beta)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    maxi = xEnd
 
 
     x = zbrent(find_lmi2_x_star,mini,maxi,tolzbrent,lmi2Data)
@@ -114,7 +114,7 @@ contains
     lmi2Data%real3 = calF + primEnd
 
     mini = lmi2_xini_min(gam,beta)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    maxi = xEnd
 
 
     x = zbrent(find_lmi2_x_rrad,mini,maxi,tolzbrent,lmi2Data)
@@ -176,7 +176,7 @@ contains
     lmi2Data%real3 = calF + primEnd
 
     mini = lmi2_xini_min(gam,beta)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    maxi = xEnd
 
 
     x = zbrent(find_lmi2_x_rreh,mini,maxi,tolzbrent,lmi2Data)

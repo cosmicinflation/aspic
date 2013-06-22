@@ -74,9 +74,9 @@ contains
 
     alpha = lmi_alpha(gam)
    
-    lmi_norm_deriv_second_potential = (x**(-2 + alpha)*((-1 + alpha)*alpha &
-         - beta*gam*(-1 + 2*alpha + gam)*x**gam &
-         + beta**2*gam**2*x**(2*gam)))*exp(-beta*x**gam)
+    lmi_norm_deriv_second_potential = (x**(-2._kp + alpha)*((-1._kp + alpha)*alpha &
+         - beta*gam*(-1._kp+2._kp*alpha + gam)*x**gam &
+         + beta**2._kp*gam**2._kp*x**(2._kp*gam)))*exp(-beta*x**gam)
     
 
   end function lmi_norm_deriv_second_potential
@@ -92,7 +92,7 @@ contains
     real(kp) ::alpha
     alpha = lmi_alpha(gam)
 
-    lmi_epsilon_one = (alpha-beta*gam*x**gam)**2/(2._kp*x**2)
+    lmi_epsilon_one = (alpha-beta*gam*x**gam)**2._kp/(2._kp*x**2._kp)
     
   end function lmi_epsilon_one
 
@@ -107,7 +107,7 @@ contains
     alpha = lmi_alpha(gam)
     
     lmi_epsilon_two = 2._kp*(alpha+beta*(-1._kp+gam) &
-         *gam*x**gam)/(x**2)
+         *gam*x**gam)/(x**2._kp)
     
   end function lmi_epsilon_two
 
@@ -124,7 +124,7 @@ contains
     
     lmi_epsilon_three = ((alpha-beta*gam*x**gam)*(2._kp*alpha- & 
          beta*(-2._kp+gam)*(-1._kp+gam)*gam* &
-         x**gam))/(x**2*(alpha+beta*(-1._kp+gam)* & 
+         x**gam))/(x**2._kp*(alpha+beta*(-1._kp+gam)* & 
          gam*x**gam))
     
   end function lmi_epsilon_three
@@ -186,7 +186,7 @@ contains
     if (alpha.eq.0._kp) stop 'lmi_efold_primitive: gam=1!  (PLI)'
     if (gam.eq.0._kp) stop 'lmi_efold_primitive: gam=0!'
 
-    lmi_efold_primitive = x**2/(2._kp*alpha)*hypergeom_2F1(1._kp,2._kp/gam, &
+    lmi_efold_primitive = x**2._kp/(2._kp*alpha)*hypergeom_2F1(1._kp,2._kp/gam, &
          2._kp/gam+1._kp,beta*gam/alpha*x**gam)
 
   end function lmi_efold_primitive

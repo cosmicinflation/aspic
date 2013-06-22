@@ -8,7 +8,7 @@ program lmi2main
   use srreheat, only : log_energy_reheat_ingev
   use lmicommon, only : lmi_x_epsonemax
 
-  use lmi2sr, only : lmi2_norm_potential
+  use lmi2sr, only : lmi2_norm_potential, lmi2_xend_min
   use lmi2reheat, only : lmi2_x_rreh, lmi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -44,6 +44,7 @@ program lmi2main
 
   Pstar = powerAmpScalar
 
+
   call delete_file('lmi2_predic.dat')
   call delete_file('lmi2_nsr.dat')
 
@@ -52,7 +53,7 @@ program lmi2main
   w=0._kp
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!    beta=0.1     !!!!!
+!!!!!    beta=0.1      !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   beta=0.1

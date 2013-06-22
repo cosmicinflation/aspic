@@ -20,13 +20,16 @@ program lmi1main
   integer :: i,j,k
   integer :: npts = 20
 
-  integer :: Ngam                  !for beta=0.001: Ngam=20
+  integer :: Ngam                  
+  !for beta=0.001: Ngam=20
   !for beta=1: Ngam=50
   !for beta=50: Ngam=1000
-  real(kp) :: gammin               !for beta = 0.001:  gammin=0.004
+  real(kp) :: gammin               
+  !for beta = 0.001:  gammin=0.004
   !for beta=1: gammin=0.001
   !for beta=50: gammin=0.00005
-  real(kp) :: gammax               !for beta=0.001: gammax=0.99
+  real(kp) :: gammax               
+  !for beta=0.001: gammax=0.99
   !for beta=1: gammax=0.99
   !for beta=50: gammax=0.1
 

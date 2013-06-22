@@ -26,6 +26,7 @@ module lmi1sr
   public lmi1_epsilon_one, lmi1_epsilon_two, lmi1_epsilon_three
   public lmi1_x_endinf, lmi1_efold_primitive, lmi1_x_trajectory
   public lmi1_norm_deriv_potential, lmi1_norm_deriv_second_potential
+  public lmi1_betamax
   
 contains
 
@@ -180,6 +181,18 @@ contains
     lmi1_x_trajectory = zbrent(find_lmi_x_trajectory,mini,maxi,tolFind,lmiData)
        
   end function lmi1_x_trajectory
+
+! Returns the maximum value of beta such that eps2<eps2max at the top of the potential
+  function lmi1_betamax(gam,eps2max)
+    implicit none
+    real(kp), intent(in) :: gam, eps2max
+    real(kp) :: lmi1_betamax
+
+    lmi1_betamax=2._kp**(2-3._kp*gam/2._kp)/ &
+                ((1._kp-gam)**(gam/2._kp-1._kp)*gam**(gam/2._kp+1._kp)) &
+                *eps2max**(gam/2._kp)
+
+  end function lmi1_betamax
  
 
 end module lmi1sr

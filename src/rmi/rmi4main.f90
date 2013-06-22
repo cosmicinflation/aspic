@@ -7,7 +7,7 @@ program rmi4main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rmi4sr, only : rmi4_norm_potential
+  use rmi4sr, only : rmi4_norm_potential, rmi4_numacc_xendmin
   use rmi4reheat, only : rmi4_x_rreh, rmi4_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -81,7 +81,7 @@ program rmi4main
   do k=0,Nphi0 
      phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
 
-     xendmin =  1._kp+sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
+     xendmin =  rmi4_numacc_xendmin(c,phi0) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
      xendmax = exp(1._kp)
 
      do l=0,Nxend 
