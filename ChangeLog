@@ -1,3 +1,150 @@
+commit d4c1a5d0d75019a8115d7df63a4c0791d03cce23
+Merge: dc65be3 aa045d8
+Date:   Mon Jun 24 16:33:03 2013 +0200
+
+    Merging with vincent edition, unifying new functions in lmi/lpi
+
+commit aa045d8d34f9c14d500c2d571b3bb8895a00cf0f
+
+Date:   Sat Jun 22 11:28:45 2013 +0200
+
+    Vincent corrections over 0.2.5
+
+ src/lfi/lfimain.f90    |  2 +-
+ src/lmi/lmi1main.f90   |  9 +++++---
+ src/lmi/lmi1sr.f90     | 13 +++++++++++
+ src/lmi/lmi2main.f90   |  5 ++--
+ src/lmi/lmi2reheat.f90 |  6 ++---
+ src/lmi/lmi2sr.f90     | 31 +++++++++++++++++++++----
+ src/lmi/lmicommon.f90  | 14 ++++++------
+ src/pli/plimain.f90    |  4 ++++
+ src/pli/plireheat.f90  |  8 +++++--
+ src/rchi/rchimain.f90  |  4 ++++
+ src/rchi/rchisr.f90    |  2 +-
+ src/rmi/rmi3main.f90   |  4 ++--
+ src/rmi/rmi3sr.f90     | 14 ++++++++++++
+ src/rmi/rmi4main.f90   |  4 ++--
+ src/rmi/rmi4sr.f90     | 16 +++++++++++--
+ src/vhi/vhimain.f90    | 62 --------------------------------------------------
+ 16 files changed, 106 insertions(+), 92 deletions(-)
+
+commit dc65be332f1968a0900c701fde00c2f61c6da142
+Date:   Sat Jun 22 10:47:26 2013 +0200
+
+    fixing bug in lpi23 sanity check
+
+ src/lpi/lpicommon.f90 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit dc4a736e837db57c37c23f410ad209f75e0d362f
+Date:   Fri Jun 21 19:47:13 2013 +0200
+
+    adding phi0 sanity check for lpi2 and lpi3
+
+ src/lpi/lpi2sr.f90    |  2 +-
+ src/lpi/lpi3main.f90  |  2 +-
+ src/lpi/lpi3sr.f90    |  2 +-
+ src/lpi/lpicommon.f90 | 15 +++++++++++++++
+ 4 files changed, 18 insertions(+), 3 deletions(-)
+
+commit 8bf3afa2df678171e8469a34ea6629774372348f
+Date:   Thu Jun 20 19:10:55 2013 +0200
+
+    bumping configure
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b9f25b8e6832324197b4f6daf38d7afde022e8fe
+Merge: 8433ea3 5c18517
+Date:   Wed Jun 19 18:06:36 2013 +0200
+
+    Merge branch 'vincent'
+
+commit 5c185172568e30361fa679b039fcbf89dde48b64
+Date:   Wed Jun 19 18:06:19 2013 +0200
+
+    vincent new corrections
+
+ src/lfi/lfimain.f90   |  2 +-
+ src/lmi/lmi1main.f90  |  9 +++++---
+ src/rchi/rchimain.f90 |  4 ++++
+ src/rmi/rmi3main.f90  |  4 ++--
+ src/rmi/rmi3sr.f90    | 14 ++++++++++++
+ src/rmi/rmi4main.f90  |  4 ++--
+ src/rmi/rmi4sr.f90    | 16 +++++++++++--
+ src/vhi/vhimain.f90   | 62 ---------------------------------------------------
+ 8 files changed, 43 insertions(+), 72 deletions(-)
+
+commit 8433ea37c647b03290df0442c24df2959c4a5fb6
+Date:   Tue Jun 18 19:24:44 2013 +0200
+
+    pushing down plixmin to allow for alpha~1.2
+
+ src/pli/plireheat.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5fc8a4de5b51bf66484721b3fd11ee2df12a750a
+Date:   Tue Jun 18 18:50:25 2013 +0200
+
+    Fixing bugs in rchi and pli
+
+ src/pli/plireheat.f90 | 8 +++++---
+ src/rchi/rchisr.f90   | 2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+commit c5ab390066c1a143cecdc2dde809250c790e2671
+Date:   Thu Jun 13 16:59:33 2013 +0200
+
+    bumping version number
+
+ NEWS         | 2 +-
+ configure.ac | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 22a605651c970cf125e5ee6383d28a643aeccdca
+Date:   Thu Jun 13 16:31:38 2013 +0200
+
+    editing main, new test to reduce fig size
+
+ src/cnci/cncimain.f90   |  6 +++++-
+ src/cndi/cndimain.f90   | 22 ++++++++++++++++++-
+ src/common/infinout.f90 | 57 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/dsi/dsimain.f90     |  6 +++++-
+ src/gmlfi/gmlfimain.f90 | 24 ++++++++++++++++++++-
+ src/psni/psnimain.f90   | 10 +++++++--
+ src/rcmi/rcmimain.f90   | 10 ++++++++-
+ src/rcqi/rcqimain.f90   | 20 ++++++++++++++++-
+ src/ssbi/ssbi2main.f90  |  9 +++++++-
+ src/ssbi/ssbi5main.f90  | 13 ++++++++---
+ src/twi/twimain.f90     | 10 ++++++---
+ src/vhi/vhimain.f90     | 42 ++++++++++++++++++++++++++++--------
+ 12 files changed, 204 insertions(+), 25 deletions(-)
+
+commit 5df1f558099b09d343b0f462bbbd7d83db05d184
+Date:   Wed Jun 12 16:53:56 2013 +0200
+
+    update news
+
+ NEWS | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 6a38d8fe6e3e61c4b752433c9905ae1deb94bcb5
+Date:   Wed Jun 12 16:52:18 2013 +0200
+
+    fix typo in man
+
+ man/libaspic.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit bfa9bb6d3113ff2afbb35338537dbf528df887b7
+Date:   Wed Jun 12 16:31:00 2013 +0200
+
+    Editing ChangeLog
+
+ ChangeLog | 102 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
+
 commit aadb420f5376856edb37f0d7a92e896ba564117e
 Date:   Wed Jun 12 16:30:21 2013 +0200
 
@@ -48,7 +195,7 @@ Date:   Mon Jun 10 19:16:36 2013 +0200
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 commit bde73b53dc619636a48390338d7ac55bcac2223a
-Author: chris <chris@ringeval.com>
+
 Date:   Mon Jun 10 19:10:55 2013 +0200
 
     Preparing next public release, man updated
@@ -91,7 +238,7 @@ Date:   Tue May 28 18:00:54 2013 +0200
  15 files changed, 580 insertions(+), 580 deletions(-)
 
 commit 21cf6e0fb057d6f93ed0c92c4c93c40fec9e1548
-Author: chris <chris@ringeval.com>
+
 Date:   Wed May 15 16:39:19 2013 +0200
 
     Editing Logs
@@ -172,7 +319,7 @@ Date:   Tue May 14 15:08:34 2013 +0200
  3 files changed, 40 insertions(+), 49 deletions(-)
 
 commit 8b8ba44dc6c327016de9d2199a5f26663e91467e
-Author: chris <chris@ringeval.com>
+
 Date:   Tue May 14 14:59:07 2013 +0200
 
     Fix typos in man files, psni Makefile, remaining optional in gmssmisr
@@ -258,7 +405,7 @@ Date:   Tue May 7 17:19:14 2013 +0200
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 commit dc98f9b53a2945c07f60fce694c0d1cf6a48a57b
-Author: chris <chris@ringeval.com>
+
 Date:   Mon May 6 17:16:41 2013 +0200
 
     Updating man and include files
@@ -268,7 +415,7 @@ Date:   Mon May 6 17:16:41 2013 +0200
  2 files changed, 30 insertions(+), 3 deletions(-)
 
 commit ec42179ff42fac7ae74734ba4f12c9572f4f7166
-Author: chris <chris@ringeval.com>
+
 Date:   Fri May 3 16:55:13 2013 +0200
 
     editing log files
@@ -370,7 +517,6 @@ Date:   Thu May 2 16:16:34 2013 +0200
  10 files changed, 637 insertions(+), 30 deletions(-)
 
 commit 4edbaa1212ab87f66af1c2590cecaf5a442b0d46
-Author: chris <chris@ringeval.com>
 Date:   Tue Apr 30 14:59:50 2013 +0200
 
     Fix bug in cmplx for ii

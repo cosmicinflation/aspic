@@ -1,8 +1,5 @@
-* version 0.2.5
-- New models, gripi, imi, osti, wri
-- Support reheating with lnRrad/lnR as input
-- New module 'srflow' to get ns, r and alphaS from the slow-roll
-  parameters
-- Fix duplicated public statements
-
+* version 0.2.7
+- new test functions in lmi/lpi for bayaspic
+- removing some optional statements in lmi
+- unifying numacc functions in rgi
 
