@@ -16,7 +16,7 @@ module lmi1sr
   use lmicommon, only : lmi_epsilon_one_max, lmi_x_potmax
   use lmicommon, only : lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
   use lmicommon, only : lmi_efold_primitive, find_lmi_x_trajectory
-
+  use lmicommon, only : lmi_epstwo_potmax
 
   implicit none
 
@@ -28,6 +28,25 @@ module lmi1sr
   public lmi1_norm_deriv_potential, lmi1_norm_deriv_second_potential
   
 contains
+
+
+  subroutine lmi1_sanity_check(gam,beta)
+    implicit none
+    real(kp), intent(in) :: gam, beta
+    real(kp), parameter :: epstwominMax = 10._kp
+    
+    real(kp) :: eps2potmax
+
+    eps2potmax = lmi_epstwo_potmax(gam,beta)
+
+    if (eps2potmax.gt.epstwominMax) then
+       write(*,*)'eps2(xVmax)= beta= ',eps2potmax, beta
+       write(*,*)'gamma= betamax(gamma)= ',gam,lmi1_betamax(epstwominMax,gam)
+       stop 'lmi1_sanity_check: min(eps2) >> 1, beta(gamma) too big !'
+    end if
+    
+  end subroutine lmi1_sanity_check
+
 
 !returns V/M^4
   function lmi1_norm_potential(x,gam,beta)    
@@ -113,6 +132,8 @@ contains
 
     real(kp) ::xVmax, alpha
 
+    call lmi1_sanity_check(gam,beta)
+
     alpha = lmi_alpha(gam)
 
     xVmax = lmi_x_potmax(gam,beta)
@@ -180,6 +201,18 @@ contains
     lmi1_x_trajectory = zbrent(find_lmi_x_trajectory,mini,maxi,tolFind,lmiData)
        
   end function lmi1_x_trajectory
+
+! Returns the maximum value of beta such that eps2<eps2max at the top of the potential
+  function lmi1_betamax(eps2max,gam)
+    implicit none
+    real(kp), intent(in) :: gam, eps2max
+    real(kp) :: lmi1_betamax
+
+    lmi1_betamax=2._kp**(2-3._kp*gam/2._kp)/ &
+                ((1._kp-gam)**(gam/2._kp-1._kp)*gam**(gam/2._kp+1._kp)) &
+                *eps2max**(gam/2._kp)
+
+  end function lmi1_betamax
  
 
 end module lmi1sr

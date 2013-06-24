@@ -113,6 +113,7 @@ contains
     pliData%real1 = alpha    
     pliData%real2 = calF + primEnd
 
+
     mini = pliXmin
     maxi = xend
 
@@ -174,6 +175,7 @@ contains
     pliData%real1 = alpha    
     pliData%real2 = calF + primEnd
 
+
     mini = pliXmin
     maxi = xend
 
@@ -225,14 +227,15 @@ contains
     potEnd  = pli_norm_potential(xEnd,alpha)
     epsOneEnd = pli_epsilon_one(xEnd,alpha)
 
+
 !   Trick to return x such that rho_reh=rho_end
 
-    x = pli_x_star(alpha,wrad,junk,Pstar)    
+    x = pli_x_star(alpha,wrad,junk,Pstar) 
     potStar = pli_norm_potential(x,alpha)
     epsOneStar = pli_epsilon_one(x,alpha)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'pli_lnrhoreh_max: slow-roll violated!'
+!    if (.not.slowroll_validity(epsOneStar)) stop 'pli_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 

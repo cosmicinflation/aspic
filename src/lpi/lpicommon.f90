@@ -134,7 +134,7 @@ contains
   function lpi_x_potmax(p,q,phi0)
     implicit none
     real(kp), intent(in) :: p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
     real(kp) :: lpi_x_potmax
 
     lpi_x_potmax = exp(-q/p)
@@ -146,7 +146,7 @@ contains
   function lpi_x_epstwozero(p,q,phi0)
     implicit none
     real(kp), intent(in) :: p,q
-    real(kp), intent(in), optional :: phi0
+    real(kp), intent(in) :: phi0
     real(kp), dimension(2) :: lpi_x_epstwozero
 
     lpi_x_epstwozero(1) = exp( (-q - sqrt(-4._kp*p*q + q*q))/(2._kp*p) )
@@ -154,6 +154,19 @@ contains
         
   end function lpi_x_epstwozero
 
+
+
+  function lpi_epstwo_potmax(p,q,phi0)
+    implicit none
+    real(kp), intent(in) :: p,q, phi0
+    real(kp) :: lpi_epstwo_potmax
+    real(kp) :: xVmax
+
+    xVmax = lpi_x_potmax(p,q,phi0)
+    
+    lpi_epstwo_potmax = lpi_epsilon_two(xVmax,p,q,phi0)
+
+  end function lpi_epstwo_potmax
 
 
 !this is integral[V(phi)/V'(phi) dphi]

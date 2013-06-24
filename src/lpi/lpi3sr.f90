@@ -133,7 +133,7 @@ contains
     call lpi23_sanity_check(p,q,phi0)
 
     mini = epsilon(1._kp)
-    maxi = lpi_x_potmax(p,q)
+    maxi = lpi_x_potmax(p,q,phi0)
 
     lpi3Data%real1 = p
     lpi3Data%real2 = q
@@ -187,7 +187,7 @@ contains
 
     call lpi23_sanity_check(q=q)
 
-    xpotmax = lpi_x_potmax(p,q)
+    xpotmax = lpi_x_potmax(p,q,phi0)
 
     if (xend.gt.xpotmax) then
        write(*,*)'xend= xpotmax= ',xend,xpotmax

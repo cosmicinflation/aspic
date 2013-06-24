@@ -2,13 +2,13 @@
 program lmi2main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use lmi2sr, only : lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three, lmi2_xini_min
+  use lmi2sr, only : lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three, lmi2_xinimin
   use lmi2reheat, only : lmi2_lnrhoreh_max, lmi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
   use lmicommon, only : lmi_x_epsonemax
 
-  use lmi2sr, only : lmi2_norm_potential
+  use lmi2sr, only : lmi2_norm_potential, lmi2_xendmin
   use lmi2reheat, only : lmi2_x_rreh, lmi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -25,7 +25,7 @@ program lmi2main
 
   integer, dimension(1:6) :: NxEndValues              
 
-  real(kp) :: xEndMin              !to be specified by lmi2_xini_min
+  real(kp) :: xEndMin              !to be specified by lmi2_xinimin
   real(kp) :: xEndMax    
 
   integer :: Nbeta=10
@@ -44,6 +44,7 @@ program lmi2main
 
   Pstar = powerAmpScalar
 
+
   call delete_file('lmi2_predic.dat')
   call delete_file('lmi2_nsr.dat')
 
@@ -52,7 +53,7 @@ program lmi2main
   w=0._kp
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!    beta=0.1     !!!!!
+!!!!!    beta=0.1      !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   beta=0.1
@@ -77,7 +78,7 @@ program lmi2main
 
      alpha=4._kp*(1._kp-gam)
 
-     xEndMin=lmi2_xini_min(gam,beta)*1.1
+     xEndMin=lmi2_xinimin(gam,beta)*1.1
      xEndMax=xEndMin+(lmi_x_epsonemax(gam,beta)-xEndMin)*200._kp
 
 
@@ -143,7 +144,7 @@ program lmi2main
      NxEnd=nxEndValues(j)
 
      alpha=4._kp*(1._kp-gam)
-     xEndMin=lmi2_xini_min(gam,beta)*1.1
+     xEndMin=lmi2_xinimin(gam,beta)*1.1
      xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd
@@ -206,7 +207,7 @@ program lmi2main
      NxEnd=nxEndValues(j)
 
      alpha=4._kp*(1._kp-gam)
-     xEndMin=lmi2_xini_min(gam,beta)*1.1
+     xEndMin=lmi2_xinimin(gam,beta)*1.1
      xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd
@@ -260,7 +261,7 @@ program lmi2main
   lnRradmax = 10
   gam = 0.7
   beta = 1.
-  xend = lmi2_xini_min(gam,beta)*3
+  xend = lmi2_xinimin(gam,beta)*3
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)

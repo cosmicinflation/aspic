@@ -56,7 +56,7 @@ contains
     lpi3Data%real5 = calF + primEnd
 
     mini = xend
-    maxi = lpi_x_potmax(p,q)
+    maxi = lpi_x_potmax(p,q,phi0)
 
     x = zbrent(find_lpi3_x_star,mini,maxi,tolzbrent,lpi3Data)
     lpi3_x_star = x  
@@ -127,7 +127,7 @@ contains
     lpi3Data%real4 = calF + primEnd
 
     mini = xend
-    maxi = lpi_x_potmax(p,q)
+    maxi = lpi_x_potmax(p,q,phi0)
 
     x = zbrent(find_lpi3_x_rrad,mini,maxi,tolzbrent,lpi3Data)
     lpi3_x_rrad = x  
@@ -197,7 +197,7 @@ contains
     lpi3Data%real4 = calF + primEnd
 
     mini = xend
-    maxi = lpi_x_potmax(p,q)
+    maxi = lpi_x_potmax(p,q,phi0)
 
     x = zbrent(find_lpi3_x_rreh,mini,maxi,tolzbrent,lpi3Data)
     lpi3_x_rreh = x  

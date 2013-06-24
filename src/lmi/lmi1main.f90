@@ -11,7 +11,7 @@ program lmi1main
   use lmi1reheat, only : lmi1_x_rreh, lmi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
+  
   implicit none
 
 
@@ -64,7 +64,7 @@ program lmi1main
   Ngam=20
   gammin=0.004
   gammax=0.99
-
+  
 
   do j=0,Ngam 
      gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step

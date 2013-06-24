@@ -10,7 +10,7 @@ module lmi2reheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use lmi2sr, only : lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three
   use lmi2sr, only : lmi2_norm_potential
-  use lmi2sr, only : lmi2_xini_min, lmi2_efold_primitive
+  use lmi2sr, only : lmi2_xinimin, lmi2_efold_primitive
 
   implicit none
 
@@ -50,8 +50,8 @@ contains
     lmi2Data%real3 = w
     lmi2Data%real4 = calF + primEnd
 
-    mini = lmi2_xini_min(gam,beta)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini = lmi2_xinimin(gam,beta)
+    maxi = xEnd
 
 
     x = zbrent(find_lmi2_x_star,mini,maxi,tolzbrent,lmi2Data)
@@ -113,8 +113,8 @@ contains
     lmi2Data%real2 = beta
     lmi2Data%real3 = calF + primEnd
 
-    mini = lmi2_xini_min(gam,beta)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini = lmi2_xinimin(gam,beta)
+    maxi = xEnd
 
 
     x = zbrent(find_lmi2_x_rrad,mini,maxi,tolzbrent,lmi2Data)
@@ -175,8 +175,8 @@ contains
     lmi2Data%real2 = beta
     lmi2Data%real3 = calF + primEnd
 
-    mini = lmi2_xini_min(gam,beta)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini = lmi2_xinimin(gam,beta)
+    maxi = xEnd
 
 
     x = zbrent(find_lmi2_x_rreh,mini,maxi,tolzbrent,lmi2Data)

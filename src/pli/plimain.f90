@@ -48,8 +48,10 @@ program plimain
 
      lnRhoRehMin = lnRhoNuc
      lnRhoRehMax = pli_lnrhoreh_max(alpha,Pstar)
+  
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
 
      do i=1,npts
 
@@ -59,9 +61,11 @@ program plimain
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
+
         eps1 = pli_epsilon_one(xstar,alpha)
         eps2 = pli_epsilon_two(xstar,alpha)
         eps3 = pli_epsilon_three(xstar,alpha)
+
 
         logErehGeV = log_energy_reheat_ingev(lnRhoReh)
         Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )

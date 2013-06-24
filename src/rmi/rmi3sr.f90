@@ -141,9 +141,11 @@ contains
     real(kp), intent(in) :: c,phi0
     real(kp) :: rmi3_numacc_xendmax
 
- 	rmi3_numacc_xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
-                             (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
-   !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence
+!Using an asymptotic expression for eps1 when x->1, and requiring
+!eps1>epsilon(1._kp) for numerical convergence
+    rmi3_numacc_xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
+         (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
+
 
   end function rmi3_numacc_xendmax
  

@@ -129,7 +129,7 @@ contains
 
     call lpi23_sanity_check(p,q,phi0)
 
-    mini = lpi_x_potmax(p,q)
+    mini = lpi_x_potmax(p,q,phi0)
     maxi = 1._kp
 
     lpi2Data%real1 = p
@@ -184,7 +184,7 @@ contains
 
     call lpi23_sanity_check(q=q)
   
-    mini = lpi_x_potmax(p,q)
+    mini = lpi_x_potmax(p,q,phi0)
     maxi = xend
 
     lpi2Data%real1 = p
