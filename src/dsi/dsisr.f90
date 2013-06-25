@@ -6,7 +6,7 @@
 !mu=mu/Mp
 
 module dsisr
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : hypergeom_2F1
   use cosmopar, only : powerAmpScalar
@@ -168,7 +168,7 @@ contains
 
     xini = dsi_xinimin(p,mu)    
 
-    dsi_xendmax = (720._kp*acos(-1._kp)**2*p**3/(q+4._kp)* &
+    dsi_xendmax = (720._kp*pi**2*p**3/(q+4._kp)* &
          mu**(-q-6._kp)*60._kp*powerAmpScalar)**(1._kp/(3._kp*p+q+6._kp))
 
   end function dsi_xendmax
@@ -179,7 +179,7 @@ contains
     real(kp), intent(in) :: p,q,efolds
     real(kp) :: dsi_mumax  
 
-    dsi_mumax = (720._kp*acos(-1._kp)**2*p**3/(q+4._kp)* &
+    dsi_mumax = (720._kp*pi**2*p**3/(q+4._kp)* &
          60._kp*powerAmpScalar)**((p+2._kp)/(p*q))/ &
          ((p*(p+2._kp)*efolds)**((3._kp*p+q+6._kp)/(p*q)))
 
