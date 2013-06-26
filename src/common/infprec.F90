@@ -4,22 +4,26 @@ module infprec
   public
 
 !quad precision
-!  integer, parameter :: kp = kind(1.0_16)
+
 
 !double precision
+#ifdef QUADPREC
+  integer, parameter :: kp = kind(1.0_16)
+#else
   integer, parameter :: kp = kind(1.0_8)
+#endif
 
 !home made precision: p number of digit
 ! integer, parameter :: kp = selected_real_kind(p=32)
 
 !default integration accuracy
-  real(kp), parameter :: tolkp = 1.d-12
+  real(kp), parameter :: tolkp = 10000._kp * epsilon(1._kp)
 
 !increased integration accuracy
 !  real(kp), parameter :: tolkp = 1.d-36
 
-  real(kp), parameter :: pi = 3.141592653589793238_kp
-  real(kp), parameter :: CConst = -0.7296371545385218_kp
+  real(kp), parameter :: pi = 3.1415926535897932384626433832795_kp
+  real(kp), parameter :: CConst = -0.72963715453852182997625578845942_kp
 
 !workaround for passing argument to old f77 functions. Only pointer
 !can be deferred shape in derived data type.

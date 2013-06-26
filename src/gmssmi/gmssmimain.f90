@@ -14,7 +14,6 @@ program gmssmimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-
   implicit none
 
 
@@ -37,9 +36,10 @@ program gmssmimain
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
-  real(kp) :: VendOverVstar, eps1End, xend
+  real(kp) :: VendOverVstar, eps1End, xend,xeps2
 
   Pstar = powerAmpScalar
+  
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -80,7 +80,7 @@ program gmssmimain
   alphamax=2.5_kp
   phi0min=10._kp**(-6._kp)
   phi0max=10._kp**(0._kp)
-
+  
   call delete_file('gmssmi_x_eps1min.dat')
   do i=1,npts
      alpha=alphamin+(alphamax-alphamin)*(real(i,kp)/real(npts,kp))
@@ -99,13 +99,6 @@ program gmssmimain
   end do
   print*,'gmssmi_eps1min.dat'
 
-  call delete_file('gmssmi_alphamin.dat')
-  do i=1,npts
-     phi0=phi0min*(phi0max/phi0min)**(real(i,kp)/real(npts,kp))
-     alphaminAppr=1-phi0*4._kp*sqrt(2._kp)/15._kp
-     call livewrite('gmssmi_alphamin.dat',phi0,gmssmi_alphamin(phi0),alphaminAppr)
-  end do
-  print*,'gmssmi_alphamin.dat'
 
   print*,'prior functions written.'
 

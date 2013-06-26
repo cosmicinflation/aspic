@@ -1,4 +1,4 @@
-COMMONSRC = nrutil.f90 infprec.f90 cosmopar.f90 infinout.f90 inftools.f90 \
+COMMONSRC = nrutil.f90 infprec.F90 cosmopar.f90 infinout.f90 inftools.f90 \
             specialinf.F90 srflow.f90 srreheat.f90
 
 COMMONMOD = nrutil.$(FC_MODEXT) cosmopar.$(FC_MODEXT) \

@@ -53,12 +53,7 @@ contains
     gmssmiData%real5 = calF + primEnd
 
     mini = xend
-
-    if (alpha .lt. 1._kp) then
-	maxi = gmssmi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp))
-    else
-	maxi = gmssmi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
-    endif
+    maxi = gmssmi_x_epsonemin(alpha) - epsilon(1._kp)
 
     x = zbrent(find_gmssmi_x_star,mini,maxi,tolzbrent,gmssmiData)
     gmssmi_x_star = x
@@ -124,12 +119,7 @@ contains
     gmssmiData%real4 = calF + primEnd
 
     mini = xend
-
-    if (alpha .lt. 1._kp) then
-	maxi = gmssmi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp))
-    else
-	maxi = gmssmi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
-    endif
+    maxi = gmssmi_x_epsonemin(alpha) - epsilon(1._kp)
 
     x = zbrent(find_gmssmi_x_rrad,mini,maxi,tolzbrent,gmssmiData)
     gmssmi_x_rrad = x
@@ -195,12 +185,7 @@ contains
     gmssmiData%real4 = calF + primEnd
 
     mini = xend
-
-    if (alpha .lt. 1._kp) then
-	maxi = gmssmi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp))
-    else
-	maxi = gmssmi_x_epsonemin(alpha)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
-    endif
+    maxi = gmssmi_x_epsonemin(alpha) - epsilon(1._kp)
 
     x = zbrent(find_gmssmi_x_rreh,mini,maxi,tolzbrent,gmssmiData)
     gmssmi_x_rreh = x

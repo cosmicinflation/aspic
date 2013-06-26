@@ -18,6 +18,9 @@ module gmssmicommon
   public gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
   public gmssmi_x_epsonemin, gmssmi_x_endinf
   public gmssmi_x_epsonezero, gmssmi_x_epstwozero
+  public gmssmi_x_epstwomin, gmssmi_epstwomin  
+
+  logical, parameter :: verbose = .true.
 
 
 contains
@@ -109,6 +112,8 @@ contains
 
     if (alpha .gt. 9._kp/5._kp) then
 
+       if (verbose) write(*,*)'gmssmi_x_epstwozero: alpha < 9/5!'
+
        gmssmi_x_epstwozero = -1._kp !error value
 
     else
@@ -143,9 +148,11 @@ contains
     real(kp), intent(in) :: alpha 
 
     if (alpha .lt. 1._kp) then
+       
+       if (verbose) write(*,*)'gmssmi_x_epsonezero: alpha < 1!'
 
        gmssmi_x_epsonezero=-1._kp !error value
-
+       
     else
 
        gmssmi_x_epsonezero(1) = (1._kp-sqrt(1._kp-1._kp/alpha))**(0.25_kp)
@@ -185,6 +192,75 @@ contains
   end function gmssmi_x_epsonemin
   
   
+
+  function gmssmi_epstwomin(alpha,phi0)
+    implicit none
+    real(kp) :: gmssmi_epstwomin
+    real(kp), intent(in) :: alpha, phi0
+
+    real(kp) :: xepstwoMin
+
+    xepstwoMin = gmssmi_x_epstwomin(alpha,phi0)
+
+    gmssmi_epstwomin = gmssmi_epsilon_two(xepstwoMin,alpha,phi0)
+    
+  end function gmssmi_epstwomin
+
+
+
+!return the position of the minimum of eps2 in the region [0,xeps1min-]
+  function gmssmi_x_epstwomin(alpha,phi0)
+    implicit none
+    real(kp), intent(in) :: alpha, phi0
+    real(kp) :: gmssmi_x_epstwomin
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini, maxi
+    type(transfert) :: gmssmiData
+!for alpha greater than this value, eps2 has a local minimum in [0,xepsonemin-]
+  real(kp), parameter :: alphaEpsTwoMin = 1.0320173196348654650456641734402_kp
+!for alpha=alphaEps2Min, eps2 has an inflection point at this value
+  real(kp), parameter :: xAlphaEpsTwoMin = 0.74440810763275744755988768541554_kp
+
+    if (alpha.lt.alphaEpsTwoMin) then
+
+       gmssmi_x_epstwomin = gmssmi_x_epsonemin(alpha)
+
+    elseif (alpha.eq.alphaEpsTwoMin) then
+
+       gmssmi_x_epstwomin = xAlphaEpsTwoMin
+
+    else
+
+       mini = epsilon(1._kp)
+       maxi = xAlphaEpsTwoMin + epsilon(1._kp)
+
+       gmssmiData%real1 = alpha
+
+       gmssmi_x_epstwomin = zbrent(find_gmssmi_x_epstwomin,mini,maxi,tolFind,gmssmiData)
+
+    endif
+    
+  end function gmssmi_x_epstwomin
+
+  function find_gmssmi_x_epstwomin(x,gmssmiData)    
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: gmssmiData
+    real(kp) :: find_gmssmi_x_epstwomin
+    real(kp) :: alpha
+
+    real(kp), parameter :: junk = 1._kp
+
+    alpha = gmssmiData%real1
+
+    find_gmssmi_x_epstwomin = gmssmi_epsilon_three(x,alpha,junk)
+
+  end function find_gmssmi_x_epstwomin
+  
+  
+
+  
   !returns x at the end of inflation defined as epsilon1=1
   function gmssmi_x_endinf(alpha,phi0)
     implicit none
@@ -197,7 +273,9 @@ contains
 
 
     mini = epsilon(1._kp)
-    maxi = gmssmi_x_epsonemin(alpha)*(1._kp-epsilon(1._kp)) !Position of the first local minimum of epsilon1
+!Position of the first local minimum of epsilon1
+!    maxi = gmssmi_x_epsonemin(alpha)*(1._kp-epsilon(1._kp)) 
+    maxi = gmssmi_x_epsonemin(alpha) - epsilon(1._kp)
 
     gmssmiData%real1 = alpha
     gmssmiData%real2 = phi0

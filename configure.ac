@@ -1,4 +1,4 @@
-AC_INIT([aspic], [0.2.7], [chris@ringeval.com])
+AC_INIT([aspic], [0.2.8], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -15,7 +15,24 @@ FCFLAGS+=" "
 SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
 
-SRINCDIR="aspic"
+AC_ARG_ENABLE(quad-precision,
+	[AC_HELP_STRING([--enable-quad-precision],
+	[compile aspic in quadruple precision])],
+	ok=$enableval, ok=no)
+AM_CONDITIONAL([USE_QUAD],[test "$ok" = "yes"])
+AM_COND_IF([USE_QUAD],
+[
+	FCFLAGS+=" -DQUADPREC"
+	PREC_SUFFIX=q
+	SRINCDIR="aspicq"
+	AC_MSG_WARN([attempting to compile in quadruple precision!])
+],
+[
+	SRINCDIR="aspic"
+]
+)
+
+AC_SUBST(PREC_SUFFIX)
 AC_SUBST([SRINCDIR])
 
 FC_MODEXT="mod"
@@ -23,6 +40,8 @@ AC_SUBST([FC_MODEXT])
 
 DATEXT="dat"
 AC_SUBST([DATEXT]) 
+
+
 
 AM_INIT_AUTOMAKE
 

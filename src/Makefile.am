@@ -1,16 +1,16 @@
-lib_LTLIBRARIES = libaspic.la
-libaspic_la_SOURCES =
-libaspic_la_LDFLAGS = -version-info @version_info@
+lib_LTLIBRARIES = libaspic@PREC_SUFFIX@.la
+libaspic@PREC_SUFFIX@_la_SOURCES =
+libaspic@PREC_SUFFIX@_la_LDFLAGS = -version-info @version_info@
 
-libaspic_la_includedir = $(includedir)/$(SRINCDIR)
-libaspic_la_include_HEADERS = ../include/aspic.h
+libaspic@PREC_SUFFIX@_la_includedir = $(includedir)/$(SRINCDIR)
+libaspic@PREC_SUFFIX@_la_include_HEADERS = ../include/aspic.h
 
 #forces the linker to use fortran linking
-nodist_EXTRA_libaspic_la_SOURCES = donotexist.f90
+nodist_EXTRA_libaspic@PREC_SUFFIX@_la_SOURCES = donotexist.f90
 
 
 #while the real sources are already built libs
-libaspic_la_LIBADD =                \
+libaspic@PREC_SUFFIX@_la_LIBADD =                \
         common/libsrcommon.la          \
         lfi/liblfi.la \
         gmlfi/libgmlfi.la \
