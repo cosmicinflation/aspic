@@ -140,7 +140,7 @@ contains
 
   
     mini = xend
-    maxi = mssmi_x_epsonemin()*(1._kp-epsilon(1._kp))
+    maxi = mssmi_x_epsonemin(phi0)*(1._kp-epsilon(1._kp))
 
     mssmiData%real1 = phi0
     mssmiData%real2 = -bfold + mssmi_efold_primitive(xend,phi0)
@@ -166,11 +166,12 @@ contains
 
 
 !Returns the position of the first local minimum of epsilon1
-  function mssmi_x_epsonemin()   
+  function mssmi_x_epsonemin(phi0)   
     implicit none
     real(kp) :: mssmi_x_epsonemin
+    real(kp), intent(in) :: phi0
 
-	mssmi_x_epsonemin = gmssmi_x_epsonemin(mssmi_alpha()) 
+    mssmi_x_epsonemin = gmssmi_x_epsonemin(mssmi_alpha(),phi0) 
     
   end function mssmi_x_epsonemin
 

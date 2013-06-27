@@ -17,7 +17,9 @@ module gripicommon
   public gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three  
   public gripi_x_epsonemin, gripi_x_endinf
   public gripi_x_epstwozero,gripi_x_epsonezero
+  public gripi_x_epstwomin, gripi_epstwomin
 
+  logical, parameter :: verbose = .true.
 
 contains
 
@@ -64,8 +66,8 @@ contains
     real(kp) :: gripi_epsilon_one
     real(kp), intent(in) :: x,alpha,phi0
 
-    gripi_epsilon_one =(72._kp*(1._kp+alpha*(-2._kp+x)*x)**2)/ &
-         (x**2*(6._kp+alpha*x*(-8._kp+3._kp*x))**2)/phi0**2
+    gripi_epsilon_one =72._kp * ( (1._kp+alpha*(-2._kp+x)*x)/ &
+         (x*(6._kp+alpha*x*(-8._kp+3._kp*x)))/phi0)**2
 
   end function gripi_epsilon_one
 
@@ -179,6 +181,8 @@ contains
 
     if (alpha .lt. 1._kp) then
 
+       if (verbose) write(*,*)'gripi_x_epsonezero: alpha < 1!'
+
        gripi_x_epsonezero=-1._kp !error value
 
     elseif (alpha.eq.0._kp) then
@@ -220,6 +224,79 @@ contains
 
   end function gripi_x_epsonemin
 
+
+
+  function gripi_epstwomin(alpha,phi0)
+    implicit none
+    real(kp) :: gripi_epstwomin
+    real(kp), intent(in) :: alpha, phi0
+
+    real(kp) :: xepstwoMin
+
+    xepstwoMin = gripi_x_epstwomin(alpha,phi0)
+
+    gripi_epstwomin = gripi_epsilon_two(xepstwoMin,alpha,phi0)
+    
+  end function gripi_epstwomin
+
+
+
+!return the position of the minimum of eps2 in the region [0,xeps1min-]
+  function gripi_x_epstwomin(alpha,phi0)
+    implicit none
+    real(kp), intent(in) :: alpha, phi0
+    real(kp) :: gripi_x_epstwomin
+
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini, maxi
+    type(transfert) :: gripiData
+!for alpha greater than this value, eps2 has a local minimum in [0,xepsonemin-]
+   real(kp), parameter :: alphaEpsTwoMin = 1.0931370957867731262005548096672_kp
+!for alpha=alphaEps2Min, eps2 has an inflection point at this value
+  real(kp), parameter :: xAlphaEpsTwoMin = 0.84342596937845189412210057784193_kp
+
+    if (alpha.lt.alphaEpsTwoMin) then
+
+       gripi_x_epstwomin = gripi_x_epsonemin(alpha,phi0)
+
+    elseif (alpha.eq.alphaEpsTwoMin) then
+
+       gripi_x_epstwomin = xAlphaEpsTwoMin
+
+    else
+
+       mini = epsilon(1._kp)
+       maxi = xAlphaEpsTwoMin + epsilon(1._kp)
+
+       gripiData%real1 = alpha
+
+       gripi_x_epstwomin = zbrent(find_gripi_x_epstwomin,mini,maxi,tolFind,gripiData)
+
+    endif
+    
+  end function gripi_x_epstwomin
+
+  function find_gripi_x_epstwomin(x,gripiData)    
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: gripiData
+    real(kp) :: find_gripi_x_epstwomin
+    real(kp) :: alpha
+
+    real(kp), parameter :: junk = 1._kp
+
+    alpha = gripiData%real1
+
+!this is d(eps2) simplified
+    find_gripi_x_epstwomin = -2*(36 - 144*x*alpha + 144*x**4*alpha**3  &
+         - 54*x**5*alpha**3 + 9*x**6*alpha**3 &
+         + 6*x**2*alpha*(9 + 32*alpha) &
+         - 4*x**3*alpha**2*(27 + 32*alpha))
+
+  end function find_gripi_x_epstwomin
+
+
+
 !returns x at the end of inflation defined as epsilon1=1
   function gripi_x_endinf(alpha,phi0)
     implicit none
@@ -233,7 +310,7 @@ contains
 
     mini = epsilon(1._kp)
 !Position of the first local minimum of epsilon1
-    maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-epsilon(1._kp)) 
+    maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
 
     gripiData%real1 = alpha
     gripiData%real2 = phi0

@@ -14,6 +14,8 @@ program gripimgripin
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use gripisr, only : gripi_x_epstwomin,gripi_epstwomin
+
   implicit none
 
   
@@ -34,7 +36,7 @@ program gripimgripin
 
   real(kp), dimension(2) :: xEpsOneZero,xEpsTwoZero
 
-  real(kp) :: alphaminAppr
+  real(kp) :: alphaminAppr,xeps2
 
   Pstar = powerAmpScalar
 
@@ -46,6 +48,7 @@ program gripimgripin
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+ 
   npts=1000
   alphamin=0._kp
   alphamax=2.5_kp
@@ -96,6 +99,7 @@ program gripimgripin
   w=0._kp
 !  w = 1._kp/3._kp
 
+
   call delete_file('gripi_predic.dat')
   call delete_file('gripi_nsr.dat')
 
@@ -130,7 +134,9 @@ program gripimgripin
 !       alpha=1._kp-(1._kp-alphamin)*((1._kp-alphamax)/(1._kp-alphamin))** &
 !            (real(k,kp)/real(nalpha,kp))!logarithmic step on 1-alpha
 
-     
+        alpha = 1.00000428367125195629015561966694348
+        phi0=1
+
 
        lnRhoRehMin = lnRhoNuc
        lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,Pstar)
@@ -165,7 +171,7 @@ program gripimgripin
   end do
 
  end do
-
+ stop
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!          Testing Rrad/Rreh           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -179,6 +185,8 @@ program gripimgripin
   alphamin=1._kp+epsilon(1._kp)
   alphamax=1._kp+2*phi0**4/60._kp**2*acos(-1._kp)**2/576._kp
   alpha=alphamin*(alphamax/alphamin)**(0.1_kp)
+  
+ 
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
@@ -214,7 +222,7 @@ program gripimgripin
   enddo
 
 print*,'case alpha>1 done'
-
+stop
 
 !!!!!!!!!!!!!!!!!!!!
 !!  Case alpha<1  !!

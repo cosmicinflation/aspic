@@ -963,7 +963,7 @@ contains
       
       !real(kp) :: func
 !      EXTERNAL func
-      PARAMETER (ITMAX=1000000,EPS=1d-15)
+      PARAMETER (ITMAX=1000000,EPS=100._kp*epsilon(1._kp))
       INTEGER iter
       real(kp) a,b,c,d,e,fa,fb,fc,p,q,r,s,tol1,xm      
       
@@ -996,7 +996,7 @@ contains
       do while (notbracketed.and.(iex.lt.iexmax))
          fa=func(a,extradata)
          fb=func(b,extradata)
-         if((fa.gt.0..and.fb.gt.0.).or.(fa.lt.0..and.fb.lt.0.)) then
+         if((fa.gt.0._kp.and.fb.gt.0._kp).or.(fa.lt.0._kp.and.fb.lt.0._kp)) then
             write(*,*)'x1=',a,'f(x1)=',fa
             write(*,*)'x2=',b,'f(x2)=',fb            
             write(*,*)'zbrent: expanding interval!'
@@ -1014,7 +1014,7 @@ contains
       c=b
       fc=fb
       do iter=1,ITMAX
-        if((fb.gt.0..and.fc.gt.0.).or.(fb.lt.0..and.fc.lt.0.))then
+        if((fb.gt.0._kp.and.fc.gt.0._kp).or.(fb.lt.0._kp.and.fc.lt.0._kp))then
           c=a
           fc=fa
           d=b-a
@@ -1028,26 +1028,26 @@ contains
           fb=fc
           fc=fa
         endif
-        tol1=2.*EPS*abs(b)+0.5*tol
-        xm=.5*(c-b)
-        if(abs(xm).le.tol1 .or. fb.eq.0.)then
+        tol1=2._kp*EPS*abs(b)+0.5_kp*tol
+        xm=.5_kp*(c-b)
+        if(abs(xm).le.tol1 .or. fb.eq.0._kp)then
           zbrent=b
           return
         endif
         if(abs(e).ge.tol1 .and. abs(fa).gt.abs(fb)) then
           s=fb/fa
           if(a.eq.c) then
-            p=2.*xm*s
-            q=1.-s
+            p=2._kp*xm*s
+            q=1._kp-s
           else
             q=fa/fc
             r=fb/fc
-            p=s*(2.*xm*q*(q-r)-(b-a)*(r-1.))
-            q=(q-1.)*(r-1.)*(s-1.)
+            p=s*(2._kp*xm*q*(q-r)-(b-a)*(r-1._kp))
+            q=(q-1._kp)*(r-1._kp)*(s-1._kp)
           endif
-          if(p.gt.0.) q=-q
+          if(p.gt.0._kp) q=-q
           p=abs(p)
-          if(2.*p .lt. min(3.*xm*q-abs(tol1*q),abs(e*q))) then
+          if(2._kp*p .lt. min(3._kp*xm*q-abs(tol1*q),abs(e*q))) then
             e=d
             d=p/q
           else

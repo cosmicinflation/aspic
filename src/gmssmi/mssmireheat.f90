@@ -52,7 +52,7 @@ contains
     mssmiData%real4 = calF + primEnd
 
     mini = xend
-    maxi = mssmi_x_epsonemin()*(1._kp-epsilon(1._kp))
+    maxi = mssmi_x_epsonemin(phi0) -epsilon(1._kp)
 
     x = zbrent(find_mssmi_x_star,mini,maxi,tolzbrent,mssmiData)
     mssmi_x_star = x   
@@ -118,7 +118,7 @@ contains
     mssmiData%real3 = calF + primEnd
 
     mini = xend
-    maxi = mssmi_x_epsonemin()*(1._kp-epsilon(1._kp))
+    maxi = mssmi_x_epsonemin(phi0) -epsilon(1._kp)
 
     x = zbrent(find_mssmi_x_rrad,mini,maxi,tolzbrent,mssmiData)
     mssmi_x_rrad = x   
@@ -183,7 +183,7 @@ contains
     mssmiData%real3 = calF + primEnd
 
     mini = xend
-    maxi = mssmi_x_epsonemin()*(1._kp-epsilon(1._kp))
+    maxi = mssmi_x_epsonemin(phi0)-epsilon(1._kp)
 
     x = zbrent(find_mssmi_x_rreh,mini,maxi,tolzbrent,mssmiData)
     mssmi_x_rreh = x   

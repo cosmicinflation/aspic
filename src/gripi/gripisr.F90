@@ -5,7 +5,7 @@
 !x = phi/phi0
 
 module gripisr
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent
 #ifdef NOF08
   use specialinf, only : atan
@@ -15,17 +15,17 @@ module gripisr
   use gripicommon, only : gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three
   use gripicommon, only : gripi_x_epsonemin, gripi_x_endinf
   use gripicommon, only : gripi_x_epstwozero,gripi_x_epsonezero
+  use gripicommon, only : gripi_x_epstwomin, gripi_epstwomin
   implicit none
 
   private
 
   public gripi_norm_potential, gripi_norm_deriv_potential
-  public gripi_norm_deriv_second_potential
+  public gripi_norm_deriv_second_potential, gripi_alphamin
   public gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three  
   public gripi_x_epsonemin, gripi_x_endinf
   public gripi_x_epstwozero,gripi_x_epsonezero
-    
-  public gripi_alphamin, gripi_alphamax
+  public gripi_x_epstwomin, gripi_epstwomin
   public gripi_x_trajectory, gripi_efold_primitive
 
 
@@ -48,13 +48,14 @@ contains
 
     else
 
-       carg = (x-1._kp)/(sqrt(cmplx(1._kp/alpha-1._kp,0._kp,kp)))
+!       carg = (x-1._kp)/(sqrt(cmplx(1._kp/alpha-1._kp,0._kp,kp)))
+       carg = (x-1._kp)/sqrt((1._kp/alpha-1._kp)*(1._kp,0._kp))
 
        gripi_efold_primitive = phi0**2*real((5._kp-4._kp)/ &
-            (12._kp*sqrt(cmplx(alpha*(1._kp-alpha),0._kp,kp)))* &
+            (12._kp*sqrt((alpha*(1._kp-alpha))*(1._kp,0._kp)))* &
             atan(carg)+0.5_kp*x*(0.25_kp*x-1._kp/3._kp)+ &
-            (1._kp/(8._kp*alpha)-1._kp/6._kp)*log(1._kp+alpha*x &
-            *(x-2._kp)),kp)
+            (1._kp/(8._kp*alpha)-1._kp/6._kp) &
+            *log((1._kp+alpha*x*(x-2._kp))*(1._kp,0._kp) ),kp)
 
     endif
 
@@ -75,7 +76,7 @@ contains
 
     if (alpha .lt. 1._kp) then
 
-       maxi = gripi_x_epsonemin(alpha,phi0)*100._kp 
+       maxi = 1._kp/epsilon(1._kp)
 
     elseif (alpha.eq.1._kp) then
 
@@ -111,76 +112,29 @@ contains
   end function find_gripi_x_trajectory
 
 
-!Returns the prior alphamin(phi0) such that, when alpha<1, the minimum of epsilon1 is less than one
-  function gripi_alphamin(phi0)    
+!for alpha < 1, returns alphamin to get at least efold number of inflation
+  function gripi_alphamin(efold,phi0)
     implicit none
-    real(kp), intent(in) :: phi0   
     real(kp) :: gripi_alphamin
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: gripiData
+    real(kp), intent(in) :: efold, phi0
 
-    mini = epsilon(1._kp)
-    mini = 0.9_kp
-    maxi = 1._kp*(1._kp-epsilon(1._kp))
+    integer, save :: counter = 0
+    integer, parameter :: repeat = 10
 
-    gripiData%real1 = phi0
+    real(kp) :: crazySmall
 
-    gripi_alphamin = zbrent(find_gripi_alphamin,mini,maxi,tolFind,gripiData)
+    crazySmall = phi0**4*pi**2/(576._kp*efold**2)
 
+    if ((counter.le.repeat).and.(crazySmall.le.epsilon(1._kp))) then
+       write(*,*)'gripi_alphamin: 1-alphamin < machine precision!'
+       write(*,*)'1-alphamin= ',crazySmall
+       counter = counter + 1
+    endif
 
+    gripi_alphamin = 1._kp - crazySmall 
+    
   end function gripi_alphamin
 
-  function find_gripi_alphamin(alpha,gripiData)    
-    implicit none
-    real(kp), intent(in) :: alpha   
-    type(transfert), optional, intent(inout) :: gripiData
-    real(kp) :: find_gripi_alphamin
-    real(kp) :: phi0
-
-    phi0= gripiData%real1
-
-    find_gripi_alphamin = gripi_epsilon_one(gripi_x_epsonemin(alpha,phi0),alpha,phi0)-1._kp
-
-  end function find_gripi_alphamin
-
-!Returns the prior alphamax(phi0,efold) such that, when alpha>1,
-!at least efold e-folds can be realized
-  function gripi_alphamax(efold,phi0)
-    implicit none
-    real(kp), intent(in) :: phi0,efold 
-    real(kp) :: gripi_alphamax
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: gripiData
-
-    mini = 1._kp*(1._kp+epsilon(1._kp))
-    mini = 1._kp*(1._kp+5._kp*epsilon(1._kp))
-    maxi = 2._kp
-
-    gripiData%real1 = efold
-    gripiData%real2 = phi0
-
-    gripi_alphamax = zbrent(find_gripi_alphamax,mini,maxi,tolFind,gripiData)
-
-
-  end function gripi_alphamax
-
-  function find_gripi_alphamax(alpha,gripiData)    
-    implicit none
-    real(kp), intent(in) :: alpha   
-    type(transfert), optional, intent(inout) :: gripiData
-    real(kp) :: find_gripi_alphamax
-    real(kp) :: phi0,efold
-
-    efold = gripiData%real1
-    phi0 = gripiData%real2
-
-    find_gripi_alphamax = gripi_efold_primitive(gripi_x_epsonemin(alpha,phi0),alpha,phi0) &
-         -gripi_efold_primitive(gripi_x_endinf(alpha,phi0),alpha,phi0) &
-         -efold
-
-  end function find_gripi_alphamax
-
+  
 
 end module gripisr

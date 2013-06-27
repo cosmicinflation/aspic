@@ -52,12 +52,7 @@ contains
     gripiData%real4 = calF + primEnd
 
     mini = xend
-
-    if (alpha .lt. 1._kp) then
-	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp))
-    else
-	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
-    endif
+    maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
 
     x = zbrent(find_gripi_x_star,mini,maxi,tolzbrent,gripiData)
     gripi_x_star = x
@@ -92,7 +87,7 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function gripi_x_rrad(alpha,phi0,lnRRad,Pstar,bfoldstar)    
+  function gripi_x_rrad(alpha,phi0,lnRRad,Pstar,bfoldstar)        
     implicit none
     real(kp) :: gripi_x_rrad
     real(kp), intent(in) :: alpha,phi0,lnRrad,Pstar
@@ -121,13 +116,8 @@ contains
     gripiData%real3 = calF + primEnd
 
     mini = xend
-
-    if (alpha .lt. 1._kp) then
-	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp))
-    else
-	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
-    endif
-
+    maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
+    
     x = zbrent(find_gripi_x_rrad,mini,maxi,tolzbrent,gripiData)
     gripi_x_rrad = x
 
@@ -190,13 +180,8 @@ contains
     gripiData%real3 = calF + primEnd
 
     mini = xend
-
-    if (alpha .lt. 1._kp) then
-	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp))
-    else
-	maxi = gripi_x_epsonemin(alpha,phi0)*(1._kp-100000._kp*epsilon(1._kp)) !local maximum of the potential
-    endif
-
+    maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
+    
     x = zbrent(find_gripi_x_rreh,mini,maxi,tolzbrent,gripiData)
     gripi_x_rreh = x
 

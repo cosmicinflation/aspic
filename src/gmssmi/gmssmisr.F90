@@ -26,8 +26,6 @@ module gmssmisr
   public gmssmi_alphamin, gmssmi_x_epsonemin
   public gmssmi_epstwomin, gmssmi_x_epstwomin
 
-  logical, parameter :: verbose = .true.
-
 contains
 
 
@@ -55,7 +53,7 @@ contains
 
        gmssmi_efold_primitive = phi0**2*(real(x**2/20._kp &
             +bplus/(10._kp*sqrt(aplus))*atan(sqrt(aplus)*x**2) &
-            +bminus/(10._kp*sqrt(aminus))*atan(sqrt(aminus)*x**2)))
+            +bminus/(10._kp*sqrt(aminus))*atan(sqrt(aminus)*x**2),kp))
 
     endif
 
@@ -77,8 +75,7 @@ contains
 
     if (alpha .lt. 1._kp) then
 
-!	maxi = gmssmi_x_epsonemin(alpha)*100._kp 
-       maxi = huge(1._kp)
+       maxi = 1._kp/epsilon(1._kp)
 
     elseif (alpha.eq.1._kp) then
 
@@ -86,7 +83,7 @@ contains
 
     else
 
-	maxi = gmssmi_x_epsonemin(alpha) !local maximum of the potential
+	maxi = gmssmi_x_epsonemin(alpha,phi0) !local maximum of the potential
 
     endif
 
@@ -114,6 +111,7 @@ contains
    
   end function find_gmssmi_x_trajectory
 
+
 !for alpha < 1, returns alphamin to get at least efold number of inflation
   function gmssmi_alphamin(efold,phi0)
     implicit none
@@ -122,12 +120,12 @@ contains
 
     integer, save :: counter = 0
     integer, parameter :: repeat = 10
-
+    
     real(kp) :: crazySmall
 
     crazySmall = phi0**4*pi**2/(900._kp*efold**2)
 
-    if (verbose.and.(counter.le.repeat).and.(crazySmall.le.epsilon(1._kp))) then
+    if ((counter.le.repeat).and.(crazySmall.le.epsilon(1._kp))) then
        write(*,*)'gmssmi_alphamin: 1-alphamin < machine precision!'
        write(*,*)'1-alphamin= ',crazySmall
        counter = counter + 1

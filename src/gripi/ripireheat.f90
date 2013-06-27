@@ -51,8 +51,8 @@ contains
     ripiData%real2 = w
     ripiData%real3 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
+    mini = xEnd +epsilon(1._kp)
+    maxi = 1._kp - epsilon(1._kp) !Position of the flat inflection point
 
 
     x = zbrent(find_ripi_x_star,mini,maxi,tolzbrent,ripiData)
@@ -114,7 +114,7 @@ contains
     ripiData%real1 = phi0
     ripiData%real2 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
+    mini = xEnd +epsilon(1._kp)
     maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 
 
@@ -177,7 +177,7 @@ contains
     ripiData%real1 = phi0
     ripiData%real2 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
+    mini = xEnd +epsilon(1._kp)
     maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 
 

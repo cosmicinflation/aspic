@@ -105,9 +105,9 @@ contains
   end function gmssmi_epsilon_three
 
 
- function gmssmi_x_epstwozero(alpha) 
+ function gmssmi_x_epstwozero(alpha,phi0) 
     real(kp), dimension(2) :: gmssmi_x_epstwozero
-    real(kp), intent(in) :: alpha
+    real(kp), intent(in) :: alpha,phi0
     complex(kp) :: delta,BigDelta,sigma,BigSigma,x_eps2NULMinus, x_eps2NULPlus
 
     if (alpha .gt. 9._kp/5._kp) then
@@ -143,9 +143,9 @@ contains
   end function gmssmi_x_epstwozero
 
 
-   function gmssmi_x_epsonezero(alpha)
+   function gmssmi_x_epsonezero(alpha,phi0)
     real(kp), dimension(2) :: gmssmi_x_epsonezero
-    real(kp), intent(in) :: alpha 
+    real(kp), intent(in) :: alpha,phi0
 
     if (alpha .lt. 1._kp) then
        
@@ -165,15 +165,15 @@ contains
 
 
 !Returns the position of the first local minimum of epsilon1
-  function gmssmi_x_epsonemin(alpha)   
+  function gmssmi_x_epsonemin(alpha,phi0)   
     implicit none
     real(kp) :: gmssmi_x_epsonemin
-    real(kp), intent(in) :: alpha
+    real(kp), intent(in) :: alpha,phi0
     real(kp), dimension(2) :: xEpsTwoZero, xEpsOneZero
     
     if (alpha .lt. 1._kp) then
 
-       xEpsTwoZero = gmssmi_x_epstwozero(alpha)
+       xEpsTwoZero = gmssmi_x_epstwozero(alpha,phi0)
 
        gmssmi_x_epsonemin = xEpsTwoZero(1)
 
@@ -183,7 +183,7 @@ contains
 
     else
 
-       xEpsOneZero = gmssmi_x_epsonezero(alpha)
+       xEpsOneZero = gmssmi_x_epsonezero(alpha,phi0)
        
        gmssmi_x_epsonemin = xEpsOneZero(1)
 
@@ -224,7 +224,7 @@ contains
 
     if (alpha.lt.alphaEpsTwoMin) then
 
-       gmssmi_x_epstwomin = gmssmi_x_epsonemin(alpha)
+       gmssmi_x_epstwomin = gmssmi_x_epsonemin(alpha,phi0)
 
     elseif (alpha.eq.alphaEpsTwoMin) then
 
@@ -274,8 +274,8 @@ contains
 
     mini = epsilon(1._kp)
 !Position of the first local minimum of epsilon1
-!    maxi = gmssmi_x_epsonemin(alpha)*(1._kp-epsilon(1._kp)) 
-    maxi = gmssmi_x_epsonemin(alpha) - epsilon(1._kp)
+!    maxi = gmssmi_x_epsonemin(alpha,phi0)*(1._kp-epsilon(1._kp)) 
+    maxi = gmssmi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
 
     gmssmiData%real1 = alpha
     gmssmiData%real2 = phi0
