@@ -136,18 +136,45 @@ contains
 
 
 ! Return an upper bound on xend for numerica computability
-  function rmi3_numacc_xendmax(c,phi0)
-    implicit none
-    real(kp), intent(in) :: c,phi0
-    real(kp) :: rmi3_numacc_xendmax
+!  function rmi3_numacc_xendmax(c,phi0)
+!    implicit none
+!    real(kp), intent(in) :: c,phi0
+!    real(kp) :: rmi3_numacc_xendmax
 
 !Using an asymptotic expression for eps1 when x->1, and requiring
 !eps1>epsilon(1._kp) for numerical convergence
-    rmi3_numacc_xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
+!    rmi3_numacc_xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
+!         (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
+
+
+!  end function rmi3_numacc_xendmax
+  
+ function rmi3_numacc_xendmax(efold,c,phi0)
+    implicit none
+    real(kp), intent(in) :: efold,c,phi0
+    real(kp) :: rmi3_numacc_xendmax,xMin, xMax, efoldMax
+    real(kp), parameter :: tolFind=tolkp
+
+ !Using an asymptotic expression for eps1 when x->1, and requiring
+ !eps1>epsilon(1._kp) for numerical convergence
+
+    xMin = sqrt(2._kp*epsilon(1._kp)/(c**2*phi0**2))
+
+    xMax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
          (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
 
+    efoldMax = rmi3_efold_primitive(xMin,c,phi0) &
+         - rmi3_efold_primitive(xMax,c,phi0)
+
+    if (efold.gt.efoldMax) then
+       write(*,*)'rmi3_xendmax: not enough efolds computable at current accuracy!'
+       write(*,*)'efold requested=',efold,'   efold maxi=',efoldMax
+       stop
+    endif
+
+    rmi3_numacc_xendmax = rmi3_x_trajectory(efold,xMax,c,phi0)
+       
 
   end function rmi3_numacc_xendmax
- 
 
 end module rmi3sr

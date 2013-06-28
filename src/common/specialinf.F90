@@ -108,6 +108,10 @@ module specialinf
   end interface atan
 #endif
 
+interface expint
+   module procedure expintkp
+end interface expint
+
 contains
 
 
@@ -198,119 +202,156 @@ contains
   END FUNCTION lambert
 
 
-  FUNCTION expint(n,x) !Exponential Integral function ExpInt(n,x)=Int_1^Infinity exp(-xt)/(t^n) dt
-	USE nrtype; USE nrutil, ONLY : arth,assert,nrerror
-	IMPLICIT NONE
-	INTEGER(I4B), INTENT(IN) :: n
-	REAL(kp), INTENT(IN) :: x
-	REAL(kp) :: expint
-	INTEGER(I4B), PARAMETER :: MAXIT=100
-	REAL(kp), PARAMETER :: EPS=epsilon(x),BIG=huge(x)*EPS
-	!Evaluates the exponential integral En(x).
-	!Parameters: MAXIT is the maximum allowed number of iterations; EPS is the desired relative
-	!error, not smaller than the machine precision; BIG is a number near the largest representable
-	!floating-point number; EULER (in nrtype) is Euler's constant γ.
-	INTEGER(I4B) :: i,nm1
-	REAL(kp) :: a,b,c,d,del,fact,h
-	call assert(n >= 0, x >= 0.0, (x > 0.0 .or. n > 1), &
-		'expint args')
-	if (n == 0) then !Special case.
-		expint=exp(-x)/x
-		RETURN
-	end if
-	nm1=n-1
-	if (x == 0.0) then !Another special case.
-		expint=1.0_sp/nm1
-	else if (x > 1.0) then !Lentz's algorithm (§5.2).
-		b=x+n
-		c=BIG
-		d=1.0_sp/b
-		h=d
-		do i=1,MAXIT
-			a=-i*(nm1+i)
-			b=b+2.0_sp
-			d=1.0_sp/(a*d+b) !Denominators cannot be zero.
-			c=b+a/c
-			del=c*d
-			h=h*del
-			if (abs(del-1.0_sp) <= EPS) exit
-		end do
-	if (i > MAXIT) call nrerror('expint: continued fraction failed')
-	expint=h*exp(-x)
-	else !Evaluate series.
-		if (nm1 /= 0) then !Set first term.
-			expint=1.0_sp/nm1
-		else
-			expint=-log(x)-EULER
-		end if
-		fact=1.0
-		do i=1,MAXIT
-			fact=-fact*x/i
-			if (i /= nm1) then
-				del=-fact/(i-nm1)
-			else !ψ(n) appears here.
-				del=fact*(-log(x)-EULER+sum(1.0_sp/arth(1,1,nm1)))
-			end if
-			expint=expint+del
-			if (abs(del) < abs(expint)*EPS) exit
-		end do
-		if (i > MAXIT) call nrerror('expint: series failed')
-	end if
-  END FUNCTION expint
+  FUNCTION expintkp(n,x) result(expint) !Exponential Integral function ExpInt(n,x)=Int_1^Infinity exp(-xt)/(t^n) dt
+    use infprec, only : euler
+    IMPLICIT NONE
+    INTEGER, INTENT(IN) :: n
+    REAL(kp), INTENT(IN) :: x
+    REAL(kp) :: expint
+    INTEGER, PARAMETER :: MAXIT=1000
+    REAL(kp), PARAMETER :: EPS=epsilon(x),BIG=huge(x)*EPS
+    !Evaluates the exponential integral En(x).
+    !Parameters: MAXIT is the maximum allowed number of iterations; EPS is the desired relative
+    !error, not smaller than the machine precision; BIG is a number near the largest representable
+    !floating-point number; EULER (in nrtype) is Euler's constant γ.
+    INTEGER :: i,nm1
+    REAL(kp) :: a,b,c,d,del,fact,h
 
+    if (.not.((n >= 0).and.(x>=-0._kp).and.((x > 0._kp .or. n > 1)))) then
+       stop 'expint: incorrect parameter input!'
+    endif
+    if (n == 0) then !Special case.
+       expint=exp(-x)/x
+       RETURN
+    end if
+
+    nm1=n-1
+    if (x == 0._kp) then !Another special case.
+       expint=1.0_kp/nm1
+    else if (x > 1._kp) then !Lentz's algorithm (§5.2).
+       b=x+n
+       c=BIG
+       d=1.0_kp/b
+       h=d
+       do i=1,MAXIT
+          a=-i*(nm1+i)
+          b=b+2.0_kp
+          d=1.0_kp/(a*d+b) !Denominators cannot be zero.
+          c=b+a/c
+          del=c*d
+          h=h*del
+          if (abs(del-1.0_kp) <= EPS) exit
+!          print *,'test',i,abs(del-1.0_kp)
+       end do
+       if (i > MAXIT) stop 'expint: continued fraction failed'
+       expint=h*exp(-x)
+    else !Evaluate series.
+       if (nm1 /= 0) then !Set first term.
+          expint=1.0_kp/nm1
+       else
+          expint=-log(x)-EULER
+       end if
+       fact=1.0_kp
+       do i=1,MAXIT
+          fact=-fact*x/i
+          if (i /= nm1) then
+             del=-fact/(i-nm1)
+          else !ψ(n) appears here.
+             del=fact*(-log(x)-EULER+sum(1.0_kp/arthint(1,1,nm1)))
+          end if
+          expint=expint+del
+          if (abs(del) < abs(expint)*EPS) exit
+       end do
+       if (i > MAXIT) stop 'expint: series failed'
+    end if
+  END FUNCTION expintkp
+
+  FUNCTION arthint(first,increment,n)
+    INTEGER, INTENT(IN) :: first,increment,n
+    INTEGER, DIMENSION(n) :: arthint
+    INTEGER :: k,k2,temp
+    integer, parameter :: NPAR_ARTH = 16
+    integer, parameter :: NPAR2_ARTH = 8
+    if (n > 0) arthint(1)=first
+    if (n <= NPAR_ARTH) then
+       do k=2,n
+          arthint(k)=arthint(k-1)+increment
+       end do
+    else
+       do k=2,NPAR2_ARTH
+          arthint(k)=arthint(k-1)+increment
+       end do
+       temp=increment*NPAR2_ARTH
+       k=NPAR2_ARTH
+       do
+          if (k >= n) exit
+          k2=k+k
+          arthint(k+1:min(k2,n))=temp+arthint(1:min(k,n-k))
+          temp=temp+temp
+          k=k2
+       end do
+    end if
+  END FUNCTION arthint
+
+ 
 
 
   FUNCTION ei(x) !Exponential Integral Ei(x)=-Int_{-x}^Infinity exp(-t)/t dt
-	USE nrtype; USE nrutil, ONLY : assert,nrerror
-	IMPLICIT NONE
-	REAL(kp), INTENT(IN) :: x
-	REAL(kp) :: ei
-	INTEGER(I4B), PARAMETER :: MAXIT=10000
-	REAL(kp), PARAMETER :: EPS=epsilon(x),FPMIN=tiny(x)/EPS
-	INTEGER(I4B) :: k
-	REAL(kp) :: fact,prev,sm,term
-	if (x<0._kp) then   	!If x < 0, uses the fact that Ei(-x)=-expint(1,-x)
-		ei=-expint(1,-x)
-	else if(x.eq.0._kp) then !If x=0, gives a numerical value for -Infinity
-		ei=-1._kp/epsilon(1._kp)
-	else
-				!Computes the exponential integral Ei(x) for x > 0.
-				!Parameters: MAXIT is the maximum number of iterations allowed; EPS is the relative error,
-				!or absolute error near the zero of Ei at x = 0.3725; FPMIN is a number near the smallest
-				!representable floating-point number; EULER (in nrtype) is Euler's constant γ.
 
-		call assert(x > 0.0, 'ei arg')
-		if (x < FPMIN) then !Special case: avoid failure of convergence test
-			ei=log(x)+EULER !because of underflow.
-		else if (x <= -log(EPS)) then !Use power series.
-			sm=0.0_kp
-			fact=1.0_kp
-			do k=1,MAXIT
-				fact=fact*x/k
-				term=fact/k
-				sm=sm+term
-				if (term < EPS*sm) exit
-			end do
-			if (k > MAXIT) call nrerror('series failed in ei')
-			ei=sm+log(x)+EULER
-		else !Use asymptotic series.
-			sm=0.0 !Start with second term.
-			term=1.0
-			do k=1,MAXIT
-				prev=term
-				term=term*k/x
-				if (term < EPS) exit !Since final sum is greater than one, term itself
-				if (term < prev) then !approximates the relative error.
-					sm=sm+term !Still converging: add new term.
-				else !Diverging: subtract previous term and exit.
-					sm=sm-prev
-					exit
-				end if
-			end do
-			if (k > MAXIT) call nrerror('asymptotic failed in ei')
-			ei=exp(x)*(1.0_sp+sm)/x
-		end if
-	end if
+    use infprec, only : euler
+    IMPLICIT NONE
+    REAL(kp), INTENT(IN) :: x
+    REAL(kp) :: ei
+    INTEGER, PARAMETER :: MAXIT=10000
+    REAL(kp), PARAMETER :: EPS=epsilon(x),FPMIN=tiny(x)/EPS
+    INTEGER :: k
+    REAL(kp) :: fact,prev,sm,term
+    if (x<0._kp) then   	!If x < 0, uses the fact that Ei(-x)=-expint(1,-x)
+       ei=-expint(1,-x)
+    else if(x.eq.0._kp) then !If x=0, gives a numerical value for -Infinity
+       ei=-1._kp/epsilon(1._kp)
+    else
+       !Computes the exponential integral Ei(x) for x > 0.
+       !Parameters: MAXIT is the maximum number of iterations allowed; EPS is the relative error,
+       !or absolute error near the zero of Ei at x = 0.3725; FPMIN is a number near the smallest
+       !representable floating-point number; EULER (in nrtype) is Euler's constant γ.
+
+       !		call assert(x > 0.0, 'ei arg')
+       if (.not.(x > 0._kp)) then
+          stop 'ei: x<=0'
+       endif
+       if (x < FPMIN) then !Special case: avoid failure of convergence test
+          ei=log(x)+EULER !because of underflow.
+       else if (x <= -log(EPS)) then !Use power series.
+          sm=0.0_kp
+          fact=1.0_kp
+          do k=1,MAXIT
+             fact=fact*x/k
+             term=fact/k
+             sm=sm+term
+             if (term < EPS*sm) exit
+          end do
+          if (k > MAXIT)  stop 'series failed in ei'
+
+          ei=sm+log(x)+EULER
+       else !Use asymptotic series.
+          sm=0.0 !Start with second term.
+          term=1.0
+          do k=1,MAXIT
+             prev=term
+             term=term*k/x
+             if (term < EPS) exit !Since final sum is greater than one, term itself
+             if (term < prev) then !approximates the relative error.
+                sm=sm+term !Still converging: add new term.
+             else !Diverging: subtract previous term and exit.
+                sm=sm-prev
+                exit
+             end if
+          end do
+          if (k > MAXIT) stop 'asymptotic failed in ei'
+          ei=exp(x)*(1.0_kp+sm)/x
+       end if
+    end if
   END FUNCTION ei
 
 

@@ -23,7 +23,8 @@ module infprec
 !  real(kp), parameter :: tolkp = 1.d-36
 
   real(kp), parameter :: pi = 3.1415926535897932384626433832795_kp
-  real(kp), parameter :: CConst = -0.72963715453852182997625578845942_kp
+  real(kp), parameter :: euler = 0.5772156649015328606065120900824024310422_kp
+  real(kp), parameter :: CConst = euler + log(2._kp) - 2._kp
 
 !workaround for passing argument to old f77 functions. Only pointer
 !can be deferred shape in derived data type.
