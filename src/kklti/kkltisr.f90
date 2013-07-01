@@ -36,7 +36,7 @@ contains
     real(kp), intent(in) :: x,p
     real(kp), intent(in), optional :: mu
 
-   kklti_norm_deriv_potential = p*x**(-1._kp-p)/(1+x**-p)**2
+   kklti_norm_deriv_potential = p*x**(-1._kp-p)/(1+x**(-p))**2
 
   end function kklti_norm_deriv_potential
 
@@ -49,8 +49,8 @@ contains
     real(kp), intent(in) :: x,p
     real(kp), intent(in), optional :: mu
 
-    kklti_norm_deriv_second_potential = 2*p**2*x**(-2._kp-2*p)/(1._kp+x**-p)**3 &
-         - p*(1._kp+p)*x**(-2._kp-p)/(1._kp+x**-p)**2
+    kklti_norm_deriv_second_potential = 2*p**2*x**(-2._kp-2*p)/(1._kp+x**(-p))**3 &
+         - p*(1._kp+p)*x**(-2._kp-p)/(1._kp+x**(-p))**2
 
   end function kklti_norm_deriv_second_potential
 

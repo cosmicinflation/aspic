@@ -59,7 +59,7 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
         imi/libimi.la \
         gripi/libgripi.la \
         bi/libbi.la \
-        kklti/libkklti
+        kklti/libkklti.la
 
 #to be build from there
 SUBDIRS = common lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
