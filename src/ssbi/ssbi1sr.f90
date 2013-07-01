@@ -162,11 +162,14 @@ contains
     real(kp), intent(in) :: alpha,beta
     real(kp) :: ssbi1_x_endinf
     real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
+    real(kp) :: mini,maxi, eps1max
     type(transfert) :: ssbi1Data
 
-    if (alpha .lt. ssbi1_alphamin(beta)) then
-       stop 'ssbi1_x_endinf: epsilon1max < 1, inflation cannot stop by slow roll violation!'
+    eps1max = ssbi1_epsilon_one(ssbi1_x_epsonemax(alpha,beta),alpha,beta)
+
+    if (eps1max.lt.1._kp) then
+       write(*,*) 'eps1max=',eps1max
+       stop 'ssbi1_x_endinf: epsilon1max< 1, inflation cannot stop by slow roll violation!'
     endif
 
     mini = ssbi1_x_epsonemax(alpha,beta)

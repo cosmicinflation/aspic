@@ -15,7 +15,7 @@ module kmiiisr
   public  kmiii_norm_potential, kmiii_epsilon_one, kmiii_epsilon_two, kmiii_epsilon_three
   public  kmiii_x_endinf, kmiii_efold_primitive, kmiii_x_trajectory
   public  kmiii_norm_deriv_potential, kmiii_norm_deriv_second_potential
-  public  kmiii_alphamin, kmiii_alphamax, kmiii_x_endinf_appr
+  public  kmiii_x_endinf_appr
 
 
 contains
@@ -100,6 +100,16 @@ contains
          (-9._kp+4._kp*beta*x**(4._kp/3._kp)))))
   end function kmiii_epsilon_three
 
+! Returns the location x where the potential vanishes (in its increasing branch) 
+  function kmiii_x_potzero(alpha,beta) 
+    implicit none
+    real(kp) :: kmiii_x_potzero
+    real(kp), intent(in) :: alpha,beta
+
+    kmiii_x_potzero=(-1._kp/beta*lambert(-beta/alpha,-1))**(0.75_kp)
+
+  end function kmiii_x_potzero
+
 
 !returns x at the end of inflation defined as epsilon1=1, if inflation proceeds from the right to the left
   function kmiii_x_endinf(alpha,beta)
@@ -113,20 +123,7 @@ contains
     kmiiiData%real1 = alpha
     kmiiiData%real2 = beta
 
-!Calculates the position of the two extrema of epsilon1
-    if (beta/alpha.lt.exp(-1._kp)) then
-       xminus=(-1._kp/beta*lambert(-beta/alpha,0))**(3._kp/4._kp)
-       xplus=(-1._kp/beta*lambert(-beta/alpha,-1))**(3._kp/4._kp)
-    else
-      xminus=kmiii_xminus_epsonemax(alpha,beta)
-      xplus=kmiii_xplus_epsonemax(alpha,beta)
-   endif
-
-   if (kmiii_epsilon_one(xplus,alpha,beta).lt.1._kp) then
-      stop 'kmiii_x_endinf: cannot stop by violation of slow-roll for this set of parameters'
-   end if
-
-   mini = xplus*(1._kp+epsilon(1._kp))
+   mini = kmiii_x_potzero(alpha,beta)
    maxi = 1._kp/epsilon(1._kp)
    kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
 
@@ -153,63 +150,11 @@ contains
     real(kp), intent(in) :: alpha,beta
     real(kp) :: kmiii_x_endinf_appr
 
-    kmiii_x_endinf_appr=(-0.25_kp/beta*lambert(-81._kp/(16*beta),-1))**(0.75_kp)
+    kmiii_x_endinf_appr=(-1.25_kp/beta*lambert(-4._kp* &
+           9._kp**(2._kp/5._kp)/(5._kp*8._kp**(2._kp/5._kp))* &
+           alpha**(-4._kp/5._kp)*beta**(1._kp/5._kp),-1))**(3._kp/4._kp)
 
   end function kmiii_x_endinf_appr
-
-
-!Returns the position of the smallest maximum of epsilon1
-  function kmiii_xminus_epsonemax(alpha,beta)
-    implicit none
-    real(kp), intent(in) :: alpha,beta
-    real(kp) :: kmiii_xminus_epsonemax
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: kmiiiData
-
-    mini = epsilon(1._kp)
-    maxi = (1._kp/beta)**(3._kp/4._kp) !exact position of the minimum of epsilon1
-
-    kmiiiData%real1 = alpha
-    kmiiiData%real2 = beta
-
-    kmiii_xminus_epsonemax = zbrent(find_kmiii_x_epsonemax,mini,maxi,tolFind,kmiiiData)
-
-  end function kmiii_xminus_epsonemax
-
-
-!Returns the position of the highest maximum of epsilon1
-  function kmiii_xplus_epsonemax(alpha,beta)
-    implicit none
-    real(kp), intent(in) :: alpha,beta
-    real(kp) :: kmiii_xplus_epsonemax
-    real(kp), parameter :: tolFind=tolkp
-    real(kp) :: mini,maxi
-    type(transfert) :: kmiiiData
-
-    mini = (1._kp/beta)**(3._kp/4._kp) !exact position of the minimum of epsilon1
-    maxi = mini*10._kp
-
-    kmiiiData%real1 = alpha
-    kmiiiData%real2 = beta
-
-    kmiii_xplus_epsonemax = zbrent(find_kmiii_x_epsonemax,mini,maxi,tolFind,kmiiiData)
-
-  end function kmiii_xplus_epsonemax
-
-  function find_kmiii_x_epsonemax(x,kmiiiData)
-    implicit none
-    real(kp), intent(in) :: x    
-    type(transfert), optional, intent(inout) :: kmiiiData
-    real(kp) :: find_kmiii_x_epsonemax
-    real(kp) :: alpha,beta
-    
-    alpha = kmiiiData%real1
-    beta = kmiiiData%real2
-
-    find_kmiii_x_epsonemax = kmiii_epsilon_two(x,alpha,beta)
-    
-  end function find_kmiii_x_epsonemax
 
 
 
@@ -315,63 +260,5 @@ contains
     find_kmiii_x_trajectory = kmiii_efold_primitive(x,alpha,beta) - NplusNuend
    
   end function find_kmiii_x_trajectory
-
-! such that the potential is positive everywhere
-  function kmiii_alphamax(beta)
-    implicit none
-    real(kp) :: kmiii_alphamax
-    real(kp), intent(in) :: beta
-    
-    kmiii_alphamax = beta*exp(1._kp)
-
-  end function kmiii_alphamax
-
-!Given beta, returns the minimum value of alpha such that inflation
-!can be stopped by violation of the slow roll conditions in the large
-!field region of the potential
-  function kmiii_alphamin(beta)
-    implicit none
-    real(kp), intent(in) :: beta
-    real(kp) ::kmiii_alphamin,alphamini,alphamaxi
-    real(kp), parameter :: tolFind=tolkp
-    type(transfert) :: kmiiiData
-
-    real(kp) :: numCvgAt = 1000._kp
-
-    alphamini=epsilon(1._kp)
-    if (beta.lt.numCvgAt) then
-
-!maximum allowed value such that the potential is positive everywhere
-!(with a numerical safety)
-       alphamaxi=(kmiii_alphamax(beta) - epsilon(1._kp))*(1._kp- epsilon(1._kp))
-    else
-!For Numerical convergence
-       alphamaxi=beta/numCvgAt
-    endif
-
-!in that case the prior space in empty
-    if (kmiii_epsilon_one(kmiii_xplus_epsonemax(alphamaxi,beta),alphamaxi,beta).lt.1._kp) then
-       kmiii_alphamin=beta*exp(1._kp)
-    else
-       kmiiiData%real1 = beta
-       kmiii_alphamin=zbrent(find_kmiii_alphamin,alphamini,alphamaxi,tolFind,kmiiiData)
-    endif
-
-  end function kmiii_alphamin
-
-  function find_kmiii_alphamin(x,kmiiiData)    
-    implicit none
-    real(kp), intent(in) :: x   
-    type(transfert), optional, intent(inout) :: kmiiiData
-    real(kp) :: find_kmiii_alphamin
-    real(kp) :: beta
-
-    beta = kmiiiData%real1
-
-    find_kmiii_alphamin = kmiii_epsilon_one(kmiii_xplus_epsonemax(x,beta),x,beta)-1._kp
-   
-  end function find_kmiii_alphamin
-
-
   
 end module kmiiisr

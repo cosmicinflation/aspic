@@ -3,7 +3,7 @@ program kmiiimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use kmiiisr, only : kmiii_epsilon_one, kmiii_epsilon_two, kmiii_epsilon_three
-  use kmiiisr, only : kmiii_alphamin, kmiii_x_endinf, kmiii_x_endinf_appr
+  use kmiiisr, only : kmiii_x_endinf_appr
   use kmiiireheat, only : kmiii_lnrhoreh_max, kmiii_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
@@ -19,8 +19,8 @@ program kmiiimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20, nalpha=20, nbeta=15
-  integer :: nbetaprior, nbetaxend
+  integer :: npts = 20, nalpha=20, nnu=15
+  integer :: nbetaprior, nnuxend
 
   real(kp) :: alpha,beta,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -28,7 +28,7 @@ program kmiiimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  real(kp) ::betamin,betamax,alphamin,alphamax,xendAppr,xend
+  real(kp) ::betamin,betamax,alphamin,alphamax,xendAppr,xend,nu,numin,numax
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
@@ -39,39 +39,22 @@ program kmiiimain
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!                                   !!!
-!!!  Calculates the prior space data  !!!
-!!!                                   !!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  betamin=10._kp**(10.)
-  betamax=10._kp**(14.)
-  nbetaprior=100
-  call delete_file('kmiii_prior.dat')
-  do i=0,nbetaprior
-     beta=betamin*(betamax/betamin)**(real(i,kp)/real(nbetaprior,kp))! logarithmic step
-     alpha=kmiii_alphamin(beta)
-     call livewrite('kmiii_prior.dat',beta,alpha) !given beta, writes the minimum value of alpha for which inflation can sto by slow roll violation in the large field domain of the potential
-  end do
-  print*,'priors written'
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!                                   !!!
 !!!    Checking the  approached       !!!
 !!!   analytical formula for xend     !!!
 !!!                                   !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  nbetaxend=100
-  betamin=10._kp**(10.)
-  betamax=10._kp**(14.)
+  nnuxend=100
+  numin=10._kp**(5.)
+  numax=10._kp**(7.)
   call delete_file('kmiii_xend.dat')
-  do i=0,nbetaxend
-     beta=betamin*(betamax/betamin)**(real(i,kp)/real(nbetaxend,kp))! logarithmic step
-     alpha=kmiii_alphamin(beta)*10._kp
-     !alpha=beta/1._kp
+  do i=0,nnuxend
+     nu=numin*(numax/numin)**(real(i,kp)/real(nnuxend,kp))! logarithmic step
+     alpha=nu**(5._kp/3._kp)
+     beta=nu**(2._kp/3._kp)
      xendAppr=kmiii_x_endinf_appr(alpha,beta)
      xend=kmiii_x_endinf(alpha,beta)
-     call livewrite('kmiii_xend.dat',beta,xendAppr,xend)
+     call livewrite('kmiii_xend.dat',nu,xendAppr,xend)
   end do
   print*,'xend written'
 
@@ -89,15 +72,14 @@ program kmiiimain
   !  w = 1._kp/3._kp
   w=0._kp
 
-  betamin=10._kp**(9.) 
-  betamax=10._kp**(15.)
+  numin=10._kp**(5.) 
+  numax=10._kp**(7.)
 
-  do i=0,nbeta
-     beta=betamin*(betamax/betamin)**(real(i,kp)/real(nbeta,kp))! logarithmic step
-     alphamin=kmiii_alphamin(beta)*1.1_kp
-     alphamax=beta/100._kp
-     do j=0,nalpha
-        alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))! logarithmic step
+  do i=0,nnu
+     nu=numin*(numax/numin)**(real(i,kp)/real(nnu,kp))! logarithmic step
+     alpha=nu**(5._kp/3._kp)
+     beta=nu**(2._kp/3._kp)
+
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = kmiii_lnrhoreh_max(alpha,beta,Pstar)
@@ -124,25 +106,29 @@ program kmiiimain
 
            print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'r=',r,'ns=',ns
 
-           call livewrite('kmiii_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('kmiii_predic.dat',nu,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('kmiii_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-        end do
-
-     end do
+       end do
 
   end do
 
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                   !!!
+!!!         Further Tests             !!!
+!!!                                   !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42
   lnRradmax = 10
-  alpha = kmiii_alphamin(beta)*10._kp
-  beta = 1e10
+  nu = 10._kp**(6._kp)
+  alpha=nu**(5._kp/3._kp)
+  beta=nu**(2._kp/3._kp)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)

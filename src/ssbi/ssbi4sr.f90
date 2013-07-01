@@ -24,7 +24,7 @@ module ssbi4sr
   public ssbi4_epsilon_one, ssbi4_epsilon_two, ssbi4_epsilon_three
   public ssbi4_x_endinf, ssbi4_efold_primitive, ssbi4_x_trajectory
   public ssbi4_norm_deriv_potential, ssbi4_norm_deriv_second_potential
-  public ssbi4_x_potmax, ssbi4_x_potzero
+  public ssbi4_x_potmax, ssbi4_x_potzero, ssbi4_epstwo_potmax
   
 contains
 
@@ -123,6 +123,16 @@ contains
 
     
   end function ssbi4_x_potmax
+
+! returns the value of eps2 at the maximum of the potential
+  function ssbi4_epstwo_potmax(alpha,beta)    
+    implicit none
+    real(kp) :: ssbi4_epstwo_potmax
+    real(kp), intent(in) :: alpha,beta
+
+    ssbi4_epstwo_potmax = ssbi4_epsilon_two(ssbi4_x_potmax(alpha,beta),alpha,beta)
+    
+  end function ssbi4_epstwo_potmax
 
 
 !returns x at the end of inflation defined as epsilon1=1

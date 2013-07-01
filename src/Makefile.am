@@ -57,13 +57,14 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
         osti/libosti.la \
         wri/libwri.la \
         imi/libimi.la \
-        gripi/libgripi.la
+        gripi/libgripi.la \
+        bi/libbi.la 
 
 
 #to be build from there
 SUBDIRS = common lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi ai cnai cnbi \
-          oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi
+          oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi bi
 
 #make clean does not remove modules by default
 clean-local: clean-modules
