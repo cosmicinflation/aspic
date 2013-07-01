@@ -37,7 +37,7 @@ program lfimain
   call delete_file('lfi_predic.dat')
   call delete_file('lfi_nsr.dat')
 
-  p = 0_kp 
+  p = 0._kp 
   do while (p<13._kp)
     
      p=p+1_kp
