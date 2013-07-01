@@ -1,4 +1,4 @@
-AC_INIT([aspic], [0.2.9], [chris@ringeval.com])
+AC_INIT([aspic], [0.2.10], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -96,5 +96,6 @@ AC_CONFIG_FILES([Makefile
                  src/imi/Makefile
                  src/gripi/Makefile
                  src/bi/Makefile
+                 src/kklti/Makefile
                 ])
 AC_OUTPUT
