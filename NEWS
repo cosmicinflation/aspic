@@ -1,5 +1,4 @@
-* version 0.2.7
-- new test functions in lmi/lpi for bayaspic
-- removing some optional statements in lmi
-- unifying numacc functions in rgi
-
+* version 0.2.8
+- support for quadruple precision
+- drop nrutils module
+- debugging kmiii, gripi, gmssmi, rmi, dsi, vhi

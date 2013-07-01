@@ -41,7 +41,19 @@ along the rules specified in COPYING.
   	 export FCFLAGS="-DNOF08"
   
  Then run the standard
- /configure"
+ ./configure"
  make
  make install
+
+- some models may require quite extreme fine-tunings according to the
+  parameter values used. If you get error messages due to numerical
+  precision limitation, these may be overcome by compiling the library
+  in quadruple precision (much slower) with
+
+  ./configure --enable-quad-precision
+  make
+  make install
+
+  The new modules are located in $PREFIX/include/aspicq and the
+  library name is accordingly changed to "libaspicq".
 
