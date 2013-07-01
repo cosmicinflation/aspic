@@ -121,11 +121,11 @@ contains
     type(transfert) :: rmi2Data
     
     if (bfold .lt. 0._kp) then
-       mini = 1._kp*(1._kp+epsilon(1._kp))
-       maxi = xend*(1._kp-epsilon(1._kp))
+       mini = 1._kp +epsilon(1._kp)
+       maxi = xend -epsilon(1._kp)
     else
        mini = xend
-       maxi = 2._kp
+       maxi = exp(1._kp)
     endif
   
     rmi2Data%real1 = c
@@ -147,7 +147,7 @@ contains
  !Using an asymptotic expression for eps1 when x->1, and requiring
  !eps1>epsilon(1._kp) for numerical convergence
     xMin =  1._kp+sqrt(2._kp*epsilon(1._kp)*(1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2))
-    xMax = 2._kp
+    xMax = exp(1._kp)
 
     efoldMax = rmi2_efold_primitive(xMin,c,phi0) &
          - rmi2_efold_primitive(xMax,c,phi0)

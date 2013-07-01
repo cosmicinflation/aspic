@@ -30,7 +30,7 @@ contains
     real(kp) :: mini,maxi
 
     mini = epsilon(1._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+    maxi = xend -epsilon(1._kp)
     
     rmi3_x_star = rmi_x_star(c,phi0,xend,w,lnRhoReh,Pstar,mini,maxi,bfoldstar)
 
@@ -48,7 +48,7 @@ contains
     real(kp) :: mini,maxi
 
     mini = epsilon(1._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+    maxi = xend - epsilon(1._kp)
    
     rmi3_x_rrad = rmi_x_rrad(c,phi0,xend,lnRrad,Pstar,mini,maxi,bfoldstar)
 
@@ -66,7 +66,7 @@ contains
     real(kp) :: mini,maxi
 
     mini = epsilon(1._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+    maxi = xend -epsilon(1._kp)
    
     rmi3_x_rreh = rmi_x_rreh(c,phi0,xend,lnRreh,mini,maxi,bfoldstar)
 

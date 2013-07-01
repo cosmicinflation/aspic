@@ -24,7 +24,7 @@ module rmi3sr
   public rmi3_norm_potential, rmi3_norm_deriv_potential, rmi3_norm_deriv_second_potential
   public rmi3_epsilon_one, rmi3_epsilon_two, rmi3_epsilon_three
   public rmi3_efold_primitive, rmi3_x_trajectory
-  public rmi3_numacc_xendmax
+  public rmi3_numacc_xendmin, rmi3_numacc_xendmax
 
   
 contains
@@ -122,10 +122,14 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: rmi3Data
 
+    if (bfold.lt.-0_kp) then
+       mini = epsilon(1._kp)
+       maxi = xend -epsilon(1._kp)
+    else
+       mini = xend
+       maxi = 1._kp - epsilon(1._kp)
+    endif
 
-    mini = epsilon(1._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
-  
     rmi3Data%real1 = c
     rmi3Data%real2 = phi0
     rmi3Data%real3 = -bfold + rmi3_efold_primitive(xend,c,phi0)
@@ -136,32 +140,32 @@ contains
 
 
 ! Return an upper bound on xend for numerica computability
-!  function rmi3_numacc_xendmax(c,phi0)
-!    implicit none
-!    real(kp), intent(in) :: c,phi0
-!    real(kp) :: rmi3_numacc_xendmax
+  function rmi3_numacc_xendmax(c,phi0)
+    implicit none
+    real(kp), intent(in) :: c,phi0
+    real(kp) :: rmi3_numacc_xendmax
 
 !Using an asymptotic expression for eps1 when x->1, and requiring
 !eps1>epsilon(1._kp) for numerical convergence
-!    rmi3_numacc_xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
-!         (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
+    rmi3_numacc_xendmax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
+         (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
 
 
-!  end function rmi3_numacc_xendmax
+  end function rmi3_numacc_xendmax
   
- function rmi3_numacc_xendmax(efold,c,phi0)
+ function rmi3_numacc_xendmin(efold,c,phi0)
     implicit none
     real(kp), intent(in) :: efold,c,phi0
-    real(kp) :: rmi3_numacc_xendmax,xMin, xMax, efoldMax
+    real(kp) :: rmi3_numacc_xendmin,xMin, xMax, efoldMax
     real(kp), parameter :: tolFind=tolkp
+
+!Using an asymptotic expression for eps1 when x->0, and requiring
+!eps1>epsilon(1._kp) for numerical convergence
+    xMin = sqrt(2._kp*epsilon(1._kp)/(c**2*phi0**2))
 
  !Using an asymptotic expression for eps1 when x->1, and requiring
  !eps1>epsilon(1._kp) for numerical convergence
-
-    xMin = sqrt(2._kp*epsilon(1._kp)/(c**2*phi0**2))
-
-    xMax = 1._kp-sqrt(2._kp*epsilon(1._kp)* &
-         (1._kp+c*phi0**2/4._kp)**2/(c**2*phi0**2)) 
+    xMax = rmi3_numacc_xendmax(c,phi0)
 
     efoldMax = rmi3_efold_primitive(xMin,c,phi0) &
          - rmi3_efold_primitive(xMax,c,phi0)
@@ -172,9 +176,9 @@ contains
        stop
     endif
 
-    rmi3_numacc_xendmax = rmi3_x_trajectory(efold,xMax,c,phi0)
+    rmi3_numacc_xendmin = rmi3_x_trajectory(efold,xMin,c,phi0)
        
 
-  end function rmi3_numacc_xendmax
+  end function rmi3_numacc_xendmin
 
 end module rmi3sr

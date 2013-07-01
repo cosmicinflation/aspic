@@ -8,10 +8,11 @@ program rmi4main
   use srreheat, only : log_energy_reheat_ingev
 
   use rmi4sr, only : rmi4_norm_potential, rmi4_numacc_xendmin
+  use rmi4sr, only : rmi4_xendmax
   use rmi4reheat, only : rmi4_x_rreh, rmi4_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
+ 
   implicit none
 
 
@@ -77,6 +78,7 @@ program rmi4main
 
   phi0max=1._kp/sqrt(abs(c))
   phi0min=phi0max/(10._kp**3.)
+ 
 
   do k=0,Nphi0 
      phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
@@ -86,6 +88,8 @@ program rmi4main
 
      do l=0,Nxend 
         xend=xendmin*(xendmax/xendmin)**(real(l,kp)/Nxend)  !logarithmic step
+
+        if (xend.gt.rmi4_xendmax(120._kp,c,phi0)) cycle
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = rmi4_lnrhoreh_max(c,phi0,xend,Pstar)
@@ -133,7 +137,7 @@ program rmi4main
   lnRradmax = 10
   c = -0.001
   phi0 = 10.
-  xend = exp(1._kp)/100._kp
+  xend = 0.1_kp*rmi4_xendmax(120._kp,c,phi0)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)

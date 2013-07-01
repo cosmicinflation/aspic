@@ -7,7 +7,7 @@ program rmi3main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rmi3sr, only : rmi3_norm_potential, rmi3_numacc_xendmax
+  use rmi3sr, only : rmi3_norm_potential, rmi3_numacc_xendmax, rmi3_numacc_xendmin
   use rmi3reheat, only : rmi3_x_rreh, rmi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat

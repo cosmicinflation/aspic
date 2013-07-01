@@ -9,13 +9,13 @@ module rmi4reheat
   use rmicomreh, only : rmi_x_star, rmi_x_rrad, rmi_x_rreh
   use rmi4sr, only : rmi4_epsilon_one, rmi4_epsilon_two, rmi4_epsilon_three
   use rmi4sr, only : rmi4_norm_potential, rmi4_efold_primitive
+  use rmi4sr, only : rmi4_x_epsonemax
   
 
   implicit none
 
   private
 
-  real(kp), parameter :: Rmi4Xmax = 10._kp
 
   public rmi4_x_star, rmi4_x_rrad, rmi4_x_rreh, rmi4_lnrhoreh_max
 
@@ -32,8 +32,8 @@ contains
     
     real(kp) :: mini,maxi
 
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi = Rmi4Xmax
+    mini = xend +epsilon(1._kp)
+    maxi = rmi4_x_epsonemax(c,phi0)
     
     rmi4_x_star = rmi_x_star(c,phi0,xend,w,lnRhoReh,Pstar,mini,maxi,bfoldstar)
 
@@ -50,8 +50,8 @@ contains
 
     real(kp) :: mini,maxi
 
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi =  Rmi4Xmax
+    mini = xend +epsilon(1._kp)
+    maxi =  rmi4_x_epsonemax(c,phi0)
    
     rmi4_x_rrad = rmi_x_rrad(c,phi0,xend,lnRrad,Pstar,mini,maxi,bfoldstar)
 
@@ -68,8 +68,8 @@ contains
     
     real(kp) :: mini,maxi
 
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi = Rmi4Xmax
+    mini = xend + epsilon(1._kp)
+    maxi =  rmi4_x_epsonemax(c,phi0)
 
    
     rmi4_x_rreh = rmi_x_rreh(c,phi0,xend,lnRreh,mini,maxi,bfoldstar)

@@ -121,11 +121,11 @@ contains
     type(transfert) :: rmi1Data
 
     if (bfold .lt. 0._kp) then
-       mini = xend*(1._kp+epsilon(1._kp))
-       maxi = 1._kp*(1._kp-epsilon(1._kp))
+       mini = xend +epsilon(1._kp)
+       maxi = 1._kp -epsilon(1._kp)
     else
        mini = epsilon(1._kp)
-       maxi = xend!*(1._kp-epsilon(1._kp))
+       maxi = xend
     endif
   
     rmi1Data%real1 = c
