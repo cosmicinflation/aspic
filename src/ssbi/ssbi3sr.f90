@@ -25,7 +25,7 @@ module ssbi3sr
   public ssbi3_epsilon_one, ssbi3_epsilon_two, ssbi3_epsilon_three
   public ssbi3_x_endinf, ssbi3_efold_primitive, ssbi3_x_trajectory
   public ssbi3_norm_deriv_potential, ssbi3_norm_deriv_second_potential
-  public ssbi3_alphamin, ssbi3_x_epsonemax, ssbi3_x_potmax, ssbi3_eps2_x_potmax
+  public ssbi3_alphamin, ssbi3_x_epsonemax, ssbi3_x_potmax, ssbi3_epstwo_potmax
   
 contains
 
@@ -113,14 +113,14 @@ contains
   end function ssbi3_x_potmax
 
 ! returns the value of eps2 at the maximum of the potential
-  function ssbi3_eps2_x_potmax(alpha,beta)    
+  function ssbi3_epstwo_potmax(alpha,beta)    
     implicit none
-    real(kp) :: ssbi3_eps2_x_potmax
+    real(kp) :: ssbi3_epstwo_potmax
     real(kp), intent(in) :: alpha,beta
 
-    ssbi3_eps2_x_potmax = ssbi3_epsilon_two(ssbi3_x_potmax(alpha,beta),alpha,beta)
+    ssbi3_epstwo_potmax = ssbi3_epsilon_two(ssbi3_x_potmax(alpha,beta),alpha,beta)
     
-  end function ssbi3_eps2_x_potmax
+  end function ssbi3_epstwo_potmax
 
 
 !returns the position x where epsilon_one is maximum

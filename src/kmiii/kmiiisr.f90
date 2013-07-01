@@ -101,14 +101,14 @@ contains
   end function kmiii_epsilon_three
 
 ! Returns the location x where the potential vanishes (in its increasing branch) 
-  function kmiii_xV0(alpha,beta) 
+  function kmiii_x_potzero(alpha,beta) 
     implicit none
-    real(kp) :: kmiii_xV0
+    real(kp) :: kmiii_x_potzero
     real(kp), intent(in) :: alpha,beta
 
-    kmiii_xV0=(-1._kp/beta*lambert(-beta/alpha,-1))**(0.75_kp)
+    kmiii_x_potzero=(-1._kp/beta*lambert(-beta/alpha,-1))**(0.75_kp)
 
-  end function kmiii_xV0
+  end function kmiii_x_potzero
 
 
 !returns x at the end of inflation defined as epsilon1=1, if inflation proceeds from the right to the left
@@ -123,7 +123,7 @@ contains
     kmiiiData%real1 = alpha
     kmiiiData%real2 = beta
 
-   mini = kmiii_xV0(alpha,beta)
+   mini = kmiii_x_potzero(alpha,beta)
    maxi = 1._kp/epsilon(1._kp)
    kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
 
