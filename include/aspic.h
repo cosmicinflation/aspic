@@ -82,8 +82,8 @@ use nckisr
 use nckireheat
 use rpi2sr
 use rpi2reheat
-!use bisr
-!use bireheat
+use bisr
+use bireheat
 use csisr
 use csireheat
 use oisr

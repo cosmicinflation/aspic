@@ -1,5 +1,5 @@
 SRC = bisr.f90 bireheat.f90
-MOD =  bisr.$(FC_MODEXT) bireheat.$(FC_MODEXT)
+MOD = bisr.$(FC_MODEXT) bireheat.$(FC_MODEXT)
 
 check_PROGRAMS = bimain
 bimain_SOURCES = $(SRC) bimain.f90

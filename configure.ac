@@ -76,5 +76,6 @@ AC_CONFIG_FILES([Makefile
                  src/wri/Makefile
                  src/imi/Makefile
                  src/gripi/Makefile
+                 src/bi/Makefile
                 ])
 AC_OUTPUT
