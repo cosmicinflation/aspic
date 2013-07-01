@@ -25,7 +25,7 @@ program dsimain
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp), dimension(:), allocatable ::pvalues,qvalues,muminvalues,mumaxvalues
-  integer(kp), dimension(:), allocatable ::nmuvalues, nxEndvalues
+  integer, dimension(:), allocatable ::nmuvalues, nxEndvalues
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer

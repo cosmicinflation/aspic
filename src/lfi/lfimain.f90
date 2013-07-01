@@ -40,7 +40,7 @@ program lfimain
   p = 0._kp 
   do while (p<13._kp)
     
-     p=p+1_kp
+     p=p+1._kp
      w = (p-2)/(p+2)
  
     lnRhoRehMin = lnRhoNuc

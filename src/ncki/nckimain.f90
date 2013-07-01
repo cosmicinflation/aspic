@@ -60,19 +60,19 @@ program nckimain
      if (j.eq.0) then
         beta=10._kp**(-4._kp)
         alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4_kp)
+        alphamin=10._kp**(-4._kp)
      else if (j.eq.1) then
         beta=10._kp**(-2.5_kp)
         alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4_kp)
+        alphamin=10._kp**(-4._kp)
      else if (j.eq.2) then
         beta=10._kp**(-2.2_kp)
         alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4_kp)
+        alphamin=10._kp**(-4._kp)
      else if (j.eq.3) then 
         beta=10._kp**(-1.9_kp)
         alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4_kp)
+        alphamin=10._kp**(-4._kp)
      else if (j.eq.4) then
         beta=10._kp**(-1.7_kp)
         alphamax=10._kp**(0._kp)
@@ -80,7 +80,7 @@ program nckimain
      else if (j.eq.5) then
         beta=10._kp**(-1.5_kp)
         alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4_kp)
+        alphamin=10._kp**(-4._kp)
      else if (j.eq.6) then
         nalpha=40
         beta=10._kp**(-1.2_kp)
@@ -149,15 +149,15 @@ program nckimain
      if (j.eq.0) then
         beta=-10._kp**(-4._kp)
         alphamax=10._kp**(1._kp)
-        alphamin=10._kp**(-3_kp)
+        alphamin=10._kp**(-3._kp)
      else if (j.eq.1) then
         beta=-10._kp**(-2.5_kp)
         alphamax=10._kp**(1._kp)
-        alphamin=10._kp**(-3_kp)
+        alphamin=10._kp**(-3._kp)
      else if (j.eq.2) then
         beta=-10._kp**(-2.1_kp)
         alphamax=10._kp**(1._kp)
-        alphamin=10._kp**(-3_kp)
+        alphamin=10._kp**(-3._kp)
      else if (j.eq.3) then
         beta=-0.5_kp
         alphamax=10._kp**(3._kp)

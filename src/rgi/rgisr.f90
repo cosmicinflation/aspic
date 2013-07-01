@@ -94,8 +94,8 @@ contains
    
     rgi_x_endinf = (6._kp**(1._kp/3._kp)*alpha-(alpha*(-9._kp+ &
          sqrt(81._kp+6._kp*alpha)))**(2._kp/3._kp))/ &
-         (2._kp**(1._kp/6._kp)*3**(2._kp/3_kp)*(alpha* &
-         (-9._kp+sqrt(81._kp+6_kp*alpha)))**(1._kp/3._kp))
+         (2._kp**(1._kp/6._kp)*3**(2._kp/3._kp)*(alpha* &
+         (-9._kp+sqrt(81._kp+6._kp*alpha)))**(1._kp/3._kp))
     
   end function rgi_x_endinf
 

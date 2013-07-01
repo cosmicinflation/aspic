@@ -171,7 +171,7 @@ contains
             = zbrent(find_vhi_x_epsoneunity,mini,maxi,tolFind,vhiData)
        vhi_x_epsoneunity(1) = vhi_x_epsoneunity(2)
 
-    elseif (p.eq.1_kp) then
+    elseif (p.eq.1._kp) then
 !eps1 is maximal in x=0, only one root
        if (vhi_epsilon_one_max(p,mu).lt.1._kp) then
           stop 'vhi_x_epsoneunity: no solution for eps1=1'
@@ -181,7 +181,7 @@ contains
        vhi_x_epsoneunity(1) = vhi_x_epsoneunity(2)
        
 
-    elseif (p.gt.1_kp) then
+    elseif (p.gt.1._kp) then
 
        if (vhi_epsilon_one_max(p,mu).lt.1._kp) then
           stop 'vhi_x_epsoneunity: no solution for eps1=1'

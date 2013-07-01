@@ -122,7 +122,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: rmi3Data
 
-    if (bfold.lt.-0_kp) then
+    if (bfold.lt.-0._kp) then
        mini = epsilon(1._kp)
        maxi = xend -epsilon(1._kp)
     else
