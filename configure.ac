@@ -1,4 +1,4 @@
-AC_INIT([aspic], [0.2.8], [chris@ringeval.com])
+AC_INIT([aspic], [0.2.9], [chris@ringeval.com])
 
 AC_PROG_FC
 AC_PROG_CPP

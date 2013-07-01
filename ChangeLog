@@ -1,3 +1,263 @@
+commit fdf8f082bae558967fb1ba8e94fea8d108ffa5ca
+Date:   Mon Jul 1 16:24:12 2013 +0200
+
+    Fix n_kp bugs -> n._kp
+
+ src/dsi/dsimain.f90   |  2 +-
+ src/lfi/lfimain.f90   |  2 +-
+ src/ncki/nckimain.f90 | 16 ++++++++--------
+ src/rgi/rgisr.f90     |  4 ++--
+ src/rmi/rmi3sr.f90    |  2 +-
+ src/vhi/vhisr.f90     |  4 ++--
+ 6 files changed, 15 insertions(+), 15 deletions(-)
+
+commit 2ba165aadb16f8f5bb5b88f61dfcd327ec0aeb02
+Date:   Mon Jul 1 16:17:54 2013 +0200
+
+    Changing 0_kp into 0._kp for ifort quadprec
+
+ src/ai/aireheat.f90         | 2 +-
+ src/cnai/cnaireheat.f90     | 2 +-
+ src/cnbi/cnbireheat.f90     | 2 +-
+ src/cndi/cndireheat.f90     | 2 +-
+ src/cwi/cwireheat.f90       | 2 +-
+ src/dsi/dsireheat.f90       | 2 +-
+ src/dwi/dwireheat.f90       | 2 +-
+ src/esi/esireheat.f90       | 2 +-
+ src/gmlfi/gmlfireheat.f90   | 2 +-
+ src/gmssmi/gmssmireheat.f90 | 2 +-
+ src/gmssmi/mssmireheat.f90  | 2 +-
+ src/gripi/gripireheat.f90   | 2 +-
+ src/gripi/ripireheat.f90    | 2 +-
+ src/hf1i/hf1ireheat.f90     | 2 +-
+ src/hi/hireheat.f90         | 2 +-
+ src/ii/iireheat.f90         | 2 +-
+ src/imi/imireheat.f90       | 2 +-
+ src/kmii/kmiireheat.f90     | 2 +-
+ src/kmiii/kmiiireheat.f90   | 2 +-
+ src/lfi/lfimain.f90         | 2 +-
+ src/lfi/lfireheat.f90       | 2 +-
+ src/li/lireheat.f90         | 2 +-
+ src/lmi/lmi1reheat.f90      | 2 +-
+ src/lmi/lmi2reheat.f90      | 2 +-
+ src/lpi/lpi1reheat.f90      | 2 +-
+ src/lpi/lpi2reheat.f90      | 2 +-
+ src/lpi/lpi3reheat.f90      | 2 +-
+ src/mhi/mhireheat.f90       | 2 +-
+ src/ncki/nckireheat.f90     | 2 +-
+ src/oripi/oripireheat.f90   | 2 +-
+ src/osti/ostireheat.f90     | 2 +-
+ src/pli/plireheat.f90       | 2 +-
+ src/psni/psnireheat.f90     | 2 +-
+ src/rchi/rchireheat.f90     | 2 +-
+ src/rcqi/rcqireheat.f90     | 2 +-
+ src/rgi/rgireheat.f90       | 2 +-
+ src/rmi/rmi1reheat.f90      | 2 +-
+ src/rmi/rmi2reheat.f90      | 2 +-
+ src/rmi/rmi3reheat.f90      | 2 +-
+ src/rmi/rmi4reheat.f90      | 2 +-
+ src/rpi/rpi1reheat.f90      | 2 +-
+ src/rpi/rpi2reheat.f90      | 2 +-
+ src/sbi/sbireheat.f90       | 2 +-
+ src/ssbi/ssbi1reheat.f90    | 2 +-
+ src/ssbi/ssbi2reheat.f90    | 2 +-
+ src/ssbi/ssbi3reheat.f90    | 2 +-
+ src/ssbi/ssbi4reheat.f90    | 2 +-
+ src/ssbi/ssbi5reheat.f90    | 2 +-
+ src/ssbi/ssbi6reheat.f90    | 2 +-
+ src/twi/twireheat.f90       | 2 +-
+ src/vhi/vhireheat.f90       | 2 +-
+ src/wri/wrireheat.f90       | 2 +-
+ 52 files changed, 52 insertions(+), 52 deletions(-)
+
+commit 958a38d06c5d378a3c7d274a692472009260aa6f
+Author: chris <chris@ringeval.com>
+Date:   Mon Jul 1 16:00:14 2013 +0200
+
+    adding bi to man
+
+ man/libaspic.3 | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 96f0f8e901238b4575ff3ad7b5a29fe4b2dc6a45
+Date:   Mon Jul 1 14:48:22 2013 +0200
+
+    add new bi directory
+
+ src/bi/Makefile.am  |  22 ++++++
+ src/bi/aspic_bi.3   |  31 ++++++++
+ src/bi/bimain.f90   | 217 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/bi/bireheat.f90 | 258 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/bi/bisr.f90     | 175 +++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 703 insertions(+)
+
+commit 6c972eb5f441486869475079653cea02f90fe639
+Date:   Mon Jul 1 14:45:55 2013 +0200
+
+    editing doc files
+
+ NEWS   |  9 ++++-----
+ README | 14 +++++++++++++-
+ 2 files changed, 17 insertions(+), 6 deletions(-)
+
+commit 8aaf114471f149d612a31d2c6c43f350af0bf886
+Merge: a311edb f9fd173
+Date:   Mon Jul 1 14:36:55 2013 +0200
+
+    Merge branch 'vincent'
+
+commit f9fd173a1ceca56c368980f756285059c9d4de6f
+Date:   Mon Jul 1 14:32:28 2013 +0200
+
+    normalizing name convention
+
+ src/bi/aspic_bi.3     |  2 +-
+ src/kmiii/kmiiisr.f90 | 10 +++++-----
+ src/ssbi/ssbi3sr.f90  | 10 +++++-----
+ src/ssbi/ssbi4sr.f90  | 10 +++++-----
+ 4 files changed, 16 insertions(+), 16 deletions(-)
+
+commit 146465312c569e64ca0dd96c5a7b10d6566bb3af
+Date:   Mon Jul 1 14:21:28 2013 +0200
+
+    vincent correction over 0.2.7
+
+ configure.ac            |   1 +
+ include/aspic.h         |   4 +-
+ src/Makefile.am         |   5 +-
+ src/bi/Makefile.am      |   2 +-
+ src/bi/aspic_bi.3       |   7 +-
+ src/bi/bimain.f90       | 223 ++++++++++++++++++++++++++++++++++++++++++++++--------
+ src/bi/bireheat.f90     | 260 ++++++++++++++++++++++++++++++++-------------------------------
+ src/bi/bisr.f90         | 213 +++++++++++++++++++++++++--------------------------
+ src/cnci/cncimain.f90   |   2 +-
+ src/kmiii/kmiiimain.f90 |  72 +++++++-----------
+ src/kmiii/kmiiisr.f90   | 143 ++++-------------------------------
+ src/ssbi/ssbi1sr.f90    |   9 ++-
+ src/ssbi/ssbi3sr.f90    |  17 +++--
+ src/ssbi/ssbi4sr.f90    |  12 ++-
+ 14 files changed, 509 insertions(+), 461 deletions(-)
+
+commit a311edb456399016c776809b6a94ec83d809d413
+Date:   Mon Jul 1 14:18:12 2013 +0200
+
+    RMI Hell...
+
+ src/rmi/rmi1reheat.f90 | 12 +++++-----
+ src/rmi/rmi1sr.f90     |  6 ++---
+ src/rmi/rmi2reheat.f90 | 12 +++++-----
+ src/rmi/rmi2sr.f90     |  8 +++----
+ src/rmi/rmi3main.f90   |  2 +-
+ src/rmi/rmi3reheat.f90 |  6 ++---
+ src/rmi/rmi3sr.f90     | 44 ++++++++++++++++++----------------
+ src/rmi/rmi4main.f90   |  8 +++++--
+ src/rmi/rmi4reheat.f90 | 14 +++++------
+ src/rmi/rmi4sr.f90     | 84 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 10 files changed, 138 insertions(+), 58 deletions(-)
+
+commit aabc6d67b60a90e3aaa05e23b90ec2ad10a8e748
+Date:   Fri Jun 28 18:16:29 2013 +0200
+
+    removing nrutils, rmi3sr not working
+
+ src/common/Makefile.am    |    4 +-
+ src/common/infprec.F90    |    3 +-
+ src/common/nrutil.f90     | 1185 ------------------------------------------------------------
+ src/common/specialinf.F90 |  261 +++++++------
+ src/rmi/rmi3sr.f90        |   39 +-
+ 5 files changed, 188 insertions(+), 1304 deletions(-)
+
+commit 9686970954a7606d8c8506269c50a7253abdf092
+Date:   Thu Jun 27 20:03:04 2013 +0200
+
+    Fixing precision issues in gripi/gmssmi
+
+ src/common/inftools.f90     | 24 +++++++--------
+ src/gmssmi/gmssmicommon.f90 | 22 +++++++-------
+ src/gmssmi/gmssmimain.f90   | 10 +++----
+ src/gmssmi/gmssmireheat.f90 |  6 ++--
+ src/gmssmi/gmssmisr.F90     | 14 ++++-----
+ src/gmssmi/mssmireheat.f90  |  6 ++--
+ src/gmssmi/mssmisr.f90      |  7 +++--
+ src/gripi/gripicommon.f90   | 83 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/gripi/gripimain.f90     | 16 +++++++---
+ src/gripi/gripireheat.f90   | 27 ++++-------------
+ src/gripi/gripisr.F90       | 96 ++++++++++++++++--------------------------------------------
+ src/gripi/ripireheat.f90    |  8 ++---
+ 12 files changed, 171 insertions(+), 148 deletions(-)
+
+commit 020a1efe498d561cb0cf1e6c6cf73a30e2e39ff8
+Date:   Wed Jun 26 18:54:24 2013 +0200
+
+    Fixing gmssmi, allowing for quadprec compilation
+
+ configure.ac                |  23 ++++++-
+ src/Makefile.am             |  14 ++---
+ src/common/Makefile.am      |   2 +-
+ src/common/infprec.F90      |  44 ++++++++++++++
+ src/common/infprec.f90      |  40 -------------
+ src/gmssmi/Makefile.am      |   2 +-
+ src/gmssmi/gmssmicommon.f90 |  82 ++++++++++++++++++++++++-
+ src/gmssmi/gmssmimain.f90   |  13 +---
+ src/gmssmi/gmssmireheat.f90 |  21 +------
+ src/gmssmi/gmssmisr.F90     | 141 +++++++++++++++++++++++++++++++++++++++++++
+ src/gmssmi/gmssmisr.f90     | 192 -----------------------------------------------------------
+ 11 files changed, 301 insertions(+), 273 deletions(-)
+
+commit 6ca1e759ea8dc5d06941520497fbb14b8688e07d
+Date:   Tue Jun 25 18:21:16 2013 +0200
+
+    rename bi->kklti
+
+ src/bi/Makefile.am     |  22 ------
+ src/bi/aspic_bi.3      |  30 --------
+ src/bi/bimain.f90      |  60 ----------------
+ src/bi/bireheat.f90    | 250 ----------------------------------------------------------------
+ src/bi/bisr.f90        | 186 -----------------------------------------------
+ src/kklti/Makefile.am  |  22 ++++++
+ src/kklti/aspic_bi.3   |  30 ++++++++
+ src/kklti/bimain.f90   |  60 ++++++++++++++++
+ src/kklti/bireheat.f90 | 250 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/kklti/bisr.f90     | 186 +++++++++++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 548 insertions(+), 548 deletions(-)
+
+commit 6453ce4ee368a0accdef1626426c4101d94a053c
+Date:   Tue Jun 25 15:37:23 2013 +0200
+
+    update man version
+
+ man/libaspic.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 573f65b73627313c2d3e664d6e2dddffc43ec825
+Date:   Tue Jun 25 15:30:27 2013 +0200
+
+    fix typos in dsi man + pi
+
+ src/dsi/aspic_dsi.3 | 4 ++--
+ src/dsi/dsisr.f90   | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 44faaf3e4a67885f360c6f450d9b0c18aad79cea
+Date:   Tue Jun 25 15:24:23 2013 +0200
+
+    fix typos in man files
+
+ src/gripi/aspic_gripi.3 | 6 +++---
+ src/gripi/aspic_ripi.3  | 2 +-
+ src/oripi/aspic_oripi.3 | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 68a4fed5ca079af3358b3e492910b95bd360f9f4
+Date:   Mon Jun 24 17:18:42 2013 +0200
+
+    bumping rel number, editing changelog
+
+ ChangeLog    | 158 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ NEWS         |  11 ++----
+ configure.ac |   2 +-
+ 3 files changed, 157 insertions(+), 14 deletions(-)
+
 commit d4c1a5d0d75019a8115d7df63a4c0791d03cce23
 Merge: dc65be3 aa045d8
 Date:   Mon Jun 24 16:33:03 2013 +0200
