@@ -103,12 +103,12 @@ contains
 
     if (sqrt3*gammaBSUSYB.eq.1._kp) then
        write(*,*)'gamma= ',gammaBSUSYB
-       stop 'bsusy_x_epsoneunity: gamma=1/sqrt(3)!'
+       stop 'bsusybi_x_epsoneunity: gamma=1/sqrt(3)!'
     endif
 
     if (gammaBSUSYB.eq.1._kp) then
        write(*,*)'gamma= ',gammaBSUSYB
-       stop 'bsusy_x_epsoneunity: gamma=1!'
+       stop 'bsusybi_x_epsoneunity: gamma=1!'
     endif
 
     bsusybi_x_epsoneunity = 1._kp/(sqrt(6._kp)*(gammaBSUSYB-1._kp))* &
