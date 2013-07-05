@@ -1,4 +1,3 @@
-* version 0.2.8
-- support for quadruple precision
-- drop nrutils module
-- debugging kmiii, gripi, gmssmi, rmi, dsi, vhi
+* version 0.2.10
+- new Lambert function
+- fix precision issue in li

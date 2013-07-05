@@ -1,3 +1,87 @@
+commit e2fad00ce2db5a68b0f8a9054a7737fedeeef227
+Date:   Fri Jul 5 19:23:09 2013 +0200
+
+    adding a new lambert function with iterative Halley's method
+
+ src/common/specialinf.F90 | 115 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ src/lfi/lfimain.f90       |   1 +
+ src/li/limain.f90         |   1 -
+ src/li/lisr.f90           |   2 ++
+ 4 files changed, 106 insertions(+), 13 deletions(-)
+
+commit 922569cba6ae26415f09b3115198131cc4289450
+Date:   Fri Jul 5 17:35:09 2013 +0200
+
+    Fixing LI precision HELL
+
+ src/common/specialinf.F90 | 112 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------------------
+ src/li/limain.f90         |  27 ++++++++++++++-----------
+ src/li/lireheat.f90       |  40 +++++++++++++++++++++----------------
+ src/li/lisr.f90           | 136 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 4 files changed, 212 insertions(+), 103 deletions(-)
+
+commit c9c4153bae24d7d1cbb13d64e8b1543c8d9ffbdc
+Merge: 6dfa711 7e5689b
+Date:   Fri Jul 5 11:27:52 2013 +0200
+
+    Merge branch 'vincent'
+
+commit 7e5689b54b2b5cba6dd224a409374c902b6c78a5
+Date:   Fri Jul 5 11:27:26 2013 +0200
+
+    vincent corrections over 0.2.9
+
+ src/common/specialinf.F90 | 10 ++++++++--
+ src/li/limain.f90         | 18 +++++++++++-------
+ src/li/lireheat.f90       | 11 ++++-------
+ src/li/lisr.f90           | 20 +++++++++++++++++---
+ 4 files changed, 40 insertions(+), 19 deletions(-)
+
+commit 6dfa711818e83cf9f180e6752b543baa5aa7a30e
+Date:   Thu Jul 4 19:59:02 2013 +0200
+
+    fix display name in bsusy
+
+ src/bsusybi/bsusybisr.f90 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 964559b081832aeaaf7751782d51cd9551550835
+Date:   Mon Jul 1 19:51:58 2013 +0200
+
+    fix bugs in kklti
+
+ src/Makefile.am       | 2 +-
+ src/kklti/kkltisr.f90 | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 88022f48d611467d59367bfa88b65456acab1317
+Date:   Mon Jul 1 19:33:41 2013 +0200
+
+    adding kklti model, differs from bi if mu>1
+
+ configure.ac              |   3 +-
+ src/Makefile.am           |   6 +-
+ src/kklti/Makefile.am     |  24 ++---
+ src/kklti/Makefile.in     | 696 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/kklti/aspic_bi.3      |  31 ------
+ src/kklti/aspic_kklti.3   |  31 ++++++
+ src/kklti/bimain.f90      | 217 ---------------------------------------
+ src/kklti/bireheat.f90    | 258 ----------------------------------------------
+ src/kklti/bisr.f90        | 175 --------------------------------
+ src/kklti/kkltimain.f90   | 217 +++++++++++++++++++++++++++++++++++++++
+ src/kklti/kkltireheat.f90 | 258 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/kklti/kkltisr.f90     | 176 ++++++++++++++++++++++++++++++++
+ 12 files changed, 1395 insertions(+), 697 deletions(-)
+
+commit f8c2a7b6c8bea8c2b1d79bdde0df32a0e14dd48e
+Date:   Mon Jul 1 16:28:09 2013 +0200
+
+    updating changelog, bumping version
+
+ ChangeLog    | 260 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac |   2 +-
+ 2 files changed, 261 insertions(+), 1 deletion(-)
+
 commit fdf8f082bae558967fb1ba8e94fea8d108ffa5ca
 Date:   Mon Jul 1 16:24:12 2013 +0200
 
