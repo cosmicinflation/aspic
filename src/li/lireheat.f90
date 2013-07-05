@@ -11,7 +11,7 @@ module lireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use lisr, only : li_epsilon_one, li_epsilon_two, li_epsilon_three
   use lisr, only : li_norm_potential
-  use lisr, only : li_x_endinf, li_efold_primitive
+  use lisr, only : li_x_endinf, li_efold_primitive, li_x_eps1_one
   implicit none
 
   private
@@ -55,8 +55,7 @@ contains
     mini = xEnd
     maxi = xEnd*1000._kp
     else
-    mini = -1._kp/sqrt(2._kp) &
-         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
     maxi = xEnd
     endif
 
@@ -121,8 +120,7 @@ contains
     mini = xEnd
     maxi = xEnd*1000._kp
     else
-    mini = -1._kp/sqrt(2._kp) &
-         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
     maxi = xEnd
     endif
 
@@ -187,8 +185,7 @@ contains
     mini = xEnd
     maxi = xEnd*1000._kp
     else
-    mini = -1._kp/sqrt(2._kp) &
-         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
     maxi = xEnd
     endif
 
