@@ -12,7 +12,6 @@ program limain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use lisr
 
   implicit none
 

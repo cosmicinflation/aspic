@@ -1,7 +1,6 @@
 module specialprec
   use infprec, only : kp
   implicit none
-  !integer, parameter :: dp = selected_real_kind(12,60)
   integer, parameter :: dp = kp
 
 end module specialprec
@@ -112,6 +111,11 @@ interface expint
    module procedure expintkp
 end interface expint
 
+interface lambert
+!   module procedure lambert_root
+   module procedure lambert_iter
+end interface lambert
+
 contains
 
 
@@ -150,8 +154,90 @@ contains
 
   end function hypergeom_2F1
 
+!Halley's iterative method
+  function lambert_iter(x,n)
+    implicit none
+    real(kp) :: lambert_iter
+    real(kp), intent(in) :: x
+    integer, intent(in) :: n
+    real(kp) :: w, expw, num, den
+    real(kp) :: wzero, wnew
+    real(kp), parameter :: xbig = 10._kp
+    real(kp), parameter :: xsmall = 1._kp/xbig
+   
+    integer :: i
 
-  REAL(kp) FUNCTION lambert(x,n) !lambert function of the nth-branch (n=0 or -1)
+
+    if (x.eq.-exp(-1._kp)) then
+       lambert_iter = -1._kp
+       return
+    endif
+
+    select case (n)
+
+    case (0)
+
+       if (x.ge.xbig) then
+
+          wzero = log(x) - log(log(x))
+
+       elseif ( ((x.gt.-exp(-1._kp)).and.(x.lt.0._kp)) &
+            .or. ((x.gt.0._kp).and.(x.lt.xbig)) ) then
+
+          wzero = 0._kp
+
+       elseif (x.eq.0._kp) then
+
+          lambert_iter = 0._kp
+          return
+
+       else
+          stop 'Lambert: x not defined in branch 0'
+       endif
+
+    case (-1)
+
+       if ((x.gt.-exp(-1._kp)).and.(x.le.-xsmall)) then
+
+          wzero = -2._kp
+
+       elseif ((x.gt.-xsmall).and.(x.lt.0._kp)) then
+
+          wzero = log(-x) - log(-log(-x))
+                 
+       else
+          stop 'Lambert: x not defined in branch -1'
+       endif
+
+    case default
+       stop 'Lambert function branch incorrect'
+
+    end select
+      
+
+
+    w = wzero
+    do
+       expw = exp(w)
+       num = w * expw - x
+       den = expw*(w+1._kp) - (w+2._kp)*(w*expw-x)/(2._kp*w+2._kp)
+              
+       wnew = w - num/den
+
+       if (abs(wnew-w).lt.epsilon(1._kp)) exit
+       
+       w = wnew
+
+    enddo
+
+    lambert_iter = w
+
+  end function lambert_iter
+
+
+!lambert function of the nth-branch (n=0 or -1)
+  REAL(kp) FUNCTION lambert_root(x,n) 
+    implicit none
     REAL(kp), INTENT(IN)::x
     INTEGER, INTENT(IN)::n
     REAL(kp) ::y1,y2,y,L1,L2
@@ -168,7 +254,8 @@ contains
        IF((y1*exp(y1)-x)*(y2*exp(y2)-x)>0._kp) THEN
           WRITE(*,*) 'Wrong boundaries in lambert-0 Function calculation'
        END IF
-       IF (x.lt.xSwitchTaylor) THEN !Uses a Taylor Series to avoid numerical errors
+!Uses a Taylor Series to avoid numerical errors
+       IF (abs(x).lt.xSwitchTaylor) THEN 
           y=x-x**2+1.5_kp*x**3-8._kp/3._kp*x**4+125._kp/24._kp*x**5-54._kp/5._kp*x**6+ &
                16807._kp/720._kp*x**7-16384._kp/315._kp*x**8+531441._kp/4480._kp*x**9- &
                156250._kp/567._kp*x**(10)
@@ -202,7 +289,8 @@ contains
              y1=y
           END IF
        END DO
-       IF (-x .lt. epsilon(1._kp)) THEN !Uses an asymptotic solution to avoid numerical errors
+!Uses an asymptotic solution to avoid numerical errors
+       IF (-x .lt. epsilon(1._kp)) THEN 
           L1=log(-x)
           L2=log(-log(-x))
           y=L1-L2+L2/L1+L2*(-2._kp+L2)/(2._kp*L1**2)+ &
@@ -210,11 +298,11 @@ contains
                L2*(-12._kp+36._kp*L2-22._kp*L2**2+3._kp*L2**3)/(12._kp*L1**4)
        ENDIF
     END IF
-    lambert=y
-  END FUNCTION lambert
+    lambert_root=y
+  END FUNCTION lambert_root
 
-
-  FUNCTION expintkp(n,x) result(expint) !Exponential Integral function ExpInt(n,x)=Int_1^Infinity exp(-xt)/(t^n) dt
+!Exponential Integral function ExpInt(n,x)=Int_1^Infinity exp(-xt)/(t^n) dt
+  FUNCTION expintkp(n,x) result(expint)
     use infprec, only : euler
     IMPLICIT NONE
     INTEGER, INTENT(IN) :: n
@@ -222,10 +310,13 @@ contains
     REAL(kp) :: expint
     INTEGER, PARAMETER :: MAXIT=1000
     REAL(kp), PARAMETER :: EPS=epsilon(x),BIG=huge(x)*EPS
-    !Evaluates the exponential integral En(x).
-    !Parameters: MAXIT is the maximum allowed number of iterations; EPS is the desired relative
-    !error, not smaller than the machine precision; BIG is a number near the largest representable
-    !floating-point number; EULER (in nrtype) is Euler's constant γ.
+
+    !Evaluates the exponential integral En(x).  Parameters: MAXIT is
+    !the maximum allowed number of iterations; EPS is the desired
+    !relative error, not smaller than the machine precision; BIG is a
+    !number near the largest representable floating-point number;
+    !EULER (in nrtype) is Euler's constant γ.
+
     INTEGER :: i,nm1
     REAL(kp) :: a,b,c,d,del,fact,h
 

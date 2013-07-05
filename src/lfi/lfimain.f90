@@ -32,6 +32,7 @@ program lfimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+
   Pstar = powerAmpScalar
 
   call delete_file('lfi_predic.dat')

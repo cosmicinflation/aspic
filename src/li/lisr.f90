@@ -147,6 +147,7 @@ contains
     if (alpha .gt. 0._kp) then
        li_x_epsoneunity = 1._kp/sqrt(2._kp) &
             /lambert(exp(1._kp/alpha)/(sqrt(2._kp)),0)
+
     elseif (alpha.lt.0._kp) then
        
        li_x_epsoneunity(1) = -1._kp/sqrt(2._kp) &
@@ -158,6 +159,7 @@ contains
     else
        stop 'li_x_epsoneunity: ill defined alpha'
     endif
+   
    
   end function li_x_epsoneunity
 
