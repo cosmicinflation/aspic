@@ -13,10 +13,35 @@ module lisr
   private
 
   public  li_norm_potential, li_epsilon_one, li_epsilon_two, li_epsilon_three
-  public  li_x_endinf, li_efold_primitive, li_x_trajectory
-  public  li_norm_deriv_potential, li_norm_deriv_second_potential, li_x_eps1_one
+  public  li_x_endinf, li_efold_primitive, li_x_trajectory, li_alphamin
+  public  li_norm_deriv_potential, li_norm_deriv_second_potential, li_x_epsoneunity
  
+!under which eps1=1 has no solution
+  real(kp), parameter :: alphaMin = 2._kp/(log(2._kp)-2)
+
+!for 0 < alpha < alphaNumAccPos, exp(1/alpha) > Infinity while for
+! alpha < alphaNumAccNeg < 0 xend^2 ln(xend) is too large to extract
+! bfoldstar due to machine accuracy. The solution is a lambert
+! function of the Bound number that we bound by one step recurrence
+  real(kp), parameter :: alphaNumAccPos = 1._kp/log(huge(1._kp))
+  real(kp), parameter :: bigBound = 1._kp/epsilon(1._kp) 
+  real(kp), parameter :: alphaNumAccNeg = -2._kp/log(2._kp/log(bigBound)*bigBound)
+
 contains
+
+  subroutine li_check_accuracy(alpha)
+    implicit none
+    real(kp), intent(in) :: alpha
+
+    if ((alpha.lt.alphaNumAccPos).and.(alpha.gt.alphaNumAccNeg)) then
+       write(*,*)'li_check_accuracy:'
+       write(*,*)'alpha= ',alpha
+       write(*,*)'out of precision interval= ',alphaNumAccNeg,alphaNumAccPos
+       stop
+    endif
+
+  end subroutine li_check_accuracy
+
 !returns V/M^4
   function li_norm_potential(x,alpha)
     implicit none
@@ -98,32 +123,43 @@ contains
     implicit none
     real(kp), intent(in) :: alpha
     real(kp) :: li_x_endinf
+    real(kp), dimension(2) :: xepsones
     
-    if (alpha .gt. 0._kp) then
-    li_x_endinf = 1._kp/sqrt(2._kp) &
-         /lambert(exp(1._kp/alpha)/(sqrt(2._kp)),0)
-    else
-    li_x_endinf = -1._kp/sqrt(2._kp) &
-         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),0)
+    xepsones = li_x_epsoneunity(alpha)
 
+    if (alpha .gt. 0._kp) then
+       li_x_endinf = xepsones(1)
+    else 
+       li_x_endinf = xepsones(2)
     endif
 
-   
   end function li_x_endinf
 
-!returns the other solution of epsilon1=1 when alpha<0
-  function li_x_eps1_one(alpha)
+
+!returns the the roots of epsilon_1=1
+  function li_x_epsoneunity(alpha)
     implicit none
     real(kp), intent(in) :: alpha
-    real(kp) :: li_x_eps1_one
+    real(kp), dimension(2) :: li_x_epsoneunity
+
+    call li_check_accuracy(alpha)
     
-    if (alpha .gt. 0._kp) stop 'alpha>0: no other solution for esp1=1!'
+    if (alpha .gt. 0._kp) then
+       li_x_epsoneunity = 1._kp/sqrt(2._kp) &
+            /lambert(exp(1._kp/alpha)/(sqrt(2._kp)),0)
+    elseif (alpha.lt.0._kp) then
+       
+       li_x_epsoneunity(1) = -1._kp/sqrt(2._kp) &
+            /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1)
 
-    li_x_eps1_one = -1._kp/sqrt(2._kp) &
-         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1)
+       li_x_epsoneunity(2) = -1._kp/sqrt(2._kp) &
+            /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),0)
 
+    else
+       stop 'li_x_epsoneunity: ill defined alpha'
+    endif
    
-  end function li_x_eps1_one
+  end function li_x_epsoneunity
 
 
  
@@ -133,7 +169,7 @@ contains
     real(kp), intent(in) :: x,alpha
     real(kp) :: li_efold_primitive
 
-    if (alpha.eq.0._kp) stop 'li_efold_primitive: alpha=0!'
+    call li_check_accuracy(alpha)
 
     li_efold_primitive = (-1._kp/4._kp+1._kp/(2._kp*alpha))*x**2 &
          +1._kp/2._kp*x**2*log(x)
@@ -150,12 +186,22 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: liData
 
+    real(kp), dimension(2) :: xepsones
+
+    xepsones = li_x_epsoneunity(alpha)
+    
     if (alpha .gt. 0._kp) then
-    mini = xEnd
-    maxi = xEnd*1000._kp
+
+       mini = xEnd
+       maxi = huge(1._kp)
+
+    elseif (alpha.lt.0._kp) then
+       
+       mini = xepsones(1) + epsilon(1._kp)
+       maxi = xEnd
+
     else
-    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
-    maxi = xEnd
+       stop 'li_x_trajectory: alpha ill defined!'
     endif
 
     liData%real1 = alpha
@@ -179,6 +225,54 @@ contains
    
   end function find_li_x_trajectory
 
+
+
+!return the minimum value of alpha to get efold number of inflation
+  function li_alphamin(efold)
+    implicit none
+    real(kp) :: li_alphamin
+    real(kp), intent(in) :: efold
+    real(kp), save :: efoldSave = 0._kp
+    real(kp), save :: alphaSave = alphaMin
+    type(transfert) :: liData
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini, maxi
+    
+
+    if (efold.eq.efoldSave) then
+       li_alphamin = alphaSave
+       return
+    endif
+
+    mini = 2._kp/(log(2._kp)-2._kp)
+    maxi = alphaNumAccNeg
+    
+    liData%real1 = efold
+
+    li_alphamin = zbrent(find_li_alphamin,mini,maxi,tolFind,liData)
+
+    efoldSave = efold
+    alphaSave = li_alphamin
+
+  end function li_alphamin
+
+
+  function find_li_alphamin(x,liData)
+    implicit none
+    real(kp), intent(in) :: x
+    real(kp) :: find_li_alphamin
+    type(transfert), optional, intent(inout) :: liData
+    real(kp) :: efold
+    real(kp), dimension(2) :: xepsones
+
+    efold = liData%real1
+
+    xepsones = li_x_epsoneunity(x)
+   
+    find_li_alphamin = efold - li_efold_primitive(xepsones(1),x) &
+         +  li_efold_primitive(xepsones(2),x)
+
+  end function find_li_alphamin
 
   
 end module lisr

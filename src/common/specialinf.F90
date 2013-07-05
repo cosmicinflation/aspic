@@ -152,59 +152,65 @@ contains
 
 
   REAL(kp) FUNCTION lambert(x,n) !lambert function of the nth-branch (n=0 or -1)
-	REAL(kp), INTENT(IN)::x
-	INTEGER, INTENT(IN)::n
-	REAL(kp) ::y1,y2,y,L1,L2
-	IF(x<-1.d0/exp(1.d0)) THEN
-		WRITE(*,*) 'Impossible to evaluate lambert Function: arg < -1/e'
-	END IF
-	IF(n==0) THEN
-		y1=-1.d0
-		y2=MAX(1.d0,x)
-		IF((y1*exp(y1)-x)*(y2*exp(y2)-x)>0.d0) THEN
-			WRITE(*,*) 'Wrong boundaries in lambert-0 Function calculation'
-		END IF
-                IF (x.lt.1.d-4) THEN !Uses a Taylor Series to avoid numerical errors
-                  y=x-x**2+1.5_kp*x**3-8._kp/3._kp*x**4+125._kp/24._kp*x**5-54._kp/5._kp*x**6+ &
-                    16807._kp/720._kp*x**7-16384._kp/315._kp*x**8+531441._kp/4480._kp*x**9- &
-                    156250._kp/567._kp*x**(10)
-                ELSE
-		  DO WHILE(abs(y1-y2)>1.d-6)
-			y=(y1+y2)/2.d0
-			IF((y1*exp(y1)-x)*(y*exp(y)-x)<0.d0) THEN
-				y2=y
-			ELSE
-				y1=y
-			END IF
-		  END DO
-                END IF
-	END IF
-	IF(n==-1) THEN
-		IF(x>0.d0) THEN
-			WRITE(*,*) 'Impossible to evaluate lambert-1 Function: x>0'
-		END IF
-		y1=-1.d6
-		y2=-1.d0
-		IF((y1*exp(y1)-x)*(y2*exp(y2)-x)>0.d0) THEN
-			WRITE(*,*) 'Wrong boundaries in lambert-1 Function calculation'
-		END IF
-		DO WHILE(abs(y1-y2)>1.d-6)
-			y=(y1+y2)/2.d0
-			IF((y1*exp(y1)-x)*(y*exp(y)-x)<0.d0) THEN
-				y2=y
-			ELSE
-				y1=y
-			END IF
-		END DO
-                IF (-x .lt. epsilon(1._kp)) THEN !Uses an asymptotic solution to avoid numerical errors
-                L1=log(-x)
-                L2=log(-log(-x))
-		y=L1-L2+L2/L1+L2*(-2._kp+L2)/(2._kp*L1**2)+ &
-                  L2*(6._kp-9._kp*L2+2._kp*L2**2)/(6._kp*L1**3)+ &
-                  L2*(-12._kp+36._kp*L2-22._kp*L2**2+3._kp*L2**3)/(12._kp*L1**4)
-		ENDIF
-	END IF
-	lambert=y
+    REAL(kp), INTENT(IN)::x
+    INTEGER, INTENT(IN)::n
+    REAL(kp) ::y1,y2,y,L1,L2
+
+    real(kp), parameter :: xSwitchTaylor = 0.0001_kp
+    real(kp), parameter :: TargetPrec = 100._kp * epsilon(1._kp)
+
+    IF(x<-1._kp/exp(1._kp)) THEN
+       WRITE(*,*) 'Impossible to evaluate lambert Function: arg < -1/e'
+    END IF
+    IF(n==0) THEN
+       y1=-1._kp
+       y2=MAX(1._kp,x)
+       IF((y1*exp(y1)-x)*(y2*exp(y2)-x)>0._kp) THEN
+          WRITE(*,*) 'Wrong boundaries in lambert-0 Function calculation'
+       END IF
+       IF (x.lt.xSwitchTaylor) THEN !Uses a Taylor Series to avoid numerical errors
+          y=x-x**2+1.5_kp*x**3-8._kp/3._kp*x**4+125._kp/24._kp*x**5-54._kp/5._kp*x**6+ &
+               16807._kp/720._kp*x**7-16384._kp/315._kp*x**8+531441._kp/4480._kp*x**9- &
+               156250._kp/567._kp*x**(10)
+       ELSE
+!          DO WHILE(abs(y1-y2) > 1d-6)
+          DO WHILE(abs(y1-y2)/abs(y1+y2) > TargetPrec)
+             y=(y1+y2)/2._kp
+             IF((y1*exp(y1)-x)*(y*exp(y)-x)<0._kp) THEN
+                y2=y
+             ELSE
+                y1=y
+             END IF
+          END DO
+       END IF
+    END IF
+    IF(n==-1) THEN
+       IF(x>0._kp) THEN
+          WRITE(*,*) 'Impossible to evaluate lambert-1 Function: x>0'
+       END IF
+       y1=-1.d6
+       y2=-1._kp
+       IF((y1*exp(y1)-x)*(y2*exp(y2)-x)>0._kp) THEN
+          WRITE(*,*) 'Wrong boundaries in lambert-1 Function calculation'
+       END IF
+!       DO WHILE(abs(y1-y2)>1d-6)
+       DO WHILE (abs(y1-y2)/abs(y1+y2) > TargetPrec)
+          y=(y1+y2)/2._kp
+          IF((y1*exp(y1)-x)*(y*exp(y)-x)<0._kp) THEN
+             y2=y
+          ELSE
+             y1=y
+          END IF
+       END DO
+       IF (-x .lt. epsilon(1._kp)) THEN !Uses an asymptotic solution to avoid numerical errors
+          L1=log(-x)
+          L2=log(-log(-x))
+          y=L1-L2+L2/L1+L2*(-2._kp+L2)/(2._kp*L1**2)+ &
+               L2*(6._kp-9._kp*L2+2._kp*L2**2)/(6._kp*L1**3)+ &
+               L2*(-12._kp+36._kp*L2-22._kp*L2**2+3._kp*L2**3)/(12._kp*L1**4)
+       ENDIF
+    END IF
+    lambert=y
   END FUNCTION lambert
 
 

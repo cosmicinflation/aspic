@@ -11,7 +11,7 @@ module lireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use lisr, only : li_epsilon_one, li_epsilon_two, li_epsilon_three
   use lisr, only : li_norm_potential
-  use lisr, only : li_x_endinf, li_efold_primitive, li_x_eps1_one
+  use lisr, only : li_x_endinf, li_efold_primitive, li_x_epsoneunity
   implicit none
 
   private
@@ -32,7 +32,7 @@ contains
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
-
+    real(kp), dimension(2) :: xepsones
     type(transfert) :: liData
     
 
@@ -51,12 +51,14 @@ contains
     liData%real2 = w
     liData%real3 = calF + primEnd
 
+    xepsones = li_x_epsoneunity(alpha)
+
     if (alpha .gt. 0._kp) then
-    mini = xEnd
-    maxi = xEnd*1000._kp
+       mini = xEnd
+       maxi = huge(1._kp)*epsilon(1._kp)
     else
-    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
-    maxi = xEnd
+       mini = xepsones(1)
+       maxi = xEnd
     endif
 
     x = zbrent(find_li_x_star,mini,maxi,tolzbrent,liData)
@@ -99,7 +101,7 @@ contains
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
-
+    real(kp), dimension(2) :: xepsones
     type(transfert) :: liData
     
     if (lnRrad.eq.0._kp) then
@@ -116,13 +118,15 @@ contains
     liData%real1 = alpha
     liData%real2 = calF + primEnd
 
+    xepsones = li_x_epsoneunity(alpha)
+
     if (alpha .gt. 0._kp) then
-    mini = xEnd
-    maxi = xEnd*1000._kp
+       mini = xEnd
+       maxi = huge(1._kp)*epsilon(1._kp)
     else
-    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
-    maxi = xEnd
-    endif
+       mini = xepsones(1)
+       maxi = xEnd
+    endif   
 
     x = zbrent(find_li_x_rrad,mini,maxi,tolzbrent,liData)
     li_x_rrad = x
@@ -164,7 +168,7 @@ contains
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xend,potEnd
-
+    real(kp), dimension(2) :: xepsones
     type(transfert) :: liData
     
     if (lnRreh.eq.0._kp) then
@@ -181,12 +185,14 @@ contains
     liData%real1 = alpha
     liData%real2 = calF + primEnd
 
+    xepsones = li_x_epsoneunity(alpha)
+
     if (alpha .gt. 0._kp) then
-    mini = xEnd
-    maxi = xEnd*1000._kp
+       mini = xEnd
+       maxi = huge(1._kp)*epsilon(1._kp)
     else
-    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
-    maxi = xEnd
+       mini = xepsones(1)
+       maxi = xEnd
     endif
 
     x = zbrent(find_li_x_rreh,mini,maxi,tolzbrent,liData)

@@ -7,10 +7,12 @@ program limain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use lisr, only : li_norm_potential, li_x_endinf
+  use lisr, only : li_norm_potential, li_x_endinf, li_alphamin
   use lireheat, only : li_x_rreh, li_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
+  use lisr
 
   implicit none
 
@@ -34,7 +36,7 @@ program limain
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
-
+  real(kp), dimension(2) :: xepsones
   Pstar = powerAmpScalar
 
   call delete_file('li_predic.dat')
@@ -46,9 +48,10 @@ program limain
 
   npts = 20
 
-  alphamin=0.002
+  alphamin=0.003
   alphamax=100000._kp
   nalpha=20
+
 
   !  w = 1._kp/3._kp
   w=0._kp
@@ -95,13 +98,10 @@ program limain
 !!!!!!!!!!!!!!!!!!
 
   npts = 5
-
-  alphamin=-0.1
-  alphamax=-1.4*10._kp**(-3.)
-  alphamax=-5._kp*10._kp**(-2.)
+  
   nalpha=100
 
-  alphamin=-0.06
+  alphamin=-0.061
   alphamax=-0.1
 
 
@@ -179,12 +179,14 @@ program limain
 
 
 
- write(*,*)
+  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42
   lnRradmax = 10
-  alpha = 1e-2
+  alpha = -0.3
+ 
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
@@ -192,6 +194,7 @@ program limain
      xstar = li_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
 
      eps1 = li_epsilon_one(xstar,alpha)
 
@@ -205,7 +208,7 @@ program limain
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      xstar = li_x_rreh(alpha,lnR,bfoldstar)
-     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar=', xstar
 
      !second consistency check
      !get rhoreh for chosen w and check that xstar gotten this way is the same
@@ -215,7 +218,7 @@ program limain
      xstar = li_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
-
+     
   enddo
 
 
