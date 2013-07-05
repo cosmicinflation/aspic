@@ -164,14 +164,20 @@ contains
 		IF((y1*exp(y1)-x)*(y2*exp(y2)-x)>0.d0) THEN
 			WRITE(*,*) 'Wrong boundaries in lambert-0 Function calculation'
 		END IF
-		DO WHILE(abs(y1-y2)>1.d-6)
+                IF (x.lt.1.d-4) THEN !Uses a Taylor Series to avoid numerical errors
+                  y=x-x**2+1.5_kp*x**3-8._kp/3._kp*x**4+125._kp/24._kp*x**5-54._kp/5._kp*x**6+ &
+                    16807._kp/720._kp*x**7-16384._kp/315._kp*x**8+531441._kp/4480._kp*x**9- &
+                    156250._kp/567._kp*x**(10)
+                ELSE
+		  DO WHILE(abs(y1-y2)>1.d-6)
 			y=(y1+y2)/2.d0
 			IF((y1*exp(y1)-x)*(y*exp(y)-x)<0.d0) THEN
 				y2=y
 			ELSE
 				y1=y
 			END IF
-		END DO
+		  END DO
+                END IF
 	END IF
 	IF(n==-1) THEN
 		IF(x>0.d0) THEN

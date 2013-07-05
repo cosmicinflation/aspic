@@ -14,7 +14,7 @@ module lisr
 
   public  li_norm_potential, li_epsilon_one, li_epsilon_two, li_epsilon_three
   public  li_x_endinf, li_efold_primitive, li_x_trajectory
-  public  li_norm_deriv_potential, li_norm_deriv_second_potential
+  public  li_norm_deriv_potential, li_norm_deriv_second_potential, li_x_eps1_one
  
 contains
 !returns V/M^4
@@ -105,10 +105,25 @@ contains
     else
     li_x_endinf = -1._kp/sqrt(2._kp) &
          /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),0)
+
     endif
 
    
   end function li_x_endinf
+
+!returns the other solution of epsilon1=1 when alpha<0
+  function li_x_eps1_one(alpha)
+    implicit none
+    real(kp), intent(in) :: alpha
+    real(kp) :: li_x_eps1_one
+    
+    if (alpha .gt. 0._kp) stop 'alpha>0: no other solution for esp1=1!'
+
+    li_x_eps1_one = -1._kp/sqrt(2._kp) &
+         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1)
+
+   
+  end function li_x_eps1_one
 
 
  
@@ -139,8 +154,7 @@ contains
     mini = xEnd
     maxi = xEnd*1000._kp
     else
-    mini = -1._kp/sqrt(2._kp) &
-         /lambert(-exp(1._kp/alpha)/(sqrt(2._kp)),-1) !location of the other solution of epsilon1=1
+    mini = li_x_eps1_one(alpha) !location of the other solution of epsilon1=1
     maxi = xEnd
     endif
 

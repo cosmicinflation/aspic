@@ -94,11 +94,16 @@ program limain
 !!!  alpha<0   !!!
 !!!!!!!!!!!!!!!!!!
 
-  npts = 4
+  npts = 5
 
   alphamin=-0.1
   alphamax=-1.4*10._kp**(-3.)
-  nalpha=40
+  alphamax=-5._kp*10._kp**(-2.)
+  nalpha=100
+
+  alphamin=-0.06
+  alphamax=-0.1
+
 
   !  w = 1._kp/3._kp
   w=0._kp
@@ -107,8 +112,7 @@ program limain
      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
      alpha=-exp(log(-alphamin)/((log(-alphamin)/log(-alphamax))** &
           (real(k,kp)/real(nalpha,kp)))) !adapted step
-
-
+     alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))! arithmetic step
 
      lnRhoRehMin = lnRhoNuc
      lnRhoRehMax = li_lnrhoreh_max(alpha,Pstar)
@@ -146,13 +150,13 @@ program limain
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !! Write Data for the summarizing plots !!
+!! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('li_predic_summarized.dat') 
   nalpha=1000
-  alphamin=0.002
-  alphamax=10._kp**(5.)
+  alphamin=0.005
+  alphamax=0.1
   w=0._kp
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
