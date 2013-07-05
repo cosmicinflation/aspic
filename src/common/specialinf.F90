@@ -164,8 +164,12 @@ contains
     real(kp) :: wzero, wnew
     real(kp), parameter :: xbig = 10._kp
     real(kp), parameter :: xsmall = 1._kp/xbig
-   
-    integer :: i
+    
+    real(kp), parameter :: tolIter = 100._kp*epsilon(1._kp)
+
+    integer :: count
+    integer, parameter :: iterMax = 100000
+
 
 
     if (x.eq.-exp(-1._kp)) then
@@ -217,6 +221,7 @@ contains
 
 
     w = wzero
+    count = 0
     do
        expw = exp(w)
        num = w * expw - x
@@ -224,8 +229,15 @@ contains
               
        wnew = w - num/den
 
-       if (abs(wnew-w).lt.epsilon(1._kp)) exit
-       
+       if (abs(wnew-w).le.tolIter) exit
+       count = count + 1
+
+       if (count.gt.iterMax) then
+          write(*,*)'x= w= deltaw= ',x,w,abs(wnew-w)
+          write(*,*)'Lambert may be inaccurate!'
+          exit
+       endif
+
        w = wnew
 
     enddo
