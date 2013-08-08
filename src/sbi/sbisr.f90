@@ -152,9 +152,12 @@ contains
     type(transfert) :: sbiData
 
     mini = epsilon(1._kp)
-    maxi = sbi_x_potzero(alpha,beta)*(1._kp-epsilon(1._kp))
 
-    if (alpha.eq.sbi_alphamin(beta))  maxi=sbi_x_potzero(alpha,beta)*(1-sqrt(epsilon(1._kp)))
+    if (alpha.eq.sbi_alphamin(beta)) then
+       maxi = sbi_x_potzero(alpha,beta)*(1-sqrt(epsilon(1._kp)))
+    else
+       maxi = sbi_x_potzero(alpha,beta)*(1._kp-epsilon(1._kp))
+    endif
 
     sbiData%real1 = alpha
     sbiData%real2 = beta
