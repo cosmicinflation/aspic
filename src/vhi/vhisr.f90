@@ -22,7 +22,7 @@ module vhisr
 
 
 
-  real(kp), parameter :: phihuge = 10000._kp
+  real(kp), parameter :: phihuge = 50000._kp
 
 
 contains
@@ -289,7 +289,7 @@ contains
 
     if (efold.gt.efoldMax) then
        write(*,*)'vhi_xendmax: not enough efolds!'
-       write(*,*)'efold requested=   efold maxi= ',efold,efoldMax
+       write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
        stop
     endif
 

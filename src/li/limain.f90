@@ -8,6 +8,7 @@ program limain
   use srreheat, only : log_energy_reheat_ingev
 
   use lisr, only : li_norm_potential, li_x_endinf, li_alphamin
+  use lisr, only : li_x_epsoneunity, li_efold_primitive
   use lireheat, only : li_x_rreh, li_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -30,6 +31,7 @@ program limain
   real(kp) ::alphamin,alphamax
 
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  real(kp) :: DeltaNmax
   integer :: nalpha
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
@@ -40,6 +42,25 @@ program limain
 
   call delete_file('li_predic.dat')
   call delete_file('li_nsr.dat')
+
+!!!!!!!!!!!!!!!!!!
+!!!  Priors    !!!
+!!!!!!!!!!!!!!!!!!
+
+  nalpha=100
+  alphamin=-1._kp
+  alphamax=-0.2_kp
+
+  call delete_file('li_alphamin.dat')
+  do k=0,nalpha
+     alpha = alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
+     xepsones = li_x_epsoneunity(alpha)
+     DeltaNmax = li_efold_primitive(xepsones(1),alpha)- &
+                 li_efold_primitive(xepsones(2),alpha) 
+     call livewrite('li_alphamin.dat',alpha,DeltaNmax)   
+  end do
+
+
 
 !!!!!!!!!!!!!!!!!!
 !!!  alpha>0   !!!
@@ -100,7 +121,7 @@ program limain
   
   nalpha=100
 
-  alphamin=-0.061
+  alphamin=-0.35
   alphamax=-0.1
 
 

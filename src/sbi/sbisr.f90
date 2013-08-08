@@ -127,22 +127,16 @@ contains
 
     if (alpha .lt. sbi_alphamin(beta)) stop 'sbi_x_potzero: alpha < alphamin !'
 
-!this is moved in specialinf --->
-!!Uses an asymptotic approximation for the lambert function to avoid
-!!numerical error when its argument is too small
-!!
-!!    IF (4._kp/beta*exp(-4._kp*alpha/beta) .lt. epsilon(1._kp)) THEN 
-!!    L1=log(4._kp/beta)-4._kp*alpha/beta
-!!    L2=-log(-L1)
-!!    W = L1-L2+L2/L1+L2*(-2._kp+L2)/(2._kp*L1**2)+ &
-!!                  L2*(6._kp-9._kp*L2+2._kp*L2**2)/(6._kp*L1**3)+ &
-!!                  L2*(-12._kp+36._kp*L2-22._kp*L2**2+3._kp*L2**3)/(12._kp*L1**4)
-!!    sbi_x_potzero = (-4._kp/(beta*W))**(0.25_kp)
-!!    ELSE
+    if (alpha .gt. sbi_alphamin(beta)) then
 
-    sbi_x_potzero = (-4._kp/(beta*lambert(-4._kp/beta*exp(-4._kp*alpha/beta),-1)))**(0.25_kp)
+      sbi_x_potzero = (-4._kp/(beta*lambert(-4._kp/beta*exp(-4._kp*alpha/beta),-1)))**(0.25_kp)
+   
+    else
 
-!!    ENDIF
+      sbi_x_potzero = (0.25_kp*beta)**(-0.25_kp)
+
+    endif
+
 
   end function sbi_x_potzero
 
@@ -159,6 +153,8 @@ contains
 
     mini = epsilon(1._kp)
     maxi = sbi_x_potzero(alpha,beta)*(1._kp-epsilon(1._kp))
+
+    if (alpha.eq.sbi_alphamin(beta))  maxi=sbi_x_potzero(alpha,beta)*(1-sqrt(epsilon(1._kp)))
 
     sbiData%real1 = alpha
     sbiData%real2 = beta
