@@ -16,7 +16,6 @@ module rpi2sr
 
   private
 
-  public rpi_x_potmax
   public rpi2_norm_potential, rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
   public rpi2_efold_primitive, rpi2_x_trajectory
   public rpi2_norm_deriv_potential, rpi2_norm_deriv_second_potential
