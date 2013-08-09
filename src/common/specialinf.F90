@@ -229,7 +229,7 @@ contains
               
        wnew = w - num/den
 
-       if (abs(wnew-w).le.tolIter) exit
+       if (abs(wnew-w).le.tolIter*abs(w)) exit
        count = count + 1
 
        if (count.gt.iterMax) then
