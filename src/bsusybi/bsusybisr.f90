@@ -201,9 +201,9 @@ contains
     real(kp) :: find_bsusybi_xendmax,xmaxi
     real(kp) :: gammaBSUSYB,bfoldstar
 
-    xmaxi = bsusybi_x_epsoneunity(gammaBSUSYB)
     gammaBSUSYB=bsusybiData%real1
     bfoldstar = bsusybiData%real2
+    xmaxi = bsusybi_x_epsoneunity(gammaBSUSYB)
 
     find_bsusybi_xendmax = bfoldstar-(bsusybi_efold_primitive(x,gammaBSUSYB)- &
          bsusybi_efold_primitive(xmaxi,gammaBSUSYB))
