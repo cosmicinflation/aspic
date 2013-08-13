@@ -3,7 +3,7 @@ libaspic@PREC_SUFFIX@_la_SOURCES =
 libaspic@PREC_SUFFIX@_la_LDFLAGS = -version-info @version_info@
 
 libaspic@PREC_SUFFIX@_la_includedir = $(includedir)/$(SRINCDIR)
-libaspic@PREC_SUFFIX@_la_include_HEADERS = ../include/aspic.h
+libaspic@PREC_SUFFIX@_la_include_HEADERS = ../include/aspic@PREC_SUFFIX@.h
 
 #forces the linker to use fortran linking
 nodist_EXTRA_libaspic@PREC_SUFFIX@_la_SOURCES = donotexist.f90
