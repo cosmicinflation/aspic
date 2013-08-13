@@ -325,8 +325,11 @@ contains
     real(kp), intent(in) :: bfold, p,mu, xend
     real(kp) :: vhi_x_trajectory
     real(kp), parameter :: tolFind = tolkp
+    real(kp), parameter :: logBigKp = log(epsilon(1._kp)*huge(1._kp))
     real(kp) :: mini,maxi
-    logical :: approx = .false. !set to true if one wants to use the approximate phi/mu << 1 formula
+    real(kp) :: xarg, lambertW0
+!set to true if one wants to use the approximate phi/mu << 1 formula
+    logical :: approx = .false.
     type(transfert) :: vhiData
 
 !trick land here: if bfold>0 is inputed, allows to return xend by
@@ -337,8 +340,18 @@ contains
        vhi_x_trajectory=-1._kp+sqrt(1._kp-2._kp/(mu**2)*bfold+xend**2+2._kp*xend)
       
     else if (p .eq. 2._kp) then 
+       
+       xarg = xend**2 - 4._kp*bfold/(mu**2) + 2._kp*log(xend)
 
-       vhi_x_trajectory=sqrt(lambert(xend**2*exp(xend**2-4._kp*bfold/(mu**2)),0))
+       if (xarg.gt.logBigKp) then
+!leading expansion of W(exp(xarg),0) for x>>1
+          lambertW0 = xarg - ((1._kp - xarg + xarg**2)*log(xarg))/xarg**2 &
+               + log(xarg)**2/(2._kp*xarg**2)
+       else
+          lambertW0 = lambert(exp(xarg),0)
+       endif
+       
+          vhi_x_trajectory = sqrt(lambertW0)
        
     else if (approx) then
 
