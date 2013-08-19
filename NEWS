@@ -1,2 +1,5 @@
 * version 0.2.11
 - fix various bugs discovered with distbayes
+- changing name of the include file for quadruple-precision
+  compilation. It now names 'aspicq.h' for quadprec, and 'aspic.h' for
+  double precision.
