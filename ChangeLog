@@ -1,3 +1,107 @@
+commit 96598c6a32f524c253baed7b72f5cefdf4484038
+Date:   Tue Aug 13 20:37:19 2013 +0200
+
+    install aspicq.h for quadprec instead of aspic.h
+
+ include/aspicq.h | 1 +
+ src/Makefile.am  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+commit 68fbada0ff06a2ccd04c649cbc51ca1a4aebafc5
+Date:   Tue Aug 13 18:48:00 2013 +0200
+
+    fix typo in ssbi man
+
+ src/ssbi/aspic_ssbi.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 52d73b33a09e205ec0254a3d66433eb22d6621f6
+Date:   Tue Aug 13 13:42:56 2013 +0200
+
+    Fix bug in vhi for p=2 exp(big)=Infinity
+
+ src/vhi/vhisr.f90 | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+commit d77e19944403aafcbb29af86898d5b912160a00c
+Date:   Mon Aug 12 11:18:04 2013 +0200
+
+    Fix wrong xmaxi/gamma in bsusysr
+
+ src/bsusybi/bsusybisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 7cc2e7aa2e8e7136f091ee4ddc88a6363cca9137
+Date:   Fri Aug 9 17:34:45 2013 +0200
+
+    in lambert_iter, test relative precision instead of absolute
+
+ src/common/specialinf.F90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 9d90787ee1de2a968d9e943fb8684ff8213a495d
+Date:   Fri Aug 9 16:08:14 2013 +0200
+
+    reversion public to be uniform
+
+ src/rpi/rpi2sr.f90 | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit aaa138315a9fdd24e78832351f7fb2165a1084ea
+Date:   Fri Aug 9 16:05:35 2013 +0200
+
+    Fixing typo in rpi2 man + public x_potmax
+
+ src/rpi/aspic_rpi2.3 | 2 +-
+ src/rpi/rpi2sr.f90   | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+commit 182b145f541d6d6da98e82f7dc5de3ec2bdb315e
+Date:   Thu Aug 8 17:18:22 2013 +0200
+
+    bumping version num in configure
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f494ddbe3eb439cd3c9d1fdfe774bee3cabb3936
+Date:   Thu Aug 8 17:17:05 2013 +0200
+
+    minor modif in sbisr
+
+ src/sbi/sbisr.f90 | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+commit 0d32028ddab021978e5618422700cb1fabb323cf
+Date:   Thu Aug 8 17:14:15 2013 +0200
+
+    Vincent corrections over 0.2.10
+
+ src/kklti/Makefile.in | 696 --------------------------------------------------
+ src/li/limain.f90     |  23 +-
+ src/sbi/sbimain.f90   |  88 +++++++
+ src/sbi/sbisr.f90     |  28 +-
+ src/vhi/vhisr.f90     |   4 +-
+ 5 files changed, 124 insertions(+), 715 deletions(-)
+
+commit a48c067ec887edfbcbd988d4ece7d29d7bd90320
+Date:   Fri Jul 5 19:43:18 2013 +0200
+
+    adding safegard over infinite loop in lambert_iter
+
+ src/common/specialinf.F90 | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+commit 04c6db80c3f2a298f8d117972596c527965fce0f
+Date:   Fri Jul 5 19:25:52 2013 +0200
+
+    Editing logs
+
+ ChangeLog | 84 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS      |  7 +++---
+ 2 files changed, 87 insertions(+), 4 deletions(-)
+
+	
 commit e2fad00ce2db5a68b0f8a9054a7737fedeeef227
 Date:   Fri Jul 5 19:23:09 2013 +0200
 
