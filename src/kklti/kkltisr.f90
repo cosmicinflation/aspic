@@ -6,16 +6,16 @@
 !mu = mu/Mp
 
 module kkltisr
-  use infprec, only : kp, tolkp,transfert
+  use infprec, only : pi, kp, tolkp,transfert
   use inftools, only : zbrent
   implicit none
 
   private
 
   public kklti_norm_potential, kklti_norm_deriv_potential, kklti_norm_deriv_second_potential
-  public kklti_epsilon_one, kklti_epsilon_two,kklti_epsilon_three
-  public kklti_x_endinf, kklti_efold_primitive, kklti_x_trajectory
-
+  public kklti_epsilon_one, kklti_epsilon_two,kklti_epsilon_three, kklti_x_epstwounity
+  public kklti_x_epsoneunity, kklti_efold_primitive, kklti_x_trajectory
+  public kklti_ln_xstg, kklti_ln_xuv
  
 contains
 !returns V/M**4
@@ -101,11 +101,11 @@ contains
   end function kklti_efold_primitive
 
 
-!returns x at the end of inflation defined as epsilon1=1
-  function kklti_x_endinf(p,mu)
+!returns x at epsilon1=1
+  function kklti_x_epsoneunity(p,mu)
     implicit none
     real(kp), intent(in) :: p,mu
-    real(kp) :: kklti_x_endinf
+    real(kp) :: kklti_x_epsoneunity
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: kkltiData
@@ -116,25 +116,62 @@ contains
     kkltiData%real1 = p
     kkltiData%real2 = mu
 
-    kklti_x_endinf = zbrent(find_kklti_x_endinf,mini,maxi,tolFind,kkltiData)
+    kklti_x_epsoneunity = zbrent(find_kklti_x_epsoneunity,mini,maxi,tolFind,kkltiData)
    
-  end function kklti_x_endinf
+  end function kklti_x_epsoneunity
   
-  function find_kklti_x_endinf(x,kkltiData)
+  function find_kklti_x_epsoneunity(x,kkltiData)
     use infprec, only : transfert    
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: kkltiData
-    real(kp) :: find_kklti_x_endinf
+    real(kp) :: find_kklti_x_epsoneunity
     real(kp) :: p,mu
     
     p=kkltiData%real1
     mu=kkltiData%real2
 !this is epsilon1(x)=1
-    find_kklti_x_endinf = p-sqrt(2._kp)*mu*(x+x**(1._kp+p))
+    find_kklti_x_epsoneunity = p-sqrt(2._kp)*mu*(x+x**(1._kp+p))
     
-  end function find_kklti_x_endinf
+  end function find_kklti_x_epsoneunity
  
+
+!returns x at epsilon2=1
+  function kklti_x_epstwounity(p,mu)
+    implicit none
+    real(kp), intent(in) :: p,mu
+    real(kp) :: kklti_x_epstwounity
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: kkltiData
+
+    mini = epsilon(1._kp)
+    maxi = 1._kp/epsilon(1._kp)
+
+    kkltiData%real1 = p
+    kkltiData%real2 = mu
+
+    kklti_x_epstwounity = zbrent(find_kklti_x_epstwounity,mini,maxi,tolFind,kkltiData)
+   
+  end function kklti_x_epstwounity
+  
+  function find_kklti_x_epstwounity(x,kkltiData)
+    use infprec, only : transfert    
+    implicit none
+    real(kp), intent(in) :: x    
+    type(transfert), optional, intent(inout) :: kkltiData
+    real(kp) :: find_kklti_x_epstwounity
+    real(kp) :: p,mu
+    
+    p=kkltiData%real1
+    mu=kkltiData%real2
+!this is epsilon2(x)=1
+    find_kklti_x_epstwounity = 2._kp*p*(1._kp+(p+1._kp)*x**p) &
+         - (mu*(x+x**(p+1._kp)))**2
+    
+  end function find_kklti_x_epstwounity
+ 
+
 
 
 !returns x at bfold=-efolds before the end of inflation
@@ -173,4 +210,38 @@ contains
   end function find_kklti_x_trajectory
 
   
+
+!return xstg in terms of the universal string variable y,vbar, flux
+!number calN et string parama alpha'
+  function kklti_ln_xstg(p,mu,y,vbar,calN,alpha)
+    implicit none
+    real(kp) :: kklti_ln_xstg
+    real(kp), intent(in) :: p,mu,y,vbar,calN,alpha
+
+    if (p.ne.4._kp) stop 'kklti_ln_xstg: p >< 4!'
+
+    kklti_ln_xstg = 0.25_kp*calN + y**(-0.25_kp)
+    
+  end function kklti_ln_xstg
+
+!return xUV in terms of the universal string variable y,vbar, flux
+!number calN et string parama alpha'
+  function kklti_ln_xuv(p,mu,y,vbar,calN,alpha)
+    implicit none
+    real(kp) :: kklti_ln_xuv
+    real(kp), intent(in) :: p,mu,y,vbar,calN,alpha
+
+    if (p.ne.4._kp) stop 'kklti_ln_xuv: p >< 4!'
+
+    kklti_ln_xuv = -log(mu) + 0.75_kp*log(y) + 0.5_kp*log(vbar) &
+         -log(pi) - 0.5_kp*log(2._kp*alpha*calN)
+
+    if (kklti_ln_xuv.gt.log(2._kp)-log(mu)) then
+       write(*,*)'kklti_ln_xuv: throat volume larger than bulk volume!'
+       write(*,*)'phiUV= phiUVmax= ',exp(kklti_ln_xuv)*mu,2._kp
+       stop
+    end if
+
+  end function kklti_ln_xuv
+
 end module kkltisr

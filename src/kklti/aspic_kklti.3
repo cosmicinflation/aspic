@@ -1,4 +1,4 @@
-.TH libkklti 3 "July 1, 2013" "libaspic" "Module convention" 
+.TH libkklti 3 "Aug 19, 2013" "libaspic" "Module convention" 
 
 .SH NAME
 .I kklti
@@ -26,6 +26,34 @@ Parameters
 .B mu
 (in Mp units)
 .RS
+.RE
+.I real(kp)
+::
+.B xend
+
+.SH DESCRIPTION
+The
+.I kklti
+module is used to strictly describe the KKLT class of brane inflation
+models with 'p > 0' and without performing an expansion in 'x'
+large. For the expanded potentials at large 'x' values, check out the
+.I bi
+module. Inflation in the above potential could naturally end at the
+field value 'xeps1' for which the first Hubble flow function equals
+unity. This value is returned by
+.I
+real(kp)
+function
+.IP
+.BR kklti_x_epsoneunity (p,mu)
+.P
+Within string motivated scenarios, inflation can end by brane
+annihilation (tachyonic preheating) at a field value 'xstg > xeps1',
+which is an additional model parameter. For this reason, the
+.I kklti
+module does not provide a
+.BR kklti_x_endinf ()
+function and has three parameters.
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

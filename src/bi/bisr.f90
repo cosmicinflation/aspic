@@ -6,16 +6,16 @@
 !mu = mu/Mp
 
 module bisr
-  use infprec, only : kp, tolkp,transfert
+  use infprec, only : pi, kp, tolkp,transfert
   use inftools, only : zbrent
   implicit none
 
   private
 
   public bi_norm_potential, bi_norm_deriv_potential, bi_norm_deriv_second_potential
-  public bi_epsilon_one, bi_epsilon_two,bi_epsilon_three
-  public bi_x_endinf, bi_efold_primitive, bi_x_trajectory
-
+  public bi_epsilon_one, bi_epsilon_two,bi_epsilon_three, bi_x_epstwounity
+  public bi_x_epsoneunity, bi_efold_primitive, bi_x_trajectory
+  public bi_ln_xstg, bi_ln_xuv
  
 contains
 !returns V/M**4
@@ -87,6 +87,7 @@ contains
   end function bi_epsilon_three
 
 
+
 !this is integral[V(phi)/V'(phi) dphi]
   function bi_efold_primitive(x,p,mu)
     implicit none
@@ -100,11 +101,12 @@ contains
   end function bi_efold_primitive
 
 
-!returns x at the end of inflation defined as epsilon1=1
-  function bi_x_endinf(p,mu)
+
+!returns x for which epsilon1=1
+  function bi_x_epsoneunity(p,mu)
     implicit none
     real(kp), intent(in) :: p,mu
-    real(kp) :: bi_x_endinf
+    real(kp) :: bi_x_epsoneunity
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: biData
@@ -115,25 +117,62 @@ contains
     biData%real1 = p
     biData%real2 = mu
 
-    bi_x_endinf = zbrent(find_bi_x_endinf,mini,maxi,tolFind,biData)
+    bi_x_epsoneunity = zbrent(find_bi_x_epsoneunity,mini,maxi,tolFind,biData)
    
-  end function bi_x_endinf
+  end function bi_x_epsoneunity
   
-  function find_bi_x_endinf(x,biData)
+  function find_bi_x_epsoneunity(x,biData)
     use infprec, only : transfert    
     implicit none
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: biData
-    real(kp) :: find_bi_x_endinf
+    real(kp) :: find_bi_x_epsoneunity
     real(kp) :: p,mu
     
     p=biData%real1
     mu=biData%real2
 !this is epsilon1(x)=1
-    find_bi_x_endinf = p-sqrt(2._kp)*mu*x*(x**p-1._kp)
+    find_bi_x_epsoneunity = p-sqrt(2._kp)*mu*x*(x**p-1._kp)
     
-  end function find_bi_x_endinf
+  end function find_bi_x_epsoneunity
  
+
+
+!returns x for which epsilon2=1
+  function bi_x_epstwounity(p,mu)
+    implicit none
+    real(kp), intent(in) :: p,mu
+    real(kp) :: bi_x_epstwounity
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: biData
+
+    mini = 1._kp + epsilon(1._kp)
+    maxi = 1._kp/epsilon(1._kp)
+
+    biData%real1 = p
+    biData%real2 = mu
+
+    bi_x_epstwounity = zbrent(find_bi_x_epstwounity,mini,maxi,tolFind,biData)
+   
+  end function bi_x_epstwounity
+  
+  function find_bi_x_epstwounity(x,biData)
+    use infprec, only : transfert    
+    implicit none
+    real(kp), intent(in) :: x    
+    type(transfert), optional, intent(inout) :: biData
+    real(kp) :: find_bi_x_epstwounity
+    real(kp) :: p,mu
+    
+    p=biData%real1
+    mu=biData%real2
+!this is epsilon2(x)=1
+    find_bi_x_epstwounity = 2._kp*p*((1+p)*x**p-1._kp)- (mu*x*(x**p-1))**2
+    
+  end function find_bi_x_epstwounity
+ 
+
 
 
 !returns x at bfold=-efolds before the end of inflation
@@ -171,5 +210,38 @@ contains
    
   end function find_bi_x_trajectory
 
-  
+!return xstg in terms of the universal string variable y,vbar, flux
+!number calN et string parama alpha'
+  function bi_ln_xstg(p,mu,y,vbar,calN,alpha)
+    implicit none
+    real(kp) :: bi_ln_xstg
+    real(kp), intent(in) :: p,mu,y,vbar,calN,alpha
+
+    if (p.ne.4._kp) stop 'bi_ln_xstg: p >< 4!'
+
+    bi_ln_xstg = 0.25_kp*calN + y**(-0.25_kp)
+    
+  end function bi_ln_xstg
+
+!return xUV in terms of the universal string variable y,vbar, flux
+!number calN et string parama alpha'
+  function bi_ln_xuv(p,mu,y,vbar,calN,alpha)
+    implicit none
+    real(kp) :: bi_ln_xuv
+    real(kp), intent(in) :: p,mu,y,vbar,calN,alpha
+
+    if (p.ne.4._kp) stop 'bi_ln_xuv: p >< 4!'
+
+    bi_ln_xuv = -log(mu) + 0.75_kp*log(y) + 0.5_kp*log(vbar) &
+         -log(pi) - 0.5_kp*log(2._kp*alpha*calN)
+
+    if (bi_ln_xuv.gt.log(2._kp)-log(mu)) then
+       write(*,*)'bi_ln_xuv: throat volume larger than bulk volume!'
+       write(*,*)'phiUV= phiUVmax= ',exp(bi_ln_xuv)*mu,2._kp
+       stop
+    end if
+
+  end function bi_ln_xuv
+
+
 end module bisr

@@ -9,7 +9,7 @@ module kkltireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use kkltisr, only : kklti_epsilon_one, kklti_epsilon_two, kklti_epsilon_three
   use kkltisr, only : kklti_norm_potential
-  use kkltisr, only : kklti_x_endinf, kklti_efold_primitive
+  use kkltisr, only : kklti_efold_primitive
   implicit none
 
   private
@@ -22,15 +22,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function kklti_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function kklti_x_star(p,mu,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: kklti_x_star
-    real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,mu,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: kkltiData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = kklti_x_endinf(p,mu)
     epsOneEnd = kklti_epsilon_one(xEnd,p,mu)
 
     potEnd = kklti_norm_potential(xEnd,p,mu)
@@ -92,15 +91,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function kklti_x_rrad(p,mu,lnRrad,Pstar,bfold)    
+  function kklti_x_rrad(p,mu,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: kklti_x_rrad
-    real(kp), intent(in) :: p,mu,lnRrad,Pstar
+    real(kp), intent(in) :: p,mu,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: kkltiData
     
@@ -108,7 +107,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
    
-    xEnd = kklti_x_endinf(p,mu)
     epsOneEnd = kklti_epsilon_one(xEnd,p,mu)
 
     potEnd = kklti_norm_potential(xEnd,p,mu)
@@ -160,15 +158,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function kklti_x_rreh(p,mu,lnRreh,bfold)    
+  function kklti_x_rreh(p,mu,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: kklti_x_rreh
-    real(kp), intent(in) :: p,mu,lnRreh
+    real(kp), intent(in) :: p,mu,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: kkltiData
     
@@ -176,7 +174,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
    
-    xEnd = kklti_x_endinf(p,mu)
     epsOneEnd = kklti_epsilon_one(xEnd,p,mu)
 
     potEnd = kklti_norm_potential(xEnd,p,mu)
@@ -225,23 +222,22 @@ contains
 
 
 
-  function kklti_lnrhoreh_max(p,mu,Pstar) 
+  function kklti_lnrhoreh_max(p,mu,xend,Pstar) 
     implicit none
     real(kp) :: kklti_lnrhoreh_max
-    real(kp), intent(in) :: p,mu,Pstar
+    real(kp), intent(in) :: p,mu,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
     
-    xEnd = kklti_x_endinf(p,mu)       
     potEnd  = kklti_norm_potential(xEnd,p,mu)
     epsOneEnd = kklti_epsilon_one(xEnd,p,mu)
        
-    x = kklti_x_star(p,mu,wrad,junk,Pstar)    
+    x = kklti_x_star(p,mu,xend,wrad,junk,Pstar)    
     potStar = kklti_norm_potential(x,p,mu)
     epsOneStar = kklti_epsilon_one(x,p,mu)
     
