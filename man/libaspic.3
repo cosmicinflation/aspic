@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "June 25, 2013" "version 0.2.7" "Aspic usage"
+.TH libaspic 3 "Aug 20, 2013" "version 0.2.12" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -33,9 +33,14 @@ accessible in fortran by the command:
 .IP
 .B include 'aspic.h'
 .P
+or using the C pre-processor with
+.IP
+.B #include <aspic.h>
+.P
 Both the library and the global include file are installed in the
-standard directory of your system.  Compiling your own source file
-with, for instance, gfortran should only require:
+standard directory you specified when installing the
+library. Compiling your own source file with, for instance, gfortran
+should only require:
 .IP
 gfortran -c mysrcfile.f90
 .RS
@@ -43,13 +48,12 @@ gfortran mysrcfile.o -o myprog
 .B -laspic
 .RE
 .P
-In case you have installed the library in a non-standard location,
-since most modern fortran compilers support the
+In case you have installed the library and modules in a non-standard
+location, you can use the
 .I -I
-command line flag, you should not try to copy the include
-files inside your working directory. Rather, tells the compiler where
-to find '.h' files. The same remark holds for the path to the library
-itself, which can be specified with the
+command line flag for specifying the default include and module
+directory. The same remark holds for the path to the library itself, which
+can be specified with the
 .I -L
 command line flag. Compiling with
 gfortran would now read:
@@ -779,6 +783,10 @@ inverse monomial inflation
 .TQ
 .I bi
 brane inflation
+.TQ
+.I kklti
+KKLT inflation
+
 
 .SS THREE PARAMETERS MODELS
 .TP 20
