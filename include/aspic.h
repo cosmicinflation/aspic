@@ -134,6 +134,10 @@ use lpi3sr
 use lpi3reheat
 use cndisr
 use cndireheat
+use bisr
+use bireheat
+use kkltisr
+use kkltireheat
 !use shisr
 !use shireheat
 !use su5isr
