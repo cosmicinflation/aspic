@@ -8,7 +8,6 @@
 module dsisr
   use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent
-  use specialinf, only : hypergeom_2F1
   use cosmopar, only : powerAmpScalar
   implicit none
 
@@ -67,8 +66,8 @@ contains
     real(kp) :: dsi_epsilon_one
     real(kp), intent(in) :: x,p,mu
     
-    dsi_epsilon_one = p**2/(2._kp*mu**2)*x**(-2._kp*p-2._kp)/((1+x**(-p))**2)
-    
+    dsi_epsilon_one = 0.5_kp * ( p / (x*mu*(x**p+1._kp)) )**2
+       
   end function dsi_epsilon_one
 
 
@@ -78,8 +77,8 @@ contains
     real(kp) :: dsi_epsilon_two
     real(kp), intent(in) :: x,p,mu
     
-    dsi_epsilon_two =-2._kp*p/(mu**2)*x**(-p-2._kp)*(x**(-p)+p+1._kp)/((1+x**(-p))**2)
-    
+    dsi_epsilon_two = -2._kp*p * (1._kp + (1._kp+p)*x**p)/(x*mu*(x**p+1._kp))**2
+
   end function dsi_epsilon_two
 
 
@@ -88,11 +87,10 @@ contains
     implicit none
     real(kp) :: dsi_epsilon_three
     real(kp), intent(in) :: x,p,mu
-    
-    dsi_epsilon_three = -p/(mu**2)*x**(-p-2._kp)/ &
-                        ((1._kp+x**(-p))**2*(x**(-p)+p+1._kp))* &
-                        (2._kp*x**(-2._kp)*(p+1._kp)*(p-4._kp)*x**(-p)+(p+1._kp)*(p+2._kp))
-    
+
+    dsi_epsilon_three = -p * (2._kp + (1._kp+p)*x**p * (4._kp-p+(2._kp+p)*x**p)) &
+         /(x*mu*(x**p+1._kp))**2 / (1._kp + (1._kp+p)*x**p)
+
   end function dsi_epsilon_three
 
 
