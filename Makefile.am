@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = src man
+SUBDIRS = src man tests

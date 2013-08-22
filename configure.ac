@@ -1,4 +1,4 @@
-AC_INIT([aspic], [0.2.12], [chris@ringeval.com])
+AC_INIT([aspic],[0.2.12],[chris@ringeval.com],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -41,11 +41,12 @@ AC_SUBST([FC_MODEXT])
 DATEXT="dat"
 AC_SUBST([DATEXT]) 
 
-
+AC_CONFIG_TESTDIR([tests])
 
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile
+		 tests/Makefile
                  src/Makefile
                  man/Makefile
 		 src/common/Makefile

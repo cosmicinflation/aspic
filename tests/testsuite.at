@@ -1,0 +1,10 @@
+AT_INIT([testaspic])
+
+AT_COLOR_TESTS
+
+AT_SETUP([running main aspic outputs])
+
+AT_CHECK([runmains.bash $abs_top_srcdir],[],[],[stderr])
+AT_CHECK([cat stderr],[])
+
+AT_CLEANUP
