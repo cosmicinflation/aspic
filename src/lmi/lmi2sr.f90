@@ -121,12 +121,7 @@ contains
     xeps1max = lmi_x_epsonemax(gam,beta)
 
     if (lmi_epsilon_one_max(gam,beta).lt.1._kp) then
-       lmi2_xinimin = xVmax * (1._kp+epsilon(1._kp))
-
-!debug:
-       if (.not.(beta.lt.sqrt(2._kp).or.gam.lt.lmi2_gammin(beta))) then
-          stop 'lmi2_xinimin: conditional tests WRONG!'
-       endif
+       lmi2_xinimin = xVmax * (1._kp+epsilon(1._kp))       
              
     else
 

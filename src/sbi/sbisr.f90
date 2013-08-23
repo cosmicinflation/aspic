@@ -123,15 +123,34 @@ contains
   function sbi_x_potzero(alpha,beta)
     implicit none
     real(kp) , intent(in) :: alpha,beta
-    real(kp) :: sbi_x_potzero,L1,L2,W
+    real(kp) :: sbi_x_potzero,L1,L2
+    real(kp), parameter :: logBigKp = log(epsilon(1._kp)*huge(1._kp))
+
+    real(kp) :: xarg, lambertWm1
 
     if (alpha .lt. sbi_alphamin(beta)) stop 'sbi_x_potzero: alpha < alphamin !'
 
     if (alpha .gt. sbi_alphamin(beta)) then
 
-      sbi_x_potzero = (-4._kp/(beta*lambert(-4._kp/beta*exp(-4._kp*alpha/beta),-1)))**(0.25_kp)
-   
-    else
+!this leads to lambert(0,-1) when the exponential is too small
+!       sbi_x_potzero = (-4._kp/(beta*lambert(-4._kp/beta*exp(-4._kp*alpha/beta),-1)))**(0.25_kp)
+
+       xarg = -4._kp*alpha/beta + log(4._kp/beta) 
+      
+
+       if (xarg.lt.-logBigKp) then
+          L1=xarg
+          L2=log(-xarg)
+          lambertWm1 = L1-L2+L2/L1+L2*(-2._kp+L2)/(2._kp*L1**2)+ &
+               L2*(6._kp-9._kp*L2+2._kp*L2**2)/(6._kp*L1**3)+ &
+               L2*(-12._kp+36._kp*L2-22._kp*L2**2+3._kp*L2**3)/(12._kp*L1**4)
+       else
+          lambertWm1 = lambert(-exp(xarg),-1)
+       endif
+       
+       sbi_x_potzero = (-4._kp/(beta*lambertWm1))**(0.25_kp)
+
+       else
 
       sbi_x_potzero = (0.25_kp*beta)**(-0.25_kp)
 

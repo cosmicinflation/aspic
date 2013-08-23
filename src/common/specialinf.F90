@@ -196,6 +196,7 @@ contains
           return
 
        else
+          write(*,*)'x= ',x
           stop 'Lambert: x not defined in branch 0'
        endif
 
@@ -210,6 +211,7 @@ contains
           wzero = log(-x) - log(-log(-x))
                  
        else
+          write(*,*)'x= ',x
           stop 'Lambert: x not defined in branch -1'
        endif
 

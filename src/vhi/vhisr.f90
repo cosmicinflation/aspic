@@ -263,9 +263,11 @@ contains
    
     vhi_xinimax = phihuge*p/mu
 
-    if ((p.gt.1._kp).and.(vhi_epsilon_one_max(p,mu).gt.1._kp)) then
-       xepsones = vhi_x_epsoneunity(p,mu)
-       vhi_xinimax = xepsones(1)
+    if (p.gt.1._kp) then
+       if (vhi_epsilon_one_max(p,mu).gt.1._kp) then
+          xepsones = vhi_x_epsoneunity(p,mu)
+          vhi_xinimax = xepsones(1)
+       endif
     endif
 
   end function vhi_xinimax

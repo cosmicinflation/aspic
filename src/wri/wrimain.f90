@@ -21,8 +21,8 @@ program wrimwrin
   integer :: npts = 20
 
   integer :: Nphi0
-  real(kp) :: phi0min=10._kp**(-3.)
-  real(kp) :: phi0max=10._kp**(3.)
+  real(kp), parameter :: phi0min=10._kp**(-3._kp)
+  real(kp), parameter :: phi0max=10._kp**(3._kp)
 
   real(kp) :: phi0,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
