@@ -103,7 +103,7 @@ contains
     epsOneStar = rmi2_epsilon_one(x,c,phi0)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rmi2_lnrhoreh_max: slow-roll violated!'
-    
+
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
     rmi2_lnrhoreh_max = lnRhoEnd

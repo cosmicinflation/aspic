@@ -9,9 +9,11 @@ program cnbimain
 
   
   use cnbisr, only : cnbi_norm_potential, cnbi_x_endinf,cnbi_epsilon_one_min
+  use cnbisr, only :  cnbi_x_epsoneunity, cnbi_efold_primitive
   use cnbireheat, only : cnbi_x_rreh, cnbi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+  use srflow, only : slowroll_violated
 
   implicit none
 
@@ -34,12 +36,14 @@ program cnbimain
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
-  real(kp) :: VendOverVstar, eps1End, xend
+  real(kp) :: VendOverVstar, eps1End, xend, efoldMax
+
+  real(kp), dimension(2) :: xEps1
 
   nalpha = 300
 
   alphamin=10.**(-5)
-  alphamax=0.2975_kp*0.99_kp
+  alphamax=0.2975_kp*0.9
 
   Pstar = powerAmpScalar
 
@@ -56,6 +60,18 @@ program cnbimain
 
      lnRhoRehMin = lnRhoNuc
      print *,'alpha====',alpha, cnbi_epsilon_one_min(alpha)
+
+     
+     xEnd = cnbi_x_endinf(alpha)
+        
+     xEps1 = cnbi_x_epsoneunity(alpha)
+     efoldMax = -cnbi_efold_primitive(xEnd,alpha) &
+          + cnbi_efold_primitive(xeps1(2),alpha)
+    
+     if (efoldMax.lt.60._kp) then
+         print *,'too small efoldMax=',efoldMax
+        cycle
+     end if
      lnRhoRehMax = cnbi_lnrhoreh_max(alpha,Pstar)
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -63,12 +79,14 @@ program cnbimain
      do i=1,npts
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+        
 
         xstar = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = cnbi_epsilon_one(xstar,alpha)
         eps2 = cnbi_epsilon_two(xstar,alpha)
         eps3 = cnbi_epsilon_three(xstar,alpha)
+
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar, &
              'eps1star=',eps1,'eps2star=',eps2
@@ -103,6 +121,7 @@ program cnbimain
      eps1A = cnbi_epsilon_one(xstarA,alpha)
      eps2A = cnbi_epsilon_two(xstarA,alpha)
      eps3A = cnbi_epsilon_three(xstarA,alpha)
+
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
      lnRhoReh = cnbi_lnrhoreh_max(alpha,Pstar)
@@ -110,6 +129,7 @@ program cnbimain
      eps1B = cnbi_epsilon_one(xstarB,alpha)
      eps2B = cnbi_epsilon_two(xstarB,alpha)
      eps3B = cnbi_epsilon_three(xstarB,alpha)
+
      nsB = 1._kp - 2._kp*eps1B - eps2B
      rB =16._kp*eps1B
      call livewrite('cnbi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)

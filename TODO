@@ -1,5 +1,6 @@
 - planned change of API for the srreheat modules
   * routines that depend on xend should have it as an argument, even
-  if xend is not a model parameter
-
+  if xend is not a model parameter => that will break all codes
+  calling them.
+  * target version: aspic-1.0.0
     

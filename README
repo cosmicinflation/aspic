@@ -18,7 +18,7 @@ along the rules specified in COPYING.
   
   See INSTALL for more options.
 
-* Checking each models individually (slow)
+* Checking each models individually (slower)
   ./configure
   make check
 
@@ -26,13 +26,13 @@ along the rules specified in COPYING.
   print and generate slow-roll predictions for various values of the
   reheating energy density.
 
-* Testing the whole library (very slow)
+* Testing the whole library (much slower)
   ./configure
   make test
 
   This is the equivalent of 'make check' followed by the execution of
   all the test programs. The testsuite returns an error if one of them
-  failed to terminate properly.
+  fails to terminate properly.
 
 * Checkout the MAN pages for a complete documentation
   man libaspic

@@ -88,14 +88,23 @@ program rmi2main
 
      if (xendmax .lt. xendmin) then
         print*,'xendmax<xendmin !!: not a sufficient number of efold can be realized in the region where the potential is valid!'
+        cycle
      endif
+
 
 
      do l=0,Nxend 
         !xend=xendmin+(xendmax-xendmin)*(real(l,kp)/Nxend)  !arithmetic step
         xend=xendmin*(xendmax/xendmin)**(real(l,kp)/Nxend)  !logarithmic step
-        !xend=exp(exp((real(l,kp)/Nxend)*log(log(xendmax)/log(xendmin)))*log(xendmin)) !ultralogarithmic step
-        !      xend=xendmin+(xendmax-xendmin)*atan(real(l,kp)/Nxend*5._kp)*2._kp/acos(-1._kp) !tangent step
+ !ultralogarithmic step
+        !xend=exp(exp((real(l,kp)/Nxend)*log(log(xendmax)/log(xendmin)))*log(xendmin))
+ !tangent step
+        ! xend=xendmin+(xendmax-xendmin)*atan(real(l,kp)/Nxend*5._kp)*2._kp/acos(-1._kp)
+        
+        if (rmi2_epsilon_one(xend,c,phi0).gt.1._kp) then
+           print *,'c too large, eps1>1',xend,c,phi0
+           cycle
+        endif
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = rmi2_lnrhoreh_max(c,phi0,xend,Pstar)

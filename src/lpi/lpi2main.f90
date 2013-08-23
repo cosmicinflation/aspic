@@ -66,7 +66,7 @@ program lpi2main
   qvalues(3)=4._kp
 
 
-  phi0min=10._kp**(0._kp)
+  phi0min=10._kp**(0._kp)*5._kp
   phi0max=10._kp**(3._kp)
 
   do k=1,3

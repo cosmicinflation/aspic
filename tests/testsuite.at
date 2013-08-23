@@ -1,11 +1,10 @@
-AT_INIT([running all main programs])
+AT_INIT([])
 
 AT_COLOR_TESTS
 
-AT_SETUP(["runmain"])
+AT_SETUP([running all main programs... (be patient!)])
 mainlist=`ls $abs_top_srcdir/src/*/*main`
 for x in $mainlist; do
-echo "running $x"
 AT_CHECK([$x],[],[ignore],[stderr])
 AT_CHECK([cat stderr],[])
 done

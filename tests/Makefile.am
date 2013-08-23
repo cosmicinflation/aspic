@@ -1,5 +1,5 @@
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
-	:;{ \
+	    { \
                echo '# Signature of the current package.' && \
                echo 'm4_define([AT_PACKAGE_NAME],' && \
                echo '  [$(PACKAGE_NAME)])' && \
