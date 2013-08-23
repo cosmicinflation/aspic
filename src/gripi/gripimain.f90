@@ -134,8 +134,8 @@ program gripimgripin
 !       alpha=1._kp-(1._kp-alphamin)*((1._kp-alphamax)/(1._kp-alphamin))** &
 !            (real(k,kp)/real(nalpha,kp))!logarithmic step on 1-alpha
 
-        alpha = 1.00000428367125195629015561966694348
-        phi0=1
+!        alpha = 1.00000428367125195629015561966694348
+!        phi0=1
 
 
        lnRhoRehMin = lnRhoNuc
@@ -171,7 +171,7 @@ program gripimgripin
   end do
 
  end do
- stop
+! stop
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!          Testing Rrad/Rreh           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -222,7 +222,7 @@ program gripimgripin
   enddo
 
 print*,'case alpha>1 done'
-stop
+!stop
 
 !!!!!!!!!!!!!!!!!!!!
 !!  Case alpha<1  !!
@@ -258,6 +258,7 @@ stop
 
        lnRhoRehMin = lnRhoNuc
        lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,Pstar)
+
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 

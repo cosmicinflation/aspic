@@ -18,10 +18,10 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 EXTRA_DIST = testsuite.at $(srcdir)/package.m4 $(TESTSUITE)
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig $(TESTSUITE)
+test-local: atconfig $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
-installcheck-local: atconfig $(TESTSUITE)
+installtest-local: atconfig $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' \
 	$(TESTSUITEFLAGS)
 

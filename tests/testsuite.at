@@ -1,10 +1,12 @@
-AT_INIT([testaspic])
+AT_INIT([running all main programs])
 
 AT_COLOR_TESTS
 
-AT_SETUP([running main aspic outputs])
-
-AT_CHECK([runmains.bash $abs_top_srcdir],[],[],[stderr])
+AT_SETUP(["runmain"])
+mainlist=`ls $abs_top_srcdir/src/*/*main`
+for x in $mainlist; do
+echo "running $x"
+AT_CHECK([$x],[],[ignore],[stderr])
 AT_CHECK([cat stderr],[])
-
+done
 AT_CLEANUP

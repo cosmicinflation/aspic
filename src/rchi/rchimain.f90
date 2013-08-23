@@ -38,8 +38,8 @@ program rchimain
   AImin=-30._kp
   AImax=100._kp
 
-  AImin=-0.5_kp
-  AImax=0.5_kp
+!  AImin=-0.5_kp
+!  AImax=0.5_kp
 
 
   Pstar = powerAmpScalar
@@ -86,7 +86,7 @@ program rchimain
   end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !! Write Data for the summarizing plots !!
+!! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('rchi_predic_summarized.dat') 
