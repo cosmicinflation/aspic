@@ -1,3 +1,107 @@
+commit 270e2682ea432b09679214b7d51cd6a7eb2d3a20
+Date:   Fri Aug 23 17:47:07 2013 +0200
+
+    fix bugs found with testsuite and ifort
+
+ src/common/specialinf.F90 |  2 ++
+ src/lmi/lmi2sr.f90        |  7 +------
+ src/sbi/sbisr.f90         | 27 +++++++++++++++++++++++----
+ src/vhi/vhisr.f90         |  8 +++++---
+ src/wri/wrimain.f90       |  4 ++--
+ tests/testsuite.at        |  3 ++-
+ 6 files changed, 35 insertions(+), 16 deletions(-)
+
+commit b71876545ea6a852b27fb40aede1ea162ef61b93
+Date:   Fri Aug 23 14:12:31 2013 +0200
+
+    Fix failing main progs for the testsuite
+
+ README                 |  6 +++---
+ TODO                   |  5 +++--
+ src/cnbi/cnbimain.f90  | 24 ++++++++++++++++++++++--
+ src/lpi/lpi2main.f90   |  2 +-
+ src/rmi/rmi2main.f90   | 13 +++++++++++--
+ src/rmi/rmi2reheat.f90 |  2 +-
+ tests/Makefile.am      |  2 +-
+ tests/testsuite.at     |  5 ++---
+ 8 files changed, 44 insertions(+), 15 deletions(-)
+
+commit e2be7e4105906dedc98fbe956cd8f77a5a1307b7
+Author: chris <chris@ringeval.com>
+Date:   Fri Aug 23 11:20:46 2013 +0200
+
+    Editing NEWS, and README
+
+ NEWS   |  9 ++++-----
+ README | 10 +++++++++-
+ 2 files changed, 13 insertions(+), 6 deletions(-)
+
+commit 7d8c87c96691e280f0b98a37630cb914acf15d76
+Date:   Fri Aug 23 11:14:34 2013 +0200
+
+    Making the test suite working
+
+ Makefile.am             |  7 +++++++
+ src/gripi/gripimain.f90 |  9 +++++----
+ src/rchi/rchimain.f90   |  6 +++---
+ tests/Makefile.am       |  4 ++--
+ tests/runmains.bash     | 15 ---------------
+ tests/testsuite.at      | 12 +++++++-----
+ 6 files changed, 24 insertions(+), 29 deletions(-)
+
+commit c10f4aec087a31a0e9b174263251940c9444abb4
+Date:   Thu Aug 22 18:45:03 2013 +0200
+
+    Adding a testsuite with autotest
+
+ Makefile.am         |  2 +-
+ configure.ac        |  5 +++--
+ tests/Makefile.am   | 41 +++++++++++++++++++++++++++++++++++++++++
+ tests/runmains.bash | 15 +++++++++++++++
+ tests/testsuite.at  | 10 ++++++++++
+ 5 files changed, 70 insertions(+), 3 deletions(-)
+
+commit c7630bc8b1b0e9696adf3e4913bf8f0894a1595f
+Date:   Wed Aug 21 17:28:58 2013 +0200
+
+    Fix wrong epsilon3 for dsi
+
+ src/dsi/dsisr.f90 | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+commit 9ba7ce05940801246b8e2e95d706159fcff66492
+Author: chris <chris@ringeval.com>
+Date:   Tue Aug 20 18:44:58 2013 +0200
+
+    Polishing libaspic man
+
+ man/libaspic.3 | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
+
+commit 8095773f912a7f7332744bcdde32244b5f375131
+Date:   Tue Aug 20 11:50:24 2013 +0200
+
+    adding bi and kklti to include file
+
+ include/aspic.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 20372cca2bab98a9c4066bec071e3aa4d9160e49
+Date:   Mon Aug 19 19:08:52 2013 +0200
+
+    Letting xend free in bi and kklti to support xend=xstg
+
+ configure.ac              |   2 +-
+ src/bi/aspic_bi.3         |  27 ++++++++++-
+ src/bi/bimain.f90         | 109 ++++++++++++++++++++++++++++++++++++++-----
+ src/bi/bireheat.f90       |  32 ++++++-------
+ src/bi/bisr.f90           | 100 +++++++++++++++++++++++++++++++++------
+ src/kklti/aspic_kklti.3   |  30 +++++++++++-
+ src/kklti/kkltimain.f90   | 116 ++++++++++++++++++++++++++++++++++++++++------
+ src/kklti/kkltireheat.f90 |  32 ++++++-------
+ src/kklti/kkltisr.f90     |  97 ++++++++++++++++++++++++++++++++------
+ 9 files changed, 454 insertions(+), 91 deletions(-)
+
 commit 96598c6a32f524c253baed7b72f5cefdf4484038
 Date:   Tue Aug 13 20:37:19 2013 +0200
 
