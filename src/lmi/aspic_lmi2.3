@@ -1,4 +1,4 @@
-.TH liblmi2 3 "September 18, 2012" "libaspic" "Module convention" 
+.TH liblmi2 3 "August 29, 2013" "libaspic" "Module convention" 
 
 .SH NAME
 .I lmi2
@@ -29,13 +29,22 @@ Parameters
 The
 .I lmi2
 module is used for the logamediate inflation at large field values,
-namely in the region for which 'x > xiniMin=max(xVmax,xeps1)'. As for the
+namely in the region for which 'x >
+xiniMin=max(xVmax,xeps1,xeps2)'. As for the
 .I lmi1
 module, 'xVmax' is the field value at which the potential is maximal
 while 'xeps1' is the field value at which the first Hubble flow
-function may equal unity in the large field region ('x >
-xVmax'). Notice that since the later does not exist for all
-parameter values, we provide a
+function may equal unity in the large field region ('x > xVmax'). The
+quantity 'xeps2' is the field value at which the second Hubble flow
+function equals unity (it is a decreasing function
+with 'x'). According to the parameter values, 'xeps1' may not exist
+and 'xeps2' could be in the small field region 'xeps2 < xVmax', and
+therefore irrelevant. On the contrary, for other parameter values, one
+can have 'xeps2 > xVmax' such that there exists a significant
+inflationary domain strongly violating slow-roll. This particular case
+implies too large deviations from scale invariance and it is always
+avoided using the above definition of 'xiniMin'. As such, we provide
+a
 .I
 real(kp)
 function
@@ -69,13 +78,17 @@ which are
 .RS
 .RE
 .BR lmi_x_epsonemax (gamma,beta)
+.RS
+.RE
+.BR lmi_x_epstwounity (gamma,beta)
 .RE
 
 .P
 The first returns 'xVmax' defined above, the second gives the maximal
-value of the first Hubble flow function over the domain 'x > xVmax'
-while the last one returns the field value at which the first Hubble
-flow function is maximal (this is not 'xeps1').
+value of the first Hubble flow function over the domain 'x > xVmax',
+the third gives the field value at which the first Hubble
+flow function is maximal (this is not 'xeps1'). The last one returns
+the value of 'xeps2' mentioned before.
 
 
 .SH NOTES
