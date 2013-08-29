@@ -6,7 +6,7 @@ program lmi2main
   use lmi2reheat, only : lmi2_lnrhoreh_max, lmi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
-  use lmicommon, only : lmi_x_epsonemax
+  use lmicommon, only : lmi_x_epsonemax, lmi_x_epstwounity
 
   use lmi2sr, only : lmi2_norm_potential, lmi2_xendmin
   use lmi2reheat, only : lmi2_x_rreh, lmi2_x_rrad

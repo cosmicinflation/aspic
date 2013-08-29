@@ -16,6 +16,7 @@ module lmi2sr
   use lmicommon, only : lmi_epsilon_one_max, lmi_x_potmax, lmi_x_epsonemax
   use lmicommon, only : lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
   use lmicommon, only : lmi_efold_primitive, find_lmi_x_trajectory
+  use lmicommon, only : lmi_x_epstwounity
   implicit none
 
   private
@@ -24,8 +25,10 @@ module lmi2sr
   public lmi2_epsilon_one, lmi2_epsilon_two, lmi2_epsilon_three
   public lmi2_efold_primitive, lmi2_x_trajectory
   public lmi2_norm_deriv_potential, lmi2_norm_deriv_second_potential
-  public lmi2_xinimin, lmi2_xendmin
+  public lmi2_x_epsoneunity, lmi2_xinimin, lmi2_xendmin
  
+  real(kp), parameter :: lmi2Big = 100._kp
+
 contains
 
 !returns V/M^4
@@ -102,13 +105,13 @@ contains
 
 
 
-!returns the minimum value for xin: if eps1<1 in the whole x>xVmax
-!interval, returns xVmax, otherwise, returns the highest solution for
-!eps1=1
+!returns the minimum value for xini: if eps1<1, in the whole x>xVmax
+!interval, returns max(xVmax,xeps2), otherwise, returns the highest
+!solution for eps1=1
   function lmi2_xinimin(gam,beta)
     implicit none
     real(kp), intent(in) :: gam,beta
-    real(kp) :: lmi2_xinimin
+    real(kp) :: lmi2_xinimin,xeps2one
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: lmi2Data
@@ -119,14 +122,17 @@ contains
 
     xVmax = lmi_x_potmax(gam,beta)
     xeps1max = lmi_x_epsonemax(gam,beta)
-
+       
     if (lmi_epsilon_one_max(gam,beta).lt.1._kp) then
-       lmi2_xinimin = xVmax * (1._kp+epsilon(1._kp))       
+
+       xeps2one = lmi_x_epstwounity(gam,beta)
+
+       lmi2_xinimin = max(xeps2one, xVmax*(1._kp+epsilon(1._kp)))
              
     else
 
-      lmi2_xinimin = lmi2_x_epsoneunity(gam,beta) &
-           * (1._kp+epsilon(1._kp))
+       lmi2_xinimin = lmi2_x_epsoneunity(gam,beta) &
+            * (1._kp+epsilon(1._kp))
 
     endif
 
@@ -137,10 +143,13 @@ contains
   function lmi2_xendmin(efolds,gam,beta)
     implicit none
     real(kp), intent(in) :: gam,beta,efolds
-    real(kp) :: lmi2_xendmin, xiniMin
+    real(kp) :: lmi2_xendmin
+    real(kp) :: xendMin, xiniMin
 
     xiniMin = lmi2_xinimin(gam,beta)
-    lmi2_xendmin = lmi2_x_trajectory(efolds,xiniMin,gam,beta)
+    xendMin = lmi2_x_trajectory(efolds,xiniMin,gam,beta)
+
+    lmi2_xendmin = xendMin
 
   end function lmi2_xendmin
 
@@ -166,7 +175,7 @@ contains
     alpha = lmi_alpha(gam)
 
     mini = xeps1max * (1._kp+epsilon(1._kp))
-    maxi = 100._kp * max(alpha,(beta*gam)**(1._kp/(1._kp-gam)) &
+    maxi = lmi2Big * max(alpha,(beta*gam)**(1._kp/(1._kp-gam)) &
          ,(alpha*beta*gam)**(1._kp/(2._kp-gam)))
        
     lmi2Data%real1 = gam
@@ -192,6 +201,7 @@ contains
     find_lmi2_x_epsoneunity = lmi2_epsilon_one(x,gam,beta) - 1._kp
    
   end function find_lmi2_x_epsoneunity
+
 
 
 
@@ -248,9 +258,11 @@ contains
     else
       mini=xend
       deltaN=10._kp*bfold
-!Uses the approximated formula of the trajectory when x/x0>>1
+!Uses the approximated formula of the trajectory when x/x0>>1 note:
+!this is only to get a reasonable value of maxi, then the real
+!trajectory is solved
       maxi = (mini**(2._kp-gam)+beta*gam*(2-gam)*deltaN)**(1._kp/(2._kp-gam))
-      maxi = max(maxi,100._kp*mini)
+      maxi = max(maxi,lmi2Big*mini)
     endif
 
     lmiData%real1 = gam

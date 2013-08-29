@@ -82,6 +82,10 @@ contains
 
     tensor_to_scalar_ratio = 16._kp*eps(1)*r
 
+    if (tensor_to_scalar_ratio.lt.0._kp) then       
+       stop 'tensor_to_scalar_ratio: r < 0! (slow-roll violated?)'
+    endif
+    
   end function tensor_to_scalar_ratio
 
 

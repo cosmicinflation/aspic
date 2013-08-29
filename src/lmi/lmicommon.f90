@@ -19,7 +19,7 @@ module lmicommon
   public lmi_epsilon_one, lmi_epsilon_two, lmi_epsilon_three
   public lmi_epsilon_one_max, lmi_x_epsonemax, lmi_x_potmax  
   public lmi_efold_primitive, find_lmi_x_trajectory
-  public lmi_epstwo_potmax, lmi_epstwo_epsonemax
+  public lmi_epstwo_potmax, lmi_x_epstwounity
 
 contains
 
@@ -188,18 +188,53 @@ contains
   end function lmi_epstwo_potmax
 
 
-!eps2 at xeps1 such that eps1 is maximal
-  function lmi_epstwo_epsonemax(gam,beta)
+
+
+!returns the value xeps2 at which eps2=1 (it always exists)
+  function lmi_x_epstwounity(gam,beta)
     implicit none
-    real(kp) :: lmi_epstwo_epsonemax
-    real(kp), intent(in) :: gam,beta
-    real(kp) :: xeps1max
+    real(kp), intent(in) :: gam, beta
+    real(kp) :: lmi_x_epstwounity
+    real(kp) :: alpha
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: lmiData
 
-    xeps1max = lmi_x_epsonemax(gam,beta)
+    if (gam.gt.1._kp) then
+       write(*,*)'gamma= ',gam
+       stop 'lmi_x_epstwounity: gam>1'
+    endif
 
-    lmi_epstwo_epsonemax = lmi_epsilon_two(xeps1max,gam,beta)
+    alpha = lmi_alpha(gam)
 
-  end function lmi_epstwo_epsonemax
+    mini = epsilon(1._kp)
+    maxi = lmi_x_epsonemax(gam,beta)
+       
+    lmiData%real1 = gam
+    lmiData%real2 = beta
+    
+    lmi_x_epstwounity &
+         = zbrent(find_lmi_x_epstwounity,mini,maxi,tolFind,lmiData)
+        
+  end function lmi_x_epstwounity
+
+
+
+  function find_lmi_x_epstwounity(x,lmiData)    
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: lmiData
+    real(kp) :: find_lmi_x_epstwounity
+    real(kp) :: gam,beta
+
+    gam = lmiData%real1
+    beta = lmiData%real2
+    
+    find_lmi_x_epstwounity = lmi_epsilon_two(x,gam,beta) - 1._kp
+   
+  end function find_lmi_x_epstwounity
+
+
 
 
 !this is integral[V(phi)/V'(phi) dphi]
