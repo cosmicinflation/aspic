@@ -1,4 +1,5 @@
-* version 0.2.12
-- fix more bugs discovered with bayaspic
-- new feature: make test, start and test the proper execution of all
-main programs
+* version 0.3.0
+- added model kklti
+- testsuite added (make test)
+- various bugs and precision issues fixed
+- compilation in quadruple precision (--enable-quad-precision)

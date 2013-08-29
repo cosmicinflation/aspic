@@ -1,4 +1,4 @@
-AC_INIT([aspic],[0.2.12],[chris@ringeval.com],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
+AC_INIT([aspic],[0.3.0],[chris@ringeval.com],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -6,7 +6,7 @@ AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
 
-version_info="1:0:1"
+version_info="2:0:2"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC

@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "Aug 20, 2013" "version 0.2.12" "Aspic usage"
+.TH libaspic 3 "Aug 29, 2013" "version 0.3.0" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -110,7 +110,12 @@ pedagogical purposes only. Their compilation can be forced by using
 .IP
 make check
 .P
-when building libaspic from the tarball source file.
+when building libaspic from the tarball source file. All these programs
+are automatically compiled and executed by a
+.IP
+make test
+.P
+that will return an error message if one of them aborts unexpectedly.
 
 .SH LIST OF MODULES AND ROUTINES
 
@@ -1028,7 +1033,8 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_sbi (3),
 .BR aspic_ssbi (3),
 .BR aspic_imi (3),
-.BR aspic_bi (3).
+.BR aspic_bi (3),
+.BR aspic_kklti (3).
 .P
 .BR aspic_lmi2 (3),
 .BR aspic_rmi (3),
