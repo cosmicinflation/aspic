@@ -6,7 +6,7 @@ program lmi2main
   use lmi2reheat, only : lmi2_lnrhoreh_max, lmi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
-  use lmicommon, only : lmi_x_epsonemax, lmi_x_epstwounity
+  use lmicommon, only : lmi_x_epsonemax, lmi_x_epstwounity,lmi_x_potmax
 
   use lmi2sr, only : lmi2_norm_potential, lmi2_xendmin
   use lmi2reheat, only : lmi2_x_rreh, lmi2_x_rrad
@@ -78,10 +78,10 @@ program lmi2main
 
      alpha=4._kp*(1._kp-gam)
 
-     xEndMin=lmi2_xinimin(gam,beta)*1.1
-     xEndMax=xEndMin+(lmi_x_epsonemax(gam,beta)-xEndMin)*200._kp
-
-
+     xEndMin=lmi2_xendmin(60._kp,gam,beta)
+     xEndMax=xEndMin*200
+     
+       
      do k=0,NxEnd
         xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
         ! xEnd=xEndMin+(xEndMax-xEndMin)*(real(k,kp)/NxEnd)  !arithmetic step
@@ -119,6 +119,8 @@ program lmi2main
 
   end do
 
+  stop
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!     beta=1       !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -144,7 +146,7 @@ program lmi2main
      NxEnd=nxEndValues(j)
 
      alpha=4._kp*(1._kp-gam)
-     xEndMin=lmi2_xinimin(gam,beta)*1.1
+     xEndMin=lmi2_xendmin(10._kp,gam,beta)
      xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd
@@ -207,7 +209,7 @@ program lmi2main
      NxEnd=nxEndValues(j)
 
      alpha=4._kp*(1._kp-gam)
-     xEndMin=lmi2_xinimin(gam,beta)*1.1
+     xEndMin=lmi2_xendmin(10._kp,gam,beta)
      xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd
@@ -261,7 +263,7 @@ program lmi2main
   lnRradmax = 10
   gam = 0.7
   beta = 1.
-  xend = lmi2_xinimin(gam,beta)*3
+  xend = lmi2_xendmin(10._kp,gam,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)

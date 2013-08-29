@@ -116,19 +116,22 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: lmi2Data
 
-    real(kp) ::alpha,xVmax,xeps1max
+    real(kp) ::alpha,xVmax,xeps1max,dxVmax
 
     alpha = lmi_alpha(gam)
 
     xVmax = lmi_x_potmax(gam,beta)
     xeps1max = lmi_x_epsonemax(gam,beta)
+
+!at x=xVmax, eps1=0 => cannot be integrated. At x=xVmax+dxVmax, eps1 = numprec
+    dxVmax = xVmax**2/(alpha*gam)*sqrt(2*epsilon(1._kp))
        
     if (lmi_epsilon_one_max(gam,beta).lt.1._kp) then
 
        xeps2one = lmi_x_epstwounity(gam,beta)
 
-       lmi2_xinimin = max(xeps2one, xVmax*(1._kp+epsilon(1._kp)))
-             
+       lmi2_xinimin = max(xeps2one, xVmax+dxVmax)
+
     else
 
        lmi2_xinimin = lmi2_x_epsoneunity(gam,beta) &

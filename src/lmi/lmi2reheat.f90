@@ -81,7 +81,7 @@ contains
     potStar = lmi2_norm_potential(x,gam,beta)
 
     find_lmi2_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
+
   end function find_lmi2_x_star
 
 
