@@ -6,8 +6,9 @@
 
 
 module rpicommon
-  use infprec, only : kp,tolkp
+  use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
+  use inftools, only : zbrent
   implicit none
 
   private
@@ -15,6 +16,7 @@ module rpicommon
   public rpi_norm_potential, rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   public rpi_norm_deriv_potential, rpi_norm_deriv_second_potential
   public rpih_x_trajectory, rpih_efold_primitive, rpi_x_potmax
+  public rpi_efold_primitive, find_rpi_x_trajectory
 
 contains
   !returns V/M^4
@@ -95,9 +97,7 @@ contains
   end function rpi_epsilon_three
 
 
- 
-
-  !field value at which the potential is maximal
+!field value at which the potential is maximal
   function rpi_x_potmax(p)
     implicit none
     real(kp) , intent(in) :: p
@@ -108,6 +108,37 @@ contains
     rpi_x_potmax = log((2._kp*p-1._kp)/(p-1._kp))
 
   end function rpi_x_potmax
+
+!this is integral[V(phi)/V'(phi) dphi]
+  function rpi_efold_primitive(y,p)
+    implicit none
+    real(kp), intent(in) :: y,p
+    real(kp) :: rpi_efold_primitive
+
+    if (p.eq.1._kp) then
+       rpi_efold_primitive = rpih_efold_primitive(y,p)
+       return
+    endif
+
+
+    rpi_efold_primitive = 3._kp/4._kp*(-p/(p-1._kp)*log(abs(-exp(y)- &
+         (1._kp-2._kp*p)/(p-1._kp)))-y)
+
+  end function rpi_efold_primitive
+
+  function find_rpi_x_trajectory(y,rpiData)    
+    implicit none
+    real(kp), intent(in) :: y   
+    type(transfert), optional, intent(inout) :: rpiData
+    real(kp) :: find_rpi_x_trajectory
+    real(kp) :: p,NplusNuend
+
+    p = rpiData%real1
+    NplusNuend = rpiData%real2
+
+    find_rpi_x_trajectory = rpi_efold_primitive(y,p) - NplusNuend
+   
+  end function find_rpi_x_trajectory
 
 
 !Higgs Inflation Model (HI)
@@ -122,7 +153,6 @@ contains
     rpih_efold_primitive = 3._kp/4._kp*(exp(y)-y) 
 
   end function rpih_efold_primitive
-
 
 
   

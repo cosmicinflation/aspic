@@ -20,13 +20,13 @@ program rpi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 10
 
-  integer, parameter :: Np=1
-  real(kp), parameter :: pmin=1._kp
+  integer, parameter :: Np=20
+  real(kp), parameter :: pmin=1.00001_kp
   real(kp), parameter :: pmax=1.5_kp
 
-  integer, parameter :: Nyend = 1
+  integer, parameter :: Nyend = 30
   real(kp) :: yendMin, yendMax
 
   real(kp) :: p,w,bfoldstar,yend
@@ -48,9 +48,16 @@ program rpi2main
   !  w = 1._kp/3._kp
   w=0._kp
 
-  do j=0,Np 
-     p=pmin+(pmax-pmin)*(real(j,kp)/Np)
-     w=(1._kp-p)/(3._kp-1._kp)
+  do j=0,Np
+     if (j .eq. -1) then 
+       p=1._kp
+     else 
+       p=pmin+(pmax-pmin)*(real(j,kp)/Np) !flat prior
+       p=1._kp+(pmin-1._kp)*((pmax-1._kp)/(pmin-1._kp))**(real(j,kp)/Np) !log prior on p-1
+     end if
+
+
+ !    w=(1._kp-p)/(3._kp-1._kp)
 
 
 
@@ -60,13 +67,14 @@ program rpi2main
         yendMin = rpi1_x_endinf(p)
         yendMax = 2*yendMin
      else
-        yendMin = rpi_x_potmax(p) + 10
-        yendMax = 2*yendMin
+        yendMin = rpi_x_potmax(p)*(0.1_kp+p)
+        yendMax = (5._kp+(p-1._kp)*10._kp)*yendMin
      endif
 
 
      do k=0,Nyend
-        yend = yendMin + (yendMax-yendMin)*(real(k,kp)/Nyend)
+        yend = yendMin + (yendMax-yendMin)*(real(k,kp)/Nyend) !arithmetic step
+        !yend = yendMin*(yendMax/yendMin)**(real(k,kp)/Nyend) !logarithmic step
 
         print *,'p= yend= ',p,yend
 

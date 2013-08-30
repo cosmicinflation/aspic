@@ -1,5 +1,5 @@
 !test the reheating derivation from slow-roll
-program bimain
+program kkltimain
   use infprec, only : pi, kp, transfert
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use kkltireheat, only : kklti_x_star, kklti_lnrhoreh_max
@@ -34,7 +34,7 @@ program bimain
   real(kp) :: VendOverVstar, eps1End, xend
 
   real(kp) :: alpha, calN, v, gstring, vbar, y
-  real(kp) :: xstg, xuv, xeps, xini
+  real(kp) :: xstg, xuv, xeps, xini, tachEnd
 
   w = 0._kp
 
@@ -223,6 +223,11 @@ program bimain
      print *,'string BI xeps xstg xuv',xeps,xstg,xuv
 
      xend = max(xeps,xstg)
+     if (xeps.gt.xstg) then
+       tachEnd=1._kp
+     else
+       tachEnd=0._kp
+     endif
      xini = kklti_x_trajectory(-110._kp,xend,p,mu)
 
      
@@ -254,7 +259,7 @@ program bimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
-        call livewrite('kkltistg_predic.dat',p,mu,eps1,eps2,eps3,r,ns,Treh)
+        call livewrite('kkltistg_predic.dat',p,mu,eps1,eps2,eps3,r,ns,Treh,tachEnd)
 
         call livewrite('kkltistg_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
@@ -304,4 +309,4 @@ program bimain
 
   enddo
 
-end program bimain
+end program kkltimain
