@@ -1,5 +1,6 @@
-* version 0.3.0
-- added model kklti
+* version 0.3.0 (burocrator)
+- added models kklti, rpi3
 - testsuite added (make test)
 - various bugs and precision issues fixed
+- portability improved (tested with ifort)
 - compilation in quadruple precision (--enable-quad-precision)
