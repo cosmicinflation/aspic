@@ -7,11 +7,12 @@
 
 module rpi1sr
   use infprec, only : kp,tolkp,transfert
-  use specialinf, only : lambert
+  use inftools, only : zbrent
   use rpicommon, only : rpi_norm_potential, rpi_norm_deriv_potential
   use rpicommon, only : rpi_norm_deriv_second_potential
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   use rpicommon, only : rpih_efold_primitive, rpih_x_trajectory, rpi_x_potmax
+  use rpicommon, only : rpi_efold_primitive, find_rpi_x_trajectory
   implicit none
 
   private
@@ -124,8 +125,7 @@ contains
 
     if (y.gt.yVmax) stop 'rpi1_efold_primitive: y > yVmax'
 
-    rpi1_efold_primitive = 3._kp/4._kp*(-p/(p-1._kp)*log(-exp(y)- &
-         (1._kp-2._kp*p)/(p-1._kp))-y)
+    rpi1_efold_primitive = rpi_efold_primitive(y,p)
 
   end function rpi1_efold_primitive
 
@@ -135,6 +135,9 @@ contains
     implicit none
     real(kp), intent(in) :: bfold, p, yend
     real(kp) :: rpi1_x_trajectory
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: rpi1Data
     real(kp) :: yVmax
 
 
@@ -146,11 +149,14 @@ contains
     yVmax = rpi_x_potmax(p)
 
     if (yend.gt.yVmax) stop 'rpi1_x_trajectory: yend > yVmax'
+   
+    mini = yEnd
+    maxi = yVmax*(1._kp-epsilon(1._kp))
 
-    rpi1_x_trajectory = log(-p/(p-1._kp)*(lambert(-((1._kp-2._kp*p)/p+(p-1._kp)*exp(yend)/p)* &
-         exp(-(1._kp-2._kp)/p-(p-1._kp)/p*exp(yend)+3._kp/4._kp*(p-1._kp)/p*bfold),0) &
-         -(2._kp*p-1._kp)/p))
+    rpi1Data%real1 = p
+    rpi1Data%real2 = -bfold + rpi1_efold_primitive(yend,p)
 
+    rpi1_x_trajectory = zbrent(find_rpi_x_trajectory,mini,maxi,tolFind,rpi1Data)
 
   end function rpi1_x_trajectory
 

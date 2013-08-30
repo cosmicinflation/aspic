@@ -65,7 +65,7 @@ contains
        mini = yEnd
 
        yVmax = rpi_x_potmax(p)
-       maxi = yVmax - epsilon(1._kp)
+       maxi = yVmax*(1._kp-epsilon(1._kp))
 
     endif
 
@@ -290,6 +290,7 @@ contains
      
     potStar = rpi1_norm_potential(y,p)
     epsOneStar = rpi1_epsilon_one(y,p)
+
        
     if (.not.slowroll_validity(epsOneStar)) stop 'rpi1_lnrhoreh_max: slow-roll violated!'
     
