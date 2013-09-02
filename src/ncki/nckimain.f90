@@ -52,8 +52,8 @@ program nckimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-  npts = 20
-  nalpha=15
+  npts = 5
+  nalpha=10
   nbeta=7
 
   do j=0,nbeta
@@ -82,10 +82,10 @@ program nckimain
         alphamax=10._kp**(0._kp)
         alphamin=10._kp**(-4._kp)
      else if (j.eq.6) then
-        nalpha=40
+!        nalpha=20
         beta=10._kp**(-1.2_kp)
-        alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4.7_kp)
+        alphamax=10._kp**(-1.5_kp)
+        alphamin=10._kp**(-5._kp)
      else if (j.eq.7) then
         beta=0.5_kp
         alphamin=10._kp**(-3.5_kp)
@@ -126,6 +126,8 @@ program nckimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           if ((abs(eps2).gt.0.2).or.r.lt.1e-6) cycle
+
            call livewrite('ncki_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('ncki_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -141,8 +143,8 @@ program nckimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-  npts = 20
-  nalpha=25
+  npts = 8
+  nalpha=15
   nbeta=3
 
   do j=0,nbeta

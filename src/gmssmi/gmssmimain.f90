@@ -109,7 +109,7 @@ program gmssmimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 20
+  npts = 8
   nphi0=4
 
 
@@ -130,11 +130,11 @@ program gmssmimain
      if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-     if (j.eq.0) nalpha=20
-     if (j.eq.1) nalpha=20
-     if (j.eq.2) nalpha=20
-     if (j.eq.3) nalpha=20
-     if (j.eq.4) nalpha=20
+     if (j.eq.0) nalpha=10
+     if (j.eq.1) nalpha=10
+     if (j.eq.2) nalpha=10
+     if (j.eq.3) nalpha=10
+     if (j.eq.4) nalpha=10
 
      !Prior on alpha
 
@@ -181,7 +181,7 @@ program gmssmimain
   end do
 
   !Case alpha<1
-
+  npts=15
   do j=0,nphi0
 
      if (j.eq.0) phi0=10._kp**(-0._kp)
@@ -191,11 +191,11 @@ program gmssmimain
      if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-     if (j.eq.0) nalpha=30
-     if (j.eq.1) nalpha=30
-     if (j.eq.2) nalpha=30
-     if (j.eq.3) nalpha=30
-     if (j.eq.4) nalpha=30
+     if (j.eq.0) nalpha=5
+     if (j.eq.1) nalpha=5
+     if (j.eq.2) nalpha=5
+     if (j.eq.3) nalpha=5
+     if (j.eq.4) nalpha=5
 
      !Prior on alpha
 

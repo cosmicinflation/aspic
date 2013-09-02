@@ -18,15 +18,15 @@ program twimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 10
 
-  integer :: Nphi0=12
-  real(kp) :: phi0min=0.001
-  real(kp) :: phi0max=5.
+  integer :: Nphi0=10
+  real(kp) :: phi0min=0.01
+  real(kp) :: phi0max=2.
 
-  integer :: NxEnd=60
-  real(kp) :: yEndmin=2.
-  real(kp) :: yEndmax=20.
+  integer :: NxEnd=30
+  real(kp) :: yEndmin=1.5
+  real(kp) :: yEndmax=16.
 
   real(kp) :: phi0,xEnd,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r

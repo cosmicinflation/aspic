@@ -22,11 +22,11 @@ program rpi2main
   integer :: i,j,k
   integer :: npts = 10
 
-  integer, parameter :: Np=20
-  real(kp), parameter :: pmin=1.00001_kp
+  integer, parameter :: Np=8
+  real(kp), parameter :: pmin=1.005_kp
   real(kp), parameter :: pmax=1.5_kp
 
-  integer, parameter :: Nyend = 30
+  integer, parameter :: Nyend = 12
   real(kp) :: yendMin, yendMax
 
   real(kp) :: p,w,bfoldstar,yend
@@ -98,6 +98,8 @@ program rpi2main
            eps2 = rpi2_epsilon_two(ystar,p)
            eps3 = rpi2_epsilon_three(ystar,p)
 
+
+           if ((abs(eps2).gt.0.2)) cycle
 
            logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 

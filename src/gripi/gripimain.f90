@@ -92,7 +92,7 @@ program gripimgripin
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 20
+  npts = 8
   nphi0=4
 
 
@@ -116,11 +116,11 @@ program gripimgripin
        if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-       if (j.eq.0) nalpha=20
-       if (j.eq.1) nalpha=20
-       if (j.eq.2) nalpha=20
-       if (j.eq.3) nalpha=20
-       if (j.eq.4) nalpha=20
+       if (j.eq.0) nalpha=10
+       if (j.eq.1) nalpha=10
+       if (j.eq.2) nalpha=10
+       if (j.eq.3) nalpha=10
+       if (j.eq.4) nalpha=10
 
        !Prior on alpha
 
@@ -228,6 +228,8 @@ print*,'case alpha>1 done'
 !!  Case alpha<1  !!
 !!!!!!!!!!!!!!!!!!!!
 
+npts=12
+
   do j=0,nphi0
        
        if (j.eq.0) phi0=10._kp**(-0._kp)
@@ -237,11 +239,11 @@ print*,'case alpha>1 done'
        if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-       if (j.eq.0) nalpha=30
-       if (j.eq.1) nalpha=30
-       if (j.eq.2) nalpha=30
-       if (j.eq.3) nalpha=30
-       if (j.eq.4) nalpha=30
+       if (j.eq.0) nalpha=8
+       if (j.eq.1) nalpha=8
+       if (j.eq.2) nalpha=8
+       if (j.eq.3) nalpha=8
+       if (j.eq.4) nalpha=8
 
        !Prior on alpha
 

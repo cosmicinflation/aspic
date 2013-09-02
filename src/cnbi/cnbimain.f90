@@ -21,7 +21,7 @@ program cnbimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 8
   integer :: nalpha
 
   real(kp) :: alpha,w,bfoldstar
@@ -40,9 +40,9 @@ program cnbimain
 
   real(kp), dimension(2) :: xEps1
 
-  nalpha = 300
+  nalpha = 90
 
-  alphamin=10.**(-5)
+  alphamin=10.**(-2.5)
   alphamax=0.2975_kp*0.9
 
   Pstar = powerAmpScalar

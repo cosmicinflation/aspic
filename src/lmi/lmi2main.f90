@@ -19,7 +19,7 @@ program lmi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,NxEnd
-  integer :: npts = 20
+  integer :: npts = 10
 
   real(kp), dimension(1:6) :: gamValues
 
@@ -59,17 +59,17 @@ program lmi2main
   beta=0.1
 
   gamValues(1)=0.75_kp
-  NxEndValues(1)=80
+  NxEndValues(1)=20
   gamValues(2)=0.85_kp
-  NxEndValues(2)=80
+  NxEndValues(2)=20
   gamValues(3)=0.92_kp
-  NxEndValues(3)=60
+  NxEndValues(3)=15
   gamValues(4)=0.95_kp
-  NxEndValues(4)=30
+  NxEndValues(4)=15
   gamValues(5)=0.975_kp
-  NxEndValues(5)=25
+  NxEndValues(5)=10
   gamValues(6)=0.995_kp
-  NxEndValues(6)=20
+  NxEndValues(6)=15
 
 
   do j=1,size(gamValues) 
@@ -79,7 +79,7 @@ program lmi2main
      alpha=4._kp*(1._kp-gam)
 
      xEndMin=lmi2_xendmin(60._kp,gam,beta)
-     xEndMax=xEndMin*200
+     xEndMax=xEndMin*20
      
        
      do k=0,NxEnd
@@ -109,6 +109,7 @@ program lmi2main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+
            call livewrite('lmi2_predic.dat',gam,beta,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -119,35 +120,34 @@ program lmi2main
 
   end do
 
-  stop
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!     beta=1       !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
   beta=1.
 
   gamValues(1)=0.45_kp
-  NxEndValues(1)=100
+  NxEndValues(1)=20
   gamValues(2)=0.5_kp
-  NxEndValues(2)=50
+  NxEndValues(2)=20
   gamValues(3)=0.55_kp
-  NxEndValues(3)=30
+  NxEndValues(3)=20
   gamValues(4)=0.6_kp
-  NxEndValues(4)=20
+  NxEndValues(4)=15
   gamValues(5)=0.63_kp
-  NxEndValues(5)=15
+  NxEndValues(5)=10
   gamValues(6)=0.68_kp
-  NxEndValues(6)=15
+  NxEndValues(6)=10
 
   do j=1,size(gamValues) 
      gam=gamValues(j)
      NxEnd=nxEndValues(j)
 
      alpha=4._kp*(1._kp-gam)
-     xEndMin=lmi2_xendmin(10._kp,gam,beta)
-     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
+     xEndMin=lmi2_xendmin(60._kp,gam,beta)
+     xendmax =  20*xendmin
+!     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd
         xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
@@ -192,25 +192,26 @@ program lmi2main
   beta=10.
 
   gamValues(1)=0.18_kp
-  NxEndValues(1)=100
+  NxEndValues(1)=10
   gamValues(2)=0.2_kp
-  NxEndValues(2)=50
+  NxEndValues(2)=10
   gamValues(3)=0.22_kp
-  NxEndValues(3)=20
+  NxEndValues(3)=10
   gamValues(4)=0.235_kp
-  NxEndValues(4)=20
+  NxEndValues(4)=8
   gamValues(5)=0.25_kp
-  NxEndValues(5)=20
+  NxEndValues(5)=10
   gamValues(6)=0.27_kp
-  NxEndValues(6)=20
+  NxEndValues(6)=10
 
   do j=1,size(gamValues) 
      gam=gamValues(j)
      NxEnd=nxEndValues(j)
 
      alpha=4._kp*(1._kp-gam)
-     xEndMin=lmi2_xendmin(10._kp,gam,beta)
-     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
+     xEndMin=lmi2_xendmin(60._kp,gam,beta)
+     xendmax=8*xendmin
+!     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd
         xEnd=xEndMin*(xEndMax/xEndMin)**(real(k,kp)/NxEnd)  !logarithmic step
@@ -263,7 +264,7 @@ program lmi2main
   lnRradmax = 10
   gam = 0.7
   beta = 1.
-  xend = lmi2_xendmin(10._kp,gam,beta)
+  xend = lmi2_xendmin(60._kp,gam,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)

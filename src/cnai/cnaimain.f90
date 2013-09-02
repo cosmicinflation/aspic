@@ -18,7 +18,7 @@ program cnaimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 10
   integer :: nalpha
 
   real(kp) :: alpha,w,bfoldstar
@@ -35,9 +35,9 @@ program cnaimain
 
   real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
 
-  nalpha = 300
+  nalpha = 100
 
-  alphamin=10.**(-4)
+  alphamin=10.**(-2.5)
   alphamax=sqrt(0.5_kp*(sqrt(15._kp)-3._kp))
 
   Pstar = powerAmpScalar
