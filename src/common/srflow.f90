@@ -6,6 +6,8 @@ module srflow
 
   private
 
+  logical, parameter :: display = .true.
+
   public slowroll_violated
   public scalar_spectral_index, tensor_to_scalar_ratio, scalar_running
   public inverse_slowroll_corrections, ln_inverse_slowroll_corrections
@@ -80,11 +82,21 @@ contains
        stop 'tensor_to_scalar_ratio: neps not implemented!'
     end select
 
-    tensor_to_scalar_ratio = 16._kp*eps(1)*r
+!that may happen if eps2 >> 1, i.e. when slow-roll is violated. If
+!this is the case, we use the zero order formula. If this is not the
+!case, this is nasty and we abort.
+    if (r.lt.0._kp) then
+       if (slowroll_violated(eps)) then
+          if (display) write(*,*),'tensor_to_scalar_ratio: eps(:)= ',eps(:)
+          tensor_to_scalar_ratio = 16._kp*eps(1)
+       else
+          stop 'tensor_to_scalar_ratio: r < 0!'
+       endif
+    else
+       tensor_to_scalar_ratio = 16._kp*eps(1)*r
+    end if
 
-    if (tensor_to_scalar_ratio.lt.0._kp) then       
-       stop 'tensor_to_scalar_ratio: r < 0! (slow-roll violated?)'
-    endif
+
     
   end function tensor_to_scalar_ratio
 
