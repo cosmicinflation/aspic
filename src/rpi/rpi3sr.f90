@@ -1,5 +1,5 @@
 !slow-roll functions for the R-R^p inflation potential
-!in the rpi3 regime
+!in the rpi3 regime, i.e. for p<1
 !
 !V(phi) = M^4 * exp(-2y) * [ exp(y) - 1 ]^(2p/(2p-1))
 !
@@ -14,16 +14,19 @@ module rpi3sr
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   use rpicommon, only : rpih_efold_primitive, rpih_x_trajectory
   use rpicommon, only : rpi_efold_primitive, find_rpi_x_trajectory
+  use rpicommon, only : rpi_x_epsoneunity,xBig
   implicit none
 
   private
 
-  public rpi3_norm_potential, rpi3_epsilon_one, rpi3_epsilon_two, rpi3_epsilon_three
+  public rpi3_norm_potential, rpi3_epsilon_one, rpi3_epsilon_two
+  public rpi3_epsilon_three
   public rpi3_x_endinf, rpi3_efold_primitive, rpi3_x_trajectory
   public rpi3_norm_deriv_potential, rpi3_norm_deriv_second_potential 
 
+ 
 contains
-  !returns V/M^4
+!returns V/M^4
   function rpi3_norm_potential(y,p)
     implicit none
     real(kp) :: rpi3_norm_potential
@@ -35,7 +38,8 @@ contains
 
 
 
-  !returns the first derivative of the potential with respect to y, divided by M^4
+!returns the first derivative of the potential with respect to y,
+!divided by M^4
   function rpi3_norm_deriv_potential(y,p)
     implicit none
     real(kp) :: rpi3_norm_deriv_potential
@@ -47,7 +51,8 @@ contains
 
 
 
-  !returns the second derivative of the potential with respect to y, divided by M^4
+!returns the second derivative of the potential with respect to y,
+!divided by M^4
   function rpi3_norm_deriv_second_potential(y,p)
     implicit none
     real(kp) :: rpi3_norm_deriv_second_potential
@@ -59,7 +64,7 @@ contains
 
 
 
-  !epsilon_one(y)
+!epsilon_one(y)
   function rpi3_epsilon_one(y,p)    
     implicit none
     real(kp) :: rpi3_epsilon_one
@@ -72,7 +77,7 @@ contains
   end function rpi3_epsilon_one
 
 
-  !epsilon_two(y)
+!epsilon_two(y)
   function rpi3_epsilon_two(y,p)    
     implicit none
     real(kp) :: rpi3_epsilon_two
@@ -83,7 +88,7 @@ contains
   end function rpi3_epsilon_two
 
 
-  !epsilon_three(y)
+!epsilon_three(y)
   function rpi3_epsilon_three(y,p)    
     implicit none
     real(kp) :: rpi3_epsilon_three
@@ -100,9 +105,7 @@ contains
     real(kp), intent(in) :: p
     real(kp) :: rpi3_x_endinf
 
-
-    rpi3_x_endinf = log((1._kp+sqrt(3._kp)/2._kp)/ &
-         ((p-1._kp)/(2._kp*p-1._kp)+sqrt(3._kp)/2._kp))
+    rpi3_x_endinf = rpi_x_epsoneunity(p)
   
   end function rpi3_x_endinf
 
@@ -139,10 +142,9 @@ contains
        rpi3_x_trajectory = rpih_x_trajectory(bfold,yend,p)
        return
     endif
-
     
     mini = yEnd
-    maxi = yEnd*100._kp
+    maxi = XBig
 
     rpi3Data%real1 = p
     rpi3Data%real2 = -bfold + rpi3_efold_primitive(yend,p)

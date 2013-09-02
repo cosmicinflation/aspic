@@ -13,6 +13,7 @@ module rpi1sr
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   use rpicommon, only : rpih_efold_primitive, rpih_x_trajectory, rpi_x_potmax
   use rpicommon, only : rpi_efold_primitive, find_rpi_x_trajectory
+  use rpicommon, only : rpi_x_epsoneunity
   implicit none
 
   private
@@ -99,9 +100,7 @@ contains
     real(kp), intent(in) :: p
     real(kp) :: rpi1_x_endinf
 
-
-    rpi1_x_endinf = log((1._kp+sqrt(3._kp)/2._kp)/ &
-         ((p-1._kp)/(2._kp*p-1._kp)+sqrt(3._kp)/2._kp))
+    rpi1_x_endinf = rpi_x_epsoneunity(p)
   
   end function rpi1_x_endinf
 

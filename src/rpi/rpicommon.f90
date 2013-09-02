@@ -16,7 +16,12 @@ module rpicommon
   public rpi_norm_potential, rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   public rpi_norm_deriv_potential, rpi_norm_deriv_second_potential
   public rpih_x_trajectory, rpih_efold_primitive, rpi_x_potmax
-  public rpi_efold_primitive, find_rpi_x_trajectory
+  public rpi_x_epsoneunity, rpi_efold_primitive, find_rpi_x_trajectory
+
+!because we use exp(x) everywhere
+  real(kp), parameter :: xBig = log(epsilon(1._kp)*huge(1._kp))
+
+  public xBig
 
 contains
   !returns V/M^4
@@ -25,7 +30,10 @@ contains
     real(kp) :: rpi_norm_potential
     real(kp), intent(in) :: y,p
 
-    rpi_norm_potential = exp(-2._kp*y)*(exp(y)-1._kp)**(2._kp*p/(2._kp*p-1._kp))
+!    rpi_norm_potential = exp(-2._kp*y)*(exp(y)-1._kp)**(2._kp*p/(2._kp*p-1._kp))
+
+    rpi_norm_potential = ((exp(-(p-1._kp)*y/p) &
+         - exp(-(2._kp*p-1._kp)*y/p))**2)**(p/(2._kp*p-1))
 
   end function rpi_norm_potential
 
@@ -37,9 +45,13 @@ contains
     real(kp) :: rpi_norm_deriv_potential
     real(kp), intent(in) :: y,p
 
-    rpi_norm_deriv_potential = (2._kp*exp(-2._kp*y)* & 
-         (-1._kp+exp(y))**(1._kp/(-1._kp+2._kp*p)) * &
-         (1._kp+exp(y)*(-1._kp+p)-2._kp*p))/(1._kp-2._kp*p)
+!    rpi_norm_deriv_potential = (2._kp*exp(-2._kp*y)* & 
+!         (-1._kp+exp(y))**(1._kp/(-1._kp+2._kp*p)) * &
+!         (1._kp+exp(y)*(-1._kp+p)-2._kp*p))/(1._kp-2._kp*p)
+
+    rpi_norm_deriv_potential = ( 2._kp &
+         * (exp(-(2._kp*p-2._kp)*y) - exp(-(2._kp*p-1._kp)*y))**(1._kp/(-1._kp+2._kp*p)) &
+         *  ( (1._kp-2._kp*p)*exp(-y) + p -1._kp ) )/(1._kp-2._kp*p)
 
   end function rpi_norm_deriv_potential
 
@@ -51,11 +63,17 @@ contains
     real(kp) :: rpi_norm_deriv_second_potential
     real(kp), intent(in) :: y,p
 
+!    rpi_norm_deriv_second_potential = 2._kp/((1._kp-2._kp*p)**2)* &
+!         exp(-y)*(-1._kp+exp(y))**(-1._kp+1._kp/(-1._kp+2._kp*p))* &
+!         (-4._kp+(13._kp-10._kp*p)*p+2._kp*(2._kp+p*(-6._kp+5._kp*p))* &
+!         cosh(y)+2._kp*(2._kp-3._kp*p)*p*sinh(y))
+  
     rpi_norm_deriv_second_potential = 2._kp/((1._kp-2._kp*p)**2)* &
-         exp(-y)*(-1._kp+exp(y))**(-1._kp+1._kp/(-1._kp+2._kp*p))* &
+         exp(-y*(4._kp*p-3._kp)/(2._kp*p-1._kp)) &
+         *(1._kp- exp(-y))**(-1._kp+1._kp/(-1._kp+2._kp*p))* &
          (-4._kp+(13._kp-10._kp*p)*p+2._kp*(2._kp+p*(-6._kp+5._kp*p))* &
          cosh(y)+2._kp*(2._kp-3._kp*p)*p*sinh(y))
-  
+
   end function rpi_norm_deriv_second_potential
 
 
@@ -66,10 +84,13 @@ contains
     real(kp) :: rpi_epsilon_one
     real(kp), intent(in) :: y,p
 
+! exp(y) is problematic at infinity ;)
+!    rpi_epsilon_one = (4._kp*(1._kp+exp(y)*(-1._kp+p)-2._kp*p)**2)/ &
+!         (3._kp*(-1._kp+exp(y))**2*(1._kp-2._kp*p)**2)
 
-    rpi_epsilon_one = (4._kp*(1._kp+exp(y)*(-1._kp+p)-2._kp*p)**2)/ &
-         (3._kp*(-1._kp+exp(y))**2*(1._kp-2._kp*p)**2)
-
+    rpi_epsilon_one = (4._kp*((1._kp - 2._kp*p)*exp(-y) +(-1._kp+p))**2)/ &
+         (3._kp*(-exp(-y)+1._kp)**2*(1._kp-2._kp*p)**2)
+    
 
   end function rpi_epsilon_one
 
@@ -91,10 +112,35 @@ contains
     real(kp) :: rpi_epsilon_three
     real(kp), intent(in) :: y,p
 
-    rpi_epsilon_three = -((4._kp*(1._kp+exp(y))*(1._kp+exp(y)*(-1._kp+p)-2._kp*p))/ &
-         (3._kp*(-1._kp+exp(y))**2*(-1._kp+2._kp*p)))
+!    rpi_epsilon_three = -((4._kp*(1._kp+exp(y))*(1._kp+exp(y)*(-1._kp+p)-2._kp*p))/ &
+!         (3._kp*(-1._kp+exp(y))**2*(-1._kp+2._kp*p)))
+
+    rpi_epsilon_three = -((4._kp*(1._kp+exp(-y))*((1._kp-2._kp*p)*exp(-y) &
+         +(-1._kp+p))) / &
+         (3._kp*(1._kp-exp(-y))**2*(-1._kp+2._kp*p)))
+ 
 
   end function rpi_epsilon_three
+
+
+!returns the solution of eps1=1, which is xend for rpi1 and rpi3
+  function rpi_x_epsoneunity(p)
+    implicit none
+    real(kp), intent(in) :: p
+    real(kp) :: rpi_x_epsoneunity
+
+    if (p.eq.1._kp) then
+
+       rpi_x_epsoneunity = sqrt(3._kp/2._kp)*log(1._kp+2._kp/sqrt(3._kp))
+
+    else
+
+       rpi_x_epsoneunity = log((1._kp+sqrt(3._kp)/2._kp)/ &
+            ((p-1._kp)/(2._kp*p-1._kp)+sqrt(3._kp)/2._kp))
+
+    endif
+
+  end function rpi_x_epsoneunity
 
 
 !field value at which the potential is maximal
@@ -120,9 +166,11 @@ contains
        return
     endif
 
+!    rpi_efold_primitive = 3._kp/4._kp*(-p/(p-1._kp)*log(abs(-exp(y)- &
+!         (1._kp-2._kp*p)/(p-1._kp)))-y)
 
-    rpi_efold_primitive = 3._kp/4._kp*(-p/(p-1._kp)*log(abs(-exp(y)- &
-         (1._kp-2._kp*p)/(p-1._kp)))-y)
+    rpi_efold_primitive = 3._kp/4._kp*( -p/(p-1._kp)*log(abs(1._kp + &
+         exp(-y)*(1._kp-2._kp*p)/(p-1._kp))) + (1._kp-2._kp*p)/(p-1._kp)*y )
 
   end function rpi_efold_primitive
 

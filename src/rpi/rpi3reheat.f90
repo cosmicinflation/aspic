@@ -10,11 +10,11 @@ module rpi3reheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rpi3sr, only : rpi3_epsilon_one, rpi3_epsilon_two, rpi3_epsilon_three
   use rpi3sr, only : rpi3_norm_potential, rpi3_x_endinf, rpi3_efold_primitive
+  use rpicommon, only : xBig
   implicit none
 
   private
-
-  real(kp), parameter :: rpi3MaxiMax = 100._kp
+ 
 
   public rpi3_x_star, rpi3_lnrhoreh_max
   public rpi3_x_rrad, rpi3_x_rreh
@@ -57,12 +57,12 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=rpi3MaxiMax !to avoid numerical explosion
+       maxi= xBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
-       maxi = yEnd*100._kp
+       maxi = xBig
 
     endif
 
@@ -83,6 +83,7 @@ contains
 
 
   function find_rpi3_x_star(y,rpi3Data)   
+    use rpicommon
     implicit none
     real(kp) :: find_rpi3_x_star
     real(kp), intent(in) :: y
@@ -97,9 +98,9 @@ contains
     primStar = rpi3_efold_primitive(y,p)
     epsOneStar = rpi3_epsilon_one(y,p)
     potStar = rpi3_norm_potential(y,p)
-
+    
     find_rpi3_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
+
   end function find_rpi3_x_star
 
 
@@ -138,12 +139,12 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=rpi3MaxiMax !to avoid numerical explosion
+       maxi=xBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
-       maxi = yEnd*100._kp
+       maxi = xBig
 
     endif
 
@@ -175,7 +176,7 @@ contains
     primStar = rpi3_efold_primitive(y,p)
     epsOneStar = rpi3_epsilon_one(y,p)
     potStar = rpi3_norm_potential(y,p)
-
+    
     find_rpi3_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
   end function find_rpi3_x_rrad
@@ -216,12 +217,12 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=rpi3MaxiMax !to avoid numerical explosion
+       maxi= xBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
-       maxi = yEnd*100._kp
+       maxi = xBig
 
     endif
 

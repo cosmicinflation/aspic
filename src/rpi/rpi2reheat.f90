@@ -138,7 +138,7 @@ contains
        yVmax = rpi_x_potmax(p)
        if (yend.lt.yVmax) stop 'rpi2_x_rrad: yend < yVmax!'
        
-       mini = yVmax + epsilon(1._kp)
+       mini = yVmax*(1._kp + epsilon(1._kp))
        maxi = yEnd
               
     endif
@@ -213,7 +213,7 @@ contains
        yVmax = rpi_x_potmax(p)
        if (yend.lt.yVmax) stop 'rpi2_x_rreh: yend < yVmax!'
        
-       mini = yVmax + epsilon(1._kp)
+       mini = yVmax*(1._kp + epsilon(1._kp))
        maxi = yEnd
               
     endif

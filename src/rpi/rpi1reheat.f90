@@ -8,22 +8,22 @@ module rpi1reheat
   use srreheat, only : ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use rpicommon, only : rpi_x_potmax
+  use rpicommon, only : rpi_x_potmax, xBig
   use rpi1sr, only : rpi1_epsilon_one, rpi1_epsilon_two, rpi1_epsilon_three
   use rpi1sr, only : rpi1_norm_potential, rpi1_x_endinf, rpi1_efold_primitive
   implicit none
 
   private
-
-  real(kp), parameter :: Rpi1MaxiMax = 100._kp
+  
 
   public rpi1_x_star, rpi1_lnrhoreh_max
   public rpi1_x_rrad, rpi1_x_rreh
 
 contains
 
-!returns y =phi/Mp * sqrt(2/3) such given potential parameters, scalar power, wreh and
-!lnrhoreh. If present, returns the corresponding bfoldstar
+!returns y =phi/Mp * sqrt(2/3) such given potential parameters, scalar
+!power, wreh and lnrhoreh. If present, returns the corresponding
+!bfoldstar
   function rpi1_x_star(p,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rpi1_x_star
@@ -58,7 +58,7 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=Rpi1MaxiMax !to avoid numerical explosion
+       maxi=xBig !to avoid numerical explosion
 
     else
        
@@ -139,14 +139,14 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=Rpi1MaxiMax !to avoid numerical explosion
+       maxi=xBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
 
        yVmax = rpi_x_potmax(p)
-       maxi = yVmax - epsilon(1._kp)
+       maxi = yVmax*(1._kp - epsilon(1._kp))
 
     endif
 
@@ -219,14 +219,14 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=Rpi1MaxiMax !to avoid numerical explosion
+       maxi=xBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
 
        yVmax = rpi_x_potmax(p)
-       maxi = yVmax - epsilon(1._kp)
+       maxi = yVmax*(1._kp - epsilon(1._kp))
 
     endif
 
