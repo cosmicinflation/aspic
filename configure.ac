@@ -1,4 +1,4 @@
-AC_INIT([aspic],[0.3.0],[chris@ringeval.com],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
+AC_INIT([aspic],[0.3.1],[chris@ringeval.com],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
 
 AC_PROG_FC
 AC_PROG_CPP

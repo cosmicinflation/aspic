@@ -1,4 +1,4 @@
-* version 0.3.0 (burocrator)
+* version 0.3.1 (burocrator)
 - added models kklti, rpi3
 - testsuite added (make test)
 - various bugs and precision issues fixed
