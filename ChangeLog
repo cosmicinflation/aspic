@@ -1,3 +1,154 @@
+commit 6ac2df1715a63afca7d27a33c4d0218f02b085bc
+Date:   Tue Sep 3 15:17:36 2013 +0200
+
+    editing mains for fig size reduction
+
+ src/bsusybi/bsusybimain.f90 |  8 ++++----
+ src/csi/csimain.f90         | 11 ++++++-----
+ src/dsi/dsimain.f90         |  8 ++++----
+ src/gmlfi/gmlfimain.f90     |  2 +-
+ src/imi/imimain.f90         |  6 +++---
+ src/lpi/lpi1main.f90        |  2 +-
+ src/lpi/lpi2main.f90        | 10 +++++-----
+ src/lpi/lpi3main.f90        |  2 +-
+ src/psni/psnimain.f90       |  9 ++++++---
+ src/rchi/rchimain.f90       |  6 ++++--
+ src/ssbi/ssbi1main.f90      |  4 ++--
+ src/ssbi/ssbi2main.f90      | 21 +++++++++++----------
+ src/ssbi/ssbi3main.f90      |  4 ++--
+ src/ssbi/ssbi4main.f90      |  4 ++--
+ src/ssbi/ssbi5main.f90      |  6 +++---
+ src/ssbi/ssbi6main.f90      |  4 ++--
+ src/ti/timain.f90           |  6 +++---
+ src/vhi/vhimain.f90         |  8 ++++++--
+ 18 files changed, 66 insertions(+), 55 deletions(-)
+
+commit 1e0a51f0bd8bf3391edf8ae023968829ac5402ec
+Date:   Tue Sep 3 00:25:44 2013 +0200
+
+    Editing main to reduce figure sizes (also accelerate testsuite)
+
+ src/cnai/cnaimain.f90     |  6 +++---
+ src/cnbi/cnbimain.f90     |  6 +++---
+ src/gmssmi/gmssmimain.f90 | 24 ++++++++++-----------
+ src/gripi/gripimain.f90   | 24 +++++++++++----------
+ src/lmi/lmi2main.f90      | 55 ++++++++++++++++++++++++-----------------------
+ src/ncki/nckimain.f90     | 16 ++++++++------
+ src/rpi/rpi2main.f90      |  8 ++++---
+ src/twi/twimain.f90       | 14 ++++++------
+ 8 files changed, 80 insertions(+), 73 deletions(-)
+
+commit c7775b87ae989d0b73a6d090d152d8bfb04a383e
+Date:   Mon Sep 2 16:43:49 2013 +0200
+
+    bumping release
+
+ NEWS         | 2 +-
+ configure.ac | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 700ef128f091f9df340ae7110cdbbffff89cfab8
+Date:   Mon Sep 2 16:42:12 2013 +0200
+
+    switching to zero order r for eps2 > 1, stop otherwise
+
+ src/common/srflow.f90 | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+commit 92f7a809800b1e0f828af43ea13dc7a94f44873b
+Date:   Mon Sep 2 14:27:02 2013 +0200
+
+    Fixing overflow in rpi
+
+ include/aspic.h        |  2 ++
+ src/rpi/aspic_rpi1.3   |  8 +++---
+ src/rpi/aspic_rpi2.3   |  4 +--
+ src/rpi/aspic_rpi3.3   | 12 ++++----
+ src/rpi/rpi1reheat.f90 | 20 ++++++-------
+ src/rpi/rpi1sr.f90     |  5 ++--
+ src/rpi/rpi2reheat.f90 |  4 +--
+ src/rpi/rpi3reheat.f90 | 23 +++++++--------
+ src/rpi/rpi3sr.f90     | 28 ++++++++++---------
+ src/rpi/rpicommon.f90  | 76 ++++++++++++++++++++++++++++++++++++++++----------
+ 10 files changed, 117 insertions(+), 65 deletions(-)
+
+commit a946b954a62a1d40ec66b1e4d67a21e34802e3be
+Merge: e2dba4a a446674
+Date:   Fri Aug 30 16:36:53 2013 +0200
+
+    Merge branch 'vincent'
+
+commit a446674176bd20017761007bce4004d07a07488a
+Date:   Fri Aug 30 16:21:29 2013 +0200
+
+    Vincent corrections, new model rpi3
+
+ src/bi/bimain.f90       |   9 +-
+ src/kklti/kkltimain.f90 |  13 ++-
+ src/rpi/Makefile.am     |  13 ++-
+ src/rpi/aspic_rpi1.3    |   4 +-
+ src/rpi/aspic_rpi2.3    |  20 +---
+ src/rpi/aspic_rpi3.3    |  37 ++++++
+ src/rpi/rpi1main.f90    |   6 +-
+ src/rpi/rpi1reheat.f90  |   3 +-
+ src/rpi/rpi1sr.f90      |  18 ++-
+ src/rpi/rpi2main.f90    |  28 +++--
+ src/rpi/rpi2reheat.f90  |   2 +-
+ src/rpi/rpi2sr.f90      |  21 ++--
+ src/rpi/rpi3main.f90    | 130 +++++++++++++++++++++
+ src/rpi/rpi3reheat.f90  | 299 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/rpi/rpi3sr.f90      | 155 +++++++++++++++++++++++++
+ src/rpi/rpicommon.f90   |  40 ++++++-
+ 16 files changed, 740 insertions(+), 58 deletions(-)
+
+commit e2dba4a90deeb5f9e35011ca1d677b52b9357e77
+Date:   Fri Aug 30 16:18:02 2013 +0200
+
+    edit news
+
+ NEWS | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit d43099e6e3bcab675fbaf8380c06278a3ec37aa3
+Date:   Thu Aug 29 22:47:49 2013 +0200
+
+    Fixing bugs in lmi2
+
+ src/lmi/aspic_lmi2.3 | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
+
+commit 3fba586ed81883b444aad93b4854dc952c60c3a2
+Date:   Thu Aug 29 22:45:53 2013 +0200
+
+    src/lmi/aspic_lmi2.3
+
+ src/lmi/lmi2main.f90   | 18 ++++++++++--------
+ src/lmi/lmi2reheat.f90 |  2 +-
+ src/lmi/lmi2sr.f90     |  9 ++++++---
+ 3 files changed, 17 insertions(+), 12 deletions(-)
+
+commit 4aa03fbd9b0d176cb9e45c65c737c208efd58e34
+Date:   Thu Aug 29 17:44:43 2013 +0200
+
+    Preparing public release, fix include, update man and NEWS
+
+ NEWS            |  9 +++++----
+ configure.ac    |  4 ++--
+ include/aspic.h |  2 --
+ man/libaspic.3  | 12 +++++++++---
+ 4 files changed, 16 insertions(+), 11 deletions(-)
+
+commit 7d2c52690a717fa33e1c99c13733cd9e656b7f43
+Date:   Thu Aug 29 17:16:08 2013 +0200
+
+    Fix non slow-roll inflation in lmi2 + add stop if r<0 when slow-roll is violated
+
+ src/common/srflow.f90 |  4 ++++
+ src/lmi/lmi2main.f90  |  2 +-
+ src/lmi/lmi2sr.f90    | 40 ++++++++++++++++++++++++--------------
+ src/lmi/lmicommon.f90 | 53 ++++++++++++++++++++++++++++++++++++++++++---------
+ 4 files changed, 75 insertions(+), 24 deletions(-)
+
 commit 270e2682ea432b09679214b7d51cd6a7eb2d3a20
 Date:   Fri Aug 23 17:47:07 2013 +0200
 
@@ -205,7 +356,6 @@ Date:   Fri Jul 5 19:25:52 2013 +0200
  NEWS      |  7 +++---
  2 files changed, 87 insertions(+), 4 deletions(-)
 
-	
 commit e2fad00ce2db5a68b0f8a9054a7737fedeeef227
 Date:   Fri Jul 5 19:23:09 2013 +0200
 
