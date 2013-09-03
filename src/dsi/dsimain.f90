@@ -46,7 +46,7 @@ program dsimain
   call delete_file('dsi_predic.dat')
   call delete_file('dsi_nsr.dat')
 
-  npts = 20
+  npts = 10
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -78,9 +78,9 @@ program dsimain
   muminvalues(3)=mumaxvalues(3)*10.**(-7.)
 
   allocate(nxEndvalues(1:np))
-  nxEndvalues(1)=50
-  nxEndvalues(2)=50
-  nxEndvalues(3)=50
+  nxEndvalues(1)=40
+  nxEndvalues(2)=40
+  nxEndvalues(3)=40
 
   do l=1,np
      p=pvalues(l)

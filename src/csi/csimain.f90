@@ -59,8 +59,8 @@ program csimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 20
-  nxend=20
+  npts = 8
+
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -75,9 +75,9 @@ program csimain
   alpha=10._kp**(-3.)
 
   !Prior on xend
-  xendmax=csi_xendmax(59._kp,alpha)
-  xendmin=-xendmax
-  nxend=500
+  xendmax=csi_xendmax(65._kp,alpha)
+  xendmin=-0.88*xendmax
+  nxend=400
 
   do k=1,nxend
      xend=xendmin+(xendmax-xendmin)*(real(k,kp)/real(nxend,kp))
@@ -106,6 +106,7 @@ program csimain
 
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
+
 
         call livewrite('csi_predic.dat',alpha,xend,abs(1._kp-xend/xendmax),eps1,eps2,eps3,r,ns,Treh)
 

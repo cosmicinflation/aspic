@@ -18,7 +18,7 @@ program rchimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 10
   integer ::nAI
 
   real(kp) :: AI,w,bfoldstar
@@ -34,7 +34,7 @@ program rchimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  nAI=100
+  nAI=70
   AImin=-30._kp
   AImax=100._kp
 
@@ -76,6 +76,8 @@ program rchimain
 
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
+
+        if ((abs(eps2).gt.0.2) .or. (eps1.lt.1e-6)) cycle
 
         call livewrite('rchi_predic.dat',AI,eps1,eps2,eps3,r,ns,Treh)
 

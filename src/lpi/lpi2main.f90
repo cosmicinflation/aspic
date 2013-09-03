@@ -52,7 +52,7 @@ program lpi2main
   w=0._kp
   !  w = 1._kp/3._kp
 
-  npts = 20
+  npts = 7
 
   npq=3
 
@@ -67,16 +67,16 @@ program lpi2main
 
 
   phi0min=10._kp**(0._kp)*5._kp
-  phi0max=10._kp**(3._kp)
+  phi0max=10._kp**(1.9_kp)
 
   do k=1,3
 
      p=pvalues(k)
      q=qvalues(k)
 
-     if (k .eq. 1) nphi0=80
-     if (k .eq. 2) nphi0=50
-     if (k .eq. 3) nphi0=50
+     if (k .eq. 1) nphi0=40
+     if (k .eq. 2) nphi0=40
+     if (k .eq. 3) nphi0=40
 
 
      do j=0,nphi0

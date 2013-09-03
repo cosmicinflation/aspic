@@ -47,8 +47,8 @@ program timain
   muvalues(2)=10._kp**(-4.)
   muvalues(3)=10._kp**(-2.)
 
-  npts = 20
-  nalpha=100
+  npts = 6
+  nalpha=40
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -99,7 +99,7 @@ program timain
 
   end do
 
-  nmu=100
+  nmu=80
   mumin=10._kp**(-7.)
   mumax=10._kp**(0.)
   alpha=0.5_kp

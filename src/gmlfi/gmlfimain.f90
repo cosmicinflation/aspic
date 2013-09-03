@@ -48,7 +48,7 @@ program gmlfimain
   w=0._kp
   !  w = 1._kp/3._kp
 
-  npts = 20
+  npts = 5
 
 !!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!    p=2  &  q=1  !!!!

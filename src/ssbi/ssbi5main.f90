@@ -18,7 +18,7 @@ program ssbi5main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 8
 
   integer :: Nalpha,Nbeta
   real(kp) ::alphamin, alphamax, betamin, betamax, alpha, beta
@@ -73,7 +73,7 @@ program ssbi5main
   call delete_file('ssbi5_predic.dat')
   call delete_file('ssbi5_nsr.dat')
 
-  Nalpha=200
+  Nalpha=100
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -120,7 +120,7 @@ program ssbi5main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-            if (has_not_shifted(0.001_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+            if (has_not_shifted(0.0005_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
 

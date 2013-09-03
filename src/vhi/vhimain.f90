@@ -19,7 +19,7 @@ program vhimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 10
 
   integer :: Nmu
   real(kp) :: mumin
@@ -297,6 +297,8 @@ program vhimain
               cycle
            endif
 
+           if ((abs(eps2).gt.0.2).or.(eps1.lt.1e-6)) cycle
+
            call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('vhi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -316,7 +318,7 @@ program vhimain
   Nmu=20
   mumin=0.8_kp
   mumax=1000._kp
-  NxEnd=200
+  NxEnd=150
 
   do j=0,Nmu
      mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
@@ -361,6 +363,8 @@ program vhimain
            if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
+
+           if ((abs(eps2).gt.0.2).or.(eps1.lt.1e-6)) cycle
 
            call livewrite('vhi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 

@@ -18,7 +18,7 @@ program imimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,nxend
-  integer :: npts = 20
+  integer :: npts = 8
 
   real(kp) :: w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -34,7 +34,7 @@ program imimain
 
   Pstar = powerAmpScalar
 
-  nxend=30
+  nxend=12
 
   w=0._kp
 
@@ -49,7 +49,7 @@ program imimain
      p = pmin+real(j,kp)
 
      xendmin=imi_xendmin(65._kp,p)
-     xendmax=100._kp*xendmin
+     xendmax=12._kp*xendmin
 
      do k=0,nxend
 

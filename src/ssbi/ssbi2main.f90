@@ -18,7 +18,7 @@ program ssbi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 7
 
   integer :: Nalpha,Nbeta
   real(kp) ::alphamin, alphamax, betamin, betamax, alpha, beta
@@ -46,14 +46,14 @@ program ssbi2main
   call delete_file('ssbi2_predic.dat')
   call delete_file('ssbi2_nsr.dat')
 
-  Nalpha=100
-  Nbeta=100
+  Nalpha=50
+!  Nbeta=100
 
   !  w = 1._kp/3._kp
   w=0._kp
 
-  betamin=10._kp**(-3._kp)
-  betamax=10._kp**(3._kp)
+!  betamin=10._kp**(-3._kp)
+!  betamax=10._kp**(3._kp)
 
   do j=0,3 
 
@@ -71,8 +71,8 @@ program ssbi2main
      end if
 
 
-     alphamin=10._kp**(-5._kp)
-     alphamax=10._kp**(-1._kp)
+     alphamin=10._kp**(-4._kp)
+     alphamax=10._kp**(-1.5_kp)
 
      do k=0,Nalpha 
         alpha=-alphamin*(alphamax/alphamin)**(real(k,kp)/Nalpha)  !logarithmic step
@@ -104,12 +104,13 @@ program ssbi2main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           if (has_not_shifted(0.005_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+           if (has_not_shifted(0.001_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
 
-           if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
-                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+           if ((eps1.lt.1e-5).or.(eps1.gt.0.1)) cycle
+
+           if ((eps2.lt.-0.1).or.(eps2.gt.0.15)) cycle
 
            call livewrite('ssbi2_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 

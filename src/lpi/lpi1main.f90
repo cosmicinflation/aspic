@@ -51,7 +51,7 @@ program lpi1main
   w=0._kp
   !  w = 1._kp/3._kp
 
-  npts = 20
+  npts = 4
 
   npq=3
 

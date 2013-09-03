@@ -43,8 +43,8 @@ program psnimain
   call delete_file('psni_predic.dat')
   call delete_file('psni_nsr.dat')
 
-  npts = 20 
-  nalpha=100
+  npts = 8
+  nalpha=40
   w=0._kp
   !  w = 1._kp/3._kp
 
@@ -89,10 +89,13 @@ program psnimain
            r =16._kp*eps1
 
            
-           if (has_not_shifted(0.004_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+           if (has_not_shifted(0.002_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
           
+           if (abs(eps2).gt.0.2) cycle
+
+           if (r.lt.1e-12) cycle
 
            call livewrite('psni_predic.dat',alpha,f,eps1,eps2,eps3,r,ns,Treh)
 

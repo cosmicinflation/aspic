@@ -60,9 +60,9 @@ program bsusybimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 20
+  npts = 8
   ngamma=10
-  nxend=10
+  nxend=6
 
   gammamin=10._kp**(-3._kp)
   gammamax=1._kp/sqrt(3._kp)*0.5_kp
@@ -80,8 +80,8 @@ program bsusybimain
 
      !Prior on xend
 
-     xendmax=bsusybi_xendmax(70._kp,gammaBSUSYB)
-     xendmin=2._kp*xendmax
+     xendmax=bsusybi_xendmax(60._kp,gammaBSUSYB)
+     xendmin=1.5_kp*xendmax
 
 
      do k=1,nxend

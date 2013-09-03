@@ -18,7 +18,7 @@ program ssbi3main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 7
 
   integer :: Nalpha,Nbeta
   real(kp) ::alphamin, alphamax, betamin, betamax, alpha, beta
@@ -74,7 +74,7 @@ program ssbi3main
   call delete_file('ssbi3_predic.dat')
   call delete_file('ssbi3_nsr.dat')
 
-  Nalpha=100
+  Nalpha=20
   Nbeta=3
 
   !  w = 1._kp/3._kp
