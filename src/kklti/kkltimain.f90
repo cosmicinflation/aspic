@@ -197,7 +197,7 @@ program kkltimain
   p = 4._kp
   
   calN = 5
-  v =16._kp/27_kp
+  v =16._kp/27._kp
   gstring = 0.005_kp
   alpha = 0.25_kp
 
