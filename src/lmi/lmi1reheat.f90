@@ -8,7 +8,7 @@ module lmi1reheat
   use srreheat, only : ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use lmicommon, only : lmi_x_potmax
+  use lmicommon, only : lmi_x_potmax, lmi_numacc_dx_potmax
   use lmi1sr, only : lmi1_epsilon_one, lmi1_epsilon_two, lmi1_epsilon_three
   use lmi1sr, only : lmi1_norm_potential
   use lmi1sr, only : lmi1_x_endinf, lmi1_efold_primitive
@@ -55,8 +55,8 @@ contains
     lmi1Data%real3 = w
     lmi1Data%real4 = calF + primEnd
 
-    maxi = xvMax*(1._kp-100._kp*epsilon(1._kp))
-    mini = xEnd*(1._kp+100._kp*epsilon(1._kp))
+    maxi = xvMax
+    mini = xEnd
 
     x = zbrent(find_lmi1_x_star,mini,maxi,tolzbrent,lmi1Data)
     lmi1_x_star = x
@@ -121,8 +121,8 @@ contains
     lmi1Data%real2 = beta
     lmi1Data%real3 = calF + primEnd
 
-    maxi = xvMax*(1._kp-100._kp*epsilon(1._kp))
-    mini = xEnd*(1._kp+100._kp*epsilon(1._kp))
+    maxi = xvMax
+    mini = xEnd
 
     x = zbrent(find_lmi1_x_rrad,mini,maxi,tolzbrent,lmi1Data)
     lmi1_x_rrad = x
@@ -187,8 +187,8 @@ contains
     lmi1Data%real2 = beta
     lmi1Data%real3 = calF + primEnd
 
-    maxi = xvMax*(1._kp-100._kp*epsilon(1._kp))
-    mini = xEnd*(1._kp+100._kp*epsilon(1._kp))
+    maxi = xvMax
+    mini = xEnd
 
     x = zbrent(find_lmi1_x_rreh,mini,maxi,tolzbrent,lmi1Data)
     lmi1_x_rreh = x

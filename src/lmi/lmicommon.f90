@@ -20,8 +20,10 @@ module lmicommon
   public lmi_epsilon_one_max, lmi_x_epsonemax, lmi_x_potmax  
   public lmi_efold_primitive, find_lmi_x_trajectory
   public lmi_epstwo_potmax, lmi_x_epstwounity
+  public lmi_numacc_x_big, lmi_numacc_dx_potmax
 
 contains
+
 
 
   function lmi_alpha(gam)
@@ -271,5 +273,44 @@ contains
    
   end function find_lmi_x_trajectory
 
+
+!we use exp(-beta x^gam), the argument cannot be too large
+  function lmi_numacc_x_big(gam,beta)
+    implicit none
+    real(kp) :: lmi_numacc_x_big
+    real(kp), intent(in) :: gam,beta
+    real(kp), parameter :: big = epsilon(1._kp)*huge(1._kp)
+
+    if (gam.eq.0._kp) stop 'lmi_numacc_x_big: gam=0!'
+
+    lmi_numacc_x_big = (log(big)/beta)**(1._kp/gam)
+
+  end function lmi_numacc_x_big
+
+!at x=xVmax, eps1=0 => cannot be integrated. This function returns dx
+!such that at x=xVmax+-dx, eps1 = min(numprec,lmi_epsonemax)
+  function lmi_numacc_dx_potmax(gam,beta)
+    implicit none
+    real(kp) :: lmi_numacc_dx_potmax
+    real(kp), intent(in) :: gam,beta
+    real(kp) :: alpha,xVmax,delta
+    real(kp) :: epsmin
+    
+    alpha = lmi_alpha(gam)
+
+    xVmax = lmi_x_potmax(gam,beta)
+    epsmin = min(epsilon(1._kp), lmi_epsilon_one_max(gam,beta))
+
+    delta = xVmax/(alpha*gam)*sqrt(2*epsmin)
+    
+    if (delta.ge.1._kp) then
+       print *,'test',gam,beta
+       write(*,*)'xVmax= dxVmax= ',xVmax, delta*xVmax,epsmin
+       stop 'lmi_numacc_dx_potmax: xVmax too large to compute dxVmax!'
+    endif
+        
+    lmi_numacc_dx_potmax = delta*xVmax
+
+  end function lmi_numacc_dx_potmax
 
 end module lmicommon

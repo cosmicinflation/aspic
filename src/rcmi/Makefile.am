@@ -1,4 +1,4 @@
-SRC = rcmisr.f90 rcmireheat.f90
+SRC = rcmisr.F90 rcmireheat.f90
 MOD = rcmisr.$(FC_MODEXT) rcmireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rcmimain

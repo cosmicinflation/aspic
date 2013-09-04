@@ -53,7 +53,6 @@ contains
     mini = lmi2_xinimin(gam,beta)
     maxi = xEnd
 
-
     x = zbrent(find_lmi2_x_star,mini,maxi,tolzbrent,lmi2Data)
     lmi2_x_star = x
 
@@ -178,7 +177,6 @@ contains
     mini = lmi2_xinimin(gam,beta)
     maxi = xEnd
 
-
     x = zbrent(find_lmi2_x_rreh,mini,maxi,tolzbrent,lmi2Data)
     lmi2_x_rreh = x
 
@@ -223,7 +221,6 @@ contains
 
     potEnd  = lmi2_norm_potential(xEnd,gam,beta)
     epsOneEnd = lmi2_epsilon_one(xEnd,gam,beta)
-
 
 !   Trick to return x such that rho_reh=rho_end
 

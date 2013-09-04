@@ -14,7 +14,7 @@ module rpi3sr
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   use rpicommon, only : rpih_efold_primitive, rpih_x_trajectory
   use rpicommon, only : rpi_efold_primitive, find_rpi_x_trajectory
-  use rpicommon, only : rpi_x_epsoneunity,xBig
+  use rpicommon, only : rpi_x_epsoneunity,rpiBig
   implicit none
 
   private
@@ -144,7 +144,7 @@ contains
     endif
     
     mini = yEnd
-    maxi = XBig
+    maxi = rpiBig
 
     rpi3Data%real1 = p
     rpi3Data%real2 = -bfold + rpi3_efold_primitive(yend,p)

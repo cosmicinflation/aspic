@@ -37,6 +37,8 @@ program rcmimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
   
+  logical, parameter :: doSummaryPlots = .false.
+  
 
   alphavalues(1)=(10._kp)**(-6.)
   alphavalues(2)=5.*(10._kp)**(-5.)
@@ -107,32 +109,33 @@ program rcmimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if (doSummaryPlots) then
+     call delete_file('rcmi_predic_summarized.dat') 
+!nalpha=1000
+     nalpha=100
+     alphamin=10._kp**(-6.)
+     alphamax=10._kp**(-3.)
+     do j=1,nalpha
+        alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+        lnRhoReh = lnRhoNuc
+        xstarA = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        eps1A = rcmi_epsilon_one(xstarA,alpha)
+        eps2A = rcmi_epsilon_two(xstarA,alpha)
+        eps3A = rcmi_epsilon_three(xstarA,alpha)
+        nsA = 1._kp - 2._kp*eps1A - eps2A
+        rA = 16._kp*eps1A
+        lnRhoReh = rcmi_lnrhoreh_max(alpha,Pstar)
+        xstarB = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        eps1B = rcmi_epsilon_one(xstarB,alpha)
+        eps2B = rcmi_epsilon_two(xstarB,alpha)
+        eps3B = rcmi_epsilon_three(xstarB,alpha)
+        nsB = 1._kp - 2._kp*eps1B - eps2B
+        rB =16._kp*eps1B
+        call livewrite('rcmi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
+     enddo
+  endif
 
-  call delete_file('rcmi_predic_summarized.dat') 
-  nalpha=1000
-  alphamin=10._kp**(-6.)
-  alphamax=10._kp**(-3.)
-  do j=1,nalpha
-     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
-     lnRhoReh = lnRhoNuc
-     xstarA = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-     eps1A = rcmi_epsilon_one(xstarA,alpha)
-     eps2A = rcmi_epsilon_two(xstarA,alpha)
-     eps3A = rcmi_epsilon_three(xstarA,alpha)
-     nsA = 1._kp - 2._kp*eps1A - eps2A
-     rA = 16._kp*eps1A
-     lnRhoReh = rcmi_lnrhoreh_max(alpha,Pstar)
-     xstarB = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
-     eps1B = rcmi_epsilon_one(xstarB,alpha)
-     eps2B = rcmi_epsilon_two(xstarB,alpha)
-     eps3B = rcmi_epsilon_three(xstarB,alpha)
-     nsB = 1._kp - 2._kp*eps1B - eps2B
-     rB =16._kp*eps1B
-     call livewrite('rcmi_predic_summarized.dat',eps1A,eps2A,eps3A,rA,nsA,eps1B,eps2B,eps3B,rB,nsB)
-  enddo
-
-
-write(*,*)
+  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42

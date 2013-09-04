@@ -19,9 +19,9 @@ module rpicommon
   public rpi_x_epsoneunity, rpi_efold_primitive, find_rpi_x_trajectory
 
 !because we use exp(x) everywhere
-  real(kp), parameter :: xBig = log(epsilon(1._kp)*huge(1._kp))
+  real(kp), parameter :: rpiBig = log(epsilon(1._kp)*huge(1._kp))
 
-  public xBig
+  public rpiBig
 
 contains
   !returns V/M^4

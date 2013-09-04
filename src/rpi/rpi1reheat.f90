@@ -8,7 +8,7 @@ module rpi1reheat
   use srreheat, only : ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use rpicommon, only : rpi_x_potmax, xBig
+  use rpicommon, only : rpi_x_potmax, rpiBig
   use rpi1sr, only : rpi1_epsilon_one, rpi1_epsilon_two, rpi1_epsilon_three
   use rpi1sr, only : rpi1_norm_potential, rpi1_x_endinf, rpi1_efold_primitive
   implicit none
@@ -58,7 +58,7 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=xBig !to avoid numerical explosion
+       maxi=rpiBig !to avoid numerical explosion
 
     else
        
@@ -139,7 +139,7 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=xBig !to avoid numerical explosion
+       maxi=rpiBig !to avoid numerical explosion
 
     else
        
@@ -219,7 +219,7 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=xBig !to avoid numerical explosion
+       maxi=rpiBig !to avoid numerical explosion
 
     else
        

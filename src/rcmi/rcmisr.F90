@@ -155,8 +155,12 @@ contains
     real(kp), intent(in) :: x,alpha
     real(kp) :: rcmi_efold_primitive
     type(transfert) :: rcmiData
-
+!in quadprec, integrating at FP128 is insanely long
+#ifdef QUADPREC
+    real(kp), parameter :: tolint = epsilon(1._8)
+#else
     real(kp), parameter :: tolInt = tolkp
+#endif
     integer, parameter :: neq = 1
 
     real(kp) :: xvar

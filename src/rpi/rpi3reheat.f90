@@ -10,7 +10,7 @@ module rpi3reheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rpi3sr, only : rpi3_epsilon_one, rpi3_epsilon_two, rpi3_epsilon_three
   use rpi3sr, only : rpi3_norm_potential, rpi3_x_endinf, rpi3_efold_primitive
-  use rpicommon, only : xBig
+  use rpicommon, only : rpiBig
   implicit none
 
   private
@@ -57,12 +57,12 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi= xBig !to avoid numerical explosion
+       maxi= rpiBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
-       maxi = xBig
+       maxi = rpiBig
 
     endif
 
@@ -139,12 +139,12 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi=xBig !to avoid numerical explosion
+       maxi=rpiBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
-       maxi = xBig
+       maxi = rpiBig
 
     endif
 
@@ -217,12 +217,12 @@ contains
     if (p.eq.1._kp) then !Higgs Inflation Model (HI)
 
        mini = yEnd
-       maxi= xBig !to avoid numerical explosion
+       maxi= rpiBig !to avoid numerical explosion
 
     else
        
        mini = yEnd
-       maxi = xBig
+       maxi = rpiBig
 
     endif
 
