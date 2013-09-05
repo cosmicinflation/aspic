@@ -6,7 +6,7 @@ module srflow
 
   private
 
-  logical, parameter :: display = .true.
+  logical, parameter :: display = .false.
 
   public slowroll_violated
   public scalar_spectral_index, tensor_to_scalar_ratio, scalar_running
