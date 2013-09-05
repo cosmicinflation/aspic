@@ -1,3 +1,113 @@
+commit aa3e8539aebea5f307a06357e8a8fc707ceb7ff0
+Date:   Thu Sep 5 10:55:44 2013 +0200
+
+    switch off debugging message
+
+ src/common/srflow.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fa38c3fcd0c5f54206aa1481f31055849264c85b
+Date:   Wed Sep 4 20:12:53 2013 +0200
+
+    Adding new numacc function for lmi
+
+ src/lmi/lmi1reheat.f90 |  14 +--
+ src/lmi/lmi2reheat.f90 |   3 -
+ src/lmi/lmi2sr.f90     |  44 ++++++---
+ src/lmi/lmicommon.f90  |  41 ++++++++
+ src/rcmi/Makefile.am   |   2 +-
+ src/rcmi/rcmimain.f90  |  55 ++++++-----
+ src/rcmi/rcmisr.F90    | 256 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/rcmi/rcmisr.f90    | 252 ------------------------------------------------
+ src/rpi/rpi1reheat.f90 |   8 +-
+ src/rpi/rpi3reheat.f90 |  14 +--
+ src/rpi/rpi3sr.f90     |   4 +-
+ src/rpi/rpicommon.f90  |   4 +-
+ 12 files changed, 378 insertions(+), 319 deletions(-)
+
+commit 0be5e19936486813f71061fcf7fab402b67e7a82
+Date:   Wed Sep 4 08:12:52 2013 +0200
+
+    workaround ifort qp bug 1_ to 1._
+
+ src/bi/bimain.f90       | 2 +-
+ src/kklti/kkltimain.f90 | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2c28dba7933346d06bcaf0fc28448f0f8e1f6c3a
+Date:   Tue Sep 3 23:45:09 2013 +0200
+
+    Adding rpi3 to the man
+
+ man/libaspic.3 | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 7a6c6c8f4f0963cee1cfdc01dc904068b31b6119
+Date:   Tue Sep 3 16:58:12 2013 +0200
+
+    Updating changelog and news
+
+ ChangeLog | 152 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ NEWS      |   2 +-
+ 2 files changed, 152 insertions(+), 2 deletions(-)
+
+commit 6ac2df1715a63afca7d27a33c4d0218f02b085bc
+Date:   Tue Sep 3 15:17:36 2013 +0200
+
+    editing mains for fig size reduction
+
+ src/bsusybi/bsusybimain.f90 |  8 ++++----
+ src/csi/csimain.f90         | 11 ++++++-----
+ src/dsi/dsimain.f90         |  8 ++++----
+ src/gmlfi/gmlfimain.f90     |  2 +-
+ src/imi/imimain.f90         |  6 +++---
+ src/lpi/lpi1main.f90        |  2 +-
+ src/lpi/lpi2main.f90        | 10 +++++-----
+ src/lpi/lpi3main.f90        |  2 +-
+ src/psni/psnimain.f90       |  9 ++++++---
+ src/rchi/rchimain.f90       |  6 ++++--
+ src/ssbi/ssbi1main.f90      |  4 ++--
+ src/ssbi/ssbi2main.f90      | 21 +++++++++++----------
+ src/ssbi/ssbi3main.f90      |  4 ++--
+ src/ssbi/ssbi4main.f90      |  4 ++--
+ src/ssbi/ssbi5main.f90      |  6 +++---
+ src/ssbi/ssbi6main.f90      |  4 ++--
+ src/ti/timain.f90           |  6 +++---
+ src/vhi/vhimain.f90         |  8 ++++++--
+ 18 files changed, 66 insertions(+), 55 deletions(-)
+
+commit 1e0a51f0bd8bf3391edf8ae023968829ac5402ec
+Date:   Tue Sep 3 00:25:44 2013 +0200
+
+    Editing main to reduce figure sizes (also accelerate testsuite)
+
+ src/cnai/cnaimain.f90     |  6 +++---
+ src/cnbi/cnbimain.f90     |  6 +++---
+ src/gmssmi/gmssmimain.f90 | 24 ++++++++++-----------
+ src/gripi/gripimain.f90   | 24 +++++++++++----------
+ src/lmi/lmi2main.f90      | 55 ++++++++++++++++++++++++-----------------------
+ src/ncki/nckimain.f90     | 16 ++++++++------
+ src/rpi/rpi2main.f90      |  8 ++++---
+ src/twi/twimain.f90       | 14 ++++++------
+ 8 files changed, 80 insertions(+), 73 deletions(-)
+
+commit c7775b87ae989d0b73a6d090d152d8bfb04a383e
+Date:   Mon Sep 2 16:43:49 2013 +0200
+
+    bumping release
+
+ NEWS         | 2 +-
+ configure.ac | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 700ef128f091f9df340ae7110cdbbffff89cfab8
+Date:   Mon Sep 2 16:42:12 2013 +0200
+
+    switching to zero order r for eps2 > 1, stop otherwise
+
+ src/common/srflow.f90 | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
 commit 6ac2df1715a63afca7d27a33c4d0218f02b085bc
 Date:   Tue Sep 3 15:17:36 2013 +0200
 
@@ -178,7 +288,6 @@ Date:   Fri Aug 23 14:12:31 2013 +0200
  8 files changed, 44 insertions(+), 15 deletions(-)
 
 commit e2be7e4105906dedc98fbe956cd8f77a5a1307b7
-Author: chris <chris@ringeval.com>
 Date:   Fri Aug 23 11:20:46 2013 +0200
 
     Editing NEWS, and README
@@ -221,7 +330,6 @@ Date:   Wed Aug 21 17:28:58 2013 +0200
  1 file changed, 8 insertions(+), 10 deletions(-)
 
 commit 9ba7ce05940801246b8e2e95d706159fcff66492
-Author: chris <chris@ringeval.com>
 Date:   Tue Aug 20 18:44:58 2013 +0200
 
     Polishing libaspic man
@@ -513,7 +621,6 @@ Date:   Mon Jul 1 16:17:54 2013 +0200
  52 files changed, 52 insertions(+), 52 deletions(-)
 
 commit 958a38d06c5d378a3c7d274a692472009260aa6f
-Author: chris <chris@ringeval.com>
 Date:   Mon Jul 1 16:00:14 2013 +0200
 
     adding bi to man
