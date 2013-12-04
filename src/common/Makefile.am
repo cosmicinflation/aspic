@@ -21,5 +21,6 @@ libsrcommon_la_include_HEADERS = $(COMMONMOD)
 clean-local: clean-modules
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
+
 .NOTPARALLEL:
-.NOTPARALLEL:
+

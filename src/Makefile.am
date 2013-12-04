@@ -62,9 +62,21 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
         kklti/libkklti.la
 
 #to be build from there
-SUBDIRS = common lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
+SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi ai cnai cnbi \
           oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi bi kklti
+
+
+.PHONY: parasub $(SUBDIRS)
+
+parasub: $(SUBDIRS)
+
+$(SUBDIRS):
+	@$(MAKE) -C $@
+
+
+# for make -j
+all: parasub
 
 #make clean does not remove modules by default
 clean-local: clean-modules
