@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "Sep 3, 2013" "version 0.3.1" "Aspic usage"
+.TH libaspic 3 "Dec 5, 2013" "version 0.3.2" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -331,7 +331,10 @@ usage should be necessary only if you decide to add a new model:
 .BR slowroll_validity (epsOne,epsTwo)
 .RE
 .RS
-.BR ln_potential_normalization (Pstar,epsOneStar,Vstar)
+.BR potential_normalization (Pstar,epsOneStar,Vstar)
+.RE
+.RS
+.BR primscalar (M,epsOneStar,Vstar)
 .RE
 .RS
 .BR log_energy_reheat_ingev (lnRhoReh)
@@ -385,11 +388,15 @@ according to the values of the first and second Hubble flow functions
 to assess the validity of the slow-roll approximation and numerical
 precision.
 The second function
-.BR ln_potential_normalization ()
+.BR potential_normalization ()
 returns the potential normalization factor required to get the correct
 amplitude of the CMB anisotropies. This factor is commonly denoted
-as 'M^4' and this function returns the natural logarithm of 'M' in
-Planck units. The next function
+as 'M^4' and this function returns the mass scale 'M' in
+Planck units. Conversely, the function
+.BR primscalar ()
+returns the amplitude of the primordial scalar perturbations at the
+pivot scale from the input of the potential mass scale 'M'.
+The next function
 .BR log_energy_reheat_ingev ()
 is for convenience and simply returns the logarithm in base 10 of the
 energy density at the end of reheating from the its natural
