@@ -2,7 +2,8 @@
 !values for wreh or input lnRrad
 module srreheat
   use infprec, only : kp,pi
-  use srflow, only : slowroll_violated, inverse_slowroll_corrections
+  use srflow, only : slowroll_violated
+  use srflow, only : slowroll_corrections, ln_slowroll_corrections
   use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf3OmegaRad
   use cosmopar, only : QrmsOverT, kstar, powerAmpScalar, lnMpinGeV
   use cosmopar, only : RelatDofRatio
@@ -44,10 +45,16 @@ module srreheat
      module procedure ln_rho_reheat_anyorder
   end interface ln_rho_reheat
   
-  interface ln_potential_normalization
-     module procedure ln_potential_normalization_leadorder
-     module procedure ln_potential_normalization_anyorder
-  end interface ln_potential_normalization
+  interface potential_normalization
+     module procedure potential_normalization_leadorder
+     module procedure potential_normalization_anyorder
+  end interface potential_normalization
+
+  interface primscalar
+     module procedure primscalar_leadorder
+     module procedure primscalar_anyorder
+  end interface primscalar
+
 
 
 !  real(kp), parameter :: Nzero = log(kstar) - lnMpcToKappa &
@@ -69,7 +76,7 @@ module srreheat
   public slowroll_validity, get_calfconst
   public quadrupole_to_primscalar, primscalar_to_quadrupole, find_reheat
   public ln_rho_endinf, ln_rho_reheat,log_energy_reheat_ingev
-  public ln_potential_normalization
+  public potential_normalization, primscalar
 
   public get_calfconst_rrad, find_reheat_rrad
   public get_calfconst_rreh, find_reheat_rreh
@@ -129,7 +136,7 @@ contains
     find_reheat_rhow_anyorder = nuStar - calFplusNuEnd + 1._kp/(3._kp + 3._kp*w) &
          * log( (9._kp - 3._kp*epsStarVec(1)) &
          /( 9._kp*(2._kp*epsStarVec(1))**(0.5_kp+1.5_kp*w) &
-         *Vstar) ) - 0.25_kp*log(inverse_slowroll_corrections(epsStarVec))
+         *Vstar) ) + 0.25_kp*log(slowroll_corrections(epsStarVec))
 
   end function find_reheat_rhow_anyorder
 
@@ -173,7 +180,7 @@ contains
 
     find_reheat_rrad_anyorder = nuStar - calFplusNuEnd &
          + 0.25_kp*log((9._kp-3._kp*epsStarVec(1))/(epsStarVec(1)*Vstar)) &
-         - 0.25_kp*log(inverse_slowroll_corrections(epsStarVec))
+         + 0.25_kp*log(slowroll_corrections(epsStarVec))
 
   end function find_reheat_rrad_anyorder
 
@@ -239,7 +246,7 @@ contains
 
     real(kp) :: lnH2OverEps
 
-    lnH2OverEps = ln_hsquare_by_epsone(Pstar)
+    lnH2OverEps = log(primscalar_to_hsquare(Pstar))
     
     ln_rho_endinf_leadorder = lnH2OverEps + log(9._kp*epsOneStar &
          /(3._kp - epsOneEnd)) + log(VendOverVstar)
@@ -256,13 +263,14 @@ contains
 
     real(kp) :: lnH2OverEps
 
-    lnH2OverEps = ln_hsquare_by_epsone(Pstar,epsStarVec)
+    lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsStarVec))
 
     ln_rho_endinf_anyorder = lnH2OverEps &
          + log(3._kp*epsStarVec(1)*(3._kp - epsStarVec(1))/(3._kp - epsOneEnd)) &
          + log(VendOverVstar)
 
   end function ln_rho_endinf_anyorder
+
 
 
 
@@ -279,7 +287,7 @@ contains
         stop
      end if
 
-     lnH2OverEps = ln_hsquare_by_epsone(Pstar)
+     lnH2OverEps = log(primscalar_to_hsquare(Pstar))
 
 
      oneMinusThreeWlnEreh &
@@ -309,7 +317,7 @@ contains
         stop
      end if
 
-     lnH2OverEps = ln_hsquare_by_epsone(Pstar,epsStarVec)
+     lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsStarVec))
 
      oneMinusThreeWlnEreh &
          = (3._kp + 3._kp*w)*(Nzero + deltaNstar) - 0.5_kp*(1._kp+3._kp*w)*lnH2OverEps &
@@ -320,6 +328,7 @@ contains
      ln_rho_reheat_anyorder = oneMinusThreeWlnEreh*4._kp/(1._kp - 3._kp*w)
 
    end function ln_rho_reheat_anyorder
+
 
 
    function get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd)
@@ -356,6 +365,7 @@ contains
    end function get_lnrrad_rreh
 
 
+
    function get_lnrreh_rrad(lnRrad,lnRhoEnd)
      implicit none
      real(kp) :: get_lnrreh_rrad
@@ -367,70 +377,167 @@ contains
 
   
 
+   function log_energy_reheat_ingev(lnRhoReh)
+     implicit none
+     real(kp) :: log_energy_reheat_ingev
+     real(kp), intent(in) :: lnRhoReh
 
-  function log_energy_reheat_ingev(lnRhoReh)
+     log_energy_reheat_ingev=0.25_kp*(lnRhoReh + 4._kp*lnMpinGeV)/log(10._kp)
+
+   end function log_energy_reheat_ingev
+
+
+!returns H^2/epsilon_1 fropm Pstar
+  function primscalar_to_hsquare(Pstar,epsStarVec)
     implicit none
-    real(kp) :: log_energy_reheat_ingev
-    real(kp), intent(in) :: lnRhoReh
-
-    log_energy_reheat_ingev=0.25_kp*(lnRhoReh + 4._kp*lnMpinGeV)/log(10._kp)
-
-  end function log_energy_reheat_ingev
-
-
-function ln_hsquare_by_epsone(Pstar,epsStarVec)
-    implicit none
-    real(kp) :: ln_hsquare_by_epsone
+    real(kp) :: primscalar_to_hsquare
     real(kp), intent(in) :: Pstar
     real(kp), dimension(neps), intent(in), optional :: epsStarVec
 
-    ln_hsquare_by_epsone = log(Pstar*8*pi*pi)
+    real(kp) :: H2overEps
+
+    H2overEps = Pstar*8*pi*pi
 
     if (present(epsStarVec)) then
-       ln_hsquare_by_epsone = ln_hsquare_by_epsone &
-            + log(inverse_slowroll_corrections(epsStarVec))
+        H2overEps = H2overEps / slowroll_corrections(epsStarVec)
     endif
-         
 
-  end function ln_hsquare_by_epsone
+    primscalar_to_hsquare = H2overEps
 
- 
+  end function primscalar_to_hsquare
 
-!this is ln(M)
-  function ln_potential_normalization_leadorder(Pstar,epsOneStar,Vstar)
+!for test, that is not strictly ln(primscalar_to_hsquare) at second
+!order, that's why this function exists
+  function primscalar_to_lnhsquare(Pstar,epsStarVec)
     implicit none
-    real(kp) :: ln_potential_normalization_leadorder
+    real(kp) :: primscalar_to_lnhsquare
+    real(kp), intent(in) :: Pstar
+    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+
+    real(kp) :: lnH2overEps
+
+    stop 'primscalar_to_lnhsquare: do not use this function!'
+
+    lnH2overEps = log(Pstar*8*pi*pi)
+
+    if (present(epsStarVec)) then
+       lnH2overEps = lnH2overEps - ln_slowroll_corrections(epsStarVec)
+    endif
+
+    primscalar_to_lnhsquare = lnH2overEps
+
+  end function primscalar_to_lnhsquare
+
+
+
+!returns Pstar from H^2/epsilon_1
+  function hsquare_to_primscalar(H2overEps,epsStarVec)
+    implicit none
+    real(kp) :: hsquare_to_primscalar
+    real(kp), intent(in) :: H2overEps
+    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+
+    real(kp) :: Pstar
+
+    Pstar = H2overEps/(8*pi*pi)
+
+    if (present(epsStarVec)) then
+       Pstar = Pstar * slowroll_corrections(epsStarVec)
+    endif
+
+    hsquare_to_primscalar = Pstar
+
+  end function hsquare_to_primscalar
+
+!for test, this is slightly different than ln(hsquare_to_primscalar)
+  function hsquare_to_lnprimscalar(H2overEps,epsStarVec)
+    implicit none
+    real(kp) :: hsquare_to_lnprimscalar
+    real(kp), intent(in) :: H2overEps
+    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+
+    real(kp) :: lnPstar
+
+    stop 'primscalar_to_lnhsquare: do not use this function!'
+
+    lnPstar = log(H2overEps/(8*pi*pi))
+
+    if (present(epsStarVec)) then
+       lnPstar = lnPstar + ln_slowroll_corrections(epsStarVec)
+    endif
+
+    hsquare_to_lnprimscalar = lnPstar
+
+  end function hsquare_to_lnprimscalar
+
+
+  
+!this is M from Pstar and eps
+  function potential_normalization_leadorder(Pstar,epsOneStar,Vstar)
+    implicit none
+    real(kp) :: potential_normalization_leadorder
     real(kp), intent(in) :: Pstar,epsOneStar,Vstar
     
-    real(kp) :: lnM4, lnH2overEps
+    real(kp) :: M4, H2overEps
 
-    lnH2OverEps = ln_hsquare_by_epsone(Pstar)
+    H2OverEps = primscalar_to_hsquare(Pstar)
 
-    lnM4 = log(3._kp*epsOneStar/Vstar) + lnH2OverEps
+    M4 = 3._kp*epsOneStar/Vstar * H2overEps
 
-    ln_potential_normalization_leadorder = 0.25_kp*lnM4
+    potential_normalization_leadorder = M4**0.25_kp
 
-  end function ln_potential_normalization_leadorder
+  end function potential_normalization_leadorder
 
 
-  function ln_potential_normalization_anyorder(Pstar,epsStarVec,Vstar)
+  function potential_normalization_anyorder(Pstar,epsStarVec,Vstar)
     implicit none
-    real(kp) :: ln_potential_normalization_anyorder
+    real(kp) :: potential_normalization_anyorder
     real(kp), dimension(neps), intent(in) :: epsStarVec
     real(kp), intent(in) :: Pstar,Vstar
     
-    real(kp) :: lnM4, lnH2overEps
+    real(kp) :: M4, H2overEps
 
-    lnH2OverEps = ln_hsquare_by_epsone(Pstar,epsStarVec)
+    H2overEps = primscalar_to_hsquare(Pstar,epsStarVec)
 
-    lnM4 = log((3._kp-epsStarVec(1))*epsStarVec(1)/Vstar) + lnH2OverEps
+    M4 = (3._kp-epsStarVec(1))*epsStarVec(1)/Vstar * H2overEps
 
-    ln_potential_normalization_anyorder = 0.25_kp*lnM4
+    potential_normalization_anyorder = M4**0.25_kp
 
-  end function ln_potential_normalization_anyorder
+  end function potential_normalization_anyorder
 
 
 
+!this is Pstar from M and eps
+  function primscalar_leadorder(M,epsOneStar,Vstar)
+    implicit none
+    real(kp) :: primscalar_leadorder
+    real(kp), intent(in) :: M,epsOneStar,Vstar
+    
+    real(kp) :: H2overEps
+
+    H2overEps = M**4*Vstar/3._kp/epsOneStar
+
+    primscalar_leadorder = hsquare_to_primscalar(H2overEps)
+    
+  end function primscalar_leadorder
+  
+
+  function primscalar_anyorder(M,epsStarVec,Vstar)
+    implicit none
+    real(kp) :: primscalar_anyorder
+    real(kp), dimension(neps), intent(in) :: epsStarVec
+    real(kp), intent(in) :: M,Vstar
+    
+    real(kp) :: H2overEps
+
+    H2overEps = M**4*Vstar/(3._kp-epsStarVec(1))/epsStarVec(1)
+
+    primscalar_anyorder = hsquare_to_primscalar(H2overEps,epsStarVec)
+    
+  end function primscalar_anyorder
+
+
+!Pstar from Q/T effective
   function quadrupole_to_primscalar(QoverT)
     implicit none
     real(kp) :: quadrupole_to_primscalar
@@ -446,6 +553,7 @@ function ln_hsquare_by_epsone(Pstar,epsStarVec)
   end function quadrupole_to_primscalar
   
 
+!Q/T effective from Pstar
   function primscalar_to_quadrupole(Pstar)
     implicit none
     real(kp) :: primscalar_to_quadrupole

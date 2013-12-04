@@ -14,6 +14,8 @@ program lfimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use srreheat, only : potential_normalization, primscalar
+
   implicit none
 
   
@@ -32,6 +34,7 @@ program lfimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: M, As
 
   Pstar = powerAmpScalar
 
@@ -59,7 +62,7 @@ program lfimain
 
        eps1 = lfi_epsilon_one(xstar,p)
        eps2 = lfi_epsilon_two(xstar,p)
-       eps3 = lfi_epsilon_three(xstar,p)
+       eps3 = lfi_epsilon_three(xstar,p)       
 
        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
@@ -136,6 +139,8 @@ program lfimain
        print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
        eps1 = lfi_epsilon_one(xstar,p)
+       eps2 = lfi_epsilon_two(xstar,p)
+       eps3 = lfi_epsilon_three(xstar,p)
        
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
@@ -149,6 +154,7 @@ program lfimain
        xstar = lfi_x_rreh(p,lnR,bfoldstar)
        print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
+
 !second consistency check
 !get rhoreh for chosen w and check that xstar gotten this way is the same
        w = 0._kp
@@ -157,6 +163,14 @@ program lfimain
        xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
        print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
             ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+!check potential normalization/Pstar
+       M = potential_normalization(Pstar,(/eps1,eps2,eps3/),lfi_norm_potential(xstar,p))
+       As = primscalar(M,(/eps1,eps2,eps3/),lfi_norm_potential(xstar,p))
+       print *,'M=',M,As,Pstar
+
+       
+
              
     enddo
 
