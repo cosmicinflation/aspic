@@ -40,6 +40,6 @@ module cosmopar
   real(kp), parameter :: powerAmpScalar = 2.2030e-09
 
 !Effective COBE normalisation given the same amplitude as Pstar
-  real(kp), parameter :: QrmsOverT = sqrt(60._kp*powerAmpScalar)
+  real(kp), parameter :: QrmsOverT = sqrt(powerAmpScalar/60._kp)
 
 end module cosmopar
