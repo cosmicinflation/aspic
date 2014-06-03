@@ -67,18 +67,19 @@ SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi bi kklti
 
 
-.PHONY: parasub $(SUBDIRS)
-
-parasub: $(SUBDIRS)
-
-$(SUBDIRS):
-	@$(MAKE) -C $@
-
-
 # for make -j
-all: parasub
+# does not work...
+#.PHONY: parasub $(SUBDIRS)
+
+#parasub: $(SUBDIRS)
+
+#$(SUBDIRS):
+#	@$(MAKE) -C $@
+
+#all: parasub
 
 #make clean does not remove modules by default
 clean-local: clean-modules
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
+
