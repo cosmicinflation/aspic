@@ -27,16 +27,16 @@ module is used for N-formalism inflation when 'a > 0' and 'b > 1', in
 the positive field value region 'x > 0'. Inflation proceeds
 at increasing field values and naturally ends at 'xend' which is
 returned by the
-.I
-real(kp)
+.I real(kp)
 function
+.IP
 .BR nfi1_x_endinf (alpha,beta).
-
+.P
 When the parameter 'b' is an even integer, the potential is symmetric
-in the negative 'x' domain and inflation proceeds exactly as described
-here. When 'b' is an odd integer, the potential has an inflection
-point at 'x = 0'. Inflation within the domain 'x > 0' can still be
-described by
+with respect to 'x = 0' and inflation proceeds in the same way in the
+negative 'x' domain. When 'b' is an odd integer, the potential has an
+inflection point at 'x = 0'. Inflation within the domain 'x > 0' can
+still be described by
 .I nfi1
 but may also evolve from 'x < 0' to 'x > 0'. This particular case is
 handled by the
@@ -44,21 +44,21 @@ handled by the
 module.
 
 For '1 < b < 2', the maximal number of efolds from 'x = 0' to 'xend' is
-finite while for 'b > 2' it can be infinite as inflation may occur
-around 'x = 0'. In that case, the minimal field value under which the
-first Hubble flow function becomes smaller than the numerical
-precision is given by the
-.I
-real(kp)
+finite. The maximal value of 'a' to obtain 'N' efold of inflation is
+returned by the
+.I real(kp)
 function
-.BR nfi1_numacc_xinimin (a,b).
+.IP
+.BR nfi1_amax (N,b)
+.P
+whereas for 'b > 2' the total number of efolds can be infinite.
 
 Some functions are shared with others
 .I nfi
 modules in
 .BR nficommon
 and
-.BR nficomreh
+.BR nficomreh.
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

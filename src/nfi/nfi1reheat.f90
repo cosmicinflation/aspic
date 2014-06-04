@@ -9,7 +9,7 @@ module nfi1reheat
   use nfi1sr, only : nfi1_epsilon_one, nfi1_epsilon_two, nfi1_epsilon_three
   use nfi1sr, only : nfi1_norm_potential
   use nfi1sr, only : nfi1_x_endinf, nfi1_efold_primitive
-  use nfi1sr, only : nfi1_numacc_xinimin
+  use nfi1sr, only : nfi1_numacc_xinimin, nfi1_check_params
 
   implicit none
 
@@ -31,6 +31,10 @@ contains
     
     real(kp) :: mini,maxi
     real(kp) :: xend
+
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_x_star: nfi1 requires a>0, b>1'
+    endif
    
     xEnd = nfi1_x_endinf(a,b)
     mini = nfi1_numacc_xinimin(a,b)
@@ -53,6 +57,10 @@ contains
     real(kp) :: mini,maxi
     real(kp) :: xend
 
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_x_rrad: nfi1 requires a>0, b>1'
+    endif
+
     xEnd = nfi1_x_endinf(a,b)
     mini = nfi1_numacc_xinimin(a,b)
     maxi = xEnd
@@ -72,6 +80,10 @@ contains
 
     real(kp) :: mini,maxi
     real(kp) :: xend
+
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_x_rreh: nfi1 requires a>0, b>1'
+    endif
 
     xEnd = nfi1_x_endinf(a,b)
     mini = nfi1_numacc_xinimin(a,b)

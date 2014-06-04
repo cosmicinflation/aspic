@@ -98,5 +98,6 @@ AC_CONFIG_FILES([Makefile
                  src/gripi/Makefile
                  src/bi/Makefile
                  src/kklti/Makefile
+                 src/nfi/Makefile
                 ])
 AC_OUTPUT

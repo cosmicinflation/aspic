@@ -10,9 +10,9 @@
 module nfi1sr
   use infprec, only : kp
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
-  use nficommon, only : nfi_norm_deriv_second_potential
+  use nficommon, only : nfi_norm_deriv_second_potential, nfi_x_pothuge
   use nficommon, only : nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
-  use nficommon, only : nfi_x_epsoneunity, nfi_efold_primitive
+  use nficommon, only : nfi_x_epsoneunity, nfi_x_trajectory,nfi_efold_primitive
 
   implicit none
 
@@ -23,9 +23,20 @@ module nfi1sr
   public nfi1_epsilon_one, nfi1_epsilon_two, nfi1_epsilon_three
   public nfi1_x_endinf, nfi1_efold_primitive
 
-  public nfi1_numacc_xinimin
+  public nfi1_check_params, nfi1_numacc_amin, nfi1_amax
+  public nfi1_numacc_xinimin, nfi1_numacc_xendmax
 
 contains
+
+
+  function nfi1_check_params(a,b)
+    implicit none
+    logical :: nfi1_check_params
+    real(kp), intent(in) :: a,b
+
+    nfi1_check_params = (a.gt.0._kp).and.(b.gt.1._kp)
+
+  end function nfi1_check_params
 
   
 !V/M^4
@@ -101,6 +112,10 @@ contains
     real(kp), intent(in) :: a,b
     real(kp), dimension(2) :: xepsones
 
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_x_endinf: nfi1 requires a>0, b>1'
+    endif
+
     xepsones = nfi_x_epsoneunity(a,b)
 
     nfi1_x_endinf = xepsones(1)
@@ -115,7 +130,9 @@ contains
     real(kp) :: nfi1_numacc_xinimin
     real(kp), intent(in) :: a,b
 
-    if (b.eq.1._kp) stop 'nfi1_numacc_xinimin: b=1 is PLI'
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_numacc_xinimin: nfi1 requires a>0, b>1'
+    endif
     
     if (b.lt.1._kp) then
        nfi1_numacc_xinimin = 0._kp
@@ -126,6 +143,61 @@ contains
     
   end function nfi1_numacc_xinimin
 
+
+!return the maximal positive value of xend for ensuring numerical
+!value for the potential (< huge)
+  function nfi1_numacc_xendmax(a,b)
+    implicit none
+    real(kp) :: nfi1_numacc_xendmax
+    real(kp), intent(in) :: a,b
+
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_numacc_xendmax: nfi1 requires a>0, b>1'
+    endif
+
+    nfi1_numacc_xendmax = nfi_x_pothuge(a,b)
+   
+  end function nfi1_numacc_xendmax
+
+
+!returns the minimal value of a given b such that xend < numacc_xendmax
+  function nfi1_numacc_amin(b)
+    use nficommon, only : NfiPotHuge
+    implicit none
+    real(kp) :: nfi1_numacc_amin
+    real(kp), intent(in) :: b
+
+    if (b.le.1._kp) then
+       stop 'nfi1_numacc_amin: nfi1 requires b>1'
+    endif
+
+    nfi1_numacc_amin = log(NfiPotHuge)**(1._kp-b)*(0.5_kp*b*b)**(-0.5_kp*b)
+    
+  end function nfi1_numacc_amin
+
+
+!return the maximal value of a to get efoldNum efolds of inflation
+!when b < 2 (for b>2, one can do an infinite number if efolds in x=0)
+  function nfi1_amax(efoldNum,b)
+    implicit none
+    real(kp) :: nfi1_amax
+    real(kp), intent(in) :: efoldNum,b
+
+    if (b.le.1._kp) then
+       stop 'nfi1_amax: nfi1 requires b>1'
+    endif
+    
+    if (b.ge.2._kp) then
+       write(*,*)'nfi1_amax: for b>=2 amax is infinite!'
+       nfi1_amax = huge(1._kp)
+       return
+    endif
+
+    nfi1_amax = ((2._kp-b)*efoldNum)**(1._kp-b) &
+         * (0.5_kp*b*b)**(0.5_kp*(b-2._kp))
+
+
+  end function nfi1_amax
 
 
 !this is integral[V(phi)/V'(phi) dphi]
@@ -147,6 +219,10 @@ contains
     real(kp), intent(in) :: bfold,a,b,xend
 
     real(kp) :: efoldMax, xinimin
+
+    if (.not.nfi1_check_params(a,b)) then
+       stop 'nfi1_x_trajectory: nfi1 requires a>0, b>1'
+    endif
 
     xinimin = nfi1_numacc_xinimin(a,b)
 

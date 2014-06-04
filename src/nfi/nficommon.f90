@@ -10,12 +10,18 @@ module nficommon
 
   private
 
-  public  nfi_norm_potential
-  public  nfi_norm_deriv_potential, nfi_norm_deriv_second_potential
-  public  nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
-  public  nfi_x_epsoneunity, nfi_efold_primitive, nfi_x_trajectory
-  
+
+  real(kp), parameter :: NfiPotHuge = huge(1._kp)
+
+
+  public nfi_norm_potential
+  public nfi_norm_deriv_potential, nfi_norm_deriv_second_potential
+  public nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
+  public nfi_x_epsoneunity, nfi_efold_primitive, nfi_x_trajectory
+  public NfiPotHuge, nfi_x_pothuge
  
+
+
 contains
 !returns V/M^4
   function nfi_norm_potential(x,a,b)
@@ -101,7 +107,23 @@ contains
 !negative root
     nfi_x_epsoneunity(2) = - nfi_x_epsoneunity(1)
    
-  end function nfi_x_endinf
+  end function nfi_x_epsoneunity
+
+
+!returns the maximal value of x to get a |ln(potential)|<huge
+  function nfi_x_pothuge(a,b)
+    implicit none
+    real(kp) :: nfi_x_pothuge
+    real(kp), intent(in) :: a,b
+    
+
+    if (a*b.ne.0) then
+       nfi_x_pothuge = (log(NfiPotHuge)/abs(a))**(1._kp/b)
+    else
+       stop 'nfi_numacc_xendmax: ab=0'
+    end if
+                
+  end function nfi_x_pothuge
 
 
 !this is integral[V(phi)/V'(phi) dphi]
