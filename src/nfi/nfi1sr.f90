@@ -177,7 +177,7 @@ contains
 
 
 !return the maximal value of a to get efoldNum efolds of inflation
-!when b < 2 (for b>2, one can do an infinite number if efolds in x=0)
+!when b < 2 (for b>2, one can do an infinite number of efolds in x=0)
   function nfi1_amax(efoldNum,b)
     implicit none
     real(kp) :: nfi1_amax
