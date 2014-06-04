@@ -139,7 +139,7 @@ contains
   end function rmi3_x_trajectory
 
 
-! Return an upper bound on xend for numerica computability
+! Return an upper bound on xend for numerical computability
   function rmi3_numacc_xendmax(c,phi0)
     implicit none
     real(kp), intent(in) :: c,phi0

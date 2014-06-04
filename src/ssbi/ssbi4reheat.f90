@@ -1,11 +1,9 @@
 !spontaneous symmetry breaking 4 reheating functions in the slow-roll approximations
 
 module ssbi4reheat
-  use infprec, only : kp, tolkp, transfert
-  use inftools, only : zbrent
-  use srreheat, only : get_calfconst, find_reheat, slowroll_validity
-  use srreheat, only : display, pi, Nzero, ln_rho_endinf
-  use srreheat, only : ln_rho_reheat
+  use infprec, only : kp
+  use srreheat, only : slowroll_validity
+  use srreheat, only : ln_rho_endinf, ln_rho_reheat
   use ssbicomreh, only : ssbi_x_star, ssbi_x_rrad, ssbi_x_rreh
   use ssbi4sr, only : ssbi4_epsilon_one, ssbi4_epsilon_two, ssbi4_epsilon_three
   use ssbi4sr, only : ssbi4_norm_potential, ssbi4_x_potmax
