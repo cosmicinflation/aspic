@@ -15,7 +15,7 @@ module csisr
   public csi_norm_potential, csi_norm_deriv_potential, csi_norm_deriv_second_potential
   public csi_epsilon_one, csi_epsilon_two,csi_epsilon_three
   public csi_efold_primitive, csi_x_trajectory
-  public csi_xendmax, csi_x_epsoneunity, csi_x_epsonenumacc
+  public csi_xendmax, csi_x_epsoneunity, csi_numacc_x_epsonenull
 
  
 contains
@@ -145,17 +145,17 @@ contains
   end function csi_xendmax
 
 !returns x such as epsilon1 = numacc
-  function csi_x_epsonenumacc(alpha)
+  function csi_numacc_x_epsonenull(alpha)
     implicit none
     real(kp), intent(in) :: alpha
-    real(kp) :: csi_x_epsonenumacc
+    real(kp) :: csi_numacc_x_epsonenull
 
 !branch x<1/alpha
-    csi_x_epsonenumacc = 1._kp/alpha - sqrt(2._kp)/sqrt(epsilon(1._kp))
+    csi_numacc_x_epsonenull = 1._kp/alpha - sqrt(2._kp)/sqrt(epsilon(1._kp))
 
 !branch x>1/alpha
 !    csi_x_epsonenumacc = 1._kp/alpha + sqrt(2)/sqrt(epsilon(1._kp))
 
-  end function csi_x_epsonenumacc
+  end function csi_numacc_x_epsonenull
 
 end module csisr

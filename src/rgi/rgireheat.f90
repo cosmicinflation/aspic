@@ -9,7 +9,7 @@ module rgireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rgisr, only : rgi_epsilon_one, rgi_epsilon_two, rgi_epsilon_three
-  use rgisr, only : rgi_norm_potential, rgi_x_epsonenumacc
+  use rgisr, only : rgi_norm_potential, rgi_numacc_x_epsonenull
   use rgisr, only : rgi_x_endinf, rgi_efold_primitive
   implicit none
 
@@ -53,7 +53,7 @@ contains
     rgiData%real3 = calF + primEnd
 
     mini = xEnd
-    maxi = rgi_x_epsonenumacc(alpha)
+    maxi = rgi_numacc_x_epsonenull(alpha)
 
     x = zbrent(find_rgi_x_star,mini,maxi,tolzbrent,rgiData)
     rgi_x_star = x
@@ -115,7 +115,7 @@ contains
     rgiData%real2 = calF + primEnd
 
     mini = xEnd
-    maxi = rgi_x_epsonenumacc(alpha)
+    maxi = rgi_numacc_x_epsonenull(alpha)
 
     x = zbrent(find_rgi_x_rrad,mini,maxi,tolzbrent,rgiData)
     rgi_x_rrad = x
@@ -178,7 +178,7 @@ contains
     rgiData%real2 = calF + primEnd
 
     mini = xEnd
-    maxi = rgi_x_epsonenumacc(alpha)
+    maxi = rgi_numacc_x_epsonenull(alpha)
 
     x = zbrent(find_rgi_x_rreh,mini,maxi,tolzbrent,rgiData)
     rgi_x_rreh = x

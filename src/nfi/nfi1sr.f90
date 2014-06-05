@@ -10,7 +10,8 @@
 module nfi1sr
   use infprec, only : kp
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
-  use nficommon, only : nfi_norm_deriv_second_potential, nfi_x_pothuge
+  use nficommon, only : nfi_norm_deriv_second_potential
+  use nficommon, only : nfi_numacc_x_big, nfi_numacc_x_epsonenull
   use nficommon, only : nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   use nficommon, only : nfi_x_epsoneunity, nfi_x_trajectory,nfi_efold_primitive
 
@@ -21,7 +22,7 @@ module nfi1sr
   public nfi1_norm_potential
   public nfi1_norm_deriv_potential, nfi1_norm_deriv_second_potential
   public nfi1_epsilon_one, nfi1_epsilon_two, nfi1_epsilon_three
-  public nfi1_x_endinf, nfi1_efold_primitive
+  public nfi1_x_endinf, nfi1_efold_primitive, nfi1_x_trajectory
 
   public nfi1_check_params, nfi1_numacc_amin, nfi1_amax
   public nfi1_numacc_xinimin, nfi1_numacc_xendmax
@@ -110,15 +111,12 @@ contains
     implicit none
     real(kp) :: nfi1_x_endinf
     real(kp), intent(in) :: a,b
-    real(kp), dimension(2) :: xepsones
 
     if (.not.nfi1_check_params(a,b)) then
        stop 'nfi1_x_endinf: nfi1 requires a>0, b>1'
     endif
 
-    xepsones = nfi_x_epsoneunity(a,b)
-
-    nfi1_x_endinf = xepsones(1)
+    nfi1_x_endinf = nfi_x_epsoneunity(a,b)
 
   end function nfi1_x_endinf
 
@@ -133,13 +131,9 @@ contains
     if (.not.nfi1_check_params(a,b)) then
        stop 'nfi1_numacc_xinimin: nfi1 requires a>0, b>1'
     endif
-    
-    if (b.lt.1._kp) then
-       nfi1_numacc_xinimin = 0._kp
-    else
-       nfi1_numacc_xinimin = (2._kp*epsilon(1._kp)/(a*a*b*b)) &
-            ** (0.5_kp/(b-1._kp) )
-    endif
+      
+    nfi1_numacc_xinimin = nfi_numacc_x_epsonenull(a,b)
+   
     
   end function nfi1_numacc_xinimin
 
@@ -155,14 +149,14 @@ contains
        stop 'nfi1_numacc_xendmax: nfi1 requires a>0, b>1'
     endif
 
-    nfi1_numacc_xendmax = nfi_x_pothuge(a,b)
+    nfi1_numacc_xendmax = nfi_numacc_x_big(a,b)
    
   end function nfi1_numacc_xendmax
 
 
 !returns the minimal value of a given b such that xend < numacc_xendmax
   function nfi1_numacc_amin(b)
-    use nficommon, only : NfiPotHuge
+    use nficommon, only : NfiBig
     implicit none
     real(kp) :: nfi1_numacc_amin
     real(kp), intent(in) :: b
@@ -171,17 +165,17 @@ contains
        stop 'nfi1_numacc_amin: nfi1 requires b>1'
     endif
 
-    nfi1_numacc_amin = log(NfiPotHuge)**(1._kp-b)*(0.5_kp*b*b)**(-0.5_kp*b)
+    nfi1_numacc_amin = log(NfiBig)**(1._kp-b)*(0.5_kp*b*b)**(-0.5_kp*b)
     
   end function nfi1_numacc_amin
 
 
-!return the maximal value of a to get efoldNum efolds of inflation
+!return the maximal value of a to get efold of inflation
 !when b < 2 (for b>2, one can do an infinite number of efolds in x=0)
-  function nfi1_amax(efoldNum,b)
+  function nfi1_amax(efold,b)
     implicit none
     real(kp) :: nfi1_amax
-    real(kp), intent(in) :: efoldNum,b
+    real(kp), intent(in) :: efold,b
 
     if (b.le.1._kp) then
        stop 'nfi1_amax: nfi1 requires b>1'
@@ -193,7 +187,7 @@ contains
        return
     endif
 
-    nfi1_amax = ((2._kp-b)*efoldNum)**(1._kp-b) &
+    nfi1_amax = (b*(2._kp-b)*efold)**(1._kp-b) &
          * (0.5_kp*b*b)**(0.5_kp*(b-2._kp))
 
 
@@ -213,7 +207,7 @@ contains
 
 
 !Return x as a function of bfold = N - N_end
-  function nfi1_x_trajectory(bfold,a,b,xend)
+  function nfi1_x_trajectory(bfold,xend,a,b)
     implicit none
     real(kp) :: nfi1_x_trajectory
     real(kp), intent(in) :: bfold,a,b,xend
@@ -236,7 +230,7 @@ contains
        stop 
     endif
     
-    nfi1_x_trajectory = nfi_x_trajectory(bfold,a,b,xend)
+    nfi1_x_trajectory = nfi_x_trajectory(bfold,xend,a,b)
 
   end function nfi1_x_trajectory
 

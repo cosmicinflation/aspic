@@ -14,7 +14,7 @@ module rgisr
   public rgi_epsilon_three
   public rgi_x_endinf, rgi_efold_primitive, rgi_x_trajectory
   public rgi_norm_deriv_potential, rgi_norm_deriv_second_potential
-  public rgi_x_epsonenumacc
+  public rgi_numacc_x_epsonenull
 
 contains
 !returns V/M^4
@@ -127,16 +127,16 @@ contains
 
 
 !return x such that epsilon_1 = 1e-16 for checking numerical accuracy  
-  function rgi_x_epsonenumacc(alpha)
+  function rgi_numacc_x_epsonenull(alpha)
     implicit none
-    real(kp) :: rgi_x_epsonenumacc
+    real(kp) :: rgi_numacc_x_epsonenull
     real(kp), intent(in) :: alpha
     real(kp) :: epsMini
 
     epsMini = 10._kp*epsilon(1._kp)
 
-    rgi_x_epsonenumacc = (2._kp*alpha*alpha/epsMini)**(1._kp/6._kp)
+    rgi_numacc_x_epsonenull = (2._kp*alpha*alpha/epsMini)**(1._kp/6._kp)
     
-  end function rgi_x_epsonenumacc
+  end function rgi_numacc_x_epsonenull
   
 end module rgisr

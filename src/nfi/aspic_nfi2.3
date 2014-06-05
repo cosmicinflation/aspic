@@ -1,0 +1,80 @@
+.TH libnfi 3 "June 05, 2014" "libaspic" "Module convention" 
+
+.SH NAME
+.I nfi2
+- the N-formalism inflation module for a < 0, b > 1 and x > 0
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 exp( a x^b )
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B a, b, xend
+
+.SH DESCRIPTION
+The
+.I nfi2
+module is used for N-formalism inflation when 'a < 0' and 'b > 1', in
+the positive field value region 'x > 0'. Inflation proceeds at
+decreasing field values in the domain where the first Hubble flow
+function remains less than unity, namely for '0 < x < xinimax',
+where 'xinimax' is given by the
+.I real(kp)
+function
+.IP
+.BR nfi2_xinimax (a,b).
+.P
+The field value 'xend' at which inflation ends is an additional
+model parameter that should lie in the above range. For convenience,
+we provide a
+.I real(kp)
+function
+.IP
+.BR nfi2_xendmax (N,a,b)
+.P
+which returns 'xendmax', the maximal value for 'xend' such that
+inflation lasts, at least, 'N' efolds between 'xinimax' and 'xendmax'.
+
+When the parameter 'b' is an even integer, the potential is symmetric
+with respect to 'x = 0' and inflation proceeds in the same way in the
+negative 'x' domain. When 'b' is an odd integer, the potential has an
+inflection point at 'x = 0'. Inflation within the domain 'x > 0' can
+still be described by
+.I nfi2
+but may also evolve from 'x > 0' to 'x < 0'. This particular case is
+handled by the
+.I nfi7
+module.
+
+For '1 < b < 2', the maximal number of efolds from 'x = xinimax' to 'x
+= 0' is finite. The
+.I real(kp)
+function
+.IP
+.BR nfi2_amin (N,b)
+.P
+returns the minimal (negative) value of 'a' required to get, at
+least, 'N' efold of inflation in such a situation. For 'b > 2' the
+total number of efolds can be infinite.
+
+Some functions are shared with others
+.I nfi
+modules in
+.BR nficommon
+and
+.BR nficomreh.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
+
+.SH CONTRIBUTORS
+Geoffrey Ferraut

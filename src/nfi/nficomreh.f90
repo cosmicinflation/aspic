@@ -44,7 +44,7 @@ contains
     potEnd = nfi_norm_potential(xEnd,a,b)
 
     primEnd = nfi_efold_primitive(xEnd,a,b)
-   
+    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
     nfiData%real1 = a

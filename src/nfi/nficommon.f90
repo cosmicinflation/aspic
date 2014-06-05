@@ -11,14 +11,15 @@ module nficommon
   private
 
 
-  real(kp), parameter :: NfiPotHuge = huge(1._kp)
+  real(kp), parameter :: NfiBig = epsilon(1._kp)*huge(1._kp)
 
 
   public nfi_norm_potential
   public nfi_norm_deriv_potential, nfi_norm_deriv_second_potential
   public nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
-  public nfi_x_epsoneunity, nfi_efold_primitive, nfi_x_trajectory
-  public NfiPotHuge, nfi_x_pothuge
+  public nfi_x_epsoneunity, nfi_x_epstwounity
+  public nfi_efold_primitive, nfi_x_trajectory
+  public NfiBig, nfi_numacc_x_big, nfi_numacc_x_epsonenull
  
 
 
@@ -94,7 +95,7 @@ contains
   function nfi_x_epsoneunity(a,b)
     implicit none
     real(kp), intent(in) :: a,b
-    real(kp), dimension(2) :: nfi_x_epsoneunity
+    real(kp) :: nfi_x_epsoneunity
    
     if (b.eq.1._kp) then
        stop 'nfi_x_epsoneunity: b=1 is PLI'
@@ -102,28 +103,61 @@ contains
        stop 'nfi_x_epsoneunity: b=0 is singular'
     endif
 
-!positive root
-    nfi_x_epsoneunity(1) = (2._kp/a/a/b/b)**(0.5_kp/(b-1._kp))
-!negative root
-    nfi_x_epsoneunity(2) = - nfi_x_epsoneunity(1)
+    nfi_x_epsoneunity = (2._kp/a/a/b/b)**(0.5_kp/(b-1._kp))
    
   end function nfi_x_epsoneunity
 
 
-!returns the maximal value of x to get a |ln(potential)|<huge
-  function nfi_x_pothuge(a,b)
+!returns the root of |eps2|=1
+  function nfi_x_epstwounity(a,b)
     implicit none
-    real(kp) :: nfi_x_pothuge
+    real(kp) :: nfi_x_epstwounity
+    real(kp), intent(in) :: a,b
+    
+    if (a*b*(b-1._kp).eq.0._kp) then
+       stop 'nfi_x_epstwounity: ab(b-1)=0 is singular'
+    endif
+
+    nfi_x_epstwounity = (0.5_kp/abs(a*b*(b-1._kp)))**(1._kp/(b-2._kp))
+   
+  end function nfi_x_epstwounity
+
+
+
+
+
+!returns the value of x to get a |ln(potential)=<huge
+  function nfi_numacc_x_big(a,b)
+    implicit none
+    real(kp) :: nfi_numacc_x_big
     real(kp), intent(in) :: a,b
     
 
     if (a*b.ne.0) then
-       nfi_x_pothuge = (log(NfiPotHuge)/abs(a))**(1._kp/b)
+       nfi_numacc_x_big = (log(NfiBig)/abs(a))**(1._kp/b)
     else
-       stop 'nfi_numacc_xendmax: ab=0'
+       stop 'nfi_numacc_x_big: ab=0'
     end if
                 
-  end function nfi_x_pothuge
+  end function nfi_numacc_x_big
+
+
+
+!returns the numerical value of |x| to get a eps1=epsilon(1._kp)
+  function nfi_numacc_x_epsonenull(a,b)
+    implicit none
+    real(kp) :: nfi_numacc_x_epsonenull
+    real(kp), intent(in) :: a,b
+    
+    if (a*b.ne.0) then
+        nfi_numacc_x_epsonenull = (2._kp*epsilon(1._kp)/(a*a*b*b)) &
+            ** (0.5_kp/(b-1._kp) )
+    else
+       stop 'nfi_numacc_x_epsonenull: ab=0'
+    end if
+                
+  end function nfi_numacc_x_epsonenull
+
 
 
 !this is integral[V(phi)/V'(phi) dphi]
@@ -142,7 +176,7 @@ contains
 
 
 !Return x as a function of bfold = N - N_end
-  function nfi_x_trajectory(bfold,a,b,xend)
+  function nfi_x_trajectory(bfold,xend,a,b)
     implicit none
     real(kp) :: nfi_x_trajectory
     real(kp), intent(in) :: bfold,a,b,xend

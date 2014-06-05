@@ -43,11 +43,11 @@ program nfi1main
   w = 0
   efoldMax=120
 
-  b = 1.8
+  b = 1.8 -0.25
 
   do while (b<4)
 
-     b=b+0.1
+     b=b+0.25
 
      amin = nfi1_numacc_amin(b)
      if (b.lt.2) then
@@ -62,14 +62,12 @@ program nfi1main
 
      do while (a < min(0.05,amax))
  
-        a=exp(log(a)+0.2)
+        a=exp(log(a)+0.25)
         
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = nfi1_lnrhoreh_max(a,b,Pstar)
 
         print *,'a= b= ',a,b,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
-
-        print *,'test',nfi1_x_endinf(a,b), nfi1_numacc_xendmax(a,b)
 
         do i=1,npts
 
@@ -89,6 +87,9 @@ program nfi1main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           if (abs(ns-1).gt.0.15) cycle
+           if (r.lt.1e-10) cycle
+
            call livewrite('nfi1_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('nfi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -106,8 +107,8 @@ program nfi1main
   lnRradmin=-42
   lnRradmax = 10
 
-  b=1.6
-  a = nfi1_numacc_amin(b)+0.1
+  b=1.8
+  a = nfi1_numacc_amin(b)
 
   do i=1,npts
 
