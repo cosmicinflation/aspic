@@ -124,8 +124,6 @@ contains
 
 
 
-
-
 !returns the value of x to get a |ln(potential)=<huge
   function nfi_numacc_x_big(a,b)
     implicit none

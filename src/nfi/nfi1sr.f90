@@ -25,7 +25,7 @@ module nfi1sr
   public nfi1_x_endinf, nfi1_efold_primitive, nfi1_x_trajectory
 
   public nfi1_check_params, nfi1_numacc_amin, nfi1_amax
-  public nfi1_numacc_xinimin, nfi1_numacc_xendmax
+  public nfi1_numacc_xinimin
 
 contains
 
@@ -138,23 +138,8 @@ contains
   end function nfi1_numacc_xinimin
 
 
-!return the maximal positive value of xend for ensuring numerical
-!value for the potential (< huge)
-  function nfi1_numacc_xendmax(a,b)
-    implicit none
-    real(kp) :: nfi1_numacc_xendmax
-    real(kp), intent(in) :: a,b
 
-    if (.not.nfi1_check_params(a,b)) then
-       stop 'nfi1_numacc_xendmax: nfi1 requires a>0, b>1'
-    endif
-
-    nfi1_numacc_xendmax = nfi_numacc_x_big(a,b)
-   
-  end function nfi1_numacc_xendmax
-
-
-!returns the minimal value of a given b such that xend < numacc_xendmax
+!returns the minimal value of a given b such that xend < numacc_x_big
   function nfi1_numacc_amin(b)
     use nficommon, only : NfiBig
     implicit none

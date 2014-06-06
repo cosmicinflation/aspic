@@ -26,6 +26,7 @@ program nfi2main
   integer :: npts = 10
 
   real(kp) :: a,b,w,bfoldstar,y
+  real(kp) :: astep, bstep, ystep
   real(kp) :: amin,amax,efoldMax,xendmin,xendmax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
@@ -44,11 +45,16 @@ program nfi2main
   w = 0
   efoldMax=120
 
-  b = 1.8 - 0.4
+  bstep = 0.6
+  astep = 0.01
+  ystep = 0.2
 
-  do while (b<4)
+
+  b = 1.1 - bstep
+
+  do while (b+bstep<4)
      
-     b = b+0.4
+     b = b+bstep
 
      if (b.lt.2) then
         amin = nfi2_amin(efoldMax,b)
@@ -56,13 +62,13 @@ program nfi2main
         amin=-huge(1._kp)
      endif
 
-     a=max(amin,-0.5) 
+     a=0.99*max(amin,-0.5) - astep
 
      print *,'a= b= amin= ',a,b,amin
     
-     do while (a < -1e-4)
+     do while (a + astep < -1e-4)
 
-        a = -exp(log(abs(a))-0.5)
+        a = a+astep
 
         xendmin = nfi2_numacc_xendmin(a,b)
 
@@ -76,7 +82,7 @@ program nfi2main
            
            xend = xendmin + y*(xendmax-xendmin)
 
-           y = exp(log(y)+0.6)
+           y = exp(log(y)+ystep)
 
            print *,'a= b= xend= ',a,b,xend
            print *,'xendmin xendmax=',xendmin,xendmax

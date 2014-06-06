@@ -9,7 +9,7 @@ program nfi1main
   use srflow, only : scalar_spectral_index, tensor_to_scalar_ratio
 
   use nfi1sr, only : nfi1_norm_potential, nfi1_x_endinf
-  use nfi1sr, only : nfi1_numacc_amin, nfi1_numacc_xendmax, nfi1_amax
+  use nfi1sr, only : nfi1_numacc_amin, nfi1_amax
   use nfi1reheat, only : nfi1_x_rreh, nfi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -22,9 +22,10 @@ program nfi1main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i
-  integer :: npts = 20
+  integer :: npts = 10
 
   real(kp) :: a,b,w,bfoldstar
+  real(kp) :: astep, bstep
   real(kp) :: amin,amax,efoldMax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
@@ -43,11 +44,14 @@ program nfi1main
   w = 0
   efoldMax=120
 
-  b = 1.8 -0.25
+  bstep =0.2
+  astep = 0.006
 
-  do while (b<4)
+  b = 1.8 - bstep
 
-     b=b+0.25
+  do while (b+bstep<4)
+
+     b=b+bstep
 
      amin = nfi1_numacc_amin(b)
      if (b.lt.2) then
@@ -56,13 +60,13 @@ program nfi1main
         amax=huge(1._kp)
      endif
 
-     a=max(amin,1e-4)
+     a=max(amin,1e-4)-astep
 
-     print *,'b= amin= amax= ',b,amin,amax
+     print *,'a= b= amin= amax= ',a,b,amin,amax
 
-     do while (a < min(0.05,amax))
+     do while (a+astep < min(0.1,amax))
  
-        a=exp(log(a)+0.25)
+        a=a+astep
         
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = nfi1_lnrhoreh_max(a,b,Pstar)
