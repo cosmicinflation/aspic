@@ -11,7 +11,7 @@ module nfi1sr
   use infprec, only : kp
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
   use nficommon, only : nfi_norm_deriv_second_potential
-  use nficommon, only : nfi_numacc_x_big, nfi_numacc_x_epsonenull
+  use nficommon, only : nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
   use nficommon, only : nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   use nficommon, only : nfi_x_epsoneunity, nfi_x_trajectory,nfi_efold_primitive
 
@@ -139,7 +139,7 @@ contains
 
 
 
-!returns the minimal value of a given b such that xend < numacc_x_big
+!returns the minimal value of a given b such that xend < numacc_x_potbig
   function nfi1_numacc_amin(b)
     use nficommon, only : NfiBig
     implicit none

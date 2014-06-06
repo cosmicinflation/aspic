@@ -3,7 +3,7 @@
 !
 !V(phi)) = M^4 exp (a x^b)
 !
-!1: a<0, b>1
+!2: a<0, b>1
 !
 !x = phi/Mp
 
@@ -11,7 +11,7 @@ module nfi2sr
   use infprec, only : kp
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
   use nficommon, only : nfi_norm_deriv_second_potential
-  use nficommon, only : nfi_numacc_x_big, nfi_numacc_x_epsonenull
+  use nficommon, only : nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
   use nficommon, only : nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   use nficommon, only : nfi_x_epsoneunity, nfi_x_trajectory,nfi_efold_primitive
 
@@ -163,7 +163,7 @@ contains
        stop 'nfi1_numacc_xinimax: nfi2 requires a<0, b>1'
     endif
 
-    nfi2_numacc_xinimax = min(nfi2_xinimax(a,b),nfi_numacc_x_big(a,b))
+    nfi2_numacc_xinimax = min(nfi2_xinimax(a,b),nfi_numacc_x_potbig(a,b))
    
   end function nfi2_numacc_xinimax
 

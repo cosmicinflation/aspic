@@ -19,7 +19,7 @@ module nficommon
   public nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   public nfi_x_epsoneunity, nfi_x_epstwounity
   public nfi_efold_primitive, nfi_x_trajectory
-  public NfiBig, nfi_numacc_x_big, nfi_numacc_x_epsonenull
+  public NfiBig, nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
  
 
 
@@ -125,19 +125,19 @@ contains
 
 
 !returns the value of x to get a |ln(potential)=<huge
-  function nfi_numacc_x_big(a,b)
+  function nfi_numacc_x_potbig(a,b)
     implicit none
-    real(kp) :: nfi_numacc_x_big
+    real(kp) :: nfi_numacc_x_potbig
     real(kp), intent(in) :: a,b
     
 
     if (a*b.ne.0) then
-       nfi_numacc_x_big = (log(NfiBig)/abs(a))**(1._kp/b)
+       nfi_numacc_x_potbig = (log(NfiBig)/abs(a))**(1._kp/b)
     else
-       stop 'nfi_numacc_x_big: ab=0'
+       stop 'nfi_numacc_x_potbig: ab=0'
     end if
                 
-  end function nfi_numacc_x_big
+  end function nfi_numacc_x_potbig
 
 
 

@@ -13,7 +13,7 @@ program nfi3main
   use nfi3reheat, only : nfi3_x_rreh, nfi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-  use nficommon, only : nfi_numacc_x_big
+  use nficommon, only : nfi_numacc_x_potbig
   use srreheat, only : potential_normalization, primscalar
 
   implicit none
@@ -70,7 +70,7 @@ program nfi3main
 
         print *,'xend',nfi3_x_endinf(a,b)
         print *,'xinimax',nfi3_numacc_xinimax(a,b)
-        print *,'xbig',nfi_numacc_x_big(a,b)
+        print *,'xpotbig',nfi_numacc_x_potbig(a,b)
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = nfi3_lnrhoreh_max(a,b,Pstar)
@@ -134,7 +134,7 @@ program nfi3main
 
         print *,'xend',nfi3_x_endinf(a,b)
         print *,'xinimax',nfi3_numacc_xinimax(a,b)
-        print *,'xbig',nfi_numacc_x_big(a,b)
+        print *,'xpotbig',nfi_numacc_x_potbig(a,b)
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = nfi3_lnrhoreh_max(a,b,Pstar)

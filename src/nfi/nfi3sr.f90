@@ -3,7 +3,7 @@
 !
 !V(phi)) = M^4 exp (a x^b)
 !
-!3: {a<0, 0<b<1} U {a>0, b<0}
+!3: a<0, 0<b<1 and a>0, b<0
 !
 !x = phi/Mp
 
@@ -11,7 +11,7 @@ module nfi3sr
   use infprec, only : kp
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
   use nficommon, only : nfi_norm_deriv_second_potential
-  use nficommon, only : nfi_numacc_x_big, nfi_numacc_x_epsonenull
+  use nficommon, only : nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
   use nficommon, only : nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   use nficommon, only : nfi_x_epsoneunity, nfi_x_trajectory,nfi_efold_primitive
 
@@ -139,7 +139,7 @@ contains
 
 
 
-!returns the maximal value of |a| given b such that xinimax < numacc_x_big
+!returns the maximal value of |a| given b such that xinimax < numacc_x_potbig
   function nfi3_numacc_absamax(b)
     use nficommon, only : NfiBig
     implicit none

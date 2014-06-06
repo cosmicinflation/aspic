@@ -1,4 +1,4 @@
-!N-formalism inflation 1 reheating functions in the slow-roll approximations
+!N-formalism inflation 3 reheating functions in the slow-roll approximations
 
 module nfi3reheat
   use infprec, only : kp
