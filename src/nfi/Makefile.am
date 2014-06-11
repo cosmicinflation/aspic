@@ -31,7 +31,7 @@ libnfi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libnfi_la_includedir = $(includedir)/$(SRINCDIR)
 libnfi_la_include_HEADERS = $(MOD)
 
-man_MANS = aspic_nfi1.3 aspic_nfi2.3 aspic_nfi3.3
+man_MANS = aspic_nfi1.3 aspic_nfi2.3 aspic_nfi3.3 aspic_nfi4.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:
