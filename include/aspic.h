@@ -106,7 +106,10 @@ use ssbi6sr
 use ssbi6reheat
 use imisr
 use imireheat
-
+use nfi1sr
+use nfi1reheat
+use nfi3sr
+use nfi3reheat
 
 
 !three parameter models
@@ -138,6 +141,10 @@ use bisr
 use bireheat
 use kkltisr
 use kkltireheat
+use nfi2sr
+use nfi2reheat
+use nfi4sr
+use nfi4reheat
 !use shisr
 !use shireheat
 !use su5isr
