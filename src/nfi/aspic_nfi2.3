@@ -47,13 +47,16 @@ inflation lasts, at least, 'N' efolds between 'xinimax' and 'xendmax'.
 When the parameter 'b' is an even integer, the potential is symmetric
 with respect to 'x = 0' and inflation proceeds in the same way in the
 negative 'x' domain. When 'b' is an odd integer, the potential has an
-inflection point at 'x = 0'. Inflation within the domain 'x > 0' can
-still be described by
+inflection point at 'x = 0'. Slow-roll inflation within the domain 'x
+> 0' can still be described by
 .I nfi2
-but may also evolve from 'x > 0' to 'x < 0'. This particular case is
-handled by the
-.I nfi7
-module.
+whereas slow-roll inflation within the domain 'x < 0' can be described
+by the
+.I nfi1
+module using the symmetry 'a --> -a' and 'x --> -x'. There is also
+situation in which the field may also evolve from 'x > 0' to 'x < 0'
+and pass by the point 'x = 0' which cannot be handle within the
+slow-roll approximation.
 
 For '1 < b < 2', the maximal number of efolds from 'x = xinimax' to 'x
 = 0' is finite. The
