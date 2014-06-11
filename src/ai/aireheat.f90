@@ -9,7 +9,7 @@ module aireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use aisr, only : ai_epsilon_one, ai_epsilon_two, ai_epsilon_three
-  use aisr, only : ai_norm_potential
+  use aisr, only : ai_norm_potential, ai_numacc_xinimin
   use aisr, only : ai_x_endinf, ai_efold_primitive
   implicit none
 
@@ -50,8 +50,10 @@ contains
     aiData%real2 = w
     aiData%real3 = calF + primEnd
 
-    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+!    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
+!    maxi = xend*(1._kp-epsilon(1._kp))
+    mini = ai_numacc_xinimin(mu)
+    maxi = xend
 
 
     x = zbrent(find_ai_x_star,mini,maxi,tolzbrent,aiData)
@@ -116,8 +118,10 @@ contains
     aiData%real1 = mu
     aiData%real2 = calF + primEnd
 
-    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+!    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
+!    maxi = xend*(1._kp-epsilon(1._kp))
+    mini = ai_numacc_xinimin(mu)
+    maxi = xend
 
     x = zbrent(find_ai_x_rrad,mini,maxi,tolzbrent,aiData)
     ai_x_rrad = x
@@ -181,8 +185,10 @@ contains
     aiData%real1 = mu
     aiData%real2 = calF + primEnd
 
-    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+!    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
+!    maxi = xend*(1._kp-epsilon(1._kp))
+    mini = ai_numacc_xinimin(mu)
+    maxi = xend
 
     x = zbrent(find_ai_x_rreh,mini,maxi,tolzbrent,aiData)
     ai_x_rreh = x

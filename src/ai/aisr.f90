@@ -12,9 +12,10 @@ module aisr
 
   private
 
-  public  ai_norm_potential, ai_epsilon_one, ai_epsilon_two, ai_epsilon_three
-  public  ai_x_endinf, ai_efold_primitive, ai_x_trajectory
-  public  ai_norm_deriv_potential, ai_norm_deriv_second_potential
+  public ai_norm_potential, ai_epsilon_one, ai_epsilon_two, ai_epsilon_three
+  public ai_x_endinf, ai_efold_primitive, ai_x_trajectory
+  public ai_norm_deriv_potential, ai_norm_deriv_second_potential
+  public ai_mumax, ai_x_epsonemax, ai_numacc_xinimin
  
 contains
 !returns V/M**4
@@ -75,7 +76,7 @@ contains
     real(kp), intent(in) :: x,mu
     
     ai_epsilon_two = (8._kp/mu**2*(1._kp-pi*x+2._kp*x*atan(x)))/ &
-                     ((1._kp+x**2)**2*(pi-2._kp*atan(x))**2)
+         ((1._kp+x**2)**2*(pi-2._kp*atan(x))**2)
     
   end function ai_epsilon_two
 
@@ -87,11 +88,47 @@ contains
     real(kp), intent(in) :: x,mu
     
     ai_epsilon_three = (2._kp/mu**2*(-4._kp+pi*(pi+6._kp*x-3._kp*pi*x**2)- & 
-                       4._kp*atan(x)*(pi+3._kp*x-3._kp*pi*x**2+(-1._kp+3._kp*x**2)* &
-                       atan(x))))/((1._kp+x**2)**2*(pi-2._kp*atan(x))**2* &
-                       (-1._kp+pi*x-2._kp*x*atan(x)))
+         4._kp*atan(x)*(pi+3._kp*x-3._kp*pi*x**2+(-1._kp+3._kp*x**2)* &
+         atan(x))))/((1._kp+x**2)**2*(pi-2._kp*atan(x))**2* &
+         (-1._kp+pi*x-2._kp*x*atan(x)))
     
   end function ai_epsilon_three
+
+
+
+  function ai_x_epsonemax(mu)
+    implicit none
+    real(kp) :: ai_x_epsonemax
+    real(kp), intent(in) :: mu
+
+    ai_x_epsonemax= 0.428977908964179282343424050497337_kp
+
+  end function ai_x_epsonemax
+
+
+
+  function ai_mumax()
+    implicit none
+    real(kp) :: ai_mumax
+
+    ai_mumax = 0.512377601980274977255003526679718_kp
+
+  end function ai_mumax
+
+
+
+  function ai_numacc_xinimin(mu)
+    implicit none
+    real(kp) :: ai_numacc_xinimin
+    real(kp), intent(in) :: mu
+
+!at first order in 0
+!sqrt(eps1) = sqrt(2)/pi (1+2/pi x) + O(x^2)
+    
+    ai_numacc_xinimin = -sqrt( 1._kp/ (mu*pi*sqrt(2._kp*epsilon(1._kp))))
+
+  end function ai_numacc_xinimin
+
 
 
 !returns x=phi/mu at the end of inflation defined as epsilon1=1
@@ -102,11 +139,18 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: aiData
+    real(kp) :: xepsonemax
 
-    if (mu .gt. 0.512378) stop 'i_x_endinf: mu>0.512378: inflation does not stop by slow roll violation'
+    xepsonemax = ai_x_epsonemax(mu)
 
-    mini=-sqrt(sqrt(1._kp/(mu**2*pi*10._kp**(-10._kp)))-1._kp)! Minimal bound set using an asymptotic expression for epsilon1
-    maxi=0.428978_kp !Position where epsilon1 is maximum
+    if (ai_epsilon_one(xepsonemax,mu).lt.1._kp) then
+       stop 'ai_x_endinf: epsonemax<1, inflation never stops!'
+    endif
+   
+! Minimal numerical bound ensuring eps1>numacc
+    mini = ai_numacc_xinimin(mu)    
+!Position where epsilon1 is maximum
+    maxi= xepsonemax
 
     aiData%real1 = mu
 
@@ -149,14 +193,29 @@ contains
     real(kp), intent(in) :: bfold, xend, mu
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: ai_x_trajectory,mini,maxi
+    real(kp) :: xinimin, efoldMax
     type(transfert) :: aiData
 
     aiData%real1 = bfold
     aiData%real2 = xend
     aiData%real3 = mu
 
-    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
-    maxi = xend*(1._kp-epsilon(1._kp))
+
+    xinimin = ai_numacc_xinimin(mu)
+
+    efoldMax = - ai_efold_primitive(xend,mu) &
+         + ai_efold_primitive(xinimin,mu)
+
+    if (-bfold.gt.efoldMax) then
+       write(*,*)'ai_x_trajectory: not enough efolds!'
+       write(*,*)'efold requested= efold maxi= ',-bfold,efoldMax
+       write(*,*) 'xinimin (numacc)= ',xinimin
+       stop 
+    endif
+
+!    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
+    mini = xinimin
+    maxi = xend
     
     ai_x_trajectory =zbrent(find_ai_x_trajectory,mini,maxi,tolzbrent,aiData)
        
