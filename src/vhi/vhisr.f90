@@ -291,8 +291,10 @@ contains
 
     if (efold.gt.efoldMax) then
        write(*,*)'vhi_xendmax: not enough efolds!'
+       write(*,*)'p= mu= ',p,mu
        write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
-       stop
+       vhi_xendmax = xendMin
+       return
     endif
 
     vhi_xendmax = vhi_x_trajectory(efold,xiniMax,p,mu)
@@ -300,7 +302,7 @@ contains
 
   end function vhi_xendmax
 
-  
+
 
 !this is integral[V(phi)/V'(phi) dphi]
   function vhi_efold_primitive(x,p,mu)
