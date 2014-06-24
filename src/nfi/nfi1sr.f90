@@ -184,6 +184,7 @@ contains
 !xini=numacc (>0) to xend. Compared to nfi1_amax, this is due to
 !numerical limitation
   function nfi1_numacc_amax(efold,b)
+    use nficommon, only : NfiSmall
     implicit none
     real(kp) :: nfi1_numacc_amax
     real(kp), intent(in) :: efold,b
@@ -193,10 +194,10 @@ contains
     endif
 
     if (b.eq.2._kp) then
-       nfi1_numacc_amax = -0.25*log(epsilon(1._kp))/efold
+       nfi1_numacc_amax = -0.25*log(NfiSmall)/efold
     else
        nfi1_numacc_amax = (b*(2._kp-b)*efold &
-            /(1._kp-epsilon(1._kp)**(0.5_kp*(2._kp-b)/(b-1._kp))) &
+            /(1._kp-NfiSmall**(0.5_kp*(2._kp-b)/(b-1._kp))) &
             )**(1._kp-b) &
             * (0.5_kp*b*b)**(0.5_kp*(b-2._kp))
     endif

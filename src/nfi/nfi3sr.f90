@@ -141,7 +141,7 @@ contains
 
 !returns the maximal value of |a| given b such that xinimax < numacc_x_potbig
   function nfi3_numacc_absamax(b)
-    use nficommon, only : NfiBig
+    use nficommon, only : NfiBig, NfiSmall
     implicit none
     real(kp) :: nfi3_numacc_absamax
     real(kp), intent(in) :: b
@@ -151,7 +151,7 @@ contains
     endif
 
     nfi3_numacc_absamax = log(NfiBig)**(1._kp-b) &
-         *(0.5_kp*b*b/epsilon(1._kp))**(-0.5_kp*b)
+         *(0.5_kp*b*b/NfiSmall)**(-0.5_kp*b)
     
   end function nfi3_numacc_absamax
 

@@ -12,6 +12,7 @@ module nficommon
 
 
   real(kp), parameter :: NfiBig = epsilon(1._kp)*huge(1._kp)
+  real(kp), parameter :: NfiSmall = epsilon(1._kp)
 
 
   public nfi_norm_potential
@@ -19,7 +20,7 @@ module nficommon
   public nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   public nfi_x_epsoneunity, nfi_x_epstwounity
   public nfi_efold_primitive, nfi_x_trajectory
-  public NfiBig, nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
+  public NfiBig, NfiSmall, nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
  
 
 
@@ -124,7 +125,7 @@ contains
 
 
 
-!returns the value of x to get a |ln(potential)=<huge
+!returns the value of x to get |ln(potential)|=<huge 
   function nfi_numacc_x_potbig(a,b)
     implicit none
     real(kp) :: nfi_numacc_x_potbig
@@ -141,14 +142,14 @@ contains
 
 
 
-!returns the numerical value of |x| to get a eps1=epsilon(1._kp)
+!returns the numerical value of |x| to get a eps1=NfiSmall
   function nfi_numacc_x_epsonenull(a,b)
     implicit none
     real(kp) :: nfi_numacc_x_epsonenull
     real(kp), intent(in) :: a,b
     
     if (a*b.ne.0) then
-        nfi_numacc_x_epsonenull = (2._kp*epsilon(1._kp)/(a*a*b*b)) &
+        nfi_numacc_x_epsonenull = (2._kp*NfiSmall/(a*a*b*b)) &
             ** (0.5_kp/(b-1._kp) )
     else
        stop 'nfi_numacc_x_epsonenull: ab=0'

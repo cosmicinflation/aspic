@@ -26,7 +26,7 @@ module nfi2sr
 
   public nfi2_check_params
   public nfi2_numacc_xinimax, nfi2_numacc_xendmax, nfi2_numacc_xendmin
-  public nfi2_xinimax, nfi2_xendmax, nfi2_amin
+  public nfi2_xinimax, nfi2_xendmax, nfi2_amin, nfi2_numacc_amin
 
 contains
 
@@ -163,7 +163,7 @@ contains
        stop 'nfi1_numacc_xinimax: nfi2 requires a<0, b>1'
     endif
 
-    nfi2_numacc_xinimax = min(nfi2_xinimax(a,b),nfi_numacc_x_potbig(a,b))
+    nfi2_numacc_xinimax = min(nfi_x_epsoneunity(a,b),nfi_numacc_x_potbig(a,b))
    
   end function nfi2_numacc_xinimax
 
@@ -184,7 +184,7 @@ contains
 
 
     xinimax = nfi2_numacc_xinimax(a,b)
-    xendmin = tiny(0._kp)
+    xendmin = nfi2_numacc_xendmin(a,b)
 
     efoldMax = -nfi2_efold_primitive(xendmin,a,b) &
          + nfi2_efold_primitive(xinimax,a,b)
@@ -192,7 +192,8 @@ contains
     if (efold.gt.efoldMax) then
        write(*,*)'nfi2_numacc_xendmax: not enough efolds!'
        write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
-       stop
+       nfi2_numacc_xendmax = xendmin
+       return
     endif
 
     nfi2_numacc_xendmax = nfi_x_trajectory(efold,xinimax,a,b)
@@ -226,13 +227,14 @@ contains
     implicit none
     real(kp) :: nfi2_amin
     real(kp), intent(in) :: efold,b
+    logical, parameter :: display = .false.
 
     if (b.le.1._kp) then
        stop 'nfi2_amin: nfi2 requires b>1'
     endif
     
     if (b.ge.2._kp) then
-       write(*,*)'nfi2_amin: for b>=2 amin is -infinite!'
+       if (display) write(*,*)'nfi2_amin: for b>=2 amin is -infinite!'
        nfi2_amin = -huge(1._kp)
        return
     endif
@@ -242,6 +244,55 @@ contains
 
 
   end function nfi2_amin
+
+
+!return the minimal value of a to get efoldNum efolds of inflation
+!pushing between xini min numacc and xend
+  function nfi2_numacc_amin(efold,b)
+    use nficommon, only : NfiBig, NfiSmall
+    implicit none
+    real(kp) :: nfi2_numacc_amin
+    real(kp), intent(in) :: efold,b
+    real(kp) :: amin,afix
+
+    if (b.le.1._kp) then
+       stop 'nfi2_numacc_amin: nfi2 requires b>1'
+    endif
+
+!this assumes that xinimax is given by xepsone    
+    if (b.eq.2._kp) then
+       amin = 0.25*log(NfiSmall)/efold
+    else
+       amin = -(b*(2._kp-b)*efold &
+            /(1._kp-NfiSmall**(0.5_kp*(2._kp-b)/(b-1._kp))) &
+            )**(1._kp-b) &
+            * (0.5_kp*b*b)**(0.5_kp*(b-2._kp))
+    endif
+
+!we can only test this assumption a posteriori
+    if (nfi_x_epsoneunity(amin,b).lt.nfi_numacc_x_potbig(amin,b)) then
+       nfi2_numacc_amin = amin
+       return
+    endif
+
+!if this is violated, let's do it again by assuming xinimax=xpotbig;
+!but now this sucks because we have to solve a transcendental
+!equation. We approximate in the safest way provided  afix < a < 0
+    
+    afix = -1._kp
+    if (b.eq.2._kp) then
+       amin = -1._kp/log(NfiBig)*(2._kp/NfiSmall)**(-1._kp) &
+            * exp(4._kp*efold*afix)
+    else
+       amin = - (0.5_kp*b*b/NfiSmall)**(-0.5_kp*b) &
+            *(log(NfiBig)**((2._kp-b)/b) + (-afix)**(2._kp/b)*b*(b-2._kp)*efold) &
+            **(b*(b-1._kp)/(b-2._kp))
+    endif
+   
+    nfi2_numacc_amin = amin
+
+  end function nfi2_numacc_amin
+
 
 
 !this is integral[V(phi)/V'(phi) dphi]
