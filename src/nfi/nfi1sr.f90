@@ -25,7 +25,7 @@ module nfi1sr
   public nfi1_x_endinf, nfi1_efold_primitive, nfi1_x_trajectory
 
   public nfi1_check_params, nfi1_numacc_amin, nfi1_amax
-  public nfi1_numacc_xinimin
+  public nfi1_numacc_xinimin, nfi1_numacc_amax
 
 contains
 
@@ -161,13 +161,14 @@ contains
     implicit none
     real(kp) :: nfi1_amax
     real(kp), intent(in) :: efold,b
+    logical, parameter :: display = .false.
 
     if (b.le.1._kp) then
        stop 'nfi1_amax: nfi1 requires b>1'
     endif
     
     if (b.ge.2._kp) then
-       write(*,*)'nfi1_amax: for b>=2 amax is infinite!'
+       if (display) write(*,*)'nfi1_amax: for b>=2 amax is infinite!'
        nfi1_amax = huge(1._kp)
        return
     endif
@@ -177,6 +178,30 @@ contains
 
 
   end function nfi1_amax
+
+
+!return the maximal value of a to get efold of inflation starting a
+!xini=numacc (>0) to xend. Compared to nfi1_amax, this is due to
+!numerical limitation
+  function nfi1_numacc_amax(efold,b)
+    implicit none
+    real(kp) :: nfi1_numacc_amax
+    real(kp), intent(in) :: efold,b
+
+    if (b.le.1._kp) then
+       stop 'nfi1_numacc_amax: nfi1 requires b>1'
+    endif
+
+    if (b.eq.2._kp) then
+       nfi1_numacc_amax = -0.25*log(epsilon(1._kp))/efold
+    else
+       nfi1_numacc_amax = (b*(2._kp-b)*efold &
+            /(1._kp-epsilon(1._kp)**(0.5_kp*(2._kp-b)/(b-1._kp))) &
+            )**(1._kp-b) &
+            * (0.5_kp*b*b)**(0.5_kp*(b-2._kp))
+    endif
+
+  end function nfi1_numacc_amax
 
 
 !this is integral[V(phi)/V'(phi) dphi]
