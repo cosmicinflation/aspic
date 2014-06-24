@@ -280,7 +280,7 @@ contains
     real(kp), intent(in) :: efold,p,mu
     real(kp) :: vhi_xendmax, xiniMax, xendMin
     real(kp), parameter :: tolFind=tolkp
-
+    logical, parameter :: display = .false.
     real(kp) :: efoldMax
     
     xiniMax = vhi_xinimax(p,mu)
@@ -290,9 +290,11 @@ contains
          + vhi_efold_primitive(xiniMax,p,mu)
 
     if (efold.gt.efoldMax) then
-       write(*,*)'vhi_xendmax: not enough efolds!'
-       write(*,*)'p= mu= ',p,mu
-       write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
+       if (display) then
+          write(*,*)'vhi_xendmax: not enough efolds!'
+          write(*,*)'p= mu= ',p,mu
+          write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
+       endif
        vhi_xendmax = xendMin
        return
     endif

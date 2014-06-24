@@ -175,7 +175,7 @@ contains
     implicit none
     real(kp) :: nfi2_numacc_xendmax
     real(kp), intent(in) :: efold,a,b
-    
+    logical, parameter :: display = .false.
     real(kp) :: xinimax, xendmin, efoldMax
 
     if (.not.nfi2_check_params(a,b)) then
@@ -190,8 +190,11 @@ contains
          + nfi2_efold_primitive(xinimax,a,b)
     
     if (efold.gt.efoldMax) then
-       write(*,*)'nfi2_numacc_xendmax: not enough efolds!'
-       write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
+       if (display) then
+          write(*,*)'nfi2_numacc_xendmax: not enough efolds!'
+          write(*,*)'a= b= ',a,b
+          write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
+       endif
        nfi2_numacc_xendmax = xendmin
        return
     endif
