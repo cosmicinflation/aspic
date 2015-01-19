@@ -1,12 +1,16 @@
-SRC = ccsicommon.f90 ccsi1sr.f90 ccsi1reheat.f90
+SRC = ccsicommon.f90 ccsicomreh.f90 ccsi1sr.f90 ccsi1reheat.f90 ccsi2sr.f90 ccsi2reheat.f90
 
-MOD = ccsicommon.$(FC_MODEXT) ccsi1sr.$(FC_MODEXT) ccsi1reheat.$(FC_MODEXT)
+MOD = ccsicommon.$(FC_MODEXT) ccsicomreh.$(FC_MODEXT) ccsi1sr.$(FC_MODEXT) ccsi1reheat.$(FC_MODEXT) \
+ccsi2sr.$(FC_MODEXT) ccsi2reheat.$(FC_MODEXT)
 
-check_PROGRAMS = ccsi1main
+check_PROGRAMS = ccsi1main ccsi2main
 ccsi1main_SOURCES = $(SRC) ccsi1main.f90
 ccsi1main_FCFLAGS = -I../$(SRCOMMDIR)
 ccsi1main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
+ccsi2main_SOURCES = $(SRC) ccsi2main.f90
+ccsi2main_FCFLAGS = -I../$(SRCOMMDIR)
+ccsi2main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = libccsi.la
 libccsi_la_SOURCES = $(SRC)
@@ -14,7 +18,7 @@ libccsi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libccsi_la_includedir = $(includedir)/$(SRINCDIR)
 libccsi_la_include_HEADERS = $(MOD)
 
-man_MANS = aspic_ccsi1.3
+man_MANS = aspic_ccsi1.3 aspic_ccsi2.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

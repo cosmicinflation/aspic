@@ -1,5 +1,6 @@
 module srflow
-!this is in k* defined by k* eta* = -1
+!this is in k* defined by k* eta* = -1 and eps() stands for the Hubble
+!flow parameters evaluated at eta*
   use infprec, only : kp, pi, CConst
 
   implicit none

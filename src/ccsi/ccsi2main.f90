@@ -1,18 +1,17 @@
 !test the reheating derivation from slow-roll
-program rpi2main
+program ccsi2main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use rpicommon, only : rpi_x_potmax
-  use rpi1sr, only : rpi1_x_endinf
-  use rpi2sr, only : rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
-  use rpi2reheat, only : rpi2_lnrhoreh_max, rpi2_x_star
+  use ccsi2sr, only : ccsi2_epsilon_one, ccsi2_epsilon_two, ccsi2_epsilon_three
+  use ccsi2reheat, only : ccsi2_lnrhoreh_max, ccsi2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rpi2sr, only : rpi2_norm_potential
-  use rpi2reheat, only : rpi2_x_rreh, rpi2_x_rrad
+  use ccsi2sr, only : ccsi2_norm_potential, ccsi2_numacc_xendmin
+  use ccsi2reheat, only : ccsi2_x_rreh, ccsi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
 
   implicit none
 
@@ -20,86 +19,68 @@ program rpi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 10
+  integer :: npts = 20
 
-  integer, parameter :: Np=8
-  real(kp), parameter :: pmin=1.005_kp
-  real(kp), parameter :: pmax=1.5_kp
+  integer :: Np=10
+  real(kp) :: alphamin=1d-6
+  real(kp) :: alphamax=1d-2
 
-  integer, parameter :: Nyend = 12
-  real(kp) :: yendMin, yendMax
-
-  real(kp) :: p,w,bfoldstar,yend
-  real(kp) :: lnRhoReh,ystar,eps1,eps2,eps3,ns,r
+  real(kp) :: alpha,w,bfoldstar
+  real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
-  real(kp) :: VendOverVstar, eps1End
+
+  integer :: Ne = 5
+  real(kp) :: xendmin, xendmax
+  real(kp) :: VendOverVstar, eps1End, xend
 
   Pstar = powerAmpScalar
 
-  call delete_file('rpi2_predic.dat')
-  call delete_file('rpi2_nsr.dat')
+  call delete_file('ccsi2_predic.dat')
+  call delete_file('ccsi2_nsr.dat')
 
 
   !  w = 1._kp/3._kp
   w=0._kp
 
-  do j=0,Np
-     if (j .eq. -1) then 
-       p=1._kp
-     else 
-       p=pmin+(pmax-pmin)*(real(j,kp)/Np) !flat prior
-       p=1._kp+(pmin-1._kp)*((pmax-1._kp)/(pmin-1._kp))**(real(j,kp)/Np) !log prior on p-1
-     end if
 
+  do j=0,Np 
 
- !    w=(1._kp-p)/(3._kp-1._kp)
+     alpha=10._kp**(log10(alphamin)+(log10(alphamax/alphamin))*(real(j,kp)/Np))
 
+     print *
 
+     print *,'alpha= ',alpha    
 
      lnRhoRehMin = lnRhoNuc
+     xendmin = ccsi2_numacc_xendmin(120._kp,alpha)
+     xendmax = 5*xendmin
 
-     if (p.eq.1._kp) then
-        yendMin = rpi1_x_endinf(p)
-        yendMax = 2*yendMin
-     else
-        yendMin = rpi_x_potmax(p)*(0.1_kp+p)
-        yendMax = (5._kp+(p-1._kp)*10._kp)*yendMin
-     endif
+     do k=0,Ne
 
+        xend = xendmin + (xendmax-xendmin)*real(k,kp)/Ne
 
-     do k=0,Nyend
-        yend = yendMin + (yendMax-yendMin)*(real(k,kp)/Nyend) !arithmetic step
-        !yend = yendMin*(yendMax/yendMin)**(real(k,kp)/Nyend) !logarithmic step
+        lnRhoRehMax = ccsi2_lnrhoreh_max(alpha,xend,Pstar)
 
-        print *,'p= yend= ',p,yend
-
-        lnRhoRehMax = rpi2_lnrhoreh_max(p,yend,Pstar)
-
-        print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+        print *,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
         do i=1,npts
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
+           xstar = ccsi2_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
-           ystar = rpi2_x_star(p,yend,w,lnRhoReh,Pstar,bfoldstar)
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
+           eps1 = ccsi2_epsilon_one(xstar,alpha)
+           eps2 = ccsi2_epsilon_two(xstar,alpha)
+           eps3 = ccsi2_epsilon_three(xstar,alpha)
 
-           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'ystar=',ystar
-
-
-           eps1 = rpi2_epsilon_one(ystar,p)
-           eps2 = rpi2_epsilon_two(ystar,p)
-           eps3 = rpi2_epsilon_three(ystar,p)
-
-
-           if ((abs(eps2).gt.0.2)) cycle
 
            logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
@@ -110,54 +91,52 @@ program rpi2main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           call livewrite('rpi2_predic.dat',p,yend,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('ccsi2_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 
-           call livewrite('rpi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           call livewrite('ccsi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
         end do
 
-     end do
+     enddo
 
-  enddo
-
+  end do
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42
   lnRradmax = 10
-  p = 1.3
-  yend = rpi_x_potmax(p) + 10
+  alpha = 0.001
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     ystar = rpi2_x_rrad(p,yend,lnRrad,Pstar,bfoldstar)
+     xstar = ccsi2_x_rrad(alpha,xend, lnRrad,Pstar,bfoldstar)
 
-     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'ystar', ystar
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = rpi2_epsilon_one(ystar,p)
+     eps1 = ccsi2_epsilon_one(xstar,alpha)
 
      !consistency test
-     !get lnR from lnRrad and check that it gives the same ystar
-     eps1end =  rpi2_epsilon_one(yend,p)
-     VendOverVstar = rpi2_norm_potential(yend,p)/rpi2_norm_potential(ystar,p)
+     !get lnR from lnRrad and check that it gives the same xstar
+     eps1end =  ccsi2_epsilon_one(xend,alpha)
+     VendOverVstar = ccsi2_norm_potential(xend,alpha)/ccsi2_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     ystar = rpi2_x_rreh(p,yend,lnR,bfoldstar)
-     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'ystar', ystar
+     xstar = ccsi2_x_rreh(alpha,xend,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
-     !get rhoreh for chosen w and check that ystar gotten this way is the same
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     ystar = rpi2_x_star(p,yend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ccsi2_x_star(alpha,xend, w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
-          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'ystar',ystar
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
   enddo
 
-end program rpi2main
+end program ccsi2main

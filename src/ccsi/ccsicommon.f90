@@ -26,7 +26,7 @@ module ccsicommon
   real(kp), parameter :: ccsiBig = log(epsilon(1._kp)*huge(1._kp))
   real(kp), parameter :: ccsiSmall = epsilon(1._kp)
 
-  public ccsiBig
+  public ccsiBig, ccsiSmall
 
 contains
 

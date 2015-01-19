@@ -1,286 +1,125 @@
-!R-R^p inflation reheating functions in the slow-roll approximations
+!R+R^2+alpha R^3 inflation reheating functions for alpha>0 and x>xVmax
+!in the slow-roll approximations
 
-module rpi2reheat
-  use infprec, only : kp, tolkp, transfert
-  use inftools, only : zbrent
-  use srreheat, only : get_calfconst, find_reheat, slowroll_validity
+module ccsi2reheat
+  use infprec, only : kp
+  use srreheat, only : slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat
-  use srreheat, only : find_reheat_rrad, find_reheat_rreh
-  use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use rpicommon, only : rpi_x_potmax
-  use rpi2sr, only : rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
-  use rpi2sr, only : rpi2_norm_potential, rpi2_efold_primitive
+  use ccsicomreh, only : ccsi_x_star, ccsi_x_rrad, ccsi_x_rreh
+  use ccsi2sr, only : ccsi2_epsilon_one, ccsi2_epsilon_two, ccsi2_epsilon_three
+  use ccsi2sr, only : ccsi2_norm_potential, ccsi2_efold_primitive
+  use ccsi2sr, only : ccsi2_check_params, ccsi2_numacc_xinimin
+
   implicit none
 
   private
 
-  real(kp), parameter :: Rpi2MaxiMax = 100._kp
-
-  public rpi2_x_star, rpi2_lnrhoreh_max
-  public rpi2_x_rrad, rpi2_x_rreh
+  public ccsi2_x_star, ccsi2_lnrhoreh_max
+  public ccsi2_x_rrad, ccsi2_x_rreh
 
 contains
 
-!returns y =phi/Mp * sqrt(2/3) such given potential parameters, scalar power, wreh and
+
+!returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function rpi2_x_star(p,yend,w,lnRhoReh,Pstar,bfoldstar)    
+  function ccsi2_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
-    real(kp) :: rpi2_x_star
-    real(kp), intent(in) :: p,yend,lnRhoReh,w,Pstar
+    real(kp) :: ccsi2_x_star
+    real(kp), intent(in) :: alpha,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
-
-    real(kp), parameter :: tolzbrent = tolkp
-    real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,potEnd
-
-    type(transfert) :: rpi2Data
     
+    real(kp) :: mini,maxi
 
-    if (w.eq.1._kp/3._kp) then
-       if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
-    endif
-   
-    epsOneEnd = rpi2_epsilon_one(yEnd,p)
-    potEnd = rpi2_norm_potential(yEnd,p)
-
-    primEnd = rpi2_efold_primitive(yEnd,p)
-   
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
-
-    rpi2Data%real1 = p
-    rpi2Data%real2 = w
-    rpi2Data%real3 = calF + primEnd
-    
-
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
-
-       mini = yEnd
-       maxi=Rpi2MaxiMax !to avoid numerical explosion
-
-    else
-
-       yVmax = rpi_x_potmax(p)
-       if (yend.lt.yVmax) stop 'rpi2_x_star: yend < yVmax!'
-       
-       mini = yVmax*(1._kp+epsilon(1._kp))
-       maxi = yEnd
-              
+    if (.not.ccsi2_check_params(alpha)) then
+       stop 'ccsi2_x_star: ccsi2 requires alpha>=0'
     endif
 
-    y = zbrent(find_rpi2_x_star,mini,maxi,tolzbrent,rpi2Data)
+    mini = ccsi2_numacc_xinimin(alpha)
+    maxi = xend
 
-    rpi2_x_star = y
+    ccsi2_x_star = ccsi_x_star(alpha,w,lnRhoReh,Pstar,xend,mini,maxi,bfoldstar)
 
-    if (present(bfoldstar)) then
-       bfoldstar = - (rpi2_efold_primitive(y,p) - primEnd)
-    endif
-
-  end function rpi2_x_star
+  end function ccsi2_x_star
 
 
-  function find_rpi2_x_star(y,rpi2Data)   
-    implicit none
-    real(kp) :: find_rpi2_x_star
-    real(kp), intent(in) :: y
-    type(transfert), optional, intent(inout) :: rpi2Data
 
-    real(kp) :: primStar,p,w,CalFplusprimEnd,potStar,epsOneStar
-
-    p=rpi2Data%real1
-    w = rpi2Data%real2
-    CalFplusprimEnd = rpi2Data%real3
-
-    primStar = rpi2_efold_primitive(y,p)
-    epsOneStar = rpi2_epsilon_one(y,p)
-    potStar = rpi2_norm_potential(y,p)
-
-    find_rpi2_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
-  end function find_rpi2_x_star
-
-!returns y given potential parameters, scalar power, and lnRrad.
+!returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function rpi2_x_rrad(p,yend,lnRrad,Pstar,bfoldstar)    
+  function ccsi2_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
-    real(kp) :: rpi2_x_rrad
-    real(kp), intent(in) :: p,yend,lnRrad,Pstar
+    real(kp) :: ccsi2_x_rrad
+    real(kp), intent(in) :: alpha,xend,lnRrad,Pstar    
     real(kp), intent(out), optional :: bfoldstar
 
-    real(kp), parameter :: tolzbrent = tolkp
-    real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: mini,maxi
 
-    type(transfert) :: rpi2Data
-    
-    if (lnRrad.eq.0._kp) then
-       if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    if (.not.ccsi2_check_params(alpha)) then
+       stop 'ccsi2_x_rrad: ccsi2 requires alpha>=0'
     endif
-
-    epsOneEnd = rpi2_epsilon_one(yEnd,p)
-    potEnd = rpi2_norm_potential(yEnd,p)
-
-    primEnd = rpi2_efold_primitive(yEnd,p)
-   
-    calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
-
-    rpi2Data%real1 = p
-    rpi2Data%real2 = calF + primEnd
-    
-
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
-
-       mini = yEnd
-       maxi=Rpi2MaxiMax !to avoid numerical explosion
-
-    else
-
-       yVmax = rpi_x_potmax(p)
-       if (yend.lt.yVmax) stop 'rpi2_x_rrad: yend < yVmax!'
-       
-       mini = yVmax*(1._kp + epsilon(1._kp))
-       maxi = yEnd
-              
-    endif
-
-    y = zbrent(find_rpi2_x_rrad,mini,maxi,tolzbrent,rpi2Data)
-
-    rpi2_x_rrad = y
-
-    if (present(bfoldstar)) then
-       bfoldstar = - (rpi2_efold_primitive(y,p) - primEnd)
-    endif
-
-  end function rpi2_x_rrad
-
-
-  function find_rpi2_x_rrad(y,rpi2Data)   
-    implicit none
-    real(kp) :: find_rpi2_x_rrad
-    real(kp), intent(in) :: y
-    type(transfert), optional, intent(inout) :: rpi2Data
-
-    real(kp) :: primStar,p,CalFplusprimEnd,potStar,epsOneStar
-
-    p=rpi2Data%real1
-    CalFplusprimEnd = rpi2Data%real2
-
-    primStar = rpi2_efold_primitive(y,p)
-    epsOneStar = rpi2_epsilon_one(y,p)
-    potStar = rpi2_norm_potential(y,p)
-
-    find_rpi2_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
-  end function find_rpi2_x_rrad
+    mini = ccsi2_numacc_xinimin(alpha)
+    maxi = xend
+   
+    ccsi2_x_rrad = ccsi_x_rrad(alpha,lnRrad,Pstar,xend,mini,maxi,bfoldstar)
+
+  end function ccsi2_x_rrad
 
 
-!returns y given potential parameters, scalar power, and lnRreh.
+!returns x given potential parameters, scalar power, and lnR.
 !If present, returns the corresponding bfoldstar
-  function rpi2_x_rreh(p,yend,lnRreh,bfoldstar)    
+  function ccsi2_x_rreh(alpha,xend,lnRreh,bfoldstar)    
     implicit none
-    real(kp) :: rpi2_x_rreh
-    real(kp), intent(in) :: p,yend,lnRreh
+    real(kp) :: ccsi2_x_rreh
+    real(kp), intent(in) :: alpha,xend,lnRreh 
     real(kp), intent(out), optional :: bfoldstar
 
-    real(kp), parameter :: tolzbrent = tolkp
-    real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: mini,maxi
 
-    type(transfert) :: rpi2Data
-    
-    if (lnRreh.eq.0._kp) then
-       if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    if (.not.ccsi2_check_params(alpha)) then
+       stop 'ccsi2_x_rreh: ccsi2 requires alpha>=0'
     endif
-
-    epsOneEnd = rpi2_epsilon_one(yEnd,p)
-    potEnd = rpi2_norm_potential(yEnd,p)
-
-    primEnd = rpi2_efold_primitive(yEnd,p)
    
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
-
-    rpi2Data%real1 = p
-    rpi2Data%real2 = calF + primEnd
+    mini = ccsi2_numacc_xinimin(alpha)
+    maxi = xend
     
+    ccsi2_x_rreh = ccsi_x_rreh(alpha,lnRreh,xend,mini,maxi,bfoldstar)
 
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
-
-       mini = yEnd
-       maxi=Rpi2MaxiMax !to avoid numerical explosion
-
-    else
-
-       yVmax = rpi_x_potmax(p)
-       if (yend.lt.yVmax) stop 'rpi2_x_rreh: yend < yVmax!'
-       
-       mini = yVmax*(1._kp + epsilon(1._kp))
-       maxi = yEnd
-              
-    endif
-
-    y = zbrent(find_rpi2_x_rreh,mini,maxi,tolzbrent,rpi2Data)
-
-    rpi2_x_rreh = y
-
-    if (present(bfoldstar)) then
-       bfoldstar = - (rpi2_efold_primitive(y,p) - primEnd)
-    endif
-
-  end function rpi2_x_rreh
+  end function ccsi2_x_rreh
 
 
-  function find_rpi2_x_rreh(y,rpi2Data)   
+
+  function ccsi2_lnrhoreh_max(alpha,xend,Pstar) 
     implicit none
-    real(kp) :: find_rpi2_x_rreh
-    real(kp), intent(in) :: y
-    type(transfert), optional, intent(inout) :: rpi2Data
-
-    real(kp) :: primStar,p,CalFplusprimEnd,potStar
-
-    p=rpi2Data%real1
-    CalFplusprimEnd = rpi2Data%real2
-
-    primStar = rpi2_efold_primitive(y,p)
-    potStar = rpi2_norm_potential(y,p)
-
-    find_rpi2_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
-  
-  end function find_rpi2_x_rreh
-
-
-
-
-  function rpi2_lnrhoreh_max(p,yend,Pstar) 
-    implicit none
-    real(kp) :: rpi2_lnrhoreh_max
-    real(kp), intent(in) :: p,yend,Pstar
+    real(kp) :: ccsi2_lnrhoreh_max
+    real(kp), intent(in) :: alpha,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
-    real(kp) :: y, potStar, epsOneStar
+    real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
     real(kp) :: lnRhoEnd
-   
-    potEnd  = rpi2_norm_potential(yEnd,p)
+    
+    potEnd  = ccsi2_norm_potential(xEnd,alpha)
 
-    epsOneEnd = rpi2_epsilon_one(yEnd,p)
+    epsOneEnd = ccsi2_epsilon_one(xEnd,alpha)
 
-!   Trick to return y such that rho_reh=rho_end
+!   Trick to return x such that rho_reh=rho_end
 
-    y = rpi2_x_star(p,yend,wrad,junk,Pstar)  
-     
-    potStar = rpi2_norm_potential(y,p)
-    epsOneStar = rpi2_epsilon_one(y,p)
-   
-    if (.not.slowroll_validity(epsOneStar)) stop 'rpi2_lnrhoreh_max: slow-roll violated!'
+    x = ccsi2_x_star(alpha,xend,wrad,junk,Pstar)  
+
+    potStar = ccsi2_norm_potential(x,alpha)
+    epsOneStar = ccsi2_epsilon_one(x,alpha)
+    
+    if (.not.slowroll_validity(epsOneStar)) stop 'ccsi2_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
-    rpi2_lnrhoreh_max = lnRhoEnd
+    ccsi2_lnrhoreh_max = lnRhoEnd
 
-  end function rpi2_lnrhoreh_max
+  end function ccsi2_lnrhoreh_max
 
   
-end module rpi2reheat
+end module ccsi2reheat

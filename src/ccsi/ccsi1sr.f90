@@ -1,4 +1,5 @@
 !slow-roll functions for the R + R^2/m^2 + alpha R^3/m^4 inflation potential
+!with alpha > 0 and x < xVmax
 !
 !V(phi) = M^4 * exp(-2x) * [ exp(x) - 1 ]^2/{1 + sqrt[1+3 alpha(exp(x)-1)]}^3 
 !  * {1 + sqrt[1 + 3 alpha (exp(x)-1)] + 2 alpha (exp(x)-1) }
@@ -22,8 +23,7 @@ module ccsi1sr
   public ccsi1_norm_potential, ccsi1_epsilon_one, ccsi1_epsilon_two, ccsi1_epsilon_three
   public ccsi1_x_endinf, ccsi1_efold_primitive, ccsi1_x_trajectory
   public ccsi1_norm_deriv_potential, ccsi1_norm_deriv_second_potential 
-
-  public ccsi1_numacc_xinimax
+  public ccsi1_check_params, ccsi1_numacc_xinimax
 
 contains
 
@@ -186,7 +186,7 @@ contains
     if (xend.gt.xVmax) stop 'ccsi1_x_trajectory: xend > xVmax'
    
     mini = xEnd
-    maxi = xVmax*(1._kp-epsilon(1._kp))
+    maxi = ccsi1_numacc_xinimax(alpha)
 
     ccsi1Data%real1 = alpha
     ccsi1Data%real2 = -bfold + ccsi1_efold_primitive(xend,alpha)

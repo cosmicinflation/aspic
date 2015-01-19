@@ -197,10 +197,10 @@ classification below.  The next three functions, the ones containing the
 wording
 .B 'epsilon'
 in their name, return the value of the three first Hubble flow
-functions.
+functions at leading order (the so-called 'epsilonV' functions)
 .P
 Finally, the last three functions allows to determine
-uniquely the slow-roll trajectory. Calling
+uniquely the slow-roll trajectory at leading order. Calling
 .BR foo_x_endinf ()
 returns the field value
 .B 'xend'
@@ -440,40 +440,39 @@ kind.
 The
 .B srflow
 module provides some potentially useful functions to get other
-cosmological observables from the slow-roll parameters. Its source
-file is located under the directory 'src/common/'. In particular, the
-module has the public
+cosmological observables as well as higher order corrections on the
+Hubble flow functions. Its source file is located under the
+directory 'src/common/'. In particular, the module has the public
 .I functions
 of kind
 .I real(kp)
 .IP
-.BR scalar_spectral_index (eps)
+.BR scalar_spectral_index (epsH)
 .RE
 .RS
-.BR tensor_to_scalar_ratio (eps)
+.BR tensor_to_scalar_ratio (epsH)
 .RE
 .RS
-.BR scalar_running (eps)
+.BR scalar_running (epsH)
 .RE
 .P
 All of these functions take as input a
 .IP
 .I real(kp), dimension (:) ::
-eps
+epsH
 .RS
 .RE
 .P
-vector assumed to contain the value of the successive slow-roll
-parameters 'epsilon_i', with 'i' increasing. The calculations are
+vector assumed to contain the value of the successive Hubble flow
+parameters 'epsilonH_i', with 'i' increasing. The calculations are
 consistent with the size of the input vector. For instance, calling
 .BR scalar_spectral_index ()
 with a dimension two vector containing the values of the first and
-second slow-roll parameters returns the spectral index computed at
-first order in a slow-roll expansion. If you input a dimension three
-vector, the calculations are performed at second order in
-slow-roll. The same holds for the tensor-to-scalar ratio and the
-running of the spectral index (which is non-zero at second
-order only).
+second Hubble flow parameters returns the spectral index computed at
+first order in a Hubble flow expansion. If you input a dimension three
+vector, the calculations are performed at second order. The same holds
+for the tensor-to-scalar ratio and the running of the spectral index
+(which is non-zero at second order only).
 
 .B References:
 .IP
@@ -711,6 +710,9 @@ open string tachyonic inflation
 .TQ
 .I wri
 Witten-O'Raifeartaigh inflation
+.TQ
+.I ccsi1
+Cublicly corrected Starobinski inflation I
 
 
 .SS TWO PARAMETERS MODELS
@@ -807,6 +809,9 @@ N-formalism inflation I
 .TQ
 .I nfi3
 N-formalism inflation III
+.TQ
+.I ccsi2
+Cublicly corrected Starobinski inflation II
 
 .SS THREE PARAMETERS MODELS
 .TP 20
@@ -1032,7 +1037,8 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_cnai (3),
 .BR aspic_cnbi (3),
 .BR aspic_osti (3),
-.BR aspic_wri (3).
+.BR aspic_wri (3),
+.BR aspic_ccsi1 (3).
 .P
 .BR aspic_sfi (3),
 .BR aspic_ii (3),
@@ -1058,7 +1064,8 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_bi (3),
 .BR aspic_kklti (3),
 .BR aspic_nfi1 (3),
-.BR aspic_nfi3 (3).
+.BR aspic_nfi3 (3),
+.BR aspic_ccsi2 (3).
 .P
 .BR aspic_lmi2 (3),
 .BR aspic_rmi (3),

@@ -52,6 +52,8 @@ use ostisr
 use ostireheat
 use wrisr
 use wrireheat
+use ccsi1sr
+use ccsi1reheat
 
 !two parameters models
 use sfisr
@@ -110,7 +112,8 @@ use nfi1sr
 use nfi1reheat
 use nfi3sr
 use nfi3reheat
-
+use ccsi2sr
+use ccsi2reheat
 
 !three parameter models
 use lmi2sr
