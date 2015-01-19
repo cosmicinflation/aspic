@@ -1,6 +1,3 @@
-* version 0.3.1 (burocrator release)
-- added models kklti, rpi3
-- testsuite added (make test)
+* version 0.3.2 (charlie release)
+- added models nfi, ccsi
 - various bugs and precision issues fixed
-- portability improved (tested with ifort)
-- compilation in quadruple precision (--enable-quad-precision)
