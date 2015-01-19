@@ -1,0 +1,38 @@
+.TH librpi 3 "October 31, 2012" "libaspic" "Module convention" 
+
+.SH NAME
+.I rpi2
+- the R + R^2p inflation module at large field values
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 exp(-2x) [ exp(x) - 1 ]^[2p/(2p-1)]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp * sqrt(2/3)
+.TP
+Parameters
+.I real(kp)
+::
+.BR p,
+.B xend
+
+.SH DESCRIPTION
+The
+.I rpi2
+module is used for the R + R^2p inflation when 'p > 1' at large field
+values, namely in the region for which 'x > xVmax'.
+
+This model shares a few peculiar functions with
+.I rpi1
+and
+.I rpi3
+in a module named
+.BR rpicommon .
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

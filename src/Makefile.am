@@ -60,13 +60,14 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
         gripi/libgripi.la \
         bi/libbi.la \
         kklti/libkklti.la \
-        nfi/libnfi.la 
+        nfi/libnfi.la \
+	ccsi/libccsi.la
 
 #to be build from there
 SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi \
           ai cnai cnbi oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi \
-          bi kklti nfi
+          bi kklti nfi ccsi
 
 
 # for make -j
