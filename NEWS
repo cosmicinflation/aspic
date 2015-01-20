@@ -1,3 +1,6 @@
 * version 0.3.2 (charlie release)
 - added models nfi, ccsi
+- new module 'srmapping' to map epsilonV hierarchy to Hubble flow functions at
+  next-to-leading order
+- added running and running of running functions in 'srflow' module
 - various bugs and precision issues fixed

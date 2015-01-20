@@ -157,16 +157,38 @@ contains
 
   end function ccsi_epsilon_three
 
-!returns alpha such that the min value of epsone is unity. For value
-!of alpha less than this, epsilon1 is always greater than unity and
-!there is no inflation
+!check the two other functions below
   function ccsi_alphamin()
     implicit none
     real(kp) :: ccsi_alphamin
 
-    ccsi_alphamin = 3._kp/44._kp * (1._kp - 2._kp*sqrt(3._kp))
+    ccsi_alphamin = ccsi_alpha_epsoneminunity()
 
   end function ccsi_alphamin
+
+
+!returns alpha < 0 such that the min value of epsone is unity. For value
+!of alpha less than this, epsilon1 is always greater than unity and
+!there is no inflation
+  function ccsi_alpha_epsoneminunity()
+    implicit none
+    real(kp) :: ccsi_alpha_epsoneminunity
+
+    ccsi_alpha_epsoneminunity = 3._kp/44._kp * (1._kp - 2._kp*sqrt(3._kp))
+
+  end function ccsi_alpha_epsoneminunity
+
+
+!returns alpha < 0 such that the higher root of epsilon1=1 equals xmax
+!(the value at which the potential becomes complex).
+  function ccsi_alpha_xmax_epsoneunity()
+    implicit none
+    real(kp) :: ccsi_alpha_xmax_epsoneunity
+
+    ccsi_alpha_xmax_epsoneunity = 1._kp/9._kp*(1._kp-sqrt(3._kp))
+    
+  end function ccsi_alpha_xmax_epsoneunity
+
 
 !above this value the potential becomes complex for alpha < 0
   function ccsi_xmax(alpha)
@@ -189,7 +211,7 @@ contains
     real(kp), dimension(2) :: ccsi_x_epsoneunity
     real(kp) :: xmax
 
-    if (alpha.le.ccsi_alphamin()) then
+    if (alpha.lt.ccsi_alpha_epsoneminunity()) then       
        stop 'ccsi_x_epsoneunity: alpha < alphamin, eps1>1 everywhere!'
     endif
 
@@ -203,19 +225,15 @@ contains
        return
     endif
     
-!the other root exists only for alphamin < alpha < 0 provided eps1(xmax)>1
+!the other root always exists
     xmax = ccsi_xmax(alpha)
 
-    if (ccsi_epsilon_one(xmax,alpha).le.1._kp) then
-       ccsi_x_epsoneunity(2) = ccsi_x_epsoneunity(1)
-    else
-       ccsi_x_epsoneunity(2) = log(-(15._kp + 14._kp*sqrt(3._kp) - (176._kp &
-            + 132._kp*sqrt(3._kp))*alpha + sqrt(813._kp + 420._kp*sqrt(3._kp) &
-            + 4444._kp*alpha + 2728._kp*sqrt(3._kp)*alpha))/(242._kp*alpha))
+    ccsi_x_epsoneunity(2) = log(-(15._kp + 14._kp*sqrt(3._kp) - (176._kp &
+         + 132._kp*sqrt(3._kp))*alpha + sqrt(813._kp + 420._kp*sqrt(3._kp) &
+         + 4444._kp*alpha + 2728._kp*sqrt(3._kp)*alpha))/(242._kp*alpha))
 !safeguard
-       if (ccsi_x_epsoneunity(2).gt.xmax) stop 'ccsi_x_epsoneunity: internal error!'
+    if (ccsi_x_epsoneunity(2).gt.xmax) stop 'ccsi_x_epsoneunity: internal error!'
 
-    endif
     
   end function ccsi_x_epsoneunity
 

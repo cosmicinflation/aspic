@@ -148,9 +148,7 @@ contains
     maxi=10._kp**(4._kp)
 
     ssbi3Data%real1 = beta
-
-
-       ssbi3_alphamin = zbrent(find_ssbi3_alphamin,mini,maxi,tolFind,ssbi3Data)
+    ssbi3_alphamin = zbrent(find_ssbi3_alphamin,mini,maxi,tolFind,ssbi3Data)
     
   end function ssbi3_alphamin
 

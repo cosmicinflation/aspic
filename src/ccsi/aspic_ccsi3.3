@@ -1,0 +1,50 @@
+.TH libccsi 3 "January 20, 2014" "libaspic" "Module convention" 
+
+.SH NAME
+.I ccsi3
+- the Cubicly Corrected Starobinski inflation module with negative corrections
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 * exp(-2x) * [ exp(x) - 1 ]^2 /
+{ 1 + sqrt[1+3 alpha(exp(x)-1)]}^3 * { 1 + sqrt[1 + 3 alpha (exp(x)-1)] + 2 alpha (exp(x)-1) }
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp * sqrt(2/3)
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha
+
+.SH DESCRIPTION
+The
+.I ccsi3
+module is used for the R + R^2 + alpha R^3 inflation when 'alpha <
+0'. In this regime, inflation naturally ends at a field value 'xend'
+returned by the function
+.BR ccsi3_x_endinf (alpha).
+
+This model shares a few peculiar functions with
+.I ccsi1
+and
+.I ccsi2
+in a module named
+.BR ccsicommon .
+The potential is well defined only for 'x < xmax', above which it
+would become complex. The value of 'xmax' is returned by the
+.I real(kp)
+function
+.BR ccsi_xmax (alpha).
+Also 'alpha' cannot be too negative to support inflation and its
+minimal allowed value is given by the function
+.BR ccsi_alphamin ()
+Both functions are imported by
+.IP
+.B use ccsicommon, only : ccsi_xmax, ccsi_alphamin
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

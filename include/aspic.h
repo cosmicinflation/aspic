@@ -54,6 +54,8 @@ use wrisr
 use wrireheat
 use ccsi1sr
 use ccsi1reheat
+use ccsi3sr
+use ccsi3reheat
 
 !two parameters models
 use sfisr
