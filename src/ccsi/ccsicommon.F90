@@ -9,6 +9,9 @@
 module ccsicommon
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
+#ifdef NOF08
+  use specialinf, only : atanh
+#endif
   use inftools, only : zbrent
   implicit none
 
