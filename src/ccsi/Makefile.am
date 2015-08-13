@@ -1,4 +1,4 @@
-SRC = ccsicommon.f90 ccsicomreh.f90 ccsi1sr.f90 ccsi1reheat.f90 ccsi2sr.f90 ccsi2reheat.f90 \
+SRC = ccsicommon.F90 ccsicomreh.f90 ccsi1sr.f90 ccsi1reheat.f90 ccsi2sr.f90 ccsi2reheat.f90 \
 ccsi3sr.f90 ccsi3reheat.f90
 
 MOD = ccsicommon.$(FC_MODEXT) ccsicomreh.$(FC_MODEXT) \

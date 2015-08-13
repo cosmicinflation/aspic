@@ -105,6 +105,10 @@ module specialinf
   interface atan
      module procedure atan_ito_log
   end interface atan
+
+  interface atanh
+     module procedure atanh_ito_log
+  end interface atanh
 #endif
 
 interface expint
@@ -2841,6 +2845,13 @@ END FUNCTION dei
     atan_ito_log=0.5_kp*(0._kp,1._kp)*log((1._kp-x*(0._kp,1._kp))/(1._kp+x*(0._kp,1._kp)))
   end function atan_ito_log
 
+
+  function atanh_ito_log(x)
+    implicit none
+    complex(kp), intent(in) :: x
+    complex(kp) :: atanh_ito_log
+    atanh_ito_log=0.5_kp*log((1._kp+x)/(1._kp-x))
+  end function atanh_ito_log
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !                                                        !
