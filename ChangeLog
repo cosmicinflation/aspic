@@ -1,3 +1,31 @@
+commit f4cd66f5e583627e4259730db951e27b0528c9cc
+Date:   Thu Aug 13 17:58:49 2015 +0200
+
+    Fix missing ifdef
+
+ src/ccsi/ccsicommon.F90 | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 482ea610d683f7a9ad5df829b484c52ce5ab840f
+Author: chris <chris@ringeval.com>
+Date:   Thu Aug 13 17:54:04 2015 +0200
+
+    Fix atanh(complex) for ifort
+
+ src/ccsi/Makefile.am      |   2 +-
+ src/ccsi/ccsicommon.F90   | 375 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/ccsi/ccsicommon.f90   | 375 -------------------------------------------------------------
+ src/common/specialinf.F90 |  11 ++
+ 4 files changed, 387 insertions(+), 376 deletions(-)
+
+commit 33ffb84965282e5d7d6d007254a786cfc930b7f8
+Date:   Thu Aug 13 17:31:07 2015 +0200
+
+    Update Changelog
+
+ ChangeLog | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
 commit a3e6a0bc76f44c13053eda8f530e90d94844bdb6
 Date:   Thu Aug 13 17:27:39 2015 +0200
 
