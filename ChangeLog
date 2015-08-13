@@ -1,3 +1,330 @@
+commit 6346a0f5d3fe7f35e889220cb359fc8175ca00e7
+Date:   Tue Jan 20 16:15:11 2015 +0100
+
+    Coding ccsi3, improving ccsi* modules
+
+ NEWS                     |   3 +
+ include/aspic.h          |   2 +
+ man/libaspic.3           |   6 +-
+ src/ccsi/Makefile.am     |  17 +++-
+ src/ccsi/aspic_ccsi1.3   |   3 +-
+ src/ccsi/aspic_ccsi2.3   |   7 +-
+ src/ccsi/aspic_ccsi3.3   |  50 ++++++++++
+ src/ccsi/ccsi3main.f90   | 137 +++++++++++++++++++++++++++
+ src/ccsi/ccsi3reheat.f90 | 135 ++++++++++++++++++++++++++
+ src/ccsi/ccsi3sr.f90     | 242 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/ccsi/ccsicommon.f90  |  46 ++++++---
+ src/nfi/aspic_nfi3.3     |   2 +-
+ src/ssbi/ssbi3sr.f90     |   4 +-
+ 13 files changed, 626 insertions(+), 28 deletions(-)
+
+commit 4b6406801243e2fca6b8cf434a8d5030eaef09fa
+Date:   Mon Jan 19 19:09:12 2015 +0100
+
+    Update targetted NEWS
+
+ NEWS | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+commit b816c736474bbcff84376054c3e47068925f37b5
+Date:   Mon Jan 19 19:06:11 2015 +0100
+
+    Coding ccsi2 and polishing ccsi1 and ccsirehcom
+
+ include/aspic.h          |   5 +-
+ man/libaspic.3           |  45 ++++----
+ src/ccsi/Makefile.am     |  12 +-
+ src/ccsi/aspic_ccsi2.3   |  33 +++---
+ src/ccsi/ccsi1reheat.f90 | 248 +++++++---------------------------------
+ src/ccsi/ccsi1sr.f90     |   6 +-
+ src/ccsi/ccsi2main.f90   | 121 ++++++++------------
+ src/ccsi/ccsi2reheat.f90 | 289 +++++++++++------------------------------------
+ src/ccsi/ccsi2sr.f90     | 217 ++++++++++++++++++++++-------------
+ src/ccsi/ccsicommon.f90  |   2 +-
+ src/ccsi/ccsicomreh.f90  | 198 ++++++++++++++++++++++++++++++++
+ src/common/srflow.f90    |   3 +-
+ 12 files changed, 557 insertions(+), 622 deletions(-)
+
+commit 0ff42d2d2d77d8dbf689683ca394ada2dcd0f5b0
+Date:   Mon Jan 19 17:47:12 2015 +0100
+
+    Adding and testing cssi1 module
+
+ configure.ac             |   1 +
+ src/Makefile.am          |   5 +-
+ src/ccsi/Makefile.am     |  27 ++++
+ src/ccsi/aspic_ccsi1.3   |  48 +++++++
+ src/ccsi/aspic_ccsi2.3   |  38 +++++
+ src/ccsi/ccsi1main.f90   | 130 +++++++++++++++++
+ src/ccsi/ccsi1reheat.f90 | 299 +++++++++++++++++++++++++++++++++++++++
+ src/ccsi/ccsi1sr.f90     | 199 ++++++++++++++++++++++++++
+ src/ccsi/ccsi2main.f90   | 163 ++++++++++++++++++++++
+ src/ccsi/ccsi2reheat.f90 | 286 +++++++++++++++++++++++++++++++++++++
+ src/ccsi/ccsi2sr.f90     | 154 ++++++++++++++++++++
+ src/ccsi/ccsicommon.f90  | 357 +++++++++++++++++++++++++++++++++++++++++++++++
+ 12 files changed, 1705 insertions(+), 2 deletions(-)
+
+commit efcedf371ec28d8234f46a0bc53f8c292cdc16a9
+Date:   Tue Jun 24 19:50:11 2014 +0200
+
+    add display warning option
+
+ src/nfi/nfi2sr.f90 |  9 ++++++---
+ src/vhi/vhisr.f90  | 10 ++++++----
+ 2 files changed, 12 insertions(+), 7 deletions(-)
+
+commit 8f52a287e547cc9ebc2b6ed844d1816f0163ac40
+Date:   Tue Jun 24 19:43:34 2014 +0200
+
+    Add nfismall variable instead of epsilon()
+
+ src/nfi/nfi1sr.f90    |  5 +++--
+ src/nfi/nfi2sr.f90    | 61 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ src/nfi/nfi3sr.f90    |  4 ++--
+ src/nfi/nficommon.f90 |  9 ++++----
+ 4 files changed, 66 insertions(+), 13 deletions(-)
+
+commit fec6830be99c5dd923c045a9a4be6a7f0a0051be
+Date:   Tue Jun 24 15:37:42 2014 +0200
+
+    Fix sign error
+
+ src/nfi/nfi1sr.f90 | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
+
+commit 5204c514fbcd0cb1413b2b06d4433a511d445c8c
+Date:   Tue Jun 17 11:53:04 2014 +0200
+
+    do not stop when efold<efoldMax, return warning + xendmax=xendmin
+
+ src/vhi/vhisr.f90 | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 0970e53e3abfe676ba31c400e107064aa662ad00
+Date:   Wed Jun 11 17:07:52 2014 +0200
+
+    Fix makefiles for nfi
+
+ man/libaspic.3      | 21 ++++++++++++++++++---
+ src/nfi/Makefile.am |  2 +-
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+commit 3c832673b2ce6d7eebccfcde4701f0292364a8a8
+Date:   Wed Jun 11 16:19:02 2014 +0200
+
+    add nfi modules to include files
+
+ include/aspic.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+commit a32b368358407ca78bf11df777519bcda22f07fd
+Date:   Wed Jun 11 16:16:39 2014 +0200
+
+    Edit aspic_nfi
+
+ src/nfi/aspic_nfi1.3 | 11 +++++++----
+ src/nfi/aspic_nfi2.3 | 15 +++++++++------
+ src/nfi/aspic_nfi3.3 | 10 ++++++----
+ src/nfi/aspic_nfi4.3 |  6 ++----
+ 4 files changed, 24 insertions(+), 18 deletions(-)
+
+commit d0ecbf1da84657878e32eefcd5585492cfbdf79d
+Date:   Wed Jun 11 11:53:48 2014 +0200
+
+    Improve numacc for ai
+
+ src/ai/aireheat.f90 | 20 ++++++++-----
+ src/ai/aisr.f90     | 83 +++++++++++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 84 insertions(+), 19 deletions(-)
+
+commit 2cdfef896a982cdaba68ae95fb7d2713501cf556
+Date:   Fri Jun 6 20:11:10 2014 +0200
+
+    Coding nfi4
+
+ src/nfi/Makefile.am    |  11 ++-
+ src/nfi/aspic_nfi4.3   |  67 +++++++++++++
+ src/nfi/nfi1sr.f90     |   4 +-
+ src/nfi/nfi2sr.f90     |   6 +-
+ src/nfi/nfi3main.f90   |   6 +-
+ src/nfi/nfi3reheat.f90 |   2 +-
+ src/nfi/nfi3sr.f90     |   6 +-
+ src/nfi/nfi4main.f90   | 252 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nfi4reheat.f90 | 124 ++++++++++++++++++++++++
+ src/nfi/nfi4sr.f90     | 222 +++++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nficommon.f90  |  12 +--
+ 11 files changed, 691 insertions(+), 21 deletions(-)
+
+commit 0321a3eb90fb66ddf6ada119aa038055cc0eeb81
+Date:   Fri Jun 6 18:23:42 2014 +0200
+
+    Coding nfi3
+
+ src/nfi/Makefile.am    |  13 ++-
+ src/nfi/aspic_nfi1.3   |   2 +-
+ src/nfi/aspic_nfi2.3   |   2 +-
+ src/nfi/aspic_nfi3.3   |  52 +++++++++++
+ src/nfi/nfi1main.f90   |  22 +++--
+ src/nfi/nfi1sr.f90     |  19 +----
+ src/nfi/nfi2main.f90   |  20 +++--
+ src/nfi/nfi3main.f90   | 228 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nfi3reheat.f90 | 134 +++++++++++++++++++++++++++++
+ src/nfi/nfi3sr.f90     | 200 +++++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nficommon.f90  |   2 -
+ 11 files changed, 653 insertions(+), 41 deletions(-)
+
+commit 668ae6fa74487da4fe8fa0afcdf9483433560d4d
+Date:   Thu Jun 5 20:38:12 2014 +0200
+
+    Coding nfi2 + unifying numacc functions name for csi and rgi
+
+ src/csi/csisr.f90      |  10 +-
+ src/nfi/Makefile.am    |  13 ++-
+ src/nfi/aspic_nfi2.3   |  80 ++++++++++++++
+ src/nfi/nfi1main.f90   |  15 +--
+ src/nfi/nfi1sr.f90     |  38 +++----
+ src/nfi/nfi2main.f90   | 174 ++++++++++++++++++++++++++++++
+ src/nfi/nfi2reheat.f90 | 124 +++++++++++++++++++++
+ src/nfi/nfi2sr.f90     | 288 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nficommon.f90  |  64 ++++++++---
+ src/nfi/nficomreh.f90  |   2 +-
+ src/nfi/nfisr.f90      | 122 ---------------------
+ src/rgi/rgireheat.f90  |   8 +-
+ src/rgi/rgisr.f90      |  10 +-
+ 13 files changed, 763 insertions(+), 185 deletions(-)
+
+commit 436ebf727b5ab469b3f65ceb11d86ea66cdb1397
+Date:   Wed Jun 4 20:26:37 2014 +0200
+
+    Fix misprint
+
+ src/nfi/nfi1sr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 97d2fe44ce5d79efa4d09d6eadd403ff65caef53
+Date:   Wed Jun 4 20:21:57 2014 +0200
+
+    First working version of nfi1
+
+ configure.ac           |  1 +
+ src/Makefile.am        |  8 +++--
+ src/nfi/aspic_nfi1.3   | 30 +++++++++---------
+ src/nfi/nfi1main.f90   | 86 ++++++++++++++++++++++++++++++--------------------
+ src/nfi/nfi1reheat.f90 | 14 +++++++-
+ src/nfi/nfi1sr.f90     | 84 +++++++++++++++++++++++++++++++++++++++++++++---
+ src/nfi/nficommon.f90  | 34 ++++++++++++++++----
+ 7 files changed, 194 insertions(+), 63 deletions(-)
+
+commit f9da0fcc6c51530ab1cebf84a0beb0cffa279d63
+Date:   Wed Jun 4 17:31:59 2014 +0200
+
+    Create nfi sources
+
+ src/nfi/Makefile.am    |  29 +++++++
+ src/nfi/aspic_nfi1.3   |  67 ++++++++++++++++
+ src/nfi/nfi1main.f90   | 134 ++++++++++++++++++++++++++++++++
+ src/nfi/nfi1reheat.f90 | 121 +++++++++++++++++++++++++++++
+ src/nfi/nfi1sr.f90     | 168 ++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nficommon.f90  | 138 +++++++++++++++++++++++++++++++++
+ src/nfi/nficomreh.f90  | 205 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/nfi/nfisr.f90      | 122 +++++++++++++++++++++++++++++
+ 8 files changed, 984 insertions(+)
+
+commit 8ec75cc33fff2cb041e3278ba9a17f7b6280720d
+Date:   Wed Jun 4 17:31:32 2014 +0200
+
+    Fix missprints and clean ssbi reheat modules
+
+ src/dsi/aspic_dsi.3      | 6 +++---
+ src/rmi/rmi3sr.f90       | 2 +-
+ src/ssbi/aspic_ssbi.3    | 2 +-
+ src/ssbi/ssbi1reheat.f90 | 8 +++-----
+ src/ssbi/ssbi2reheat.f90 | 8 +++-----
+ src/ssbi/ssbi3reheat.f90 | 8 +++-----
+ src/ssbi/ssbi4reheat.f90 | 8 +++-----
+ src/ssbi/ssbi5reheat.f90 | 8 +++-----
+ src/ssbi/ssbi6reheat.f90 | 8 +++-----
+ 9 files changed, 23 insertions(+), 35 deletions(-)
+
+commit af5c85e4b1fe6025e8e808f6119bf2eb8d8fb7e7
+Date:   Tue Jun 3 15:53:51 2014 +0200
+
+    Disable broken parallel make
+
+ src/Makefile.am | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+commit dafcfee118b77bccdd3c829604e9c5523599021a
+Date:   Sat Apr 19 17:50:09 2014 +0200
+
+    Adding support for runnings tensor in srflow
+
+ src/common/srflow.f90 | 167 +++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 151 insertions(+), 16 deletions(-)
+
+commit 13819ac23172e3c5f915cd0cff8bf2e107895499
+Date:   Thu Apr 17 15:53:18 2014 +0200
+
+    Fix bug Q^2/T^2
+
+ src/common/cosmopar.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 527645da6079d97d96c03e603a4f799bd38dcdac
+Date:   Wed Dec 4 21:42:29 2013 +0100
+
+    Allows for parallel build make -j
+
+ Makefile.am            |  4 +---
+ src/Makefile.am        | 14 +++++++++++++-
+ src/common/Makefile.am |  3 ++-
+ 3 files changed, 16 insertions(+), 5 deletions(-)
+
+commit bde3cbc442d8287b85117e91d0dbddc5fc295281
+Date:   Wed Dec 4 18:54:21 2013 +0100
+
+    updating man file
+
+ man/libaspic.3 | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+commit 8734fbda5e5c5b77ca3453e60a9a71d137c207f8
+Date:   Wed Dec 4 18:42:01 2013 +0100
+
+    Add M/Pstar functions; express SR corrections in terms of slowroll_corrections() only
+
+ src/common/srflow.f90   |  97 ++++++++++++++++++++-----
+ src/common/srreheat.f90 | 188 +++++++++++++++++++++++++++++++++++++-----------
+ src/lfi/lfimain.f90     |  16 ++++-
+ 3 files changed, 241 insertions(+), 60 deletions(-)
+
+commit ee805bf5cd87a60f1ad2eaf6d2fc093c4ec40c02
+Date:   Wed Oct 2 19:04:47 2013 +0200
+
+    bumping relnum
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 323edc7aeef20e80bec7aa8466a4b166e90f029e
+Author: chris <chris@ringeval.com>
+Date:   Wed Oct 2 19:03:17 2013 +0200
+
+    adding new numacc function for csi
+
+ src/csi/csisr.f90 | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+commit 0eb92879118f7a49dedac914d80439437688f3af
+Date:   Thu Sep 5 11:31:05 2013 +0200
+
+    updating logs
+
+ ChangeLog    | 113 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ configure.ac |   2 +-
+ 2 files changed, 111 insertions(+), 4 deletions(-)
+
+
 commit aa3e8539aebea5f307a06357e8a8fc707ceb7ff0
 Date:   Thu Sep 5 10:55:44 2013 +0200
 
