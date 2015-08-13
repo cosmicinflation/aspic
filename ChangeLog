@@ -1,3 +1,15 @@
+commit a3e6a0bc76f44c13053eda8f530e90d94844bdb6
+Date:   Thu Aug 13 17:27:39 2015 +0200
+
+    Split srflow into two modules
+
+ ChangeLog              | 327 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS                   |  14 ++-
+ src/common/Makefile.am |   4 +-
+ src/common/huflow.f90  | 407 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/common/srflow.f90  | 380 +++++++++++++++--------------------------------------------
+ 5 files changed, 843 insertions(+), 289 deletions(-)
+
 commit 6346a0f5d3fe7f35e889220cb359fc8175ca00e7
 Date:   Tue Jan 20 16:15:11 2015 +0100
 
