@@ -138,6 +138,38 @@ contains
 !                                                        !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  function ellipticK(k2)
+    use hyp_2f1_module, only : M_PI_2
+    implicit none
+    real(kp) :: ellipticK
+    real(kp), intent(in) :: k2
+
+    if ((k2.gt.1._kp).or.(k2.lt.0._kp)) then
+       stop 'ellipticK: k2 > 1 or k2 < 0'
+    endif
+    
+    ellipticK = M_PI_2 * hypergeom_2F1(0.5_kp,0.5_kp,1._kp,k2)
+
+  end function ellipticK
+
+
+
+  function ellipticE(k2)
+    use hyp_2f1_module, only : M_PI_2
+    implicit none
+    real(kp) :: ellipticE
+    real(kp), intent(in) :: k2
+
+    if ((k2.gt.1._kp).or.(k2.lt.0._kp)) then
+       stop 'ellipticE: k2 > 1 or k2 < 0'
+    endif
+    
+    ellipticK = M_PI_2 * hypergeom_2F1(-0.5_kp,0.5_kp,1._kp,k2)
+
+  end function ellipticE
+
+
+
 
   function hypergeom_2F1(a,b,c,z)
     implicit none
