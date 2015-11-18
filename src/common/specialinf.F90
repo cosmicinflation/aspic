@@ -143,12 +143,22 @@ contains
     implicit none
     real(kp) :: ellipticK
     real(kp), intent(in) :: k2
+    real(kp), save :: k2sav = -1_kp
+    real(kp), save :: Ksav = -1._kp
+!$omp private(k2sav, Ksav)
+
+    if (k2.eq.k2sav) then
+       ellipticK = Ksav
+       return
+    endif
 
     if ((k2.gt.1._kp).or.(k2.lt.0._kp)) then
        stop 'ellipticK: k2 > 1 or k2 < 0'
     endif
     
     ellipticK = M_PI_2 * hypergeom_2F1(0.5_kp,0.5_kp,1._kp,k2)
+    k2sav = k2
+    Ksav = ellipticK
 
   end function ellipticK
 
@@ -159,12 +169,22 @@ contains
     implicit none
     real(kp) :: ellipticE
     real(kp), intent(in) :: k2
+    real(kp), save :: k2sav = -1._kp
+    real(kp), save :: Esav = -1._kp
+!$omp private(k2sav, Esav)
+
+    if (k2.eq.k2sav) then
+       ellipticE = Esav
+       return
+    endif
 
     if ((k2.gt.1._kp).or.(k2.lt.0._kp)) then
        stop 'ellipticE: k2 > 1 or k2 < 0'
     endif
     
-    ellipticK = M_PI_2 * hypergeom_2F1(-0.5_kp,0.5_kp,1._kp,k2)
+    ellipticE = M_PI_2 * hypergeom_2F1(-0.5_kp,0.5_kp,1._kp,k2)
+    k2sav = k2
+    Esav = ellipticE
 
   end function ellipticE
 
