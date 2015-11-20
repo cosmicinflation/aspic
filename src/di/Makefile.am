@@ -1,11 +1,11 @@
-SRC = dicommon.f90 disr.f90
+SRC = displine.f90 dicommon.f90 disr.f90
 
-MOD = dicommon.$(FC_MODEXT) 
+MOD = displine.$(FC_MODEXT) dicommon.$(FC_MODEXT) disr.$(FC_MODEXT)
 
 check_PROGRAMS = dimain
-di1main_SOURCES = $(SRC) dimain.f90
-di1main_FCFLAGS = -I../$(SRCOMMDIR)
-di1main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+dimain_SOURCES = $(SRC) dimain.f90
+dimain_FCFLAGS = -I../$(SRCOMMDIR)
+dimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = libdi.la
 libdi_la_SOURCES = $(SRC)

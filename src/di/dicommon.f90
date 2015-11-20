@@ -1,20 +1,33 @@
 module dicommon
   use infprec, only : kp, pi, tolkp, transfert
   use specialinf, only : ellipticK, ellipticE
-  use inftools, only : zbrent
+  use inftools, only : zbrent, easydverk
   implicit none
 
   private
 
-  public di_x
+
+  interface di_direct_x
+     module procedure di_x
+  end interface di_direct_x
+
+  interface di_direct_k2
+     module procedure di_k2
+  end interface di_direct_k2
+
+
+  public di_direct_x, di_direct_k2, di_k2_nunull, di_k2_potmin
   public di_deriv_x, di_deriv_second_x, di_deriv_third_x
   public di_norm_parametric_potential, di_norm_deriv_parametric_potential
   public di_norm_deriv_second_parametric_potential
   public di_norm_deriv_third_parametric_potential
 
+
+
 contains
 
-!returns the field value x from k2 by direct integration
+
+!returns the field value x from k2 by direct integration / serie expansion
   function di_x(k2)
     implicit none
     real(kp) :: di_x
@@ -24,25 +37,112 @@ contains
     integer, parameter :: neq = 1
     real(kp), dimension(neq) :: yvar
     real(kp) :: xvar
+    real(kp), parameter :: k2max = 1._kp-tolkp
+    real(kp), parameter :: k2min = tolkp
+    real(kp), parameter :: erfisqrtln4 = 2.3111740399905110619206103738822_kp
 
-    xvar = k2
-    yvar(1) = 0._kp
+    if (k2.eq.1._kp) then
+       di_x=0._kp
+       return
+    endif
 
-    call easydverk(neq,find_di_x,xvar,yvar,1._kp,tolint)
+!integration of first order expansion of di_deriv_x in k2=1
+    if (k2.gt.k2max) then
+       di_x = (8._kp*sqrt(2._kp*pi)*erfc(sqrt(log(16._kp/(1._kp - k2)))) &
+            -(-1._kp + k2)*sqrt(log(256._kp/(-1._kp + k2)**2)))/sqrt(pi)       
+       return
+    endif
+
+!integration of first order expansion of di_deriv_x in k2=0
+    if (k2.lt.k2min) then
+       di_x = (erfisqrtln4 - 8._kp*sqrt(log(4._kp)/pi))/2._kp &
+            + (log(65536._kp/k2**4)*log(256._kp/k2**2)**2 &
+            - 16._kp*(3._kp + 16._kp*log(2._kp)**2 + log(16._kp) &
+            + log(k2)*(-1._kp - 8._kp*log(2._kp) + log(k2)))) &
+            / (sqrt(pi*k2)*log(256._kp/k2**2)**2.5_kp)
+       return
+    end if
+
+
+    xvar = log(k2)
+
+    yvar(1) = (8._kp*sqrt(2._kp*pi)*erfc(sqrt(log(16._kp/(1._kp - k2max)))) &
+            -(-1._kp + k2max)*sqrt(log(256._kp/(-1._kp + k2max)**2)))/sqrt(pi)
+
+    call easydverk(neq,find_di_x,xvar,yvar,log(k2max),tolint)
 
     di_x = yvar(1)
 
   end function di_x
 
-  subroutine find_di_x(n,k2,y,yprime)
+  subroutine find_di_x(n,lnk2,y,yprime,unused)
     implicit none          
     integer :: n
-    real(kp) :: k2
+    real(kp) :: lnk2
     real(kp), dimension(n) :: y, yprime
+    type(transfert), optional, intent(inout) :: unused
 
-    yprime(1) = -di_deriv_x(k2)
+    yprime(1) = -di_deriv_x_ln(lnk2)
 
   end subroutine find_di_x
+
+
+
+
+!returns k2 from the field value x by inverting direct
+!integration. Holy cows, this is going to be slow!
+  function di_k2(x)
+    implicit none
+    real(kp) :: di_k2
+    real(kp), intent(in) :: x
+
+    type(transfert) :: diData
+    real(kp), parameter :: tolFind = tolkp
+    real(kp) :: mini, maxi
+
+    if (x.eq.0._kp) then
+       di_k2 = 1._kp
+       return
+    endif
+
+    if (x.lt.0._kp) stop 'di_k2: x < 0!'
+
+    mini = tiny(1._kp)
+    maxi = 1._kp
+
+    diData%real1 = x
+    di_k2 = zbrent(find_di_k2,mini,maxi,tolFind,diData)
+
+  end function di_k2
+
+  function find_di_k2(k2,diData)
+    real(kp) :: find_di_k2
+    real(kp), intent(in) :: k2
+    type(transfert), optional, intent(inout) :: diData
+    real(kp) :: x
+
+    x = diData%real1
+    find_di_k2 = di_x(k2) - x
+
+  end function find_di_k2
+
+
+
+
+!returns the derivative of the field x with respect to lnk2; dx/dlnk2,
+!more robust against integration than dx/dk2 in k2->0
+  function di_deriv_x_ln(lnk2)
+    implicit none
+    real(kp) :: di_deriv_x_ln
+    real(kp), intent(in) :: lnk2
+    real(kp) :: k2
+
+    k2 = exp(lnk2)
+
+    di_deriv_x_ln = -2._kp/pi * sqrt(2._kp*ellipticK(k2) &
+         *ellipticK(1._kp-k2)/k2)
+
+  end function di_deriv_x_ln
 
 
 
@@ -52,7 +152,11 @@ contains
     real(kp) :: di_deriv_x
     real(kp), intent(in) :: k2
 
-    di_deriv_x = -2._kp*sqrt(2._kp)/pi * sqrt(ellipticK(k2) &
+!for k2-->1 di_deriv_x --> -sqrt(log(256._kp/(1._kp-k2)**2)/pi)
+
+    if (k2.eq.1._kp) stop 'di_deriv_x: Infinity in k2=1!'
+
+    di_deriv_x = -2._kp/pi * sqrt(2._kp*ellipticK(k2) &
          *ellipticK(1._kp-k2))/ k2**1.5_kp
 
   end function di_deriv_x
@@ -61,9 +165,11 @@ contains
 !d^2x/dk2^2
   function di_deriv_second_x(k2)
     implicit none
-    real(kp) :: di_deriv_second
+    real(kp) :: di_deriv_second_x
     real(kp), intent(in) :: k2
     real(kp) :: elKo, elEo, elEp, elKp
+
+    if (k2.eq.1._kp) stop 'di_deriv_second_x: Infinity in k2=1!'
 
     elKo = ellipticK(k2)
     elEo = ellipticE(k2)
@@ -71,7 +177,7 @@ contains
     elKp = ellipticK(1._kp-k2)
 
     di_deriv_second_x = (-(elEp*elKo) + elKp*(elEo + elKo*(-7._kp+8._kp*k2))) &
-         /(sqrt(2._kp)*sqrt(elKo*elKp)*(-1._kp + k2)*k2**2.5*pi)
+         /(sqrt(2._kp*elKo*elKp)*(-1._kp + k2)*k2**2.5*pi)
 
   end function di_deriv_second_x
 
@@ -81,6 +187,8 @@ contains
     real(kp) :: di_deriv_third_x
     real(kp), intent(in) :: k2
     real(kp) :: elKo, elEo, elEp, elKp
+
+    if (k2.eq.1._kp) stop 'di_deriv_third_x: Infinity in k2=1!'
 
     elKo = ellipticK(k2)
     elEo = ellipticE(k2)
@@ -150,8 +258,8 @@ contains
     elKp = ellipticK(1._kp-k2)
     elKo = ellipticK(k2)
 
-    di_norm_parametric_nu = 1._kp - 8._kp*f*sqrt(2._kp)/pi/pi &
-         * elKo /sqrt(k2) * (elEp - elKp)**2
+    di_norm_parametric_nu = 1._kp - 8._kp*sqrt(2._kp)/pi/pi &
+         * elKo /sqrt(k2)/f * (elEp - elKp)**2
     
   end function di_norm_parametric_nu
 
@@ -164,7 +272,7 @@ contains
     real(kp), intent(in) :: f
     type(transfert) :: diData
     real(kp), parameter :: tolFind = tolkp
-    real(kp) :: min, max
+    real(kp) :: mini, maxi
     
     mini = epsilon(1._kp)
     maxi = 1._kp
@@ -195,13 +303,14 @@ contains
     implicit none
     real(kp) :: di_norm_deriv_parametric_nu
     real(kp), intent(in) :: k2, f
+    real(kp) :: elEp, elKp, elEo, elKo
 
     elEp = ellipticE(1._kp-k2)
     elKp = ellipticK(1._kp-k2)
     elEo = ellipticE(k2)
     elKo = ellipticK(k2)
     
-    di_norm_deriv_parametric_numterm = (4._kp*Sqrt(2._kp)*(elEp - elKp) &
+    di_norm_deriv_parametric_nu = (4._kp*Sqrt(2._kp)*(elEp - elKp) &
          *(elEo*elEp - (elEo + 2*elKo*(-1._kp + k2))*elKp)) &
          /(f*(-1._kp + k2)*k2**1.5_kp*pi**2)
 
@@ -213,13 +322,14 @@ contains
     implicit none
     real(kp) :: di_norm_deriv_second_parametric_nu
     real(kp), intent(in) :: k2, f
+    real(kp) :: elEp, elKp, elEo, elKo
 
     elEp = ellipticE(1._kp-k2)
     elKp = ellipticK(1._kp-k2)
     elEo = ellipticE(k2)
     elKo = ellipticK(k2)
     
-    di_norm_deriv_second_parametric_numterm =  (2._kp*sqrt(2._kp)*(elEp**2*(-3*elKo*(-1 + k2) &
+    di_norm_deriv_second_parametric_nu =  (2._kp*sqrt(2._kp)*(elEp**2*(-3*elKo*(-1 + k2) &
          - 2*elEo*k2) + 2*elEp*elKp*(elKo + elKo*k2*(-5 + 4*k2) + elEo*(-2 + 4*k2)) &
          + elKp**2*(elEo*(4 - 6*k2) - elKo*(-1 + k2)*(-7 + 10*k2)))) &
          /(f*(-1 + k2)**2*k2**2.5*pi**2)
@@ -232,13 +342,14 @@ contains
     implicit none
     real(kp) :: di_norm_deriv_third_parametric_nu
     real(kp), intent(in) :: k2, f
+    real(kp) :: elEp, elKp, elEo, elKo
 
     elEp = ellipticE(1._kp-k2)
     elKp = ellipticK(1._kp-k2)
     elEo = ellipticE(k2)
     elKo = ellipticK(k2)
     
-    di_norm_deriv_third_parametric_numterm = (sqrt(2._kp)*(elKp**2*(2*elKo*(-1 + k2) &
+    di_norm_deriv_third_parametric_nu = (sqrt(2._kp)*(elKp**2*(2*elKo*(-1 + k2) &
          * (19 - 51*k2 + 36*k2**2) + elEo*(23 - 65*k2 + 50*k2**2)) &
          + elEp**2*(4*elKo*(-1 + k2)*(-5 + 7*k2) + elEo*(-7 + k2*(7 + 8*k2))) &
          - 2*elEp*elKp*(elKo*(-1 + k2)*(-3 + k2*(-13 + 24*k2)) &
@@ -267,6 +378,7 @@ contains
     endif
 
     k2atmin = di_k2_potmin(f)
+
     upliftcte = - di_norm_parametric_adspot(k2atmin,f)
 
     fdone = f
@@ -278,6 +390,7 @@ contains
 !k2 at which the potential is minimum
   function di_k2_potmin(f)
     implicit none
+    real(kp) :: di_k2_potmin
     real(kp), intent(in) :: f
     type(transfert) :: diData
     real(kp), parameter :: tolFind = tolkp
@@ -317,6 +430,12 @@ contains
     real(kp) :: nu, dnu
     real(kp) :: elEo, elEp, elKo, elKp
 
+!analytic extension
+    if (k2.eq.1._kp) then
+       di_norm_deriv_parametric_potential = 1._kp
+       return
+    endif
+
     elEo = ellipticE(k2)
     elEp = ellipticE(1._kp - k2)
     elKo = ellipticK(k2)
@@ -340,6 +459,7 @@ contains
   end function di_norm_deriv_parametric_potential
 
 
+
 !returns the 2nd derivative of the potential with respect to k2
   function di_norm_deriv_second_parametric_potential(k2,f)
     implicit none
@@ -349,6 +469,12 @@ contains
     real(kp) :: nu, dnu, d2nu
     real(kp) :: elEo, elEp, elKo, elKp
 
+!analytic extension
+    if (k2.eq.1._kp) then
+       di_norm_deriv_second_parametric_potential = 4._kp*sqrt(2._kp)/f - 7._kp/4._kp
+       return
+    endif
+
     elEo = ellipticE(k2)
     elEp = ellipticE(1._kp - k2)
     elKo = ellipticK(k2)
@@ -356,7 +482,7 @@ contains
 
     nu = di_norm_parametric_nu(k2,f)
     dnu = di_norm_deriv_parametric_nu(k2,f)
-    d2nu = di_norm_deriv_second_parametric(k2,f)
+    d2nu = di_norm_deriv_second_parametric_nu(k2,f)
 
     if (nu.gt.0._kp) then
 
@@ -380,13 +506,19 @@ contains
 
 
 !returns the 3rd derivative of the potential with respect to k2
-  function di_norm_deriv_third_parametric_potential(k2,f)
+  recursive function di_norm_deriv_third_parametric_potential(k2,f)
     implicit none
     real(kp) :: di_norm_deriv_third_parametric_potential
     real(kp), intent(in) :: k2,f
 
     real(kp) :: nu, dnu, d2nu, d3nu
     real(kp) :: elEo, elEp, elKo, elKp
+
+!analytic extension
+    if (k2.eq.1._kp) then
+       di_norm_deriv_third_parametric_potential = -24._kp*sqrt(2._kp)/f + 39._kp/8._kp
+       return
+    endif
 
     elEo = ellipticE(k2)
     elEp = ellipticE(1._kp - k2)
@@ -395,12 +527,12 @@ contains
 
     nu = di_norm_parametric_nu(k2,f)
     dnu = di_norm_deriv_parametric_nu(k2,f)
-    d2nu = di_norm_deriv_second_parametric(k2,f)
-    d3nu = di_norm_deriv_third_parametric(k2,f)
+    d2nu = di_norm_deriv_second_parametric_nu(k2,f)
+    d3nu = di_norm_deriv_third_parametric_nu(k2,f)
 
     if (nu.gt.0._kp) then
 
-       di_norm_deriv_third_parametric_potential = ((3*elEp*elKo + elKp*(-3*elEo &
+        di_norm_deriv_third_parametric_potential = ((3*elEp*elKo + elKp*(-3*elEo &
             + elKo*(-3 + 4*k2)))*(2*elKp**3*(-elEo**3 + elEo*elKo**2*(-1 + k2) &
             + 2*elKo**3*(-1 + k2)**2 + elEo**2*elKo*k2) &
             + (4*dnu**2*elKo**2*elKp**2*(-1 + k2)**2*k2**2 + 4*elKo*elKp*(-1 + k2)*k2 &
@@ -426,23 +558,8 @@ contains
 
   end function di_norm_deriv_third_parametric_potential
 
-!WARNING: this is 1/2 (dlnV/dk2)^2, not 1/2 (dlnV/dx)^2
-  function di_parametric_epsilon_one(k2,f)
-    implicit none
-    real(kp) :: di_parametric_epsilon_one
-    real(kp), intent(in) :: k2, f
-    real(kp) :: pot
 
-    pot = di_norm_parametric_potential(k2,f)
 
-    if (pot.le.0._kp) stop 'di_parametric_epsilon_one: V<=0!'
-
-    di_parametric_epsilon_one = 0.5_kp * (di_norm_deriv_parametric_potential(k2,f) &
-         / pot)**2
-
-  end function di_parametric_epsilon_one
-
-    
 
 
 
