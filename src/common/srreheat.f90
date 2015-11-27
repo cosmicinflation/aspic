@@ -119,8 +119,7 @@ contains
     real(kp), intent(in) :: w, epsStar, Vstar
 
     find_reheat_rhow_leadorder = nuStar - calFplusNuEnd + 1._kp/(3._kp + 3._kp*w) &
-         * log( (9._kp)/( 9._kp*(2._kp*epsStar)**(0.5_kp+1.5_kp*w) &
-         *Vstar) )
+         * log( 9._kp/( epsStar**(0.5_kp+1.5_kp*w)*Vstar) )
 
   end function find_reheat_rhow_leadorder
 
@@ -135,8 +134,8 @@ contains
 
     find_reheat_rhow_anyorder = nuStar - calFplusNuEnd + 1._kp/(3._kp + 3._kp*w) &
          * log( (9._kp - 3._kp*epsStarVec(1)) &
-         /( 9._kp*(2._kp*epsStarVec(1))**(0.5_kp+1.5_kp*w) &
-         *Vstar) ) + 0.25_kp*log(slowroll_corrections(epsStarVec))
+         /( epsStarVec(1)**(0.5_kp+1.5_kp*w)*Vstar) ) &
+         + 0.25_kp*log(slowroll_corrections(epsStarVec))
 
   end function find_reheat_rhow_anyorder
 
@@ -152,8 +151,8 @@ contains
     cmbMeasuredHalf = 0.5_kp*log(Pstar*8._kp*pi**2)
 
     get_calfconst_rhow = -Nzero + (1._kp+3._kp*w)/(3._kp+3._kp*w)*cmbMeasuredHalf &
-         - 1._kp/(3._kp+3._kp*w)*log(9._kp*2._kp**(1.5_kp*w+0.5_kp) &
-         *potEnd/(3._kp-epsEnd)) + (1._kp-3._kp*w)/(12._kp+12._kp*w)*lnRhoReh
+         - 1._kp/(3._kp+3._kp*w)*log(potEnd/(3._kp-epsEnd)) &
+         + (1._kp-3._kp*w)/(12._kp+12._kp*w)*lnRhoReh
         
   end function get_calfconst_rhow
 

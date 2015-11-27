@@ -1,18 +1,33 @@
-!slow-roll functions for dual inflation
+!Slow-roll functions for dual inflation (enjoy!)
 !
+! V(k2) = M^4{ 1 + Vo(f) - 2(K-E)/(k2 K) - pi/(k2 K K') [nu(k2)]^2 Heavside[nu(k2)] }
+! nu(k2)= 1 - 8 sqrt(2)/(pi^2 f) K/sqrt(k2)(E'-K')^2
 !
-!V(k2) = M^4{
+! E=E(k2), K=K(k2), E'=E(1-k2), K'=K(1-k2) are the complete
+!elliptic functions, k2=m being the modulus
+
+!Vo(f) is an uplifting term rendering the potential positive and
+!depends on the dimensionless parameter f = f0/Lambda. It is defined
+!by solving V(k2@minimum) = 0
 !
-!x = phi/Lambda
-!dx/dk2 = [4 sqrt(2)/pi] sqrt{K(k2) K(1-k2)}/k2^(3/2)
+! x = phi/Lambda, the field value in unit of the parameter Lambda,
+!stemming from the Kahler potential:
+! dx/dk2 = [4 sqrt(2)/pi] sqrt{K K'}/k2^(3/2)
+!
+!The potential normalization M^4 is completely determined by the model parameters:
+! M^4 = f^2 Lambda^4 / pi^2
+!
 
 module disr
   use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent, easydverk
   use dicommon, only : di_norm_parametric_potential, di_norm_deriv_parametric_potential
   use dicommon, only : di_norm_deriv_second_parametric_potential, di_deriv_x
+  use dicommon, only : di_norm_deriv_ln_parametric_potential
   use dicommon, only : di_deriv_second_x, di_norm_deriv_third_parametric_potential
   use dicommon, only : di_deriv_third_x, di_k2_nunull, di_k2_potmin
+  use dicommon, only : di_parametric_epsilon_one, di_parametric_epsilon_two
+  use dicommon, only : di_parametric_epsilon_three, di_parametric_efold_primitive
   implicit none
 
   private
@@ -24,13 +39,14 @@ module disr
   public di_norm_potential, di_epsilon_one, di_epsilon_two, di_epsilon_three
   public di_x_endinf, di_efold_primitive, di_x_trajectory
   public di_norm_deriv_potential, di_norm_deriv_second_potential 
-  public di_parametric_epsilon_one, di_k2_epsoneunity, di_k2_trajectory
-  public di_parametric_efold_primitive
+  public di_k2_epsoneunity, di_k2_trajectory
+
 
 contains
 
   
 
+!returns the field value x from the parameter k2
   function di_x(k2)
     use dicommon, only : di_direct_x
     use displine, only : di_set_splines, di_spline_x
@@ -38,8 +54,10 @@ contains
     implicit none
     real(kp) :: di_x
     real(kp), intent(in) :: k2
-    real(kp), parameter :: erfisqrtln4 = 2.3111740399905110619206103738822_kp
+!out of the spline, and for k2->0 and k2->1, uses analytical
+!integration of first order expansions.
     logical, parameter :: outSplineExp = .true.
+    real(kp), parameter :: erfisqrtln4 = 2.3111740399905110619206103738822_kp
 
     if (.not.useKahlerSpline) then       
        di_x = di_direct_x(k2)
@@ -76,6 +94,7 @@ contains
 
 
 
+!returns the parameter k2 from the field value x
   function di_k2(x)
     use dicommon, only : di_direct_k2
     use displine, only : di_set_splines, di_spline_k2
@@ -99,6 +118,31 @@ contains
 
 
 
+!returns M
+  function di_potential_normalization(f,lambda)
+    real(kp) :: di_potential_normalization
+    real(kp), intent(in) :: f, lambda
+    real(kp) :: M4
+
+    M4 = f*(lambda**2/pi)**2
+
+    di_potential_normalization = M4**0.25_kp    
+
+  end function di_potential_normalization
+
+
+
+!returns Lambda given f and M
+  function di_lambda(f,M)
+    real(kp) :: di_lambda
+    real(kp), intent(in) :: f, M
+
+    di_lambda = M*sqrt(pi/f)
+    
+  end function di_lambda
+
+
+!returns V/M^4
   function di_norm_potential(x,f,lambda)
     implicit none
     real(kp) :: di_norm_potential
@@ -113,7 +157,7 @@ contains
 
 
 
-
+!with respect to x
   function di_norm_deriv_potential(x,f,lambda)
     implicit none
     real(kp) :: di_norm_deriv_potential
@@ -131,7 +175,7 @@ contains
 
 
 
-
+!with respect to x
   function di_norm_deriv_second_potential(x,f,lambda)
     implicit none
     real(kp) :: di_norm_deriv_second_potential
@@ -151,7 +195,6 @@ contains
   end function di_norm_deriv_second_potential
 
 
-
   
   function di_epsilon_one(x,f,lambda)    
     implicit none
@@ -161,26 +204,9 @@ contains
 
     k2 = di_k2(x)
 
-    di_epsilon_one = di_parametric_epsilon_one(k2,f,lambda)
+    di_epsilon_one = di_parametric_epsilon_one(k2,f)/lambda/lambda
 
   end function di_epsilon_one
-
-
-  function di_parametric_epsilon_one(k2,f,lambda)
-    real(kp) :: di_parametric_epsilon_one
-    real(kp), intent(in) :: k2, f, lambda
-
-    real(kp) :: V, dV, dx
-
-    V = di_norm_parametric_potential(k2,f)
-    dV = di_norm_deriv_parametric_potential(k2,f)
-    dx = di_deriv_x(k2)
-
-    di_parametric_epsilon_one = 0.5_kp* (dV/V/dx/lambda)**2
-
-  end function di_parametric_epsilon_one
-
-
 
 
 
@@ -192,30 +218,9 @@ contains
 
     k2 = di_k2(x)
 
-    di_epsilon_two = di_parametric_epsilon_two(k2,f,lambda)
+    di_epsilon_two = di_parametric_epsilon_two(k2,f)/lambda/lambda
 
   end function di_epsilon_two
-
-
-  function di_parametric_epsilon_two(k2,f,lambda)
-    implicit none
-    real(kp) :: di_parametric_epsilon_two
-    real(kp), intent(in) :: k2,f,lambda
-
-    real(kp) :: V, dV, d2V, dx, d2x
-
-    dx = di_deriv_x(k2)
-    d2x = di_deriv_second_x(k2)
-    V = di_norm_parametric_potential(k2,f)
-    dV = di_norm_deriv_parametric_potential(k2,f)
-    d2V = di_norm_deriv_second_parametric_potential(k2,f)
-
-    di_parametric_epsilon_two = (2*d2x*dV*V + 2*dx*(dV**2 - d2V*V)) &
-         /(dx**3*V**2)/lambda**2
-
-  end function di_parametric_epsilon_two
-
-
 
 
   function di_epsilon_three(x,f,lambda)    
@@ -227,33 +232,9 @@ contains
 
     k2 = di_k2(x)
 
-    di_epsilon_three = di_parametric_epsilon_three(k2,f,lambda)
+    di_epsilon_three = di_parametric_epsilon_three(k2,f)/lambda/lambda
 
   end function di_epsilon_three
-
-
- 
-  function di_parametric_epsilon_three(k2,f,lambda)
-    implicit none
-    real(kp) :: di_parametric_epsilon_three
-    real(kp), intent(in) :: k2,f,lambda
-
-    real(kp) :: V, dV, d2V, d3V, dx, d2x, d3x
-
-    dx = di_deriv_x(k2)
-    d2x = di_deriv_second_x(k2)
-    d3x = di_deriv_third_x(k2)
-    V = di_norm_parametric_potential(k2,f)
-    dV = di_norm_deriv_parametric_potential(k2,f)
-    d2V = di_norm_deriv_second_parametric_potential(k2,f)
-    d3V = di_norm_deriv_third_parametric_potential(k2,f)
-
-    di_parametric_epsilon_three = (dV*(-2*dV**3*dx**2 - 3*d2x*dV**2*dx*V &
-         + dx*(3*d2V*d2x - d3V*dx)*V**2 &
-         + dV*V*(3*d2V*dx**2 - 3*d2x**2*V + d3x*dx*V))) &
-         / (dx**3*V**2*(-(d2x*dV*V) + dx*(-dV**2 + d2V*V)))/lambda**2
-
-  end function di_parametric_epsilon_three
 
 
 
@@ -271,6 +252,7 @@ contains
   end function di_x_endinf
 
 
+!returns k2 at which eps1=1
   function di_k2_epsoneunity(f,lambda)
     implicit none
     real(kp) :: di_k2_epsoneunity
@@ -282,13 +264,13 @@ contains
 
     k2potmin = di_k2_potmin(f)
 
-    mini = epsilon(1._kp)
-    maxi = k2potmin - epsilon(1._kp)
+    mini = tolkp
+    maxi = (1._kp-tolkp)*k2potmin
     
     diData%real1 = f
     diData%real2 = lambda
 
-    di_k2_epsoneunity = zbrent(find_di_k2_epsoneunity,mini,maxi,tolFind,diData)
+    di_k2_epsoneunity = zbrent(find_di_k2_epsoneunity,mini,maxi,tolFind,diData)   
 
   end function di_k2_epsoneunity
 
@@ -299,20 +281,13 @@ contains
     real(kp), intent(in) :: k2
     type(transfert), optional, intent(inout) :: diData
     real(kp) :: f,lambda
-    real(kp) :: V, dV, dx
-    real(kp), save :: invsqr2 = 1._kp/sqrt(2._kp)
 
     f = diData%real1
     lambda = diData%real2
-
-    V = di_norm_parametric_potential(k2,f)
-    dV = di_norm_deriv_parametric_potential(k2,f)
-    dx = di_deriv_x(k2)
     
-    find_di_k2_epsoneunity = V/dV - invsqr2/dx/lambda
+    find_di_k2_epsoneunity = di_parametric_epsilon_one(k2,f) - lambda**2
 
   end function find_di_k2_epsoneunity
-
 
 
  
@@ -326,72 +301,13 @@ contains
 
     k2 = di_k2(x)
 
-    di_efold_primitive = di_parametric_efold_primitive(k2,f,lambda)
+    di_efold_primitive = lambda*lambda*di_parametric_efold_primitive(k2,f)
 
   end function di_efold_primitive
 
 
 
-  function di_parametric_efold_primitive(k2,f,lambda)
-    implicit none
-    real(kp) :: di_parametric_efold_primitive
-    real(kp), intent(in) :: k2, f, lambda
-    type(transfert) :: diData
-
-    real(kp) :: tolint
-    integer, parameter :: neq = 1
-
-    real(kp) :: xvar
-    real(kp), dimension(neq) :: yvar
-
-    real(kp), save :: k2null = -1._kp
-    real(kp), save :: fdone = -1._kp
-
-    if (f.ne.fdone) then
-       fdone = f
-       k2null = di_k2_nunull(f)
-    endif
-       
-    xvar = k2null
-    yvar(1) = 0._kp
-
-    diData%real1 = f
-
-    if (k2.lt.k2null) then
-       tolint = epsilon(1._4)
-    else
-       tolint = tolkp
-    endif
-
-    call easydverk(neq,find_di_parametric_efold_primitive,xvar,yvar,k2,tolint,diData)
-
-    di_parametric_efold_primitive = lambda*lambda*yvar(1)
-     
-  end function di_parametric_efold_primitive
-
-
-  subroutine find_di_parametric_efold_primitive(n,k2,y,yprime,diData)
-    implicit none
-    integer :: n
-    real(kp) :: k2
-    real(kp), dimension(n) :: y, yprime
-    type(transfert), optional, intent(inout) :: diData
-    real(kp) :: f, V, dV, dx
-
-    f = diData%real1
-
-    V = di_norm_parametric_potential(k2,f)
-    dV = di_norm_deriv_parametric_potential(k2,f)
-    dx = di_deriv_x(k2)
-    
-    yprime = (dx/dV)*V*dx
-
-  end subroutine find_di_parametric_efold_primitive
-
-
-
-
-  !returns y at bfold=-efolds before the end of inflation, ie N-Nend
+!returns y at bfold=-efolds before the end of inflation, ie N-Nend
   function di_x_trajectory(bfold,xend,f,lambda)
     implicit none
     real(kp), intent(in) :: bfold, xend, f, lambda
@@ -407,6 +323,7 @@ contains
   end function di_x_trajectory
 
 
+!the slow-roll trajectory in terms of k2
   function di_k2_trajectory(bfold,k2end,f,lambda)
     implicit none
     real(kp), intent(in) :: bfold, k2end, f, lambda
@@ -417,13 +334,13 @@ contains
     type(transfert) :: diData
 
 
-    mini = tolkp
+    mini = epsilon(1._kp)
     maxi = k2end
 
 
     diData%real1 = f
     diData%real2 = lambda
-    diData%real3 = -bfold + di_parametric_efold_primitive(k2end,f,lambda)
+    diData%real3 = -bfold + lambda*lambda*di_parametric_efold_primitive(k2end,f)
 
     di_k2_trajectory = zbrent(find_di_k2_trajectory,mini,maxi,tolFind,diData)
 
@@ -441,8 +358,8 @@ contains
     lambda = diData%real2
     NplusNuend = diData%real3
 
-    find_di_k2_trajectory = di_parametric_efold_primitive(k2,f,lambda) - NplusNuend 
-
+    find_di_k2_trajectory = lambda*lambda*di_parametric_efold_primitive(k2,f) &
+         - NplusNuend 
 
   end function find_di_k2_trajectory
 

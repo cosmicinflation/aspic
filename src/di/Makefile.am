@@ -1,6 +1,6 @@
-SRC = displine.f90 dicommon.f90 disr.f90
+SRC = displine.f90 dicommon.f90 disr.f90 direheat.f90
 
-MOD = displine.$(FC_MODEXT) dicommon.$(FC_MODEXT) disr.$(FC_MODEXT)
+MOD = displine.$(FC_MODEXT) dicommon.$(FC_MODEXT) disr.$(FC_MODEXT) direheat.$(FC_MODEXT)
 
 check_PROGRAMS = dimain
 dimain_SOURCES = $(SRC) dimain.f90
