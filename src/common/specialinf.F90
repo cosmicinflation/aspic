@@ -143,7 +143,7 @@ contains
     implicit none
     real(kp) :: ellipticK
     real(kp), intent(in) :: k2
-    real(kp), save :: k2sav = -1_kp
+    real(kp), save :: k2sav = -1._kp
     real(kp), save :: Ksav = -1._kp
 !$omp private(k2sav, Ksav)
 
