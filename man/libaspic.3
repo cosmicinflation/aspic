@@ -16,11 +16,11 @@ library dedicated to (a)ccurate (s)low-roll (p)redictions for
 
 .SH SYNOPSIS
 .I
-libaspic
-is a collection of fortran modules, distributed as a shared and static
-library, which provides various computational functions associated
-with well known models of inflation. The list of models, modules and
-available functions, as well as their usage, are detailed below.
+libaspic is a collection of fortran modules, distributed as a shared
+and static library, which provides various computational functions
+associated with various models of inflation. The list of
+models, modules and available functions, as well as their usage, are
+detailed below.
 .P
 In order to access the library, it has to be linked to your code
 by using the
@@ -29,7 +29,7 @@ flag during compilation, i.e. by appending the command
 .B -laspic
 to the others flags. Inside your source code, all modules and their
 associated routines can be imported from a global include file that is
-accessible in fortran by the command:
+accessible in fortran by:
 .IP
 .B include 'aspic.h'
 .P
@@ -38,9 +38,8 @@ or using the C pre-processor with
 .B #include <aspic.h>
 .P
 Both the library and the global include file are installed in the
-standard directory you specified when installing the
-library. Compiling your own source file with, for instance, gfortran
-should only require:
+directory you specified during the installation. Compiling your own
+source file with, for instance, gfortran should only require:
 .IP
 gfortran -c mysrcfile.f90
 .RS
@@ -48,12 +47,12 @@ gfortran mysrcfile.o -o myprog
 .B -laspic
 .RE
 .P
-In case you have installed the library and modules in a non-standard
-location, you can use the
+In the situation in which the library and modules are installed in a
+non-standard location, you can use the
 .I -I
-command line flag for specifying the default include and module
-directory. The same remark holds for the path to the library itself, which
-can be specified with the
+command line flag for specifying the path to the module and include
+file. The same remark holds for the path to the library itself, which
+can be specified using the
 .I -L
 command line flag. Compiling with
 gfortran would now read:
@@ -64,10 +63,10 @@ gfortran -L/usr/lib64 mysrcfile.o -o myprog
 .B -laspic
 .RE
 .P
-Alternatively, you can decide to only import one (or more) specific
+Alternatively, you can decide to import only one (or more) specific
 module with a subset of its associated routines with the fortran
 instruction 'use'. As an example, accessing the first and second Hubble flow
-functions for the models 'foo' reads:
+functions for the model 'foo' reads:
 
 .IP
 .B use foosr, only : foo_epsilon_one, foo_epsilon_two
@@ -97,11 +96,11 @@ pivot scale crossed the Hubble radius during inflation. All these
 quantities are computed in a way which is consistent with the
 existence of a reheating phase. Some functions may therefore requires
 as an input both the amplitude of the scalar perturbations and the
-mean equation of state during reheating.
+reheating parameters.
 
 .SH EXAMPLES
 
-For each all the models implemented, assuming its acronym to be 'foo',
+For each model implemented, assuming its acronym to be 'foo',
 the source tarball contains a worked out example, 'foomain.f90', which
 calls the library to extract the spectral index and tensor-to-scalar
 ratio scanning all possible reheating energy scales. These example
@@ -134,7 +133,7 @@ add a new model.
 
 The
 .B foosr
-module exposes the following
+module encapsulates the following
 .I public functions
 of kind
 .I real(kp)
@@ -189,15 +188,13 @@ The first three functions return the
 field potential and its
 derivatives with respect to the input variable 'x'. They
 .I do not
-include any multiplicative
-factor (such as M^4) because it is always uniquely determined by the
-amplitude of the cosmological perturbations. As such, the
-normalization is never counted as a model parameter in the
-classification below.  The next three functions, the ones containing the
-wording
-.B 'epsilon'
-in their name, return the value of the three first Hubble flow
-functions at leading order (the so-called 'epsilonV' functions)
+include any multiplicative factor (such as M^4) because it is always
+uniquely determined by the amplitude of the cosmological
+perturbations. As such, the normalization is never counted as a model
+parameter in the classification below.  The next three functions, the
+ones containing the wording "epsilon" in their name, return the value
+of the three first Hubble flow functions at leading order (the
+so-called "epsilonV" functions)
 .P
 Finally, the last three functions allows to determine
 uniquely the slow-roll trajectory at leading order. Calling
@@ -228,7 +225,7 @@ before the end of inflation at which you want this value.
 
 The
 .B fooreheat
-module exposes the following
+module encapsulates the following
 .I public functions
 of kind
 .I real(kp)
@@ -320,7 +317,7 @@ The
 .B srreheat
 module is not model specific and its source files are located under
 the directory 'src/common/'. Unless otherwise specified, this module
-exposes
+encapsulates
 .I functions
 of kind
 .I real(kp)
@@ -524,7 +521,7 @@ astro-ph/0605367 (section 4.1)
 
 The
 .B cosmopar
-module exposes some
+module encapsulates some
 .I public parameters
 of the kind
 .I real(kp)
@@ -599,18 +596,18 @@ specific computations.
 .P
 The
 .B inftools
-module exposes some
+module encapsulates some
 .I public subroutines
 which are various modified Runge-Kutta numerical integrators based on the
 subroutine
 .BR dverk ().
 The
 .B specialinf
-module exposes some special functions arising by analytically
+module encapsulates some special functions arising by analytically
 integrating some slow-roll trajectories.
 The
 .B hyp_2f1_module
-module exposes various
+module encapsulates various
 .I functions
 and
 .I subroutines
@@ -716,6 +713,9 @@ Cublicly corrected Starobinski inflation I
 .TQ
 .I ccsi3
 Cublicly corrected Starobinski inflation III
+.TQ
+.I di
+Dual Inflation
 
 
 .SS TWO PARAMETERS MODELS

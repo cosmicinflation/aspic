@@ -56,6 +56,8 @@ use ccsi1sr
 use ccsi1reheat
 use ccsi3sr
 use ccsi3reheat
+use disr
+use direheat
 
 !two parameters models
 use sfisr
