@@ -32,7 +32,7 @@ module direheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use dicommon, only : di_parametric_epsilon_one, di_norm_parametric_potential
   use dicommon, only : di_parametric_efold_primitive, di_k2_potmin
-  use disr, only : di_k2_epsoneunity
+  use disr, only : di_x, di_k2_epsoneunity
   
   implicit none
 
@@ -44,9 +44,60 @@ module direheat
   
   public di_lambda_star, di_lnrhoreh_max
   public di_k2_star, di_k2_rrad, di_k2_rreh
-!  public di_x_star, di_x_rrad, di_x_rreh
+  public di_x_star, di_x_rrad, di_x_rreh
 
 contains
+
+
+
+  function di_x_star(f,w,lnRhoReh,Pstar,bfoldstar)
+    implicit none
+    real(kp) :: di_x_star
+    real(kp), intent(in) :: f,w,lnRhoReh,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp) :: k2star
+
+    k2star = di_k2_star(f,w,lnRhoReh,Pstar,bfoldstar)
+
+    di_x_star = di_x(k2star)
+    
+  end function di_x_star
+
+
+
+  function di_x_rrad(f,lnRrad,Pstar,bfoldstar)    
+    implicit none
+    real(kp) :: di_x_rrad
+    real(kp), intent(in) :: f,lnRrad,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp) :: k2star
+
+    k2star = di_k2_rrad(f,lnRrad,Pstar,bfoldstar)
+
+    di_x_rrad = di_x(k2star)
+
+  end function di_x_rrad
+
+    
+!calling arguments are non-standard and require Pstar (due to Lambda)
+!as opposed to the usual *_x_rreh functions
+  function di_x_rreh(f,lnRreh,Pstar,bfoldstar)
+    implicit none
+    real(kp) :: di_x_rreh
+    real(kp), intent(in) :: f,lnRreh,Pstar
+    real(kp), intent(out), optional :: bfoldstar
+
+    real(kp) :: k2star
+
+    k2star = di_k2_rreh(f,lnRreh,Pstar,bfoldstar)
+
+    di_x_rreh = di_x(k2star)
+    
+  end function di_x_rreh
+
+
 
 !return lambda from k2, f and Pstar(CMB normalised only for k2=k2star)
   function di_lambda_star(k2,f,Pstar)

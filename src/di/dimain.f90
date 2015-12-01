@@ -12,13 +12,14 @@ program dimain
   use dicommon, only : di_deriv_x, di_deriv_second_x, di_deriv_third_x 
   use displine, only : di_spline_x, di_spline_k2, di_set_splines, di_free_splines
   
-  use disr, only : di_x, di_norm_potential, di_norm_deriv_potential, di_norm_deriv_second_potential
+  use disr, only : di_x, di_k2, di_norm_potential, di_norm_deriv_potential, di_norm_deriv_second_potential
   use disr, only : di_epsilon_one, di_epsilon_two, di_epsilon_three, di_x_endinf  
   use disr, only : di_k2_epsoneunity, di_k2_trajectory, di_x_trajectory
 
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
   use direheat, only : di_k2_star, di_k2_rrad, di_k2_rreh, di_lambda_star, di_lnrhoreh_max
+  use direheat, only : di_x_star, di_x_rrad, di_x_rreh
 
   implicit none
 
@@ -36,7 +37,7 @@ program dimain
 
   real(kp) :: k2, lnk2min, lnk2max, k2min, k2max, k2end
   real(kp) :: nu, k2obs, k2star, k2potmin, k2null  
-  real(kp) :: xspline, xdirect, dxox, xend
+  real(kp) :: xspline, xdirect, dxox, xend, xstar
 
   real(kp) :: x, xmin, xmax
   real(kp) :: dx, d2x, d3x
@@ -172,7 +173,7 @@ program dimain
     
   fmin = 1e-5
   fmax = 0.5
-  n = 50
+  n = 5
 
   do j=1,n
      f = exp(log(fmin) + (log(fmax)-log(fmin))*real(j-1,kp)/real(n-1,kp))
@@ -234,7 +235,7 @@ program dimain
 
      eps1 = di_parametric_epsilon_one(k2star,f)/lambda**2
      eps2 = di_parametric_epsilon_two(k2star,f)/lambda**2
-     eps3 = di_parametric_epsilon_three(k2star,f)/lambda**2
+     eps3 = di_parametric_epsilon_three(k2star,f)/lambda**2     
 
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar

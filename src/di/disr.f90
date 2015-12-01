@@ -1,6 +1,6 @@
 !Slow-roll functions for dual inflation (enjoy!)
 !
-! V(k2) = M^4{ 1 + Vo(f) - 2(K-E)/(k2 K) - pi/(k2 K K') [nu(k2)]^2 Heavside[nu(k2)] }
+! V(k2) = M^4{ 1 + Vo(f) - 2(K-E)/(k2 K) - pi/(k2 K K') [nu(k2)]^2 Heaviside[nu(k2)] }
 ! nu(k2)= 1 - 8 sqrt(2)/(pi^2 f) K/sqrt(k2)(E'-K')^2
 !
 ! E=E(k2), K=K(k2), E'=E(1-k2), K'=K(1-k2) are the complete
