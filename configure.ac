@@ -1,4 +1,4 @@
-AC_INIT([aspic],[0.3.2],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
+AC_INIT([aspic],[0.4.0],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
 
 AC_PROG_FC
 AC_PROG_CPP
@@ -6,7 +6,7 @@ AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
 
-version_info="2:0:2"
+version_info="3:0:1"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
@@ -101,5 +101,6 @@ AC_CONFIG_FILES([Makefile
                  src/nfi/Makefile
                  src/ccsi/Makefile
 		 src/di/Makefile
+		 src/hni/Makefile
                 ])
 AC_OUTPUT
