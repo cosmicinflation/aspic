@@ -68,6 +68,7 @@ program dimain
    k2potmin = di_k2_potmin(f)
    print *,'Minimum at k2= ',k2potmin
 
+   print *,'Minium at x= ',di_x(k2potmin)
 
   if (testSpline) then
      n=100
@@ -171,7 +172,7 @@ program dimain
   call delete_file('di_predic.dat')
   call delete_file('di_nsr.dat')
     
-  fmin = 1e-5
+  fmin = 5e-5
   fmax = 0.5
   n = 5
 
@@ -256,6 +257,7 @@ program dimain
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
      k2star = di_k2_star(f,w,lnRhoReh,Pstar)
+     xstar = di_x(k2star)
 
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'k2star',k2star

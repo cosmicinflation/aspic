@@ -15,7 +15,7 @@ module displine
      module procedure di_k2
   end interface di_spline_k2
 
-
+!precomputed modulus field correspondance
   character(len=*), parameter :: tablefile = 'fieldvalues.sav'
 
   integer, parameter :: order = 3
@@ -26,7 +26,18 @@ module displine
   real(kp), dimension(:), allocatable :: xknots, xbcoef
   real(kp), dimension(:), allocatable :: k2knots, k2bcoef
 
-  
+!max number of records in precomputed data file
+  integer, parameter :: nrecmax = 1000
+  integer, parameter :: ncols = 2
+
+!set it to false to use binary preprocessed data
+  logical, parameter :: usePP = .true.
+
+!set it to true to generate binary preprocessed data in fieldvalues.pp
+!from data file
+  logical, parameter :: createPP = .false.
+
+
   public k2min, k2max, xmin, xmax
   public di_spline_x, di_spline_k2
   public di_check_splines, di_free_splines,di_set_splines
@@ -34,16 +45,53 @@ module displine
 
 contains
   
+  
+  subroutine di_preprocessed_data(xdata,k2data)
+    implicit none
+    real(kp), dimension(nrecmax,ncols) :: buffer
+    real(kp), dimension(:), allocatable, intent(inout) :: xdata, k2data
+    integer :: i,nrec
 
-  subroutine di_read_data(filename,xdata,k2data)
+    buffer = -1._kp
+
+#define PPDATA(fooidx,fook2,foox) \
+    buffer(fooidx,1) = fook2 ; \
+    buffer(fooidx,2) = foox
+#include "fieldvalues.pp"
+#undef PPDATA
+
+    do i=1,nrecmax
+       if (buffer(i,1).eq.-1._kp) exit
+    enddo
+
+    write(*,*)
+    write(*,*)'di_preprocessed_data:'
+    write(*,*)'number of records: ',i-1
+
+    nrec = i-1
+
+    allocate(xdata(nrec),k2data(nrec))
+    k2data = buffer(:,1)
+    xdata = buffer(:,2)
+
+    ndata = nrec
+    k2min = k2data(1)
+    k2max = k2data(ndata)
+    xmin = xdata(ndata)
+    xmax = xdata(1)
+    
+  end subroutine di_preprocessed_data
+
+
+
+  subroutine di_readump_data(filename,xdata,k2data)
     implicit none
 
     character(len=*), intent(in) :: filename
     real(kp), dimension(:), allocatable, intent(inout) :: xdata, k2data
 
     integer, parameter :: nunit = 110
-    integer, parameter :: ncols = 2
-    integer, parameter :: nrecmax = 1000
+    logical, parameter :: dumpPPdata = .true.
 
     integer :: ioerr, nrec,i
 
@@ -83,7 +131,15 @@ contains
     xmin = xdata(ndata)
     xmax = xdata(1)
 
-  end subroutine di_read_data
+    if (createPP) then
+       open(unit=nunit,file='fieldvalues.pp',status='new')
+       do i=1,nrec
+          write(nunit,*)'PPDATA(',i,',',buffer(i,1),',',buffer(i,2),')'
+       enddo
+       close(nunit)
+    endif
+
+  end subroutine di_readump_data
 
 
 
@@ -120,7 +176,11 @@ contains
 
     real(kp), dimension(:), allocatable :: xdata, k2data
 
-    call di_read_data(tablefile, xdata, k2data)
+    if (usePP) then
+       call di_preprocessed_data(xdata, k2data)
+    else
+       call di_readump_data(tablefile, xdata, k2data)
+    endif
 
     allocate(k2knots(ndata+order),xknots(ndata+order))
     allocate(k2bcoef(ndata),xbcoef(ndata))

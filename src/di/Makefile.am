@@ -1,4 +1,4 @@
-SRC = displine.f90 dicommon.f90 disr.f90 direheat.f90
+SRC = displine.F90 dicommon.f90 disr.f90 direheat.f90
 
 MOD = displine.$(FC_MODEXT) dicommon.$(FC_MODEXT) disr.$(FC_MODEXT) direheat.$(FC_MODEXT)
 
