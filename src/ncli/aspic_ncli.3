@@ -1,0 +1,95 @@
+.TH libncli 3 "December 4, 2015" "libaspic" "Module convention"
+
+.SH NAME
+.I ncli
+- the non-renormalizable corrected loop inflation
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 / [ 1 + alpha ln(phi/Mp) + (phi/phi0)^(4+2n) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B phi
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha, phi0, n
+
+.SH DESCRIPTION
+The ncli module is used for the non-renormalizable corrected loop
+inflation model in which inflation takes place in a plateau region
+around an inflection point. The above potential can be negative in
+some regions which are therefore non-physical, at small values
+of 'x'. The field value at which the potential vanishes is given by the
+.I real(kp)
+function
+.IP
+.BR ncli_x_potzero (alpha,phi0,n)
+.P
+and the inflection point by
+.IP
+.BR ncli_x_inflection ((alpha,phi0,n)
+.P
+For some parameter values, the inflection point may end up being in
+the domain in which the potential is negative and non-physical. For
+this reason, we provide the function
+.IP
+.BR ncli_phizeromin (alpha,n)
+.P
+which gives the minimal acceptable value of 'phi0' given 'alpha'
+and 'n' for this to not happen. At large field values 'x', the
+potential can also support inflation as it behaves as a valley hybrid
+scenario. We therefore provide various functions allowing to determine
+the acceptable field values as well as the relevant inflationary
+domains. The field values 'xeps1' at which the first Hubble flow
+function equals unity are given by the
+.I real(kp), dimension(3)
+function
+.IP
+.BR ncli_x_epsoneunity (alpha,phi0,n)
+.P
+which returns a vector of three values: 'xeps1(1)', 'xeps1(2)'
+and 'xeps1(3)'. When they are distinct, the plateau lies in the
+domain 'xeps1(1) < x < xeps1(2)' wheareas the valley hybrid-like
+inflationary regime takes place at 'x > xeps(3)'. Depending on the
+model parameters, these domains may be merged, or not. Therefore, in
+all possible situations, we provide the function
+.IP
+.BR ncli_x_endinf (alpha,phi0,n)
+.P
+that will always return the value at which inflation ends when it occurs in the
+plateau region (and thus, it returns the only relevant value of
+xeps1). Because this domain may be bounded, the function
+.IP
+.BR ncli_xinimax (alpha,phi0,n)
+.P
+returns the maximal allowed value 'xiniMax' for the field value to
+start inflation within the plateau. Notice that when the plateau is
+not bounded from above, this function returns the largest
+computable 'x'. For the bounded case, the total number of e-folds
+being limited, we provide another function
+.IP
+.BR ncli_xinimin (N,alpha,phi0,n)
+.P
+which gives the minimum possible value 'xiniMin' such that inflation
+lasts for 'N' e-folds within the plateau. If this is not possible, the
+function displays a warning and returns 'xiniMin = xiniMax'.
+.P
+Finally, the
+.I logical
+function
+.IP
+.BR ncli_check_params (Nmin,eps1min,alpha,phi0,n)
+.P
+returns
+.I true
+if the total number of e-folds within the plateau can exceed 'Nmin'
+and if the minimum value reached by the first Hubble flow function can
+be below 'eps1min'.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

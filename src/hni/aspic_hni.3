@@ -20,5 +20,19 @@ Parameters
 ::
 .B alpha, phi0
 
+.SH DESCRIPTION
+Hybrid natural inflation gracefully ends only for values of the
+parameter 'alpha' greater than a threshold. This one can be obtained
+by the
+.I real(kp)
+::
+function
+.IP
+.BR hni_alphamin (phi0)
+.P
+taking as an input the other parameter 'phi0'. Under the condition 'alpha > alphamin', the field value at which inflation ends is returned by the function
+.IP
+.BR hni_x_endinf (alpha,phi0)
+
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

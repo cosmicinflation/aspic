@@ -146,7 +146,8 @@ end function cwi_xplus_positive_potential
     real(kp) :: mini,maxi
     type(transfert) :: cwiData  
 
-    maxi = exp(-1._kp/4._kp)*(1._kp-1000._kp*epsilon(1._kp))
+!    maxi = exp(-1._kp/4._kp)*(1._kp-1000._kp*epsilon(1._kp))
+    maxi =  exp(-1._kp/4._kp)*(1._kp-tolkp)
     mini = epsilon(1._kp)*maxi
 
     cwiData%real1 = alpha

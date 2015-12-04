@@ -20,7 +20,7 @@ module ccsicommon
   public ccsi_norm_potential, ccsi_epsilon_one, ccsi_epsilon_two, ccsi_epsilon_three
   public ccsi_norm_deriv_potential, ccsi_norm_deriv_second_potential
   public ccsih_x_trajectory, ccsih_efold_primitive, ccsi_xmax, ccsi_x_potmax
-  public ccsi_x_epsoneunity, ccsi_x_epstwonull, ccsi_alphamin
+  public ccsi_x_epsoneunity, ccsi_x_epstwozero, ccsi_alphamin
   public ccsi_efold_primitive, find_ccsi_x_trajectory
 
   public ccsi_numacc_x_epsonenull
@@ -242,19 +242,19 @@ contains
 
 
 !field value at which epsilon two vanishes (epsilon one extremum)
-  function ccsi_x_epstwonull(alpha)
+  function ccsi_x_epstwozero(alpha)
     implicit none
     real(kp), intent(in) :: alpha
-    real(kp) :: ccsi_x_epstwonull
+    real(kp) :: ccsi_x_epstwozero
 
     if (alpha.ge.0) then
-       stop 'ccsi_x_epstwonull: no vanishing eps2 for alpha > 0!'
+       stop 'ccsi_x_epstwozero: no vanishing eps2 for alpha > 0!'
     endif
 
-    ccsi_x_epstwonull = log(-6._kp + 24._kp*alpha - (2._kp*sqrt(alpha &
+    ccsi_x_epstwozero = log(-6._kp + 24._kp*alpha - (2._kp*sqrt(alpha &
          *(-1._kp + 4._kp*alpha)*(-1._kp + 6._kp*alpha)**2))/alpha)
 
-  end function ccsi_x_epstwonull
+  end function ccsi_x_epstwozero
 
 
 
