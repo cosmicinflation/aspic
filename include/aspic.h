@@ -118,6 +118,8 @@ use nfi3sr
 use nfi3reheat
 use ccsi2sr
 use ccsi2reheat
+use hnisr
+use hnireheat
 
 !three parameter models
 use lmi2sr
@@ -152,6 +154,8 @@ use nfi2sr
 use nfi2reheat
 use nfi4sr
 use nfi4reheat
+use nclisr
+use nclireheat
 !use shisr
 !use shireheat
 !use su5isr
