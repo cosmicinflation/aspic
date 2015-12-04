@@ -1,3 +1,154 @@
+commit 975a704d240622276472bdbf9dfa58487ed45a46
+Date:   Fri Dec 4 15:17:19 2015 +0100
+
+    Adding and improving ncli
+
+ configure.ac            |   1 +
+ src/Makefile.am         |   5 +-
+ src/ccsi/aspic_ccsi1.3  |   4 +-
+ src/ccsi/ccsicommon.F90 |  12 +-
+ src/cwi/cwisr.f90       |   3 +-
+ src/di/aspic_di.3       |  48 ++--
+ src/hni/aspic_hni.3     |  14 ++
+ src/ncli/Makefile.am    |  25 ++
+ src/ncli/aspic_ncli.3   |  95 ++++++++
+ src/ncli/nclimain.f90   | 194 +++++++++++++++
+ src/ncli/nclireheat.f90 | 255 ++++++++++++++++++++
+ src/ncli/nclisr.f90     | 612 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 12 files changed, 1233 insertions(+), 35 deletions(-)
+
+commit bddbe69a3849950f82b6da59dfffad615de03a8c
+Date:   Wed Dec 2 17:23:08 2015 +0100
+
+    Importing hni
+
+ configure.ac          |   5 +-
+ src/Makefile.am       |   5 +-
+ src/hni/Makefile.am   |  22 +++++
+ src/hni/aspic_hni.3   |  24 +++++
+ src/hni/hnimain.f90   | 155 ++++++++++++++++++++++++++++++++
+ src/hni/hnireheat.f90 | 244 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/hni/hnisr.f90     | 173 +++++++++++++++++++++++++++++++++++
+ 7 files changed, 624 insertions(+), 4 deletions(-)
+
+commit cde95df2bb573139934f47e3e146a12a7bf2457e
+Date:   Wed Dec 2 15:34:08 2015 +0100
+
+    adding hardcoded option for spline using cpp
+
+ src/di/Makefile.am    |    2 +-
+ src/di/dimain.f90     |    4 +-
+ src/di/displine.F90   |  240 ++++++++++++
+ src/di/displine.f90   |  180 ---------
+ src/di/fieldvalues.pp | 1000 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 1244 insertions(+), 182 deletions(-)
+
+commit 596902220e4fea31cf2ec69d2e93f0cb2e6c304a
+Date:   Tue Dec 1 19:50:13 2015 +0100
+
+    Fix non-std character for ifort quadprec
+
+ src/common/specialinf.F90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 57e998a3071c49d397ab13a6a48440f72f7ce7db
+Date:   Tue Dec 1 19:35:24 2015 +0100
+
+    Fixing man and updating include files
+
+ include/aspic.h |  2 ++
+ man/libaspic.3  | 68 ++++++++++++++++++++++++++++-----------------------------
+ 2 files changed, 36 insertions(+), 34 deletions(-)
+
+commit c134dcf3dbc53440cd80fd0ad8f960a34edbb2e2
+Date:   Tue Dec 1 19:22:30 2015 +0100
+
+    Adding man to di
+
+ src/di/aspic_di.3   | 283 ++++++++++++++++++++++++++++++++++++++++++++++------
+ src/di/dimain.f90   |   9 +-
+ src/di/direheat.f90 |  55 +++++++++-
+ src/di/disr.f90     |   2 +-
+ 4 files changed, 312 insertions(+), 37 deletions(-)
+
+commit fd1bfc62a349a3358377b621827a4588f2028ba7
+Date:   Fri Nov 27 19:03:02 2015 +0100
+
+    First working version of di
+
+ src/common/srreheat.f90 |  11 +-
+ src/di/Makefile.am      |   4 +-
+ src/di/dicommon.f90     | 433 +++++++++++++++++++++++++++++++++++++++++++-----
+ src/di/dicomreh.f90     | 198 ----------------------
+ src/di/dimain.f90       | 228 ++++++++++++++++++-------
+ src/di/direheat.f90     | 401 +++++++++++++++++++++++++++++++++++---------
+ src/di/disr.f90         | 219 ++++++++----------------
+ 7 files changed, 960 insertions(+), 534 deletions(-)
+
+commit 6547bc0de946ef2e5c7c8b732d8db9921cd76bd6
+Date:   Fri Nov 20 19:43:05 2015 +0100
+
+    add bspline to makefile
+
+ src/common/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a6cf0355c6bf931a7a080b8b6e6b07ad18ea14b9
+Date:   Fri Nov 20 19:42:04 2015 +0100
+
+    debug di functions
+
+ src/di/Makefile.am     |   10 +-
+ src/di/dicommon.f90    |  193 ++++++++--
+ src/di/dimain.f90      |  145 ++++++-
+ src/di/displine.f90    |  180 +++++++++
+ src/di/disr.f90        |  425 +++++++++++++++-----
+ src/di/fieldvalues.sav | 1000 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 1822 insertions(+), 131 deletions(-)
+
+commit a2c0a8fe48587ac19178b8c50557c48b4e3b8fd6
+Date:   Wed Nov 18 18:11:10 2015 +0100
+
+    Add di into autoconf
+
+ configure.ac      |   1 +
+ src/Makefile.am   |   5 ++-
+ src/di/dimain.f90 | 127 ++----------------------------------------------------
+ 3 files changed, 8 insertions(+), 125 deletions(-)
+
+commit f4eb9f41ce33426ebf21e7b3030b817e4224b7f4
+Date:   Wed Nov 18 18:08:30 2015 +0100
+
+    adding drafted di model
+
+ src/common/Makefile.am    |    6 +-
+ src/common/bspline.F90    | 2282 +++++++++++++++++++++++++++++++++++++++++++++
+ src/common/specialinf.F90 |   22 +-
+ src/di/Makefile.am        |   26 +
+ src/di/aspic_di.3         |   49 +
+ src/di/dicommon.f90       |  449 +++++++++
+ src/di/dicomreh.f90       |  198 ++++
+ src/di/dimain.f90         |  130 +++
+ src/di/direheat.f90       |  135 +++
+ src/di/disr.f90           |  197 ++++
+ 10 files changed, 3491 insertions(+), 3 deletions(-)
+
+commit 4fa839786a9892cffeca60872f411eb90a62e32c
+Date:   Mon Nov 2 13:49:54 2015 +0100
+
+    Add elliptic K et E functions, defined over F21
+
+ src/common/specialinf.F90 | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+commit 75b41e1c7860722e09dc14d6f1310e511589840b
+Date:   Thu Aug 13 18:01:53 2015 +0200
+
+    update changelog
+
+ ChangeLog | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
 commit f4cd66f5e583627e4259730db951e27b0528c9cc
 Date:   Thu Aug 13 17:58:49 2015 +0200
 

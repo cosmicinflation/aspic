@@ -37,7 +37,7 @@ program dimain
 
   real(kp) :: k2, lnk2min, lnk2max, k2min, k2max, k2end
   real(kp) :: nu, k2obs, k2star, k2potmin, k2null  
-  real(kp) :: xspline, xdirect, dxox, xend, xstar
+  real(kp) :: xspline, xdirect, dxox, xend, xstar,xpotmin
 
   real(kp) :: x, xmin, xmax
   real(kp) :: dx, d2x, d3x
@@ -68,7 +68,8 @@ program dimain
    k2potmin = di_k2_potmin(f)
    print *,'Minimum at k2= ',k2potmin
 
-   print *,'Minium at x= ',di_x(k2potmin)
+   xpotmin = di_x(k2potmin)
+   print *,'Minium at x= ',xpotmin
 
   if (testSpline) then
      n=100

@@ -22,7 +22,7 @@ module nclisr
   public ncli_epsilon_one, ncli_epsilon_two,ncli_epsilon_three
   public ncli_efold_primitive, ncli_x_trajectory, ncli_x_endinf, ncli_check_params
   public ncli_x_epstwozero, ncli_x_epsoneunity, ncli_epsilon_one_max, ncli_epsilon_one_min
-  public ncli_xinimin, ncli_x_potzero, ncli_x_inflection, ncli_phizeromin
+  public ncli_xinimin, ncli_xinimax, ncli_x_potzero, ncli_x_inflection, ncli_phizeromin
   public xNumAccMax
 
  
@@ -73,7 +73,7 @@ contains
     real(kp) :: ncli_norm_potential
     real(kp), intent(in) :: x,alpha,phi0,n
 
-    ncli_norm_potential = 1._kp+alpha*log(x)+(x/phi0)**(4._kp+2._kp*n)
+    ncli_norm_potential = 1._kp + 0.5_kp*alpha*log(x*x) + (x*x/phi0/phi0)**(2._kp+n)
 
   end function ncli_norm_potential
 
@@ -84,7 +84,7 @@ contains
     real(kp) :: ncli_norm_deriv_potential
     real(kp), intent(in) :: x,alpha,phi0,n
 
-    ncli_norm_deriv_potential = alpha/x+(2._kp*(2._kp+n)*x**3*(x/phi0)**(2._kp*n))/phi0**4
+    ncli_norm_deriv_potential = alpha/x+(2._kp*(2._kp+n)*x**3*(x*x/phi0/phi0)**n)/phi0**4
 
   end function ncli_norm_deriv_potential
 
@@ -97,7 +97,7 @@ contains
     real(kp), intent(in) :: x,alpha,phi0,n
 
     ncli_norm_deriv_second_potential = -(alpha/x**2)+(2._kp*(2._kp+n)*(3._kp+2._kp*n)*x**2* &
-         (x/phi0)**(2._kp*n))/phi0**4
+         (x*x/phi0/phi0)**n)/phi0**4
 
   end function ncli_norm_deriv_second_potential
 

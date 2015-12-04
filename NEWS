@@ -1,14 +1,8 @@
-* version 0.3.2 (charlie release)
+* version 0.3.3 (paris release)
 
-- added models nfi, ccsi
+- added models di, hni and ncli.
 
-- splitting 'srflow' into two modules: 'huflow' that contains formulae
-  valid at any order in the Hubble flow functions; and 'srflow' that
-  map the epsilonV hierarchy to the Hubble flow functions. Changes are
-  backward compatible and calls should still be made to 'srflow'
-  functions.
-
-- added running and running of running functions in 'huflow'/'srflow'
-  modules.
+- added bspline modules in src/common, support for complete Elliptic
+  functions in specialinf.
 
 - various bugs and precision issues fixed
