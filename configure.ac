@@ -1,5 +1,7 @@
 AC_INIT([aspic],[0.4.0],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
 
+AM_INIT_AUTOMAKE
+
 AC_PROG_FC
 AC_PROG_CPP
 AC_PROG_RANLIB
@@ -42,8 +44,6 @@ DATEXT="dat"
 AC_SUBST([DATEXT]) 
 
 AC_CONFIG_TESTDIR([tests])
-
-AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile
 		 tests/Makefile
