@@ -176,6 +176,8 @@ contains
 
     real(kp), dimension(:), allocatable :: xdata, k2data
 
+    if (di_check_splines()) stop 'di_set_splines: splines already set!'
+
     if (usePP) then
        call di_preprocessed_data(xdata, k2data)
     else
