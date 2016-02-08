@@ -55,22 +55,10 @@ program dimain
 
 
 
-   f=0.01_kp
-   print *,'f= ',f
-   Pstar = powerAmpScalar
-
-   ucte = di_norm_uplifting(f)
-   print *,'Uplifting constant=',ucte
-
-   k2null = di_k2_nunull(f)
-   print *,'Monopole on at k2= ',k2null
+  f=0.01_kp
+  print *,'f= ',f
+  Pstar = powerAmpScalar
    
-   k2potmin = di_k2_potmin(f)
-   print *,'Minimum at k2= ',k2potmin
-
-   xpotmin = di_x(k2potmin)
-   print *,'Minium at x= ',xpotmin
-
   if (testSpline) then
      n=100
      lnk2min = log(1d-8)
@@ -88,7 +76,20 @@ program dimain
 
      call di_free_splines()
   endif
+  
+  ucte = di_norm_uplifting(f)
+  print *,'Uplifting constant=',ucte
 
+  k2null = di_k2_nunull(f)
+  print *,'Monopole on at k2= ',k2null
+
+  k2potmin = di_k2_potmin(f)
+  print *,'Minimum at k2= ',k2potmin
+
+  xpotmin = di_x(k2potmin)
+  print *,'Minium at x= ',xpotmin
+
+  
   
   if (testParametric) then
 
