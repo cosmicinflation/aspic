@@ -118,7 +118,7 @@ program dimain
         peps2 = di_parametric_epsilon_two(k2,f)
         peps3 = di_parametric_epsilon_three(k2,f)
 
-        call livewrite('parametric_slowroll.dat',k2,peps1,peps2,peps2)
+        call livewrite('parametric_slowroll.dat',k2,peps1,peps2,peps3)
 
         x = di_x(k2)
         dx = di_deriv_x(k2)
