@@ -687,12 +687,12 @@ contains
             + dnu*(elKp*(elKo*(3 - 2*k2) + elEo*(-3 + k2)) + elEp*(3*elEo - elKo*k2)))*nu &
             + (elEp**2*elKo*(3*elEo - elKo*k2) + elEp*elKp*(-3*elEo**2 + elKo**2*(1 + k2) &
             + 2*elEo*elKo*(-3 + 2*k2)) - elKp**2*(elEo**2*(-3 + k2) + elEo*elKo*(-2 + 3*k2) &
-            + elKo**2*(5 + 4*(-2 + k2)*k2)))*nu**2)*pi))/(4.*elKo**4*elKp**4*(-1 + k2)**3*k2**4)
-    else
+            + elKo**2*(5 + 4*(-2 + k2)*k2)))*nu**2)*pi))/(4._kp*elKo**4*elKp**4*(-1 + k2)**3*k2**4)
 
+    else
        di_norm_deriv_third_parametric_potential = (3*elEo**4 - 6*elEo**3*elKo*k2 &
             + elKo**4*(-1 + k2)**2*(-11 + 12*k2) + 4*elEo**2*elKo**2*(1 - k2 + k2**2) &
-            + 4*elEo*elKo**3*(1 - 3*k2 + 2*k2**2))/(2.*elKo**4*(-1 + k2)**3*k2**4)
+            + 4*elEo*elKo**3*(1 - 3*k2 + 2*k2**2))/(2._kp*elKo**4*(-1 + k2)**3*k2**4)
     endif
 
   end function di_norm_deriv_third_parametric_potential
