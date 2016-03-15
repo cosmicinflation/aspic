@@ -103,5 +103,6 @@ AC_CONFIG_FILES([Makefile
 		 src/di/Makefile
 		 src/hni/Makefile
 		 src/ncli/Makefile
+		 src/abi/Makefile
                 ])
 AC_OUTPUT

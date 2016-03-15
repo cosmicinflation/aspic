@@ -1,4 +1,5 @@
-!equation of state inflation module. All formulae are exact.
+!equation of state inflation. Given 1+w(N)=1+P/rho, all formulae are
+!exact and allow to get the field values and potential.
 
 module eosflow
   use infprec, only : kp
