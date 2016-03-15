@@ -1,3 +1,5 @@
+!equation of state inflation module. All formulae are exact.
+
 module eosflow
   use infprec, only : kp
 
@@ -6,6 +8,7 @@ module eosflow
   private
 
   public eos_x, eos_norm_potential
+  public eos_deriv_norm_potential, eos_deriv_second_norm_potential
   public eos_epsilon_one, eos_epsilon_two, eps_epsilon_three
   
 
@@ -13,26 +16,62 @@ contains
 
 !returns the absolute value of the field (in reduced Planck units)
 !given the primitive of sqrt[w(N)+1)] and up to a constant
-  function eos_x(pSqrWp1)
+  function eos_x(psqrwp1)
     implicit none
     real(kp) :: eos_x
-    real(kp), intent(in) :: pSqrWp1
+    real(kp), intent(in) :: psqrwp1
 
-    eos_x = sqrt(3._kp)*pSqrWp1
+    eos_x = sqrt(3._kp)*psqrwp1
 
   end function eos_x
 
 
 !returns the potential V(N) given the primitive of w(N)+1 and
 !w(N)+1
-  function eos_norm_potential(pWp1,wp1)
+  function eos_norm_potential(pwp1,wp1)
     implicit none
     real(kp) :: eos_norm_potential
     real(kp), intent(in) :: pwp1,wp1
 
-    eos_norm_potential = (1._kp - 0.5_kp*wp1)*exp(-3._kp*pWp1)
+    eos_norm_potential = (1._kp - 0.5_kp*wp1)*exp(-3._kp*pwp1)
 
   end function eos_norm_potential
+
+
+!returns the absolute value of the derivative of the potential with
+!respect to x (field values)
+  function eos_deriv_norm_potential(pwp1,wp1,dwp1)
+    implicit none
+    real(kp) :: eos_deriv_norm_potential
+    real(kp), intent(in) :: pwp1,wp1,dwp1
+
+    real(kp) :: V
+
+    V = eos_norm_potential(pwp1,wp1)
+
+    eos_deriv_norm_potential = V/sqrt(3._kp*wp1) &
+         * (3._kp*wp1 + 1._kp/(2._kp-wp1)*dwp1)
+
+  end function eos_deriv_norm_potential
+
+
+!returns the second derivative of the potential with respect to x
+!(field values)
+  function eos_deriv_second_norm_potential(pwp1,wp1,dwp1,d2wp1)
+    implicit none
+    real(kp) :: eos_deriv_second_norm_potential
+    real(kp), intent(in) :: pwp1,wp1,dwp1,d2wp1
+    
+    real(kp) :: V
+
+    V = eos_norm_potential(pwp1,wp1)
+
+    eos_deriv_second_norm_potential = V/(3._kp*wp1) &
+         * (9._kp*wp1*wp1 + 1.5_kp*(5._kp*wp1-2._kp)/(2._kp-wp1)*dwp1 &
+         + 0.5_kp/(wp1*(2._kp-wp1))*dwp1*dwp1 - 1._kp/(2._kp-wp1)*d2wp1)
+
+  end function eos_deriv_second_norm_potential
+
 
 
 !first hubble flow function given w(N)+1
@@ -47,24 +86,24 @@ contains
 
 
 !second hubble flow function given w(N)+1 and d[w(N)+1]/dN
-  function eos_epsilon_two(wp1,dWp1)
+  function eos_epsilon_two(wp1,dwp1)
     implicit none
     real(kp) :: eos_epsilon_two
-    real(kp), intent(in) :: wp1, dWp1
+    real(kp), intent(in) :: wp1, dwp1
 
-    eos_epsilon_two = dWp1/wp1
+    eos_epsilon_two = dwp1/wp1
 
   end function eos_epsilon_two
 
 
 !third hubble flow function given w(N)+1, d[w(N)+1]/dN and
 !d^2[w(N)+1]/dN^2
-  function eos_epsilon_three(wp1,dWp1,d2Wp1)
+  function eos_epsilon_three(wp1,dwp1,d2wp1)
     implicit none
     real(kp) :: eos_epsilon_three
-    real(kp), intent(in) :: wp1,dWp1,d2Wp1
+    real(kp), intent(in) :: wp1,dwp1,d2wp1
 
-    eos_epsilon_three = d2Wp1/dWp1 - dWp1/wp1
+    eos_epsilon_three = d2wp1/dwp1 - dwp1/wp1
 
   end function eos_epsilon_three
 
