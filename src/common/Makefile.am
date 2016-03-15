@@ -1,12 +1,12 @@
 COMMONSRC = infprec.F90 cosmopar.f90 infinout.f90 inftools.f90 \
             specialinf.F90 huflow.f90 srflow.f90 srreheat.f90 \
-            bspline.F90
+            bspline.F90 eosflow.f90
 
 COMMONMOD = cosmopar.$(FC_MODEXT) \
             infinout.$(FC_MODEXT) infprec.$(FC_MODEXT) inftools.$(FC_MODEXT) \
             hyp_2f1_module.$(FC_MODEXT) specialinf.$(FC_MODEXT) \
             specialprec.$(FC_MODEXT) huflow.$(FC_MODEXT) srflow.$(FC_MODEXT) \
-            srreheat.$(FC_MODEXT) bspline.$(FC_MODEXT)
+            srreheat.$(FC_MODEXT) bspline.$(FC_MODEXT) eosflow.$(FC_MODEXT)
 
 check_LIBRARIES = libsrcommon.a
 libsrcommon_a_SOURCES = $(COMMONSRC)
