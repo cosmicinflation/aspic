@@ -16,6 +16,7 @@ module abieos
 
 contains
 
+  
 
 !returns w(bfold)+1 where bfold=-efold=N-Nend < 0
   function abi_eos(bfold,alpha,beta)
@@ -47,7 +48,7 @@ contains
     real(kp) :: abi_deriv_second_eos
     real(kp), intent(in) :: bfold,alpha,beta
 
-    abi_deriv_eos = alpha*(alpha+1._kp)*beta &
+    abi_deriv_second_eos = alpha*(alpha+1._kp)*beta &
          /((1.5_kp*beta)**(1._kp/alpha) - bfold)**(alpha+2._kp)
 
   end function abi_deriv_second_eos
@@ -60,7 +61,7 @@ contains
     real(kp), intent(in) :: bfold,alpha,beta
 
     if (alpha.eq.1._kp) then
-       abi_eos_primitive = -beta*log((1.5_kp*beta)**(1._kp/alpha)- bfold)
+       abi_eos_primitive = -beta*log(1.5_kp*beta - bfold)
        return
     endif
        
@@ -77,7 +78,14 @@ contains
     real(kp) :: abi_sqrteos_primitive
     real(kp), intent(in) :: bfold,alpha,beta
 
-    abi_sqrteos_primitive = abi_eos_primitive(bfold,0.5_kp*alpha,beta)
+    if (alpha.eq.2._kp) then
+       abi_sqrteos_primitive = -sqrt(beta)*log(sqrt(1.5_kp*beta) - bfold)
+       return
+    endif
+       
+    abi_sqrteos_primitive = -sqrt(beta)/(0.5_kp*alpha-1._kp) &
+         /((1.5_kp*beta)**(1._kp/alpha) - bfold)**(0.5_kp*alpha-1._kp)
+   
 
   end function abi_sqrteos_primitive
 

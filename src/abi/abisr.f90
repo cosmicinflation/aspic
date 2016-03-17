@@ -25,10 +25,30 @@ module abisr
   public abi_norm_potential, abi_norm_deriv_potential
   public abi_norm_deriv_second_potential
   public abi_epsilon_one, abi_epsilon_two, abi_epsilon_three
-  public abi_efold_primitive, abi_x_trajectory
-  
+  public abi_efold_primitive, abi_x_trajectory, abi_x_endinf
+  public abi_numacc_betamax
 
 contains
+
+
+  function abi_numacc_betamax(efold,alpha)
+    implicit none
+    real(kp) :: abi_numacc_betamax
+    real(kp), intent(in) :: efold, alpha
+
+    real(kp), parameter :: lnPotNumAccMax = log(huge(1._kp)*epsilon(1._kp))
+
+    if (alpha.ge.1._kp) then
+       abi_numacc_betamax = huge(1._kp)
+       return
+    endif
+
+    abi_numacc_betamax = lnPotNumAccMax &
+         * (1._kp - alpha)/3._kp/efold**(1._kp-alpha)
+
+  end function abi_numacc_betamax
+
+
 
 
   function abi_norm_potential(x,alpha,beta)
@@ -190,7 +210,7 @@ contains
     real(kp), intent(in) :: x,alpha,beta
     real(kp) :: abi_epsilon_three
 
-    abi_epsilon_three = abi_epsilon_three(x,alpha,beta)/alpha
+    abi_epsilon_three = abi_epsilon_two(x,alpha,beta)/alpha
 
   end function abi_epsilon_three
 
@@ -216,7 +236,7 @@ contains
 
   function abi_efold_primitive(x,alpha,beta)
     implicit none
-    real(kp), intent(in) :: bfold,x,alpha,beta
+    real(kp), intent(in) :: x,alpha,beta
     real(kp) :: abi_efold_primitive
 
     real(kp) :: y, bfold

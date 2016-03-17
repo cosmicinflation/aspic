@@ -1,13 +1,20 @@
 module abireheat
-  use infprec, only : kp
+  use infprec, only : kp, tolkp, transfert
+  use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
+  use abisr, only : abi_numacc_betamax
   use abisr, only : abi_norm_potential, abi_epsilon_one
-  use abisr, only : abi_x_trajectory, abi_efold_primitive
+  use abisr, only : abi_x_trajectory, abi_efold_primitive, abi_x_endinf
 
   implicit none
+
+!we require at minimum this amount of inflation before the potential
+!becomes larger than huge(1.) >> super-planckian...
+
+  real(kp), parameter :: efoldNumAccMin = 200._kp
 
   private
 
@@ -27,11 +34,18 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini, maxi, calF, x
     real(kp) :: primEnd, epsOneEnd, xEnd, potEnd
+    real(kp) :: betamax
 
     type(transfert) :: abiData
     
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
+    endif
+
+    betamax = abi_numacc_betamax(efoldNumAccMin,alpha)
+    if (beta.gt.betamax) then
+       write(*,*)'abi_x_star: beta= betamax= ',beta,betamax
+       stop 'beta too large!'
     endif
 
     xEnd = abi_x_endinf(alpha,beta)
@@ -42,7 +56,6 @@ contains
 !should be zero
     primEnd = abi_efold_primitive(xEnd,alpha,beta)
 
-    print *,'zero one= ',primEnd,epsOneEnd
 
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
@@ -54,12 +67,14 @@ contains
     if (alpha.le.2._kp) then
 
        mini = xEnd*(1._kp+epsilon(1._kp))
-       maxi = abi_x_trajectory((-1._kp/epsilon(1._kp)),xend,alpha,beta)
+       maxi = abi_x_trajectory(-efoldNumAccMin,xend,alpha,beta)
        
     else
        mini = epsilon(1._kp)
        maxi = xEnd*(1._kp-epsilon(1._kp))
     endif
+    print *,'alpha beta',alpha,beta
+    print *,'mini=, maxi=',mini,maxi
 
     x = zbrent(find_abi_x_star,mini,maxi,tolFind,abiData)
     abi_x_star = x
@@ -86,7 +101,6 @@ contains
     primStar = abi_efold_primitive(x,alpha,beta)
     epsOneStar = abi_epsilon_one(x,alpha,beta)
     potStar = abi_norm_potential(x,alpha,beta)
-
     find_abi_x_star = find_reheat(PrimStar,calFplusPrimEnd,w,epsOneStar,potStar)
 
   end function find_abi_x_star
@@ -104,11 +118,17 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
-
+    real(kp) :: betamax
     type(transfert) :: abiData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    betamax = abi_numacc_betamax(efoldNumAccMin,alpha)
+    if (beta.gt.betamax) then
+       write(*,*)'abi_x_rrad: beta= betamax= ',beta,betamax
+       stop 'beta too large!'
     endif
 
     xEnd=abi_x_endinf(alpha,beta)
@@ -126,7 +146,7 @@ contains
     if (alpha.le.2._kp) then
 
        mini = xEnd*(1._kp+epsilon(1._kp))
-       maxi = abi_x_trajectory((-1._kp/epsilon(1._kp)),xend,alpha,beta)
+       maxi = abi_x_trajectory(-efoldNumAccMin,xend,alpha,beta)
        
     else
        mini = epsilon(1._kp)
@@ -174,11 +194,17 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
-
+    real(kp) :: betamax
     type(transfert) :: abiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
+    endif
+
+    betamax = abi_numacc_betamax(efoldNumAccMin,alpha)
+    if (beta.gt.betamax) then
+       write(*,*)'abi_x_rreh: beta= betamax= ',beta,betamax
+       stop 'beta too large!'
     endif
 
     xEnd=abi_x_endinf(alpha,beta)
@@ -196,7 +222,7 @@ contains
     if (alpha.le.2._kp) then
 
        mini = xEnd*(1._kp+epsilon(1._kp))
-       maxi = abi_x_trajectory((-1._kp/epsilon(1._kp)),xend,alpha,beta)
+       maxi = abi_x_trajectory(-efoldNumAccMin,xend,alpha,beta)
        
     else
        mini = epsilon(1._kp)

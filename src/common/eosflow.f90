@@ -8,23 +8,23 @@ module eosflow
 
   private
 
-  public eos_x, eos_norm_potential
-  public eos_deriv_norm_potential, eos_deriv_second_norm_potential
-  public eos_epsilon_one, eos_epsilon_two, eps_epsilon_three
+  public eos_absx, eos_norm_potential
+  public eos_norm_absderiv_potential, eos_norm_deriv_second_potential
+  public eos_epsilon_one, eos_epsilon_two, eos_epsilon_three
   
 
 contains
 
 !returns the absolute value of the field (in reduced Planck units)
 !given the primitive of sqrt[w(N)+1)] and up to a constant
-  function eos_x(psqrwp1)
+  function eos_absx(psqrwp1)
     implicit none
-    real(kp) :: eos_x
+    real(kp) :: eos_absx
     real(kp), intent(in) :: psqrwp1
 
-    eos_x = sqrt(3._kp)*psqrwp1
+    eos_absx = sqrt(3._kp)*abs(psqrwp1)
 
-  end function eos_x
+  end function eos_absx
 
 
 !returns the potential V(N) given the primitive of w(N)+1 and
@@ -39,39 +39,39 @@ contains
   end function eos_norm_potential
 
 
-!returns the absolute value of the derivative of the potential with
-!respect to x (field values)
-  function eos_deriv_norm_potential(pwp1,wp1,dwp1)
+!returns the absolute value of the derivative of the potential with respect to x (field
+!values) up to a sign |dV/dN| * |dx/dN|
+  function eos_norm_absderiv_potential(pwp1,wp1,dwp1)
     implicit none
-    real(kp) :: eos_deriv_norm_potential
+    real(kp) :: eos_norm_absderiv_potential
     real(kp), intent(in) :: pwp1,wp1,dwp1
 
     real(kp) :: V
 
     V = eos_norm_potential(pwp1,wp1)
 
-    eos_deriv_norm_potential = V/sqrt(3._kp*wp1) &
+    eos_norm_absderiv_potential = V/sqrt(3._kp*wp1) &
          * (3._kp*wp1 + 1._kp/(2._kp-wp1)*dwp1)
 
-  end function eos_deriv_norm_potential
+  end function eos_norm_absderiv_potential
 
 
 !returns the second derivative of the potential with respect to x
 !(field values)
-  function eos_deriv_second_norm_potential(pwp1,wp1,dwp1,d2wp1)
+  function eos_norm_deriv_second_potential(pwp1,wp1,dwp1,d2wp1)
     implicit none
-    real(kp) :: eos_deriv_second_norm_potential
+    real(kp) :: eos_norm_deriv_second_potential
     real(kp), intent(in) :: pwp1,wp1,dwp1,d2wp1
     
     real(kp) :: V
 
     V = eos_norm_potential(pwp1,wp1)
 
-    eos_deriv_second_norm_potential = V/(3._kp*wp1) &
+    eos_norm_deriv_second_potential = V/(3._kp*wp1) &
          * (9._kp*wp1*wp1 + 1.5_kp*(5._kp*wp1-2._kp)/(2._kp-wp1)*dwp1 &
          + 0.5_kp/(wp1*(2._kp-wp1))*dwp1*dwp1 - 1._kp/(2._kp-wp1)*d2wp1)
 
-  end function eos_deriv_second_norm_potential
+  end function eos_norm_deriv_second_potential
 
 
 
