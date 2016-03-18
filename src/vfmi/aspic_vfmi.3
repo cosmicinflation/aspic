@@ -1,0 +1,133 @@
+.TH libvfmi 3 "March 18, 2016" "libaspic" "Module convention" 
+
+.SH NAME
+.I vfmi
+- the Viatcheslav Fyodorovich Mukhanov inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential:
+
+V(x)  = M^4 { 1 - (1/2) beta/[(1-alpha/2)^2 x^2/(3
+beta)]^[alpha/(2-alpha)] } exp{ 3 beta/(1-alpha) [(1-alpha/2)^2 x^2 /
+(3 beta)]^[(1-alpha)/(2-alpha)] }
+.TP
+with two particular cases. For 'alpha = 1', it reads:
+
+V(x) = M^4 (x)^(6 beta) [ 1 - 6 beta^2/x^2 ]
+.TP
+whearas for 'alpha = 2':
+
+V(x) = M^4 { 1 - (1/2) beta exp[-2 x/sqrt(3 beta)] } exp{ -3 beta
+exp[ -x/sqrt(3 beta) ] }
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha
+.RS
+.I real(kp)
+::
+.B beta
+.RE
+
+.SH DESCRIPTION
+The
+.I vfmi
+module is used for  Viatcheslav Fyodorovich Mukhanov Inflation, a model discussed in
+.UR http://arxiv.org/abs/arXiv:1303.3925
+.UE
+which consists in postulating the evolution of the equation of state
+parameter 'w=P/rho' in terms of the number of e-folds before the end
+of inflation (at the background level). Mukhanov proposes
+.IP
+1+w(N) = beta/(C+Nend-N)^alpha
+.RS
+.RE
+.P
+where 'C' is chosen to be unity. This constant is, in general, not
+unity because inflation ends for 'w(Nend) = -1/3' and the value of 'C'
+is
+.IP
+C = (3 beta / 2)^(1/alpha)
+.RS
+.RE
+.P
+Because in all inflationary models parametrized by an equation of
+state, the perturbations are still implicitely assumed to originate
+from a scalar field, they all are strictly equivalent to single field
+inflation. In particular, postulating an equation of state is
+equivalent to postulating the evolution of the first Hubble flow
+function. Indeed, one has
+.IP
+.BR vfmi_epsilon_one ()
+= (3/2)(1 + w)
+.RS
+.RE
+.P
+Integrating this equation for 'x', the field value in reduced
+Planck mass unit, gives
+.B exactly
+the above potential. As discussed by Mukhanov, for 'alpha <= 1' the
+potential looks like a large field potential (see 'lfi'), with however
+a possibility to have a low level of tensor modes for 'beta <<
+1'. For '1 < alpha <=2', the potential mimics a plateau inflation
+potential, as Starobinski/Higgs inflation (see 'hi'). In these two
+cases, inflation occurs from large field values 'x' towards small
+values. Finally, for 'alpha > 2', the potential looks like a small
+field model (see 'sfi') and inflation proceeds at increasing field
+values 'x'.
+
+.SS VFMISR MODULE
+
+By construction, Viatcheslav Fyodorovich Mukhanov Inflation gracefully
+ends at field value 'xend' returned by the
+.I real(kp)
+function
+.IP
+.BR vfmi_x_endinf (alpha,beta)
+.P
+As for the other models, the module 'vfmisr.f90' provides the three
+Hubble flow functions and the field trajectory. It is important to
+notice that all of these functions are not slow-roll approximations
+but exact solutions.
+
+.SS VFMIEOS MODULE
+
+Because the model is genuinely defined by its equation of state
+parameter, we provide a new module 'vfmieos' which encapsulates
+various parametric functions in terms of the number of e-folds 'N -
+Nend' rather than the field values. The module provides the
+.I real(kp)
+functions
+.IP
+.BR vfmi_eos (N-Nend,alpha,beta)
+.RS
+.BR vfmi_deriv_eos (N-Nend,alpha,beta)
+.RS
+.RE
+.BR vfmi_deriv_second_eos (N-Nend,alpha,beta)
+.RS
+.RE
+.BR vfmi_primitive_eos (N-Nend,alpha,beta)
+.RS
+.RE
+.BR vfmi_primitive_sqrteos (N-Nend,alpha,beta)
+.RE
+.P
+which return 'w + 1', the first and second derivatives of 'w + 1', the
+primitive of 'w + 1' and the primitive of the square root of 'w + 1'
+with respect to the number of e-folds, respectively. Combined with the
+generic module 'eosflow.f90', these quantities can be used to recover
+the parametric form of the potential, the field trajectories and the
+Hubble flow functions.
+
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

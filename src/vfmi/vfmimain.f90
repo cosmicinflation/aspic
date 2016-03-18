@@ -1,4 +1,4 @@
-program abimain
+program vfmimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
 
@@ -10,14 +10,14 @@ program abimain
   use eosflow, only : eos_norm_absderiv_potential, eos_norm_deriv_second_potential
   use eosflow, only : eos_epsilon_one, eos_epsilon_two, eos_epsilon_three
 
-  use abieos, only : abi_eos, abi_deriv_eos, abi_deriv_second_eos
-  use abieos, only : abi_eos_primitive, abi_sqrteos_primitive
+  use vfmieos, only : vfmi_eos, vfmi_deriv_eos, vfmi_deriv_second_eos
+  use vfmieos, only : vfmi_primitive_eos, vfmi_primitive_sqrteos
 
-  use abisr, only : abi_epsilon_one, abi_epsilon_two,abi_epsilon_three
-  use abisr, only : abi_norm_potential, abi_x_endinf, abi_numacc_betamax
-  use abisr, only : abi_norm_deriv_potential, abi_norm_deriv_second_potential
-  use abireheat, only : abi_lnrhoreh_max, abi_x_star
-  use abireheat, only : abi_x_rreh, abi_x_rrad
+  use vfmisr, only : vfmi_epsilon_one, vfmi_epsilon_two,vfmi_epsilon_three
+  use vfmisr, only : vfmi_norm_potential, vfmi_x_endinf, vfmi_numacc_betamax
+  use vfmisr, only : vfmi_norm_deriv_potential, vfmi_norm_deriv_second_potential
+  use vfmireheat, only : vfmi_lnrhoreh_max, vfmi_x_star
+  use vfmireheat, only : vfmi_x_rreh, vfmi_x_rrad
 
   use infinout, only : delete_file, livewrite
 
@@ -67,11 +67,11 @@ program abimain
      do i=1,n
         bfold = bfoldMin - real(i-1,kp)*bfoldMin/real(n-1,kp)        
         
-        psqrtwp1 = abi_sqrteos_primitive(bfold,alpha,beta)
-        pwp1 = abi_eos_primitive(bfold,alpha,beta)
-        wp1 = abi_eos(bfold,alpha,beta)
-        dwp1 = abi_deriv_eos(bfold,alpha,beta)
-        d2wp1 = abi_deriv_second_eos(bfold,alpha,beta)
+        psqrtwp1 = vfmi_primitive_sqrteos(bfold,alpha,beta)
+        pwp1 = vfmi_primitive_eos(bfold,alpha,beta)
+        wp1 = vfmi_eos(bfold,alpha,beta)
+        dwp1 = vfmi_deriv_eos(bfold,alpha,beta)
+        d2wp1 = vfmi_deriv_second_eos(bfold,alpha,beta)
 
         x = eos_absx(psqrtwp1)
         call livewrite('parametric_field.dat',bfold,x)
@@ -82,9 +82,9 @@ program abimain
 
         call livewrite('parametric_potential.dat',x,V,dV,d2V)
 
-        V = abi_norm_potential(x,alpha,beta)
-        dV = abi_norm_deriv_potential(x,alpha,beta)
-        d2V = abi_norm_deriv_second_potential(x,alpha,beta)
+        V = vfmi_norm_potential(x,alpha,beta)
+        dV = vfmi_norm_deriv_potential(x,alpha,beta)
+        d2V = vfmi_norm_deriv_second_potential(x,alpha,beta)
 
         call livewrite('potential.dat',x,V,dV,d2V)
 
@@ -94,9 +94,9 @@ program abimain
 
         call livewrite('parametric_slowroll.dat',x,eps1,eps2,eps3)
 
-        eps1 = abi_epsilon_one(x,alpha,beta)
-        eps2 = abi_epsilon_two(x,alpha,beta)
-        eps3 = abi_epsilon_three(x,alpha,beta)
+        eps1 = vfmi_epsilon_one(x,alpha,beta)
+        eps2 = vfmi_epsilon_two(x,alpha,beta)
+        eps3 = vfmi_epsilon_three(x,alpha,beta)
 
         call livewrite('slowroll.dat',x,eps1,eps2,eps3)
 
@@ -105,8 +105,8 @@ program abimain
   end if
 
 
-  call delete_file('abi_predic.dat')
-  call delete_file('abi_nsr.dat')
+  call delete_file('vfmi_predic.dat')
+  call delete_file('vfmi_nsr.dat')
 
   do j=1,nalpha
 
@@ -116,7 +116,7 @@ program abimain
 
      nbeta = 10
      betamin=0.001
-     betamax = min(10.,abi_numacc_betamax(300._kp,alpha)) 
+     betamax = min(10.,vfmi_numacc_betamax(300._kp,alpha)) 
      print *,'betamax=',betamax
 
 
@@ -127,7 +127,7 @@ program abimain
         beta = exp(log(betamin) + (log(betamax)-log(betamin))*real(k-1,kp)/real(nbeta-1,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = abi_lnrhoreh_max(alpha,beta,Pstar)
+        lnRhoRehMax = vfmi_lnrhoreh_max(alpha,beta,Pstar)
 
         print *,'alpha= beta= lnRhoRehMin= lnRhoRehMax= ',alpha,beta,lnRhoRehMin,lnRhoRehMax
 
@@ -135,13 +135,13 @@ program abimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = abi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = vfmi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
 
            print *,'lnRhoReh= ',lnRhoReh, 'xstar= ', xstar, 'bfoldstar= ',bfoldstar
 
-           eps1 = abi_epsilon_one(xstar,alpha,beta)
-           eps2 = abi_epsilon_two(xstar,alpha,beta)
-           eps3 = abi_epsilon_three(xstar,alpha,beta)
+           eps1 = vfmi_epsilon_one(xstar,alpha,beta)
+           eps2 = vfmi_epsilon_two(xstar,alpha,beta)
+           eps3 = vfmi_epsilon_three(xstar,alpha,beta)
 
            logErehGev = log_energy_reheat_ingev(lnRhoReh)
            Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
@@ -153,8 +153,8 @@ program abimain
            !           if (abs(ns-1).gt.0.15) cycle
            !           if (r.lt.1e-10) cycle
 
-           call livewrite('abi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
-           call livewrite('abi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           call livewrite('vfmi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('vfmi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
         enddo
 
@@ -162,4 +162,52 @@ program abimain
 
   enddo
 
-end program abimain
+
+
+  write(*,*)
+  write(*,*)'Testing Rrad/Rreh'
+
+  lnRradmin=-42
+  lnRradmax = 10
+  n=2._kp
+  alpha=0.5_kp
+  beta = 0.1_kp
+
+  do i=1,npts
+
+     lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
+
+     xstar = vfmi_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
+     print *
+     print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     eps1 = vfmi_epsilon_one(xstar,alpha,beta)
+
+     !consistency test
+     !get lnR from lnRrad and check that it gives the same xstar
+
+     xEnd=vfmi_x_endinf(alpha,beta)
+     eps1end =  vfmi_epsilon_one(xEnd,alpha,beta)
+     VendOverVstar = vfmi_norm_potential(xEnd,alpha,beta)/vfmi_norm_potential(xstar,alpha,beta)
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+
+     lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
+     xstar = vfmi_x_rreh(alpha,beta,lnR,bfoldstar)
+     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+
+     !second consistency check
+     !get rhoreh for chosen w and check that xstar gotten this way is the same
+     w = 0._kp
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+
+     xstar = vfmi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
+          ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
+
+  enddo
+
+
+
+
+end program vfmimain
