@@ -269,7 +269,7 @@ contains
        return
     endif
 
-   vfmi_x_trajectory = sqrt(3._kp*beta)/(1._kp-0.5_kp*alpha) &
+   vfmi_x_trajectory = sqrt(3._kp*beta)/abs(1._kp-0.5_kp*alpha) &
         * ((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha)
 
   end function vfmi_x_trajectory

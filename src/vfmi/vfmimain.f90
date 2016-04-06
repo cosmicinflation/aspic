@@ -16,6 +16,7 @@ program vfmimain
   use vfmisr, only : vfmi_epsilon_one, vfmi_epsilon_two,vfmi_epsilon_three
   use vfmisr, only : vfmi_norm_potential, vfmi_x_endinf, vfmi_numacc_betamax
   use vfmisr, only : vfmi_norm_deriv_potential, vfmi_norm_deriv_second_potential
+  use vfmisr, only : vfmi_x_trajectory, vfmi_x_endinf
   use vfmireheat, only : vfmi_lnrhoreh_max, vfmi_x_star
   use vfmireheat, only : vfmi_x_rreh, vfmi_x_rrad
 
@@ -35,7 +36,7 @@ program vfmimain
 
   real(kp) :: bfold, bfoldMax, bfoldMin
   real(kp) :: wp1, dwp1, d2wp1, pwp1, psqrtwp1
-  real(kp) :: x, V, dV, d2V
+  real(kp) :: x, xvfmi, V, dV, d2V
 
   real(kp) :: alpha, beta, w, bfoldstar
   real(kp) :: alphamin, alphamax, betamin, betamax
@@ -51,7 +52,7 @@ program vfmimain
 
   if (testParametric) then
 
-     alpha = 2.1_kp
+     alpha = 1.9_kp
      beta = 0.8_kp
 
      bfoldMin = -140._kp
@@ -74,7 +75,9 @@ program vfmimain
         d2wp1 = vfmi_deriv_second_eos(bfold,alpha,beta)
 
         x = eos_absx(psqrtwp1)
-        call livewrite('parametric_field.dat',bfold,x)
+        xend = vfmi_x_endinf(alpha,beta)
+        xvfmi = vfmi_x_trajectory(bfold,xend,alpha,beta)
+        call livewrite('parametric_field.dat',bfold,x,xvfmi)
 
         V = eos_norm_potential(pwp1,wp1)
         dV = eos_norm_absderiv_potential(pwp1,wp1,dwp1)
