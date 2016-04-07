@@ -65,8 +65,8 @@ contains
        return
     endif
        
-    vfmi_primitive_eos = beta/(alpha-1._kp) &
-         /((1.5_kp*beta)**(1._kp/alpha) - bfold)**(alpha-1._kp)
+    vfmi_primitive_eos = -beta/(1._kp-alpha) &
+         * (((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-alpha) - 1._kp)
 
   end function vfmi_primitive_eos
 
@@ -83,8 +83,8 @@ contains
        return
     endif
        
-    vfmi_primitive_sqrteos = -sqrt(beta)/(0.5_kp*alpha-1._kp) &
-         /((1.5_kp*beta)**(1._kp/alpha) - bfold)**(0.5_kp*alpha-1._kp)
+    vfmi_primitive_sqrteos = -sqrt(beta)/(1._kp - 0.5_kp*alpha) &
+         * ( ((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha) - 1._kp)
    
 
   end function vfmi_primitive_sqrteos

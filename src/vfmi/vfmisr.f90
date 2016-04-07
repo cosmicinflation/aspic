@@ -27,7 +27,7 @@ module vfmisr
   public vfmi_norm_deriv_second_potential
   public vfmi_epsilon_one, vfmi_epsilon_two, vfmi_epsilon_three
   public vfmi_efold_primitive, vfmi_x_trajectory, vfmi_x_endinf
-  public vfmi_numacc_betamax
+  public vfmi_x_potmax, vfmi_numacc_betamax
 
 contains
 
@@ -43,6 +43,8 @@ contains
        vfmi_numacc_betamax = huge(1._kp)
        return
     endif
+
+    stop 'to cgheck'
 
     vfmi_numacc_betamax = lnPotNumAccMax &
          * (1._kp - alpha)/3._kp/efold**(1._kp-alpha)
@@ -61,10 +63,10 @@ contains
     
     if (alpha.eq.1._kp) then
 
-       y = x*x
+       y = 1._kp + 0.5_kp*x/sqrt(3._kp*beta)
 
        vfmi_norm_potential = y**(3._kp*beta) &
-            *(1._kp-6._kp*beta*beta/y)
+            *(1._kp-beta/y)
        return
 
     elseif (alpha.eq.2._kp) then
@@ -77,10 +79,10 @@ contains
 
     endif
 
-    y = (1._kp-0.5_kp*alpha)**2/(3._kp*beta)*x*x
+    y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
     vfmi_norm_potential = (1._kp - 0.5_kp*beta/y**(alpha/(2._kp-alpha))) &
-         * exp(3._kp*beta/(1._kp-alpha)*y**((1._kp-alpha)/(2._kp-alpha)))
+         * exp(3._kp*beta/(1._kp-alpha)*(y**((1._kp-alpha)/(2._kp-alpha)) - 1._kp)
 
   end function vfmi_norm_potential
 
@@ -95,28 +97,32 @@ contains
 
     if (alpha.eq.1_kp) then
 
-       y = x*x
+       y = 1._kp + 0.5_kp*x/sqrt(3._kp*beta)
 
-       vfmi_norm_deriv_potential = 6._kp*beta*y**(3._kp*beta-1.5_kp) &
-            * (y + 2._kp - 6._kp*beta)
+       vfmi_norm_deriv_potential = (sqrt(beta)*y**(-1.5_kp + 3._kp*beta) &
+            *(1._kp - 3._kp*beta + 3._kp*y))/sqrt(3._kp)
+
        return
 
     elseif (alpha.eq.2._kp) then
 
        y = exp(-x/sqrt(3._kp*beta))
 
-       vfmi_norm_deriv_potential = sqrt(beta/12._kp)*y*exp(-3._kp*beta*y) &
-            * (-3._kp*beta*y*y + 2._kp*y + 6._kp)
+       vfmi_norm_deriv_potential = -(sqrt(beta)*y*(-6._kp - 2._kp*y + 3._kp*beta*y**2)) &
+            /(2._kp*sqrt(3._kp)*exp(3._kp*beta*(-1._kp + y)))
+
+
        return
 
     endif
 
-    y = (1._kp-0.5_kp*alpha)**2/(3._kp*beta)*x*x
+    y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
-    vfmi_norm_deriv_potential = -((-2._kp + alpha)*x*y**(1._kp/(-2._kp + alpha)) &
-         * (6._kp + alpha*y**(1._kp/(-2._kp + alpha))  &
-         - 3._kp*beta*y**(alpha/(-2._kp + alpha)))) &
-         /(12._kp*exp((3*beta*y**((-1._kp + alpha)/(-2._kp + alpha)))/(-1._kp + alpha)))
+    vfmi_norm_deriv_potential = -(exp((3._kp*beta*(-1._kp + y**((-1._kp + alpha) &
+         /(-2._kp + alpha))))/(1._kp - alpha))*(-6._kp*sqrt(beta) &
+         + sqrt(3._kp)*(-2._kp + alpha)*x)*y**(1._kp/(-2._kp + alpha)) &
+         * (6._kp + alpha*y**(1._kp/(-2._kp + alpha)) &
+         - 3._kp*beta*y**(alpha/(-2._kp + alpha))))/(12._kp*sqrt(3._kp))
 
   end function vfmi_norm_deriv_potential
 
@@ -132,10 +138,11 @@ contains
 
     if (alpha.eq.1._kp) then
 
-       y = x*x
+       y = 1._kp + 0.5_kp*x/sqrt(3._kp*beta)
 
-       vfmi_norm_deriv_second_potential = (-6._kp*beta*y**(3._kp*beta) &
-            *(6._kp - 30._kp*beta + 36._kp*beta**2 + y - 6._kp*beta*y))/y/y
+       vfmi_norm_deriv_second_potential = 0.5_kp*(y**(-2._kp + 3._kp*beta) &
+            * (-1._kp + 5._kp*beta - 6._kp*beta**2 + (-1._kp + 6._kp*beta)*y))
+       
        return
 
     elseif (alpha.eq.2._kp) then
@@ -143,18 +150,20 @@ contains
        y = exp(-x/sqrt(3._kp*beta))
 
        vfmi_norm_deriv_second_potential = -(y*(6._kp + (4._kp - 18._kp*beta)*y &
-            - 15._kp*beta*y**2 + 9._kp*beta**2*y**3))/(6._kp*exp(3*beta*y))
+            - 15._kp*beta*y**2 + 9._kp*beta**2*y**3))/(6._kp*exp(3*beta*(-1._kp + y)))
+
        return
 
     endif
 
-    y = (1._kp-0.5_kp*alpha)**2/(3._kp*beta)*x*x
+    y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
-    vfmi_norm_deriv_second_potential = (y**(2._kp/(-2._kp + alpha)) &
-         *(-alpha**2 + alpha*(-2._kp - 6._kp*y**(1._kp/(2._kp - alpha)) &
-         + 15._kp*beta*y**((-1._kp + alpha)/(-2._kp + alpha))) &
-         - 18._kp*beta*(-2._kp*y + beta*y**((2*(-1._kp + alpha))/(-2._kp + alpha))))) &
-         /(12._kp*exp((3._kp*beta*y**((-1._kp + alpha)/(-2._kp + alpha)))/(-1._kp + alpha)))
+    vfmi_norm_deriv_second_potential = -(exp((3._kp*beta*(-1._kp &
+         + y**((-1._kp + alpha)/(-2._kp + alpha))))/(1._kp - alpha)) &
+         * (6._kp*alpha*y**(1._kp/(-2._kp + alpha)) + alpha*(2._kp + alpha) &
+         * y**(2._kp/(-2._kp + alpha)) - 36._kp*beta*y**(alpha/(-2._kp + alpha)) &
+         + 18._kp*beta**2*y**((2._kp*alpha)/(-2._kp + alpha)) &
+         - 15._kp*alpha*beta*y**((1._kp + alpha)/(-2._kp + alpha))))/12._kp
 
   end function vfmi_norm_deriv_second_potential
 
@@ -174,7 +183,7 @@ contains
        return
     endif
 
-    y = (1._kp-alpha/2._kp)**2/(3._kp*beta)*x*x
+    y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
     vfmi_epsilon_one = 1.5_kp*beta/y**(alpha/(2._kp-alpha))
         
@@ -196,7 +205,7 @@ contains
        return
     endif
 
-    y = (1._kp-alpha/2._kp)**2/(3._kp*beta)*x*x
+    y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
     vfmi_epsilon_two = alpha/y**(1._kp/(2._kp-alpha))
 
@@ -205,7 +214,7 @@ contains
 
 
 
-!third hubble flow function
+!third (and all higher order) hubble flow function
   function vfmi_epsilon_three(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
@@ -228,10 +237,26 @@ contains
        return
     endif
 
-    vfmi_x_endinf = (1.5_kp*beta)**(1._kp/alpha) * sqrt(2._kp)/abs(1._kp-0.5_kp*alpha)
+    vfmi_x_endinf = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
+         * ((1.5_kp*beta)**((2._kp-alpha)/alpha/2._kp) - 1._kp)
 
   end function vfmi_x_endinf
 
+
+!return the field value at which the potential is maximal (exist only
+!for alpha > 2)
+  function vfmi_x_potmax(alpha,beta)
+    implicit none
+    real(kp), intent(in) :: alpha,beta
+    real(kp) :: vfmi_x_potmax
+
+    if (alpha.le.2._kp) then
+       stop 'vfmi_x_potmax: exists only for alpha > 2'
+    endif
+
+    vfmi_x_potmax = 2._kp*sqrt(3._kp*beta)/(alpha-2._kp)
+
+  end function vfmi_x_potmax
 
 
 
@@ -248,7 +273,7 @@ contains
        return
     endif
 
-    y = (1._kp-alpha/2._kp)**2/(3._kp*beta)*x*x
+    y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
     bfold = (1.5_kp*beta)**(1._kp/alpha) - y**(1._kp/(2._kp-alpha))
 
@@ -269,8 +294,8 @@ contains
        return
     endif
 
-   vfmi_x_trajectory = sqrt(3._kp*beta)/abs(1._kp-0.5_kp*alpha) &
-        * ((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha)
+   vfmi_x_trajectory = 2._kp*sqrt(3._kp*beta)/abs(2._kp-alpha) &
+        * ( ((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha) - 1._kp )
 
   end function vfmi_x_trajectory
   

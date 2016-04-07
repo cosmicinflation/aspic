@@ -5,7 +5,7 @@ module vfmireheat
   use srreheat, only : display, pi, Nzero, ln_rho_endinf,ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use vfmisr, only : vfmi_numacc_betamax
+  use vfmisr, only : vfmi_numacc_betamax, vfmi_x_potmax
   use vfmisr, only : vfmi_norm_potential, vfmi_epsilon_one
   use vfmisr, only : vfmi_x_trajectory, vfmi_efold_primitive, vfmi_x_endinf
 
@@ -50,6 +50,7 @@ contains
 
     xEnd = vfmi_x_endinf(alpha,beta)
 
+
 !should be one    
     epsOneEnd = vfmi_epsilon_one(xEnd,alpha,beta)
     potEnd = vfmi_norm_potential(xEnd,alpha,beta)
@@ -70,8 +71,8 @@ contains
        maxi = vfmi_x_trajectory(-efoldNumAccMin,xend,alpha,beta)
        
     else
-       mini = epsilon(1._kp)
-       maxi = xEnd*(1._kp-epsilon(1._kp))
+       mini = xEnd*(1._kp+epsilon(1._kp))
+       maxi = vfmi_x_potmax(alpha,beta)*(1._kp-epsilon(1._kp))
     endif
 
     x = zbrent(find_vfmi_x_star,mini,maxi,tolFind,vfmiData)
@@ -147,8 +148,8 @@ contains
        maxi = vfmi_x_trajectory(-efoldNumAccMin,xend,alpha,beta)
        
     else
-       mini = epsilon(1._kp)
-       maxi = xEnd*(1._kp-epsilon(1._kp))
+       mini = xEnd*(1._kp+epsilon(1._kp))
+       maxi = vfmi_x_potmax(alpha,beta)*(1._kp-epsilon(1._kp))
     endif
 
     x = zbrent(find_vfmi_x_rrad,mini,maxi,tolFind,vfmiData)
@@ -223,8 +224,8 @@ contains
        maxi = vfmi_x_trajectory(-efoldNumAccMin,xend,alpha,beta)
        
     else
-       mini = epsilon(1._kp)
-       maxi = xEnd*(1._kp-epsilon(1._kp))
+       mini = xEnd*(1._kp+epsilon(1._kp))
+       maxi = vfmi_x_potmax(alpha,beta)*(1._kp-epsilon(1._kp))
     endif
 
     x = zbrent(find_vfmi_x_rreh,mini,maxi,tolFind,vfmiData)
