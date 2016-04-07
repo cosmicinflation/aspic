@@ -1,4 +1,4 @@
-.TH libvfmi 3 "March 18, 2016" "libaspic" "Module convention" 
+.TH libvfmi 3 "April 17, 2016" "libaspic" "Module convention" 
 
 .SH NAME
 .I vfmi
@@ -8,18 +8,18 @@
 .TP 20
 Physical potential:
 
-V(x)  = M^4 { 1 - (1/2) beta/[(1-alpha/2)^2 x^2/(3
-beta)]^[alpha/(2-alpha)] } exp{ 3 beta/(1-alpha) [(1-alpha/2)^2 x^2 /
-(3 beta)]^[(1-alpha)/(2-alpha)] }
+V(x)  = M^4 { 1 - (1/2) beta/[1 + (x/2)(2-alpha)/sqrt(3 beta)]^[2
+alpha/(2-alpha)] } exp( 3 beta/(1-alpha) { [1 + (x/2)(2-alpha)/sqrt(3
+beta)]^[2(1-alpha)/(2-alpha)] -1 })
 .TP
-with two particular cases. For 'alpha = 1', it reads:
+including the two limiting cases. For 'alpha = 1', the limit reads:
 
-V(x) = M^4 (x)^(6 beta) [ 1 - 6 beta^2/x^2 ]
+V(x) = M^4 [1 + (x/2)/sqrt(3 beta)]^(6 beta) { 1 - beta/[1 + (x/2)/sqrt(3 beta)]^2 }
 .TP
 whearas for 'alpha = 2':
 
-V(x) = M^4 { 1 - (1/2) beta exp[-2 x/sqrt(3 beta)] } exp{ -3 beta
-exp[ -x/sqrt(3 beta) ] }
+V(x) = M^4 { 1 - (1/2) beta exp[-2 x/sqrt(3 beta)] } exp( -3 beta {
+exp[ -x/sqrt(3 beta) ] -1 })
 .TP
 Routine units
 .I real(kp)
@@ -78,11 +78,18 @@ the above potential. As discussed by Mukhanov, for 'alpha <= 1' the
 potential looks like a large field potential (see 'lfi'), with however
 a possibility to have a low level of tensor modes for 'beta <<
 1'. For '1 < alpha <=2', the potential mimics a plateau inflation
-potential, as Starobinski/Higgs inflation (see 'hi'). In these two
-cases, inflation occurs from large field values 'x' towards small
-values. Finally, for 'alpha > 2', the potential looks like a small
-field model (see 'sfi') and inflation proceeds at increasing field
-values 'x'.
+potential, as Starobinski/Higgs inflation (see 'hi'), with the notable
+difference of not predicting the energy scale of inflation. Finally,
+for 'alpha > 2', the potential looks like a small field model
+(see 'sfi'), the top of the potential being at the field value 'xVmax'
+returned by the
+.I real(kp)
+function
+.IP
+.BR vfmi_x_potmax (alpha,beta)
+.P
+In all cases, inflation occurs from large field values 'x' towards
+small values.
 
 .SS VFMISR MODULE
 
