@@ -8,23 +8,23 @@ module eosflow
 
   private
 
-  public eos_absx, eos_norm_potential
-  public eos_norm_absderiv_potential, eos_norm_deriv_second_potential
+  public eos_x, eos_norm_potential
+  public eos_norm_deriv_potential, eos_norm_deriv_second_potential
   public eos_epsilon_one, eos_epsilon_two, eos_epsilon_three
   
 
 contains
 
-!returns the absolute value of the field (in reduced Planck units)
+!returns the negative branch of the of the field values (in reduced Planck units)
 !given the primitive of sqrt[w(N)+1)] and up to a constant
-  function eos_absx(psqrwp1)
+  function eos_x(psqrwp1)
     implicit none
-    real(kp) :: eos_absx
+    real(kp) :: eos_x
     real(kp), intent(in) :: psqrwp1
 
-    eos_absx = sqrt(3._kp)*abs(psqrwp1)
+    eos_x = -sqrt(3._kp)*psqrwp1
 
-  end function eos_absx
+  end function eos_x
 
 
 !returns the potential V(N) given the primitive of w(N)+1 and
@@ -40,20 +40,20 @@ contains
 
 
 !returns the absolute value of the derivative of the potential with respect to x (field
-!values) up to a sign |dV/dN| * |dx/dN|
-  function eos_norm_absderiv_potential(pwp1,wp1,dwp1)
+!values) up to a sign dV/dN * dx/dN
+  function eos_norm_deriv_potential(pwp1,wp1,dwp1)
     implicit none
-    real(kp) :: eos_norm_absderiv_potential
+    real(kp) :: eos_norm_deriv_potential
     real(kp), intent(in) :: pwp1,wp1,dwp1
 
     real(kp) :: V
 
     V = eos_norm_potential(pwp1,wp1)
 
-    eos_norm_absderiv_potential = V/sqrt(3._kp*wp1) &
+    eos_norm_deriv_potential = V/sqrt(3._kp*wp1) &
          * (3._kp*wp1 + 1._kp/(2._kp-wp1)*dwp1)
 
-  end function eos_norm_absderiv_potential
+  end function eos_norm_deriv_potential
 
 
 !returns the second derivative of the potential with respect to x

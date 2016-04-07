@@ -6,8 +6,8 @@ program vfmimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use eosflow, only : eos_absx, eos_norm_potential
-  use eosflow, only : eos_norm_absderiv_potential, eos_norm_deriv_second_potential
+  use eosflow, only : eos_x, eos_norm_potential
+  use eosflow, only : eos_norm_deriv_potential, eos_norm_deriv_second_potential
   use eosflow, only : eos_epsilon_one, eos_epsilon_two, eos_epsilon_three
 
   use vfmieos, only : vfmi_eos, vfmi_deriv_eos, vfmi_deriv_second_eos
@@ -74,13 +74,13 @@ program vfmimain
         dwp1 = vfmi_deriv_eos(bfold,alpha,beta)
         d2wp1 = vfmi_deriv_second_eos(bfold,alpha,beta)
 
-        x = eos_absx(psqrtwp1)
+        x = eos_x(psqrtwp1)
         xend = vfmi_x_endinf(alpha,beta)
         xvfmi = vfmi_x_trajectory(bfold,xend,alpha,beta)
         call livewrite('parametric_field.dat',bfold,x,xvfmi)
 
         V = eos_norm_potential(pwp1,wp1)
-        dV = eos_norm_absderiv_potential(pwp1,wp1,dwp1)
+        dV = eos_norm_deriv_potential(pwp1,wp1,dwp1)
         d2V = eos_norm_deriv_second_potential(pwp1,wp1,dwp1,d2wp1)
 
         call livewrite('parametric_potential.dat',x,V,dV,d2V)

@@ -2,6 +2,8 @@ AC_INIT([aspic],[0.4.0],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~rin
 
 AM_INIT_AUTOMAKE
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AC_PROG_FC
 AC_PROG_CPP
 AC_PROG_RANLIB

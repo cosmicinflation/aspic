@@ -39,12 +39,13 @@ contains
 
     real(kp), parameter :: lnPotNumAccMax = log(huge(1._kp)*epsilon(1._kp))
 
-    if (alpha.ge.1._kp) then
+    if (alpha.gt.1._kp) then
        vfmi_numacc_betamax = huge(1._kp)
        return
+    elseif (alpha.eq.1._kp) then
+       vfmi_numacc_betamax = lnPotNumAccMax/3._kp/efold
+       return
     endif
-
-    stop 'to cgheck'
 
     vfmi_numacc_betamax = lnPotNumAccMax &
          * (1._kp - alpha)/3._kp/efold**(1._kp-alpha)
@@ -82,7 +83,7 @@ contains
     y = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2
 
     vfmi_norm_potential = (1._kp - 0.5_kp*beta/y**(alpha/(2._kp-alpha))) &
-         * exp(3._kp*beta/(1._kp-alpha)*(y**((1._kp-alpha)/(2._kp-alpha)) - 1._kp)
+         * exp(3._kp*beta/(1._kp-alpha)*(y**((1._kp-alpha)/(2._kp-alpha)) - 1._kp))
 
   end function vfmi_norm_potential
 
@@ -294,7 +295,7 @@ contains
        return
     endif
 
-   vfmi_x_trajectory = 2._kp*sqrt(3._kp*beta)/abs(2._kp-alpha) &
+   vfmi_x_trajectory = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
         * ( ((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha) - 1._kp )
 
   end function vfmi_x_trajectory
