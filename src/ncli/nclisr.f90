@@ -530,7 +530,7 @@ contains
     real(kp) :: xvar, xinf
     real(kp), dimension(neq) :: yvar
 
-!let's star at the inflection point
+!let us start at the inflection point
     xvar = ncli_x_inflection(alpha,phi0,n)
     yvar(1) = 0._kp
 

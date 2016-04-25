@@ -120,6 +120,7 @@ interface lambert
    module procedure lambert_iter
 end interface lambert
 
+
 contains
 
 
@@ -137,6 +138,22 @@ contains
 !                 SPECIAL FUNCTIONS                      !
 !                                                        !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+  function log_otherbranchcut(z)
+    implicit none
+    complex(kp), intent(in) :: z
+    complex(kp) :: log_otherbranchcut
+
+
+    if (aimag(z)>0) then
+       log_otherbranchcut  = log(z)
+    else
+       log_otherbranchcut  = log(z)+2*acos(-1._kp)*cmplx(0._kp,1._kp,kp)
+    endif
+
+
+  end function log_otherbranchcut
 
   function ellipticK(k2)
     use hyp_2f1_module, only : M_PI_2
@@ -187,8 +204,6 @@ contains
     Esav = ellipticE
 
   end function ellipticE
-
-
 
 
   function hypergeom_2F1(a,b,c,z)

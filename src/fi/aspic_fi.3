@@ -1,0 +1,42 @@
+.TH libfi 3 "December 27, 2015" "libaspic" "Module convention"
+
+.SH NAME
+.I fi
+- the fibre inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ (1+2 delta/3) Exp(-2 x/sqrt(3)) - 4(1+delta/6) Exp(-x/sqrt(3)) + delta/(1+n)Exp(2(1+n)x/sqrt(3)) + 3 - delta/(1+n) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B delta, n
+
+.SH DESCRIPTION
+Fibre inflation can realize the maximum number of slow-roll e-folds roughly given by ~ 9/4 delta^(-1/(3+2n)) but precisely computed by the
+.I real(kp)
+::
+function
+.IP
+.BR fi_efoldmax(delta,n)
+.P
+taking as an input the parameters delta and n.
+This condition that this number is sufficiently large can be obtained by the
+.I real(kp)
+::
+function
+.IP
+.BR fi_check_params (delta,n)
+.P
+which further checks that the minimum value reached by the first slow-roll parameter is not too large.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
