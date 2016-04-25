@@ -12,6 +12,13 @@ module cosmopar
   real(kp), parameter :: HubbleSquareRootOf3OmegaRad = 7.5437d-63
   real(kp), parameter :: HubbleSquareRootOf2OmegaRad = sqrt(2._kp/3._kp)*HubbleSquareRootOf3OmegaRad
 
+!hard prior: all models are assumed to support, at least, this number (120)
+!of efolds which allows for all possible reheating history
+  real(kp), parameter :: efoldNum = 80._kp
+
+!hard prior: all models inflating in a region with eps>epsMax are not counted
+  real(kp), parameter :: epsilonMax = 0.2_kp
+
 !q: number of relativistic entropic dof
 !g: number of relativistic energy dof
 !RelatDofRatio is: qo^(4/3)/go x greh/qreh^4/3

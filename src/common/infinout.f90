@@ -41,11 +41,11 @@ contains
   end subroutine delete_file
 
 
-  subroutine sp_livewrite(name,x,a,b,c,d,e,f,g,h,i,j)
+  subroutine sp_livewrite(name,x,a,b,c,d,e,f,g,h,i,j,k,l,m,n)
     implicit none
     character(len=*) :: name    
     real :: x,a
-    real, optional :: b,c,d,e,f,g,h,i,j
+    real, optional :: b,c,d,e,f,g,h,i,j,k,l,m,n
       
     open(10,file=name,position='append',status='unknown')
     
@@ -67,22 +67,30 @@ contains
        write(10,100) x,a,b,c,d,e,f,g,h       
     elseif (.not.present(j)) then
        write(10,100) x,a,b,c,d,e,f,g,h,i
+    elseif (.not.present(k)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j
+    elseif (.not.present(l)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k
+    elseif (.not.present(m)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k,l
+    elseif (.not.present(n)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k,l,m
     else
-       write(10,100) x,a,b,c,d,e,f,g,h,i,j 
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k,l,m,n
     endif
     
     close(10)
 
- 100 format(8(ES25.16E3))
+ 100 format(15(ES25.16E3))
 
   end subroutine sp_livewrite
 
 
-  subroutine kp_livewrite(name,x,a,b,c,d,e,f,g,h,i,j)
+  subroutine kp_livewrite(name,x,a,b,c,d,e,f,g,h,i,j,k,l,m,n)
     implicit none
     character(len=*) :: name    
     real(kp) :: x,a
-    real(kp), optional :: b,c,d,e,f,g,h,i,j
+    real(kp), optional :: b,c,d,e,f,g,h,i,j,k,l,m,n
     
     open(10,file=name,position='append',status='unknown')
 
@@ -104,13 +112,21 @@ contains
        write(10,100) x,a,b,c,d,e,f,g,h       
     elseif (.not.present(j)) then
        write(10,100) x,a,b,c,d,e,f,g,h,i
+    elseif (.not.present(k)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j
+    elseif (.not.present(l)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k
+    elseif (.not.present(m)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k,l
+    elseif (.not.present(n)) then
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k,l,m
     else
-       write(10,100) x,a,b,c,d,e,f,g,h,i,j 
+       write(10,100) x,a,b,c,d,e,f,g,h,i,j,k,l,m,n
     endif
     
     close(10)
     
-100 format(8(ES25.16E3))      
+100 format(15(ES25.16E3))
     
   end subroutine kp_livewrite
 
