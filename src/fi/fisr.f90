@@ -7,7 +7,6 @@
 module fisr
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent, easydverk
-  use cosmopar, only : efoldNum, epsilonMax
   implicit none
 
   private
@@ -23,13 +22,17 @@ module fisr
   public fi_x_epstwozero
 
 
+  
+
 contains
 
 
-  function fi_check_params(delta,n)
+  function fi_check_params(efoldNum,epsilonMax,delta,n)
     implicit none
     logical :: fi_check_params
+    real(kp), intent(in) :: efoldNum, epsilonMax
     real(kp), intent(in) :: delta,n
+
     real(kp) :: Nmax,epsilon1min
 
     Nmax = fi_efoldmax(delta,n)

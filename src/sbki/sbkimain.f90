@@ -7,8 +7,9 @@ program sbkimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use sbkisr, only : sbki_norm_potential, sbki_x_endinf, sbki_check_params, &
-                    sbki_x_max, sbki_x_trajectory
+  use sbkisr, only : sbki_norm_potential, sbki_x_endinf
+  use sbkisr, only : sbki_efoldmax, sbki_epsilon_one_min
+  use sbkisr, only : sbki_x_max, sbki_x_trajectory, sbki_alphamin, sbki_alphamax
   use sbkireheat, only : sbki_x_rreh, sbki_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -28,6 +29,8 @@ program sbkimain
   real(kp), dimension(2) :: vecbuffer
 
   real(kp), dimension(1:4) ::alphavalues
+
+  real(kp), parameter :: epsmax = 0.2_kp, efoldNum=80._kp
 
   real(kp)  :: alpha,alphamin,alphamax,eps1A,eps2A,eps3A,nsA,rA
   real(kp)  :: eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
@@ -61,7 +64,11 @@ program sbkimain
      !alpha=alphavalues(j)
      alpha = alphamin+(alphamax-alphamin)*real(j,kp)/real(Nalpha,kp)
 
-     if (sbki_check_params(alpha)) then
+     if ((alpha.ge.sbki_alphamax()).or.(alpha.lt.sbki_alphamin())) cycle
+
+     if (sbki_epsilon_one_min(alpha).gt.epsmax) cycle
+
+     if (sbki_efoldmax(alpha).le.efoldNum) cycle
 
      w=0._kp
 
@@ -92,7 +99,7 @@ program sbkimain
         call livewrite('sbki_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 
      end do
-    endif
+
   end do
 
 

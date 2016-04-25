@@ -1,4 +1,4 @@
-.TH libsbki 3 "September 7, 2012" "libaspic" "Module convention" 
+.TH libsbki 3 "April 25, 2016" "libaspic" "Module convention" 
 
 .SH NAME
 .I sbki
@@ -21,6 +21,35 @@ Parameters
 ::
 .B alpha
 
-
+.SH DESCRIPTION
+The
+.I sbki
+module is used for Symmetry Breaking Kahler Inflation in which
+inflation proceeds from large field values towards small field
+values. The inflationary domain only exists over a finite interval
+of 'alpha' values whose boundaries are given by
+two
+.I real(kp)
+functions
+.IP
+.BR sbki_alphamin()
+.RS
+.BR sbki_alphamax()
+.RE
+.P
+The first Hubble flow function has a minimum within this domain which
+is returned by the
+.I real(kp)
+function
+.IP
+.BR sbki_epsilon_one_min(alpha)
+.P
+given the value of 'alpha'. Finally, the total number of efolds of
+inflation is bounded from above and can be obtained from the
+.I real(kp)
+function
+.IP
+.BR sbki_efoldmax(alpha)
+.P
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

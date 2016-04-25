@@ -1,4 +1,4 @@
-!exponential SUSY inflation reheating functions in the slow-roll approximations
+!Axion Hilltop Inflation reheating functions
 
 module ahireheat
   use infprec, only : kp, tolkp, transfert
@@ -51,7 +51,7 @@ contains
     ahiData%real3 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = acos(-1._kp)*(1._kp-epsilon(1._kp))
+    maxi = pi*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ahi_x_star,mini,maxi,tolzbrent,ahiData)
     ahi_x_star = x
@@ -113,7 +113,7 @@ contains
     ahiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = acos(-1._kp)*(1._kp-epsilon(1._kp))
+    maxi = pi*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ahi_x_rrad,mini,maxi,tolzbrent,ahiData)
     ahi_x_rrad = x
@@ -175,7 +175,7 @@ contains
     ahiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = acos(-1._kp)*(1._kp-epsilon(1._kp))
+    maxi = pi*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ahi_x_rreh,mini,maxi,tolzbrent,ahiData)
     ahi_x_rreh = x

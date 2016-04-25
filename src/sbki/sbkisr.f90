@@ -9,7 +9,6 @@
 module sbkisr
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
-  use cosmopar, only : efoldNum, epsilonMax
   use specialinf, only : log_otherbranchcut
   implicit none
 
@@ -17,25 +16,39 @@ module sbkisr
 
   public  sbki_norm_potential, sbki_epsilon_one, sbki_epsilon_two, sbki_epsilon_three
   public  sbki_x_endinf, sbki_efold_primitive, sbki_x_trajectory
+  public  sbki_epsilon_one_min, sbki_efoldmax
   public  sbki_norm_deriv_potential, sbki_norm_deriv_second_potential
-  public  sbki_x_max, sbki_check_params
-
+  public  sbki_x_max, sbki_check_params, sbki_alphamin, sbki_alphamax
 
 contains
 
-! Hardprior condition on alpha
-  function sbki_check_params(alpha)
+! return true if there is more than efoldnum of inflation
+  function sbki_check_params(efoldNum, alpha)
     implicit none
     logical :: sbki_check_params
-    real(kp), intent(in) :: alpha
-    real(kp) :: Nmax, epsilon1min
-
-    Nmax = sbki_efoldmax(alpha)
-    epsilon1min = sbki_epsilon_one_min(alpha)
-
-    sbki_check_params = ((epsilon1min .le. epsilonMax) .and. (Nmax .ge. efoldNum) )
+    real(kp), intent(in) :: efoldNum, alpha    
+    
+    sbki_check_params = sbki_efoldmax(alpha) .ge. efoldNum
 
   end function sbki_check_params
+
+
+!ensures that epsonemin < 1 for alpha > 0
+  function sbki_alphamax()
+    implicit none
+    real(kp) :: sbki_alphamax
+    sbki_alphamax = 9._kp/4._kp/(11._kp + 5._kp*sqrt(5._kp))
+    
+  end function sbki_alphamax
+
+
+!ensures that epsonemin < 1 for alpha < 0
+  function sbki_alphamin()
+    real(kp) :: sbki_alphamin
+
+    sbki_alphamin = 9._kp/4._kp/(11._kp - 5._kp*sqrt(5._kp))
+
+  end function sbki_alphamin
 
 
 !returns V/M**4

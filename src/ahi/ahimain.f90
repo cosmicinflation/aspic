@@ -1,6 +1,6 @@
 !test the reheating derivation from slow-roll
 program ahimain
-  use infprec, only : kp
+  use infprec, only : kp, pi
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use ahisr, only : ahi_epsilon_one, ahi_epsilon_two, ahi_epsilon_three
   use ahireheat, only : ahi_lnrhoreh_max, ahi_x_star
@@ -73,7 +73,7 @@ program ahimain
 
 
         logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(pi**2/30._kp) )
 
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1

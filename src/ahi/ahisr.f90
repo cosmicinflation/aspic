@@ -7,7 +7,7 @@
 !nu0 is a constant such that the potential vanishes at its two minimas around pi
 
 module ahisr
-  use infprec, only : kp, tolkp, transfert
+  use infprec, only : pi, kp, tolkp, transfert
   use inftools, only : zbrent, easydverk
   implicit none
 
@@ -32,7 +32,7 @@ contains
     real(kp) :: ahi_norm_potential
     real(kp), intent(in) :: x, phi0
 
-    ahi_norm_potential = nu0-2._kp*cos(x)+(acos(-1._kp)-x)*sin(x)
+    ahi_norm_potential = nu0-2._kp*cos(x)+(pi-x)*sin(x)
 
   end function ahi_norm_potential
 
@@ -43,7 +43,7 @@ contains
     real(kp) :: ahi_norm_deriv_potential
     real(kp), intent(in) :: x, phi0
 
-   ahi_norm_deriv_potential = ((acos(-1._kp)-x)*cos(x)+sin(x))
+   ahi_norm_deriv_potential = ((pi-x)*cos(x)+sin(x))
 
   end function ahi_norm_deriv_potential
 
@@ -55,7 +55,7 @@ contains
     real(kp) :: ahi_norm_deriv_second_potential
     real(kp), intent(in) :: x, phi0
 
-    ahi_norm_deriv_second_potential = (-acos(-1._kp)+x)*sin(x)
+    ahi_norm_deriv_second_potential = (-pi+x)*sin(x)
 
   end function ahi_norm_deriv_second_potential
 
@@ -67,8 +67,8 @@ contains
     real(kp) :: ahi_epsilon_one
     real(kp), intent(in) :: x, phi0
     
-    ahi_epsilon_one = ((acos(-1._kp)-x)*cos(x)+sin(x))**2/(2._kp*phi0**2* &
-                    (nu0-2._kp*cos(x)+(acos(-1._kp)-x)*sin(x))**2)
+    ahi_epsilon_one = ((pi-x)*cos(x)+sin(x))**2/(2._kp*phi0**2* &
+                    (nu0-2._kp*cos(x)+(pi-x)*sin(x))**2)
     
   end function ahi_epsilon_one
 
@@ -79,9 +79,9 @@ contains
     real(kp) :: ahi_epsilon_two
     real(kp), intent(in) :: x, phi0
     
-    ahi_epsilon_two = (1._kp+2._kp*(acos(-1._kp)-x)**2-cos(2._kp*x)+ &
-                      2._kp*nu0*(acos(-1._kp)-x)*sin(x))/(phi0**2* &
-                      (nu0-2._kp*cos(x)+(acos(-1._kp)-x)*sin(x))**2)
+    ahi_epsilon_two = (1._kp+2._kp*(pi-x)**2-cos(2._kp*x)+ &
+                      2._kp*nu0*(pi-x)*sin(x))/(phi0**2* &
+                      (nu0-2._kp*cos(x)+(pi-x)*sin(x))**2)
     
   end function ahi_epsilon_two
 
@@ -92,14 +92,14 @@ contains
     real(kp) :: ahi_epsilon_three
     real(kp), intent(in) :: x, phi0
     
-    ahi_epsilon_three = (((acos(-1._kp)-x)*cos(x)+sin(x))*(9._kp*nu0* &
-                        (acos(-1._kp)-x)+2*(-nu0**2+2*(-2._kp+(acos(-1._kp)-x)**2))* &
-                        (acos(-1._kp)-x)*cos(x)+nu0*(-acos(-1._kp)+x)*cos(2*x)+ &
-                        (5._kp+2._kp*nu0**2+8._kp*(acos(-1._kp)-x)**2)*sin(x)+ &
-                        nu0*(-4._kp+(acos(-1._kp)-x)**2)*sin(2._kp*x)+sin(3._kp*x)))/ &
-                        (phi0**2*(nu0-2._kp*cos(x)+(acos(-1._kp)-x)*sin(x))**2* &
-                        (1._kp+2._kp*(acos(-1._kp)-x)**2-cos(2._kp*x)+2._kp*nu0* &
-                        (acos(-1._kp)-x)*sin(x)))
+    ahi_epsilon_three = (((pi-x)*cos(x)+sin(x))*(9._kp*nu0* &
+                        (pi-x)+2*(-nu0**2+2*(-2._kp+(pi-x)**2))* &
+                        (pi-x)*cos(x)+nu0*(-pi+x)*cos(2*x)+ &
+                        (5._kp+2._kp*nu0**2+8._kp*(pi-x)**2)*sin(x)+ &
+                        nu0*(-4._kp+(pi-x)**2)*sin(2._kp*x)+sin(3._kp*x)))/ &
+                        (phi0**2*(nu0-2._kp*cos(x)+(pi-x)*sin(x))**2* &
+                        (1._kp+2._kp*(pi-x)**2-cos(2._kp*x)+2._kp*nu0* &
+                        (pi-x)*sin(x)))
     
   end function ahi_epsilon_three
 
@@ -114,7 +114,7 @@ contains
     type(transfert) :: ahiData
 
     mini = xmin*(1._kp+epsilon(1._kp))
-    maxi = acos(-1._kp)*(1._kp-epsilon(1._kp))
+    maxi = pi*(1._kp-epsilon(1._kp))
 
     ahiData%real1 = phi0
 
@@ -185,7 +185,7 @@ contains
     type(transfert) :: ahiData
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = acos(-1._kp)*(1._kp-epsilon(1._kp))
+    maxi = pi*(1._kp-epsilon(1._kp))
 
     ahiData%real1 = phi0
     ahiData%real2 = -bfold + ahi_efold_primitive(xend,phi0)

@@ -9,7 +9,7 @@ module sbkireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use sbkisr, only : sbki_epsilon_one, sbki_epsilon_two, sbki_epsilon_three
-  use sbkisr, only : sbki_norm_potential, sbki_x_max
+  use sbkisr, only : sbki_norm_potential, sbki_x_max, sbki_epsilon_one_min
   use sbkisr, only : sbki_x_endinf, sbki_efold_primitive
   implicit none
 
