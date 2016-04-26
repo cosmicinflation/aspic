@@ -13,17 +13,12 @@ module fisr
 
   public fi_norm_potential, fi_norm_deriv_potential, fi_norm_deriv_second_potential
   public fi_epsilon_one, fi_epsilon_two, fi_epsilon_three
-  public fi_efold_primitive, fi_x_trajectory, fi_x_endinf
-  public fi_check_params, fi_x_eps1_1_upper
-
+  public fi_efold_primitive, fi_x_trajectory, fi_x_endinf, fi_x_epstwozero
+  public fi_check_params, fi_x_epsoneunity
   public fi_efoldmax, fi_epsilon_one_min
 
-!For debug phase only, delete afterwards
-  public fi_x_epstwozero
-
-
-  
-
+  real(kp), parameter :: sqr3 = sqrt(3._kp)
+ 
 contains
 
 
@@ -43,15 +38,16 @@ contains
   end function fi_check_params
 
 
+
 !returns V/M**4
   function fi_norm_potential(x,delta,n)
     implicit none
     real(kp) :: fi_norm_potential
     real(kp), intent(in) :: x,delta,n
 
-    fi_norm_potential = (1._kp+2._kp*delta/3._kp)*exp(-4._kp*x/sqrt(3._kp))- &
-                        4._kp*(1._kp+delta/6._kp)*exp(-x/sqrt(3._kp))+delta/(1._kp+n)* &
-                        exp(2._kp*(1._kp+n)*x/sqrt(3._kp))+3._kp-delta/(1._kp+n)
+    fi_norm_potential = (1._kp+2._kp*delta/3._kp)*exp(-4._kp*x/sqr3)- &
+                        4._kp*(1._kp+delta/6._kp)*exp(-x/sqr3)+delta/(1._kp+n)* &
+                        exp(2._kp*(1._kp+n)*x/sqr3)+3._kp-delta/(1._kp+n)
 
   end function fi_norm_potential
 
@@ -62,10 +58,10 @@ contains
     real(kp) :: fi_norm_deriv_potential
     real(kp), intent(in) :: x,delta,n
 
-    fi_norm_deriv_potential = (2._kp*exp(-((4._kp*x)/sqrt(3._kp)))* &
+    fi_norm_deriv_potential = (2._kp*exp(-((4._kp*x)/sqr3))* &
                                 (-6._kp-4._kp*delta+3._kp*exp((2._kp*(3._kp+n)*x)/ &
-                                sqrt(3._kp))*delta+exp(x*sqrt(3._kp))*(6._kp+delta)))/ &
-                                (3._kp*sqrt(3._kp))
+                                sqr3)*delta+exp(x*sqr3)*(6._kp+delta)))/ &
+                                (3._kp*sqr3)
 
   end function fi_norm_deriv_potential
 
@@ -76,11 +72,13 @@ contains
     real(kp) :: fi_norm_deriv_second_potential
     real(kp), intent(in) :: x,delta,n
 
-    fi_norm_deriv_second_potential = 2._kp/9._kp*exp(-((4._kp*x)/sqrt(3._kp)))* &
-                                    (24._kp+16._kp*delta+6._kp*exp((2._kp*(3._kp+n)*x)/sqrt(3._kp))* &
-                                    (1._kp+n)*delta-exp(x*sqrt(3._kp))*(6._kp+delta))
+    fi_norm_deriv_second_potential = 2._kp/9._kp*exp(-((4._kp*x)/sqr3))* &
+                                    (24._kp+16._kp*delta+6._kp*exp((2._kp*(3._kp+n)*x)/sqr3)* &
+                                    (1._kp+n)*delta-exp(x*sqr3)*(6._kp+delta))
 
   end function fi_norm_deriv_second_potential
+
+
 
 !returns the third derivative of the potential with respect to x=phi/Mp, divided by M**4
   function fi_norm_deriv_third_potential(x,delta,n)
@@ -88,55 +86,117 @@ contains
     real(kp) :: fi_norm_deriv_third_potential
     real(kp), intent(in) :: x,delta,n
 
-    fi_norm_deriv_third_potential = (2._kp*exp(-((4._kp*x)/sqrt(3._kp)))* &
-                                    (12._kp*exp((2._kp*(3._kp+n)*x)/sqrt(3._kp))* &
-                                    (1._kp+n)**2*delta+exp(x*sqrt(3._kp))*(6._kp+delta) &
-                                    -32._kp*(3._kp+2._kp*delta)))/(9._kp*sqrt(3._kp))
+    fi_norm_deriv_third_potential = (2._kp*exp(-((4._kp*x)/sqr3))* &
+                                    (12._kp*exp((2._kp*(3._kp+n)*x)/sqr3)* &
+                                    (1._kp+n)**2*delta+exp(x*sqr3)*(6._kp+delta) &
+                                    -32._kp*(3._kp+2._kp*delta)))/(9._kp*sqr3)
 
   end function fi_norm_deriv_third_potential
 
 
-!epsilon1(x)
+
+
   function fi_epsilon_one(x,delta,n)
     implicit none
     real(kp) :: fi_epsilon_one
     real(kp), intent(in) :: x,delta,n
 
-    fi_epsilon_one = 0.5_kp*(fi_norm_deriv_potential(x,delta,n)/ &
-                    fi_norm_potential(x,delta,n))**2
+    fi_epsilon_one = (2*(-6 - 4*delta + (6 + delta)*exp(sqr3*x) &
+         + 3*delta*exp((2*(3 + n)*x)/sqr3))**2*(1 + n)**2) &
+         / (3*(3*delta*exp((2*(3 + n)*x)/sqr3) + (3 + 2*delta)*(1 + n) &
+         - 2*(6 + delta)*exp(sqr3*x)*(1 + n) + exp((4*x)/sqr3)*(9 - 3*delta + 9*n))**2)
+
+!   print *,'test',fi_epsilon_one, 0.5_kp*(fi_norm_deriv_potential(x,delta,n)/ &
+!                    fi_norm_potential(x,delta,n))**2
 
   end function fi_epsilon_one
 
 
-!epsilon2(x)
+
   function fi_epsilon_two(x,delta,n)
     implicit none
     real(kp) :: fi_epsilon_two
     real(kp), intent(in) :: x,delta,n
 
-    fi_epsilon_two = 2._kp*((fi_norm_deriv_potential(x,delta,n)/ &
-                     fi_norm_potential(x,delta,n))**2- &
-                    fi_norm_deriv_second_potential(x,delta,n)/ &
-                    fi_norm_potential(x,delta,n))
+
+    fi_epsilon_two = (4*(1 + n)*(3*(18 + 15*delta + 2*delta**2) &
+         * exp(sqr3*x)*(1 + n) + 6*delta*exp((2*(5 + n)*x)/sqr3) &
+         * (-3 + delta - 3*n)*(1 + n) - 2*delta*(3 + 2*delta) &
+         * exp((2*(3 + n)*x)/sqr3)*(3 + n)**2 + delta*(6 + delta) &
+         * exp(((9 + 2*n)*x)/sqr3)*(3 + 2*n)**2 - 8*(3 + 2*delta)*exp((4*x)/sqr3) &
+         * (3 - delta + 3*n) + (6 + delta)*exp((7*x)/sqr3)*(3 - delta + 3*n))) &
+         / (3*delta*exp((2*(3 + n)*x)/sqr3) + (3 + 2*delta)*(1 + n) - 2*(6 + delta) &
+         * exp(sqr3*x)*(1 + n) + exp((4*x)/sqr3)*(9 - 3*delta + 9*n))**2
+
+!    print *,'test2',fi_epsilon_two,2._kp*((fi_norm_deriv_potential(x,delta,n)/ &
+!                     fi_norm_potential(x,delta,n))**2- &
+!                     fi_norm_deriv_second_potential(x,delta,n)/ &
+!                     fi_norm_potential(x,delta,n))
 
   end function fi_epsilon_two
 
-!epsilon3(x)
+
   function fi_epsilon_three(x,delta,n)
     implicit none
     real(kp) :: fi_epsilon_three
     real(kp), intent(in) :: x,delta,n
-    real(kp) :: V,Vp,Vpp,Vppp
+!    real(kp) :: V,Vp,Vpp,Vppp
 
-    V = fi_norm_potential(x,delta,n)
-    Vp = fi_norm_deriv_potential(x,delta,n)
-    Vpp = fi_norm_deriv_second_potential(x,delta,n)
-    Vppp = fi_norm_deriv_third_potential(x,delta,n)
+    fi_epsilon_three = (-2*(-6 - 4*delta + (6 + delta)*exp(sqr3*x) &
+         + 3*delta*exp((2*(3 + n)*x)/sqr3))*(1 + n)*(-4*(-3*(6 + delta)*exp(sqr3*x)*(1 + n)&
+         + 3*delta*exp((2*(3 + n)*x)/sqr3)*(3 + n) + 6*exp((4*x)/sqr3)*(3 - delta + 3*n)) &
+         * (3*(18 + 15*delta + 2*delta**2)* exp(sqr3*x)*(1 + n) + 6*delta*exp((2*(5 + n)*x)/sqr3) &
+         * (-3 + delta - 3*n)*(1 + n) - 2*delta*(3 + 2*delta)*exp((2*(3 + n)*x)/sqr3)*(3 + n)**2 &
+         + delta*(6 + delta)*exp(((9 + 2*n)*x)/sqr3)*(3 + 2*n)**2 - 8*(3 + 2*delta)*exp((4*x)/sqr3) &
+         * (3 - delta + 3*n) + (6 + delta)*exp((7*x)/sqr3)*(3 - delta + 3*n)) &
+         + (9*(18 + 15*delta + 2*delta**2)*exp(sqr3*x)*(1 + n) - 4*delta*(3 + 2*delta) &
+         * exp((2*(3 + n)*x)/sqr3)*(3 + n)**3 + 12*delta*exp((2*(5 + n)*x)/sqr3) &
+         * (-3 + delta - 3*n)*(1 + n)*(5 + n) + delta*(6 + delta)*exp(((9 + 2*n)*x)/sqr3) &
+         *(3 + 2*n)**2*(9 + 2*n) - 32*(3 + 2*delta)*exp((4*x)/sqr3)*(3 - delta + 3*n) &
+         + 7*(6 + delta)*exp((7*x)/sqr3)*(3 - delta + 3*n))*(3*delta*exp((2*(3 + n)*x)/sqr3)&
+         + (3 + 2*delta)*(1 + n) - 2*(6 + delta)*exp(sqr3*x)*(1 + n) + exp((4*x)/sqr3) &
+         *(9 - 3*delta + 9*n))))/(3*(3*(18 + 15*delta + 2*delta**2)*exp(sqr3*x)*(1 + n) &
+         + 6*delta*exp((2*(5 + n)*x)/sqr3)*(-3 + delta - 3*n)*(1 + n) - 2*delta*(3 + 2*delta) &
+         * exp((2*(3 + n)*x)/sqr3)*(3 + n)**2 + delta*(6 + delta)*exp(((9 + 2*n)*x)/sqr3) &
+         * (3 + 2*n)**2 - 8*(3 + 2*delta)*exp((4*x)/sqr3)*(3 - delta + 3*n) + (6 + delta)*exp((7*x)/sqr3) &
+         * (3 - delta + 3*n))*(3*delta*exp((2*(3 + n)*x)/sqr3) + (3 + 2*delta)*(1 + n) - 2*(6 + delta) &
+         * exp(sqr3*x)*(1 + n) + exp((4*x)/sqr3)*(9 - 3*delta + 9*n))**2)
 
-    fi_epsilon_three = (Vppp*Vp/V**2-3._kp*Vpp*Vp**2/V**3+2._kp*(Vp/V)**4)/ &
-                        fi_epsilon_two(x,delta,n)
+
+!    V = fi_norm_potential(x,delta,n)
+!    Vp = fi_norm_deriv_potential(x,delta,n)
+!    Vpp = fi_norm_deriv_second_potential(x,delta,n)
+!    Vppp = fi_norm_deriv_third_potential(x,delta,n)
+!    print *,'test3',fi_epsilon_three, 2*(Vppp*Vp/V**2-3._kp*Vpp*Vp**2/V**3+2._kp*(Vp/V)**4)/ &
+!                        fi_epsilon_two(x,delta,n)
 
   end function fi_epsilon_three
+
+
+
+!this is x at which the third branch of the potential becomes dominant
+  function fi_x_potthirdbranch(delta,n)
+    implicit none
+    real(kp) :: fi_x_potthirdbranch
+    real(kp), intent(in) :: delta,n
+
+    fi_x_potthirdbranch = ((sqr3*log(((1._kp+n)*(1._kp+(2._kp*delta)/3._kp))/delta)) &
+         /(2._kp*(3._kp+n)))/10._kp
+
+  end function fi_x_potthirdbranch
+
+!maximal value of x above which the potential overflows
+  function fi_numacc_xmax(delta,n)
+    implicit none
+    real(kp) :: fi_numacc_xmax
+    real(kp), intent(in) :: delta,n
+
+    fi_numacc_xmax = (sqr3*(log(1._kp/epsilon(1._kp))))/(2._kp*(1._kp+n))
+
+  end function fi_numacc_xmax
+
+
+
 
 !returns x where epsilon2=0 and epsilon1 is minimal
   function fi_x_epstwozero(delta,n)
@@ -146,10 +206,8 @@ contains
     real(kp), parameter :: tolFind=tolkp
     type(transfert) :: fiData
 
-    mini = ((sqrt(3._kp)*log(((1._kp+n)*(1._kp+(2._kp*delta)/3._kp))/delta))/ &
-            (2._kp*(3._kp+n)))/10._kp !this is where the third branch of the potential becomes dominant
-    maxi = (sqrt(3._kp)*(log(1._kp/epsilon(1._kp))))/(2._kp*(1._kp+n)) !maximal value of x above which the potential becomes larger than numerical accuracy
-
+    mini = fi_x_potthirdbranch(delta,n)
+    maxi = fi_numacc_xmax(delta,n)
 
     fiData%real1 = delta
     fiData%real2 = n
@@ -172,6 +230,8 @@ contains
 
   end function find_fi_x_epstwozero
 
+
+
 !returns the minimum value of epsilon1
   function fi_epsilon_one_min(delta,n)
     implicit none
@@ -182,72 +242,84 @@ contains
 
   end function fi_epsilon_one_min
 
-!returns the lower value of x where epsilon1=1
-  function fi_x_eps1_1_lower(delta,n)
+
+
+
+  function fi_x_epsoneunity(delta,n)
     implicit none
-    real(kp) :: fi_x_eps1_1_lower, mini, maxi
+    real(kp), dimension(2) :: fi_x_epsoneunity
     real(kp), intent(in) :: delta,n
-    real(kp), parameter :: tolFind=tolkp
+
+    real(kp) :: mini,maxi
+    real(kp) :: xepstwonull, xnumaccMax, xthirdbranch
+
+    real(kp), parameter :: tolFind = tolkp
     type(transfert) :: fiData
 
-    mini = ((sqrt(3._kp)*log(((1._kp+n)*(1._kp+(2._kp*delta)/3._kp))/delta))/ &
-            (2._kp*(3._kp+n)))/10._kp !this is where the third branch of the potential becomes dominant
-    maxi = fi_x_epstwozero(delta,n)
+    xepstwonull = fi_x_epstwozero(delta,n)
+    xthirdbranch = fi_x_potthirdbranch(delta,n)
+    xnumaccMax = fi_numacc_xmax(delta,n)
 
     fiData%real1 = delta
     fiData%real2 = n
 
-    fi_x_eps1_1_lower = zbrent(find_fi_x_eps1_1,mini,maxi,tolFind,fiData)
+    mini = xthirdbranch
+    maxi = xepstwonull
 
-  end function fi_x_eps1_1_lower
+    fi_x_epsoneunity(1) = zbrent(find_fi_x_epsoneunity,mini,maxi,tolFind,fiData)
 
-!returns the upper value of x where epsilon1=1
-  function fi_x_eps1_1_upper(delta,n)
-    implicit none
-    real(kp) :: fi_x_eps1_1_upper, mini, maxi
-    real(kp), intent(in) :: delta,n
-    real(kp), parameter :: tolFind=tolkp
-    type(transfert) :: fiData
 
-    mini = fi_x_epstwozero(delta,n)
-    maxi = (sqrt(3._kp)*(log(1._kp/epsilon(1._kp))))/(2._kp*(1._kp+n)) !maximal value of x above which the potential becomes larger than numerical accuracy
+    mini = xepstwonull
+    maxi = xnumaccMax
 
-    if (n .eq. 0._kp) then ! in this case epsilon1 reaches 2/3<1 at infinity, and the function returns the maximal value of x above which the potential becomes larger than numerical accuracy
-        fi_x_eps1_1_upper = maxi
-    else
+! in this case epsilon1 reaches 2/3<1 at infinity, and the function
+! returns the maximal value of x above which the potential becomes
+! larger than numerical accuracy
+    if (n .eq. 0._kp) then 
 
-      fiData%real1 = delta
-      fiData%real2 = n
+       fi_x_epsoneunity(2) = xnumaccMax
 
-      fi_x_eps1_1_upper = zbrent(find_fi_x_eps1_1,mini,maxi,tolFind,fiData)
+    else      
+
+      fi_x_epsoneunity(2) = zbrent(find_fi_x_epsoneunity,mini,maxi,tolFind,fiData)
 
     endif
 
-  end function fi_x_eps1_1_upper
+  end function fi_x_epsoneunity
 
-  function find_fi_x_eps1_1(x,fiData)
+
+
+  function find_fi_x_epsoneunity(x,fiData)
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: fiData
-    real(kp) :: find_fi_x_eps1_1
+    real(kp) :: find_fi_x_epsoneunity
     real(kp) :: delta,n
 
     delta = fiData%real1
     n = fiData%real2
 
-    find_fi_x_eps1_1 = fi_epsilon_one(x,delta,n) - 1._kp
+    find_fi_x_epsoneunity = fi_epsilon_one(x,delta,n) - 1._kp
 
-  end function find_fi_x_eps1_1
+  end function find_fi_x_epsoneunity
+
+
+
 
 !returns x at the end of inflation defined as epsilon1=1
   function fi_x_endinf(delta,n)
     implicit none
     real(kp) :: fi_x_endinf
     real(kp), intent(in) :: delta,n
+    real(kp), dimension(2) :: xepsone
 
-    fi_x_endinf = fi_x_eps1_1_lower(delta,n)
+    xepsone = fi_x_epsoneunity(delta,n)
+
+    fi_x_endinf = xepsone(1)
 
   end function fi_x_endinf
+
+
 
 
 !this is integral[V(phi)/V'(phi) dphi]
@@ -290,17 +362,23 @@ contains
   end subroutine find_fi_efold_primitive
 
 
+
 !returns x at bfold=-efolds before the end of inflation
   function fi_x_trajectory(bfold,xend,delta,n)
     implicit none
     real(kp), intent(in) :: bfold,xend,delta,n
     real(kp) :: fi_x_trajectory
+
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: fiData
 
+    real(kp), dimension(2) :: xepsone
+
+    xepsone = fi_x_epsoneunity(delta,n)
+
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = fi_x_eps1_1_upper(delta,n)*(1._kp-epsilon(1._kp))
+    maxi = xepsone(2)*(1._kp-epsilon(1._kp))
 
     fiData%real1 = delta
     fiData%real2 = n
@@ -329,13 +407,14 @@ contains
 !Maximal number of slow-roll efolds
   function fi_efoldmax(delta,n)
     implicit none
-    real(kp) :: fi_efoldmax, xmin, xmax
+    real(kp) :: fi_efoldmax
     real(kp), intent(in) :: delta,n
 
-    xmin = fi_x_eps1_1_lower(delta,n)
-    xmax = fi_x_eps1_1_upper(delta,n)
+    real(kp), dimension(2) :: xepsone
 
-    fi_efoldmax = abs(fi_efold_primitive(xmin,delta,n)-fi_efold_primitive(xmax,delta,n))
+    xepsone = fi_x_epsoneunity(delta,n)
+
+    fi_efoldmax = -fi_efold_primitive(xepsone(1),delta,n) + fi_efold_primitive(xepsone(2),delta,n)
 
   end function fi_efoldmax
 

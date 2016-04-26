@@ -2,12 +2,13 @@
 program sdimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use sdisr, only : sdi_epsilon_one, sdi_epsilon_two, sdi_epsilon_three, sdi_check_params
+  use sdisr, only : sdi_epsilon_one, sdi_epsilon_two, sdi_epsilon_three
   use sdireheat, only : sdi_lnrhoreh_max, sdi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use sdisr, only : sdi_norm_potential
+  use sdisr, only : sdi_norm_potential, sdi_phizeromin, sdi_efold_primitive
+  use sdisr, only : sdi_numacc_xendmin, sdi_numacc_xendmax, sdi_numacc_xinimin
   use sdireheat, only : sdi_x_rreh, sdi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -20,11 +21,14 @@ program sdimain
   integer :: i,j,k
   integer :: npts, Nphi0, Nxend
 
-  real(kp) :: phi0,xendinf,w,bfoldstar,xendmin,xendmax,phi0min,phi0max
+  real(kp) :: phi0,xendinf,w,bfoldstar
+  real(kp) :: xinimin,xendmin,xendmax,phi0min,phi0max
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
+
+  real(kp), parameter :: efoldNum = 120._kp
 
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
@@ -33,9 +37,7 @@ program sdimain
   Pstar = powerAmpScalar
 
 
-
-
-  npts = 20
+  npts = 10
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -48,21 +50,36 @@ program sdimain
   phi0min=5._kp
   phi0max=10._kp**3
 
-  Nphi0 = 30
+  Nphi0 = 20
 
-  xendmin=10._kp**(-3.)
-  xendmax=50._kp
+  
+  
 
-  Nxend = 200
+  Nxend = 20
 
 
   do j=0,Nphi0
      phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp))
+     xendmin = sdi_numacc_xendmin(efoldNum,phi0)
+     xendmax = sdi_numacc_xendmax(phi0)
+     xinimin = sdi_numacc_xinimin(phi0)
+
+     if (phi0.lt.sdi_phizeromin()) cycle
+
+!debug/test
+     print *,'xinimin= xendmin xendmax= ',xinimin,xendmin,xendmax
+     print *,'efoldMax= ',sdi_efold_primitive(xinimin,phi0) - sdi_efold_primitive(xendmin,phi0)
+
+
+     xendmin=10._kp**(-3.)
+     xendmax=50._kp
+
 
      do k=1,Nxend
         xendinf=xendmin*(xendmax/xendmin)**(real(k,kp)/real(Nxend,kp))
 
-        if (sdi_check_params(phi0, xendinf)) then
+        if (xendinf.lt.sdi_numacc_xendmin(efoldNum,phi0)) cycle
+        if (xendinf.gt.sdi_numacc_xendmax(phi0)) cycle
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = sdi_lnrhoreh_max(phi0,xendinf,Pstar)
@@ -94,8 +111,6 @@ program sdimain
            call livewrite('sdi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
         end do
-
-      end if
 
      end do
 

@@ -6,32 +6,65 @@
 
 module sdisr
   use infprec, only : kp
-  use cosmopar, only : efoldNum
   implicit none
 
   private
 
-  public  sdi_norm_potential, sdi_epsilon_one, sdi_epsilon_two, sdi_epsilon_three
-  public  sdi_efold_primitive, sdi_x_trajectory, sdi_check_params
-  public  sdi_norm_deriv_potential, sdi_norm_deriv_second_potential
- 
+  public sdi_norm_potential, sdi_epsilon_one, sdi_epsilon_two, sdi_epsilon_three
+  public sdi_efold_primitive, sdi_x_trajectory
+  public sdi_norm_deriv_potential, sdi_norm_deriv_second_potential
+  public sdi_phizeromin, sdi_numacc_xendmin, sdi_numacc_xendmax, sdi_numacc_xinimin
+
 contains
 
-! Hardprior condition on phi0 and xend
-  function sdi_check_params(phi0, xend)
+
+!to ensure eps1 < 1 over the whole domain, otherwise ruled out by eps2
+!too big
+  function sdi_phizeromin()
     implicit none
-    logical :: sdi_check_params
-    real(kp), intent(in) :: phi0, xend
-    real(kp) :: Nmax, phi0min, xendmax
+    real(kp) :: sdi_phizeromin
 
-    Nmax = sdi_efold_primitive(epsilon(1._kp),phi0)-sdi_efold_primitive(xend,phi0)    ! Virtually the max number of efolds is infinite, but this is the maximum number of efolds one can numerically resolve, given the accuracy (kp)
-    xendmax = -log(epsilon(1._kp)) ! this the maximum value the exponential of which can be dealt with given the accuracy (kp)
-    phi0min = sqrt(2.)/2._kp
-    phi0min = 2._kp !ruled out otherwise anyway
+    sdi_phizeromin = sqrt(2._kp)/2._kp
 
-    sdi_check_params = ((phi0 .ge. phi0min) .and. (Nmax .ge. efoldNum) .and. (xend<xendmax) )
+  end function sdi_phizeromin
 
-  end function sdi_check_params
+
+  function sdi_numacc_xinimin(phi0)
+    implicit none
+    real(kp) :: sdi_numacc_xinimin
+    real(kp), intent(in) :: phi0
+
+    sdi_numacc_xinimin = epsilon(1._kp)
+
+  end function sdi_numacc_xinimin
+    
+
+!the minimal value of xend ensuring efoldNum at the top of the
+!potential, numerical limitation only
+  function sdi_numacc_xendmin(efoldNum,phi0)
+    implicit none
+    real(kp) :: sdi_numacc_xendmin
+    real(kp), intent(in) :: efoldNum, phi0
+    real(kp) :: xinimin
+
+    xinimin = sdi_numacc_xinimin(phi0)
+
+    sdi_numacc_xendmin = sdi_x_trajectory(efoldNum,xinimin,phi0)
+    
+  end function sdi_numacc_xendmin
+
+
+
+!otherwise the potential overflows
+  function sdi_numacc_xendmax(phi0)
+    implicit none
+    real(kp) :: sdi_numacc_xendmax
+    real(kp), intent(in) :: phi0
+
+    sdi_numacc_xendmax = -log(epsilon(1._kp)) 
+
+  end function sdi_numacc_xendmax
+
 
 
 !returns V/M^4 as a function of x=phi/phi0

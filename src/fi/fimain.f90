@@ -7,14 +7,14 @@ program fimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use fisr, only : fi_norm_potential, fi_x_endinf, fi_check_params
+  use fisr, only : fi_norm_potential, fi_x_endinf
+  use fisr, only : fi_epsilon_one
   use fireheat, only : fi_x_rreh, fi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use fisr, only : fi_efoldmax, fi_epsilon_one_min
+  use fisr, only : fi_efoldmax, fi_epsilon_one_min, fi_x_epsoneunity
 
-!For debug phase only, delete afterwards
   use fisr, only : fi_x_epstwozero
 
   implicit none
@@ -36,6 +36,10 @@ program fimain
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
+  real(kp), dimension(2) :: xepsone
+
+  real(kp), parameter :: epsmax = 0.2_kp
+  real(kp), parameter :: efoldNum = 120._kp
 
   real(kp) :: Nmax0,Nmax1,Nmax2,Nmax3,Nmax4,Nmax5,Nmax6,Nmax7,Nmax8,Nmax9,Nmax10
 
@@ -136,7 +140,7 @@ call delete_file('fi_nsr_neq0.dat')
   n=0._kp
 
   npts = 10
-  ndelta = 100
+  ndelta = 20
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -152,9 +156,11 @@ call delete_file('fi_nsr_neq0.dat')
 
     print*, 'Nmax=',fi_efoldmax(delta,n)
     print*, 'epsilon1min=',fi_epsilon_one_min(delta,n)
+    xepsone = fi_x_epsoneunity(delta,n)
+    print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
 
-
-    if (fi_check_params(delta,n)) then
+    if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
+    if (fi_efoldmax(delta,n).lt.efoldNum) cycle
 
     print*, 'hardprior condition passed'
 
@@ -193,8 +199,6 @@ call delete_file('fi_nsr_neq0.dat')
 
     end do
 
-  endif
-
 end do
 
 
@@ -227,8 +231,11 @@ call delete_file('fi_nsr_neq1.dat')
     print*, 'Nmax=',fi_efoldmax(delta,n)
     print*, 'epsilon1min=',fi_epsilon_one_min(delta,n)
 
+    xepsone = fi_x_epsoneunity(delta,n)
+    print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
 
-    if (fi_check_params(delta,n)) then
+    if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
+    if (fi_efoldmax(delta,n).lt.efoldNum) cycle
 
     print*, 'hardprior condition passed'
 
@@ -263,8 +270,6 @@ call delete_file('fi_nsr_neq1.dat')
 
 
     end do
-
-  endif
 
 end do
 

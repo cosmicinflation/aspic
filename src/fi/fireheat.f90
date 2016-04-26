@@ -9,7 +9,7 @@ module fireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use fisr, only : fi_epsilon_one, fi_epsilon_two, fi_epsilon_three
   use fisr, only : fi_norm_potential, fi_efold_primitive, fi_x_endinf
-  use fisr, only : fi_x_eps1_1_upper
+  use fisr, only : fi_x_epsoneunity
   implicit none
 
   private
@@ -30,6 +30,7 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp), dimension(2) :: xEpsOne
 
     type(transfert) :: fiData
     
@@ -37,8 +38,10 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=fi_x_endinf(delta,n)
-    
+
+    xEpsOne = fi_x_epsoneunity(delta,n)
+
+    xEnd=xEpsOne(1)
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
     potEnd = fi_norm_potential(xEnd,delta,n)
     primEnd = fi_efold_primitive(xEnd,delta,n)
@@ -51,7 +54,7 @@ contains
     fiData%real4 = calF + primEnd
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = fi_x_eps1_1_upper(delta,n)*(1._kp-epsilon(1._kp))
+    maxi = xEpsOne(2)*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_fi_x_star,mini,maxi,tolFind,fiData)
     fi_x_star = x
@@ -95,14 +98,17 @@ contains
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
 
+    real(kp), dimension(2) :: xEpsOne
+
     type(transfert) :: fiData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=fi_x_endinf(delta,n)
+    xEpsOne = fi_x_epsoneunity(delta,n)
     
+    xEnd=xEpsOne(1)
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
     potEnd = fi_norm_potential(xEnd,delta,n)
     primEnd = fi_efold_primitive(xEnd,delta,n)
@@ -114,7 +120,7 @@ contains
     fiData%real3 = calF + primEnd
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = fi_x_eps1_1_upper(delta,n)*(1._kp-epsilon(1._kp))
+    maxi = xEpsOne(2)*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_fi_x_rrad,mini,maxi,tolFind,fiData)
     fi_x_rrad = x
@@ -158,14 +164,17 @@ contains
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
 
+    real(kp), dimension(2) :: xEpsOne
+
     type(transfert) :: fiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=fi_x_endinf(delta,n)
-    
+    xEpsOne = fi_x_epsoneunity(delta,n)
+    xEnd = xEpsOne(1)
+
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
     potEnd = fi_norm_potential(xEnd,delta,n)
     primEnd = fi_efold_primitive(xEnd,delta,n)
@@ -177,7 +186,7 @@ contains
     fiData%real3 = calF + primEnd
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = fi_x_eps1_1_upper(delta,n)*(1._kp-epsilon(1._kp))
+    maxi = xEpsOne(2)*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_fi_x_rreh,mini,maxi,tolFind,fiData)
     fi_x_rreh = x

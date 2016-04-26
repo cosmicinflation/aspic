@@ -1,4 +1,4 @@
-.TH libfi 3 "December 27, 2015" "libaspic" "Module convention"
+.TH libfi 3 "April 26, 2016" "libaspic" "Module convention"
 
 .SH NAME
 .I fi
@@ -28,15 +28,15 @@ function
 .IP
 .BR fi_efoldmax(delta,n)
 .P
-taking as an input the parameters delta and n.
-This condition that this number is sufficiently large can be obtained by the
+taking as an input the parameters delta and n. We also provide a
 .I real(kp)
 ::
 function
 .IP
-.BR fi_check_params (delta,n)
+.BR fi_epsilon_one_min (delta,n)
 .P
-which further checks that the minimum value reached by the first slow-roll parameter is not too large.
+which returns the minimum value reached by the first slow-roll
+parameter over the whole inflationary domain.
 
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin
