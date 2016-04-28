@@ -1,5 +1,5 @@
 module dicommon
-  use infprec, only : kp, pi, tolkp, transfert
+  use infprec, only : kp, pi, toldp, tolkp, transfert
   use specialinf, only : ellipticK, ellipticE
   use inftools, only : zbrent, easydverk
   implicit none
@@ -773,7 +773,8 @@ contains
     real(kp), intent(in) :: k2, f
     type(transfert) :: diData
 
-    real(kp), parameter :: tolint=tolkp
+!avoid prohibitive integration time in QUADPREC
+    real(kp), parameter :: tolint=max(tolkp,toldp)
 !the expansion are done at O(x^3), not need to go further than    
     real(kp), parameter :: epsCut = tolkp**(1._kp/3._kp)
     real(kp), parameter :: lnepsCut = log(epsCut)

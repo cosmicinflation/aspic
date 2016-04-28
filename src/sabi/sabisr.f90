@@ -46,7 +46,7 @@ contains
     real(kp) :: sabi_norm_deriv_second_potential
     real(kp), intent(in) :: x,alpha,n
 
-sabi_norm_deriv_second_potential = (-4._kp*n*(-2._kp*n+cosh((sqrt(2._kp/3._kp)*x)/sqrt(alpha)))* &
+    sabi_norm_deriv_second_potential = (-4._kp*n*(-2._kp*n+cosh((sqrt(2._kp/3._kp)*x)/sqrt(alpha)))* &
                                 1._kp/sinh((sqrt(2._kp/3._kp)*x)/sqrt(alpha))**2*tanh(x/ &
                                 (sqrt(6._kp)*sqrt(alpha)))**(2._kp*n))/(3._kp*alpha)
 

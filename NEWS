@@ -1,8 +1,5 @@
-* version 0.3.3 (paris release)
+* version 0.3.4 (brussels release)
 
-- added models di, hni and ncli.
-
-- added bspline modules in src/common, support for complete Elliptic
-  functions in specialinf.
+- added models vfmi, fi, ahi, sbki, sdi, saai, sabi, saci
 
 - various bugs and precision issues fixed

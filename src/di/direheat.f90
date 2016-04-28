@@ -23,7 +23,7 @@
 !f. Lambda is then determined uniquely using the above equation.
 
 module direheat
-  use infprec, only : kp, tolkp, transfert
+  use infprec, only : kp, tolkp, toldp, transfert
   use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
@@ -150,7 +150,7 @@ contains
     k2potmin = di_k2_potmin(f)
 
     k2min= epsilon(1._kp)
-    k2max = (1._kp-tolkp)*k2potmin
+    k2max = (1._kp-max(tolkp,toldp))*k2potmin
 
 
     k2star = zbrent(find_di_k2_star,k2min,k2max,tolzbrent,diData)    
@@ -245,7 +245,8 @@ contains
     k2potmin = di_k2_potmin(f)
 
     k2min= epsilon(1._kp)
-    k2max = (1._kp-tolkp)*k2potmin
+!QUADPREC tolerance is too strong
+    k2max = (1._kp-max(tolkp,toldp))*k2potmin
 
 
     k2star = zbrent(find_di_k2_rrad,k2min,k2max,tolzbrent,diData)
@@ -332,7 +333,8 @@ contains
     k2potmin = di_k2_potmin(f)
 
     k2min= epsilon(1._kp)
-    k2max = (1._kp-tolkp)*k2potmin
+!avoid hang in QUARPREC
+    k2max = (1._kp - max(tolkp,toldp))*k2potmin
 
     k2star = zbrent(find_di_k2_rreh,k2min,k2max,tolzbrent,diData)
 
@@ -376,7 +378,9 @@ contains
     
     effprimStar =  (pprimStar - pprimEnd)*lambdaStar**2 + 0.5_kp*log(ppotEnd)
 
+
     find_di_k2_rreh = find_reheat_rreh(effprimStar,effCalFend,ppotStar)  
+
 
   end function find_di_k2_rreh
   

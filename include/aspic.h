@@ -58,6 +58,12 @@ use ccsi3sr
 use ccsi3reheat
 use disr
 use direheat
+use ahisr
+use ahireheat
+use sbkisr
+use sbkireheat
+use saaisr
+use saaireheat
 
 !two parameters models
 use sfisr
@@ -120,6 +126,16 @@ use ccsi2sr
 use ccsi2reheat
 use hnisr
 use hnireheat
+use vfmisr
+use vfmireheat
+use sdisr
+use sdireheat
+use fisr
+use fireheat
+use sabisr
+use sabireheat
+use sacisr
+use sacireheat
 
 !three parameter models
 use lmi2sr

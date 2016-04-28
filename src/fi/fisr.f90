@@ -5,7 +5,7 @@
 !x = phi/Mp
 
 module fisr
-  use infprec, only : kp, tolkp, transfert
+  use infprec, only : kp, toldp, tolkp, transfert
   use inftools, only : zbrent, easydverk
   implicit none
 
@@ -328,7 +328,8 @@ contains
     real(kp), intent(in) :: x,delta,n
     real(kp) :: fi_efold_primitive
     type(transfert) :: fiData
-    real(kp), parameter :: tolInt = tolkp
+!avoids prohibitive integration time in QUADPREC
+    real(kp), parameter :: tolInt = max(toldp,tolkp)
     integer, parameter :: neq = 1
     real(kp) :: xvar, xinf
     real(kp), dimension(neq) :: yvar
@@ -357,7 +358,12 @@ contains
     delta = fiData%real1
     nfi = fiData%real2
 
-    yprime(1) = fi_norm_potential(x,delta,nfi)/fi_norm_deriv_potential(x,delta,nfi)
+    yprime(1) = ((1._kp+2._kp*delta/3._kp)*exp(-4._kp*x/sqr3) &
+         - 4._kp*(1._kp+delta/6._kp)*exp(-x/sqr3)+delta/(1._kp+nfi) &
+         * exp(2._kp*(1._kp+nfi)*x/sqr3)+3._kp-delta/(1._kp+nfi)) &
+         / ((2._kp*exp(-((4._kp*x)/sqr3)) &
+         * (-6._kp-4._kp*delta+3._kp*exp((2._kp*(3._kp+nfi)*x) &
+         /sqr3)*delta+exp(x*sqr3)*(6._kp+delta)))/(3._kp*sqr3) )
 
   end subroutine find_fi_efold_primitive
 

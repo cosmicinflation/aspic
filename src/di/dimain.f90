@@ -87,7 +87,7 @@ program dimain
   print *,'Minimum at k2= ',k2potmin
 
   xpotmin = di_x(k2potmin)
-  print *,'Minium at x= ',xpotmin
+  print *,'Minimum at x= ',xpotmin
 
   
   
@@ -165,6 +165,8 @@ program dimain
      enddo
 
   end if
+
+
 
 
 !  f=1e-3

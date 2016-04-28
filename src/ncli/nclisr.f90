@@ -5,7 +5,7 @@
 !x = phi/Mp
 
 module nclisr
-  use infprec, only : kp, tolkp, transfert
+  use infprec, only : kp, toldp, tolkp, transfert
   use inftools, only : zbrent, easydverk
   use specialinf, only : lambert
   implicit none
@@ -525,7 +525,9 @@ contains
     real(kp), intent(in) :: x,alpha,phi0,n
     real(kp) :: ncli_efold_primitive
     type(transfert) :: ncliData
-    real(kp), parameter :: tolInt = tolkp
+!avoids prohibitive integration time in QUADPREC
+    real(kp), parameter :: tolInt = max(tolkp,toldp)
+
     integer, parameter :: neq = 1
     real(kp) :: xvar, xinf
     real(kp), dimension(neq) :: yvar

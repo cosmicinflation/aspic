@@ -19,8 +19,8 @@ module infprec
 !default integration accuracy
   real(kp), parameter :: tolkp = 10000._kp * epsilon(1._kp)
 
-!increased integration accuracy
-!  real(kp), parameter :: tolkp = 1.d-36
+!double precision integration accuracy, even if compiled in QUADPREC
+  real(kp), parameter :: toldp = 10000._kp * epsilon(1._8)
 
   real(kp), parameter :: pi = 3.1415926535897932384626433832795_kp
   real(kp), parameter :: euler = 0.5772156649015328606065120900824024310422_kp
