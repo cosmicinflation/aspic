@@ -50,8 +50,8 @@ contains
     ahiData%real2 = w
     ahiData%real3 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = pi*(1._kp-epsilon(1._kp))
+    mini = xEnd*(1._kp+tolkp)
+    maxi = pi*(1._kp-tolkp)
 
     x = zbrent(find_ahi_x_star,mini,maxi,tolzbrent,ahiData)
     ahi_x_star = x
@@ -112,8 +112,8 @@ contains
     ahiData%real1 = phi0
     ahiData%real2 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = pi*(1._kp-epsilon(1._kp))
+    mini = xEnd*(1._kp+tolkp)
+    maxi = pi*(1._kp-tolkp)
 
     x = zbrent(find_ahi_x_rrad,mini,maxi,tolzbrent,ahiData)
     ahi_x_rrad = x
@@ -174,8 +174,8 @@ contains
     ahiData%real1 = phi0
     ahiData%real2 = calF + primEnd
 
-    mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = pi*(1._kp-epsilon(1._kp))
+    mini = xEnd*(1._kp+tolkp)
+    maxi = pi*(1._kp-tolkp)
 
     x = zbrent(find_ahi_x_rreh,mini,maxi,tolzbrent,ahiData)
     ahi_x_rreh = x
@@ -223,8 +223,6 @@ contains
     xEnd = ahi_x_endinf(phi0)
     potEnd  = ahi_norm_potential(xEnd,phi0)
     epsOneEnd = ahi_epsilon_one(xEnd,phi0)
-
-!   Trick to return x such that rho_reh=rho_end
 
     x = ahi_x_star(phi0,wrad,junk,Pstar)    
     potStar = ahi_norm_potential(x,phi0)

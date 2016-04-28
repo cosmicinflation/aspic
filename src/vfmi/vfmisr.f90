@@ -3,14 +3,14 @@
 !
 !For alpha not equal to 2 and not equal to 1:
 !
-!V(phi) = M^4 {1 - (1/2) beta/[(1-alpha/2)^2 x^2/(3 beta)]^[alpha/(2-alpha)]} 
-! * exp{ 3 beta/(1-alpha) * [(1-alpha/2)^2 x^2 / (3 beta)]^[(1-alpha)/(2-alpha)]}
+!V(phi) = M^4 {1 - (1/2) beta/[1 + (x/2)(2-alpha)/sqrt(3 beta)]^[alpha/(2-alpha)]} 
+! * exp( 3 beta/(1-alpha) * { [1 + (x/2)(2-alpha)/sqrt(3 beta)]^[2(1-alpha)/(2-alpha)]-1 })
 !
-!For alpha=1
+!with the limiting values alpha->1
 !
 !V(phi) = M^4 (x)^(6 beta) [ 1-6 beta^2/x^2 ]
 !
-!For alpha=2
+!and alpha->2
 !
 !V(phi) = M^4 {1 - (1/2) beta exp[-2 x/sqrt(3 beta)]} exp{-3 beta exp[-x/sqrt(3 beta)]}
 !

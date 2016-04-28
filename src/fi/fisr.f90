@@ -281,7 +281,7 @@ contains
 
     else      
 
-      fi_x_epsoneunity(2) = zbrent(find_fi_x_epsoneunity,mini,maxi,tolFind,fiData)
+       fi_x_epsoneunity(2) = zbrent(find_fi_x_epsoneunity,mini,maxi,tolFind,fiData)
 
     endif
 

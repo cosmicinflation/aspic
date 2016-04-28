@@ -18,7 +18,7 @@ module sbkisr
   public  sbki_x_endinf, sbki_efold_primitive, sbki_x_trajectory
   public  sbki_epsilon_one_min, sbki_efoldmax
   public  sbki_norm_deriv_potential, sbki_norm_deriv_second_potential
-  public  sbki_x_max, sbki_check_params, sbki_alphamin, sbki_alphamax
+  public  sbki_xinimax, sbki_check_params, sbki_alphamin, sbki_alphamax
 
 contains
 
@@ -163,13 +163,13 @@ contains
   end function sbki_x_endinf
 
 !returns the other value x at which epsilon1=1 which places an upper bound on xstar
-  function sbki_x_max(alpha)
+  function sbki_xinimax(alpha)
     implicit none
     real(kp), intent(in) :: alpha
-    real(kp) :: sbki_x_max
+    real(kp) :: sbki_xinimax
 
 
-    sbki_x_max =sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
+    sbki_xinimax =sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
                 (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
                 alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
                 alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+ &
@@ -185,7 +185,7 @@ contains
                 alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
                 alpha**2)))**(1._kp/3._kp))/alpha**4)))
 
-  end function sbki_x_max
+  end function sbki_xinimax
 
 
 
@@ -231,7 +231,7 @@ contains
     real(kp) :: sbki_efoldmax, xend, xplus
 
     xend = sbki_x_endinf(alpha)
-    xplus = sbki_x_max(alpha)
+    xplus = sbki_xinimax(alpha)
 
     sbki_efoldmax = abs(sbki_efold_primitive(xend,alpha)-sbki_efold_primitive(xplus,alpha))
 

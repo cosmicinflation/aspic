@@ -113,13 +113,13 @@ contains
     real(kp), parameter :: tolFind=tolkp
     type(transfert) :: ahiData
 
-    mini = xmin*(1._kp+epsilon(1._kp))
-    maxi = pi*(1._kp-epsilon(1._kp))
+    mini = xmin*(1._kp+tolkp)
+    maxi = pi*(1._kp-tolkp)
 
     ahiData%real1 = phi0
 
     ahi_x_endinf = zbrent(find_ahi_x_endinf,mini,maxi,tolFind,ahiData)
-   
+       
   end function ahi_x_endinf
 
   function find_ahi_x_endinf(x,ahiData)
@@ -142,13 +142,16 @@ contains
     real(kp), intent(in) :: x, phi0
     real(kp) :: ahi_efold_primitive
     type(transfert) :: ahiData
-    real(kp), parameter :: tolInt = tolkp
+!too long to integrate in QUADPREC
+    real(kp), parameter :: tolInt = max(tolkp,epsilon(1._8))
     integer, parameter :: neq = 1
     real(kp) :: xvar, xinf
     real(kp), dimension(neq) :: yvar
 
     !let us start where inflation ends
+
     xvar = ahi_x_endinf(phi0)
+
     yvar(1) = 0._kp
 
     ahiData%real1 = phi0
@@ -165,11 +168,16 @@ contains
     real(kp) :: x
     real(kp), dimension(n) :: y, yprime
     type(transfert), optional, intent(inout) :: ahiData
-    real(kp) :: phi0
+    real(kp) :: phi0, cosx, sinx
 
     phi0 = ahiData%real1
 
-    yprime(1) = ahi_norm_potential(x, phi0)/ahi_norm_deriv_potential(x, phi0)*phi0**2
+!    yprime(1) = ahi_norm_potential(x, phi0)/ahi_norm_deriv_potential(x, phi0)*phi0**2
+
+    cosx = cos(x)
+    sinx = sin(x)
+
+    yprime(1) = phi0*phi0*(nu0-2._kp*cosx+(pi-x)*sinx)/((pi-x)*cosx+sinx)
 
   end subroutine find_ahi_efold_primitive
 
@@ -184,8 +192,8 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: ahiData
 
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi = pi*(1._kp-epsilon(1._kp))
+    mini = xend*(1._kp+tolkp)
+    maxi = pi*(1._kp-tolkp)
 
     ahiData%real1 = phi0
     ahiData%real2 = -bfold + ahi_efold_primitive(xend,phi0)

@@ -37,10 +37,10 @@ program ahimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  phi0values(1)=10._kp**(0.)
-  phi0values(2)=3.*10._kp**(0.)
-  phi0values(3)=10._kp**(1.)
-  phi0values(4)=10._kp**(2.)
+  phi0values(1)=10._kp**(0._kp)
+  phi0values(2)=3._kp*10._kp**(0._kp)
+  phi0values(3)=10._kp**(1._kp)
+  phi0values(4)=10._kp**(2._kp)
 
   Pstar = powerAmpScalar
 

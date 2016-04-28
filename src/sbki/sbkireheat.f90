@@ -9,7 +9,7 @@ module sbkireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use sbkisr, only : sbki_epsilon_one, sbki_epsilon_two, sbki_epsilon_three
-  use sbkisr, only : sbki_norm_potential, sbki_x_max, sbki_epsilon_one_min
+  use sbkisr, only : sbki_norm_potential, sbki_xinimax, sbki_epsilon_one_min
   use sbkisr, only : sbki_x_endinf, sbki_efold_primitive
   implicit none
 
@@ -50,7 +50,7 @@ contains
     sbkiData%real2 = w
     sbkiData%real3 = calF + primEnd
 
-    xplus = sbki_x_max(alpha)
+    xplus = sbki_xinimax(alpha)
 
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = xplus*(1._kp-epsilon(1._kp))
@@ -114,7 +114,7 @@ contains
     sbkiData%real1 = alpha
     sbkiData%real2 = calF + primEnd
 
-    xplus = sbki_x_max(alpha)
+    xplus = sbki_xinimax(alpha)
 
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = xplus*(1._kp-epsilon(1._kp))
@@ -178,7 +178,7 @@ contains
     sbkiData%real1 = alpha
     sbkiData%real2 = calF + primEnd
 
-    xplus = sbki_x_max(alpha)
+    xplus = sbki_xinimax(alpha)
 
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = xplus*(1._kp-epsilon(1._kp))

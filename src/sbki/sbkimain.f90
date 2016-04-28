@@ -9,7 +9,7 @@ program sbkimain
 
   use sbkisr, only : sbki_norm_potential, sbki_x_endinf
   use sbkisr, only : sbki_efoldmax, sbki_epsilon_one_min
-  use sbkisr, only : sbki_x_max, sbki_x_trajectory, sbki_alphamin, sbki_alphamax
+  use sbkisr, only : sbki_xinimax, sbki_x_trajectory, sbki_alphamin, sbki_alphamax
   use sbkireheat, only : sbki_x_rreh, sbki_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
