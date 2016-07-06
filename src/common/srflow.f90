@@ -32,9 +32,9 @@ contains
     real(kp), dimension(size(epsV,1)) :: slowroll_to_hubble
     real(kp), dimension(size(epsV,1)) :: epsH
 
-!epsH(n) depends on epsV(1:n+1); but this term appears in the power
+!epsH(n) depends on epsV(1:n+1); but epsV(n+1) appears in the power
 !spectra expanded at order n, at order n+1, so it can be neglected
-!(for the power spectra)
+!(for the power spectra!!!!!!)
     real(kp), parameter :: epsVnp1 = 0._kp
 
     integer :: neps
@@ -51,6 +51,19 @@ contains
           epsH(2) = epsV(2) * (1._kp - epsV(2)/6._kp - epsV(3)/3._kp)
           epsH(3) = epsV(3) * (1._kp - epsV(2)/3._kp - epsVnp1/3._kp)
 
+       case (4)
+          epsH(1) = epsV(1) * (1._kp - epsV(2)/3._kp) &
+               - epsV(1)**2*epsV(2)/9._kp + (5._kp/36._kp)*epsV(1)*epsV(2)**2 &
+               + epsV(1)*epsV(2)*epsV(3)/9._kp
+          epsH(2) = epsV(2) * (1._kp - epsV(2)/6._kp - epsV(3)/3._kp) &
+               - epsV(1)*epsV(2)**2/6._kp + epsV(2)**3/18._kp - epsV(1)*epsV(2)*epsV(3)/9._kp &
+               + (5._kp/18._kp)*epsV(2)**2*epsV(3) + epsV(2)*epsV(3)**2/9._kp &
+               + epsV(2)*epsV(3)*epsV(4)/9._kp
+          epsH(3) = epsV(3) * (1._kp - epsV(2)/3._kp - epsV(4)/3._kp) &
+               - epsV(1)*epsV(2)**2/6 - epsV(1)*epsV(2)*epsV(3)/3._kp + epsV(2)**2*epsV(3)/6._kp &
+               + (5._kp/18._kp)*epsV(2)*epsV(3)**2 - epsV(1)*epsV(3)*epsV(4)/9._kp &
+               + (5._kp/18._kp)*epsV(2)*epsV(3)*epsV(4) + epsV(3)**2*epsV(4)/9._kp &
+               + epsV(3)*epsV(4)**2/9._kp + epsV(3)*epsV(4)*epsVnp1/9._kp
        case default
           stop 'slowroll_to_hubble: order not implemented!'
        end select
