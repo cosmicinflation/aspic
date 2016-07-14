@@ -1,5 +1,4 @@
 module infinout
-
 use infprec, only : kp
 
 private
@@ -16,12 +15,21 @@ interface binallwrite
    module procedure sp_binallwrite, kp_binallwrite
 end interface
 
+
+integer :: npar, neps, npl, nreh
+
 integer, parameter :: reclUnit = 4
+
+integer, parameter :: lenmax = 80
+character(len=lenmax), dimension(:), allocatable :: header
+character(len=lenmax), dimension(:), allocatable :: srfilenames, plfilenames
 
 public delete_file
 public livewrite, allwrite, binallwrite
 
+public cleanwrite_header, cleanwrite_data
 public has_shifted, has_not_shifted 
+
 
 contains
 
@@ -40,6 +48,8 @@ contains
 
   end subroutine delete_file
 
+
+  
 
   subroutine sp_livewrite(name,x,a,b,c,d,e,f,g,h,i,j,k,l,m,n)
     implicit none
@@ -392,6 +402,8 @@ contains
   end subroutine kp_binallwrite
 
 
+
+
   function has_not_shifted(maxshift,x,y,z)
     implicit none
     logical :: has_not_shifted
@@ -444,6 +456,107 @@ contains
     if (present(z)) zold = z
 
   end function has_shifted
+
+
+  
+  subroutine int2char_adjtrim(icount,clen,ccount)
+    implicit none
+    integer, intent(in) :: icount
+    integer, intent(in) :: clen
+    character(len=clen), intent(out) :: ccount
+
+    character(len=lenmax) :: numToStrg
+    character(len=clen) :: strg
+
+    if (clen.gt.lenmax) then
+       stop 'int2char: clen > lenIoMax!'
+    endif
+
+    write(numToStrg,*) icount
+    strg = trim(adjustl(numToStrg))    
+    ccount(1:clen) = strg(1:clen)
+  end subroutine int2char_adjtrim
+
+
+  
+  subroutine cleanwrite_header(asname,texpar,texeps,texpl,texreh)
+    implicit none
+    character(len=*), intent(in) :: asname
+    character(len=lenmax), dimension(:), intent(in) :: texpar, texeps
+    character(len=lenmax), dimension(:), intent(in) :: texpl, texreh
+
+    integer :: i, ncols
+    character :: c
+    
+    if (allocated(header)) stop 'cleanwrite_header: already created!'
+    if (allocated(srfilenames).or.allocated(plfilenames)) then
+       stop 'cleanwrite_header: filenames already set!'
+    endif
+
+    npar = size(texpar,1)
+    neps = size(texeps,1)
+    npl = size(texpl,1)
+    nreh = size(texreh,1)
+
+    ncols = npar + neps + npl + nreh
+    allocate(header(ncols))
+
+    do i=1,npar
+       header(i) = '#'//trim(adjustl(texpar(i)))
+    enddo
+    do i=1,neps
+       header(npar+i) = '#'//trim(adjustl(texeps(i)))
+    enddo
+    do i=1,npl
+       header(npar+neps+i) = '#'//trim(adjustl(texpl(i)))
+    enddo
+    do i=1,nreh
+       header(npar+neps+npl+i) = '#'//trim(adjustl(texreh(i)))
+    enddo
+
+   
+    allocate(srfilenames(npar))
+    allocate(plfilenames(npar))
+
+    do i=1,npar       
+       call int2char_adjtrim(i,1,c)
+       srfilenames(i) = trim(asname)//'_slowroll_'//c//'.dat'
+       plfilenames(i) = trim(asname)//'_powerlaw_'//c//'.dat'
+    enddo
+       
+  end subroutine cleanwrite_header
+
+
+
+  subroutine cleanwrite_data(param, epsv, pl, reh)
+    implicit none
+!varying model parameters, from slowest to fastest
+    real(kp), dimension(:), intent(in) :: param
+!slow-roll parameters: epsV1, epsV2 etc...
+    real(kp), dimension(:), intent(in) :: epsv
+!powerlaw parameters: ns, r, alphaS etc...
+    real(kp), dimension(:), intent(in) :: pl
+!reheating parameters, Treh, Ereh, Delta Nstar...
+    real(kp), dimension(:), intent(in) :: reh
+
+    logical :: sane
+    
+    sane = (size(param,1).eq.npar).and.(size(epsv,1).eq.neps) &
+         .and.(size(pl,1).eq.npl).and.(size(reh,1).eq.nreh)
+
+    if (.not.sane) stop 'cleanwrite_data: sizes input do no match header!'
+    
+    
+
+    
+    if (allocated(header)) deallocate(header)
+    if (allocated(srfilenames)) deallocate(srfilenames)
+    if (allocated(plfilenames)) deallocate(plfilenames)
+
+  end subroutine cleanwrite_data
+
+
+
 
 end module infinout
 
