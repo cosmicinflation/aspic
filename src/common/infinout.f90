@@ -22,7 +22,8 @@ integer, parameter :: reclUnit = 4
 
 integer, parameter :: lenmax = 80
 character(len=lenmax), dimension(:), allocatable :: header
-character(len=lenmax), dimension(:), allocatable :: srfilenames, plfilenames
+
+logical, save :: reset = .true.
 
 public delete_file
 public livewrite, allwrite, binallwrite
@@ -513,16 +514,7 @@ contains
     do i=1,nreh
        header(npar+neps+npl+i) = '#'//trim(adjustl(texreh(i)))
     enddo
-
-   
-    allocate(srfilenames(npar))
-    allocate(plfilenames(npar))
-
-    do i=1,npar       
-       call int2char_adjtrim(i,1,c)
-       srfilenames(i) = trim(asname)//'_slowroll_'//c//'.dat'
-       plfilenames(i) = trim(asname)//'_powerlaw_'//c//'.dat'
-    enddo
+           
        
   end subroutine cleanwrite_header
 
@@ -539,22 +531,79 @@ contains
 !reheating parameters, Treh, Ereh, Delta Nstar...
     real(kp), dimension(:), intent(in) :: reh
 
+    character(len=lenmax) :: srfilename, plfilename
+    
+    real(kp), save :: stored
+    integer, save :: count
+
+    integer, parameter :: clen = 2
+    character(len=clen), save :: ccount
+
+    integer, parameter :: slu = 300
+    integer, parameter :: plu = 301
+    
     logical :: sane
+
     
     sane = (size(param,1).eq.npar).and.(size(epsv,1).eq.neps) &
          .and.(size(pl,1).eq.npl).and.(size(reh,1).eq.nreh)
 
     if (.not.sane) stop 'cleanwrite_data: sizes input do no match header!'
-    
-    
 
+    if (reset) then
+       count = 0
+       stored = 0._kp
+       reset = .false.
+    endif
     
-    if (allocated(header)) deallocate(header)
-    if (allocated(srfilenames)) deallocate(srfilenames)
-    if (allocated(plfilenames)) deallocate(plfilenames)
+    srfilename = trim(asname)//'_slowroll_'
+    plfilename = trim(asname)//'_powerlaw_'
+        
+    if ((param(npar-1).ne.stored)) then
+
+       count = count + 1
+       call int2char_adjtrim(count,clen,ccount)
+
+       open(sru,file=srfilename//ccount//'.dat',status='unknown')
+       write(sru,*) (header(i),i=1,npar-1)
+       write(sru,*) (param(i),i=1,npar-1)
+       write(sru,*) header(npar),(header(npar+i),i=1,neps) &
+            ,(header(npar+neps+npl+j),j=1,nreh)
+       write(sru,*) param(npar),(epsv(i),i=1,neps),(reh(j),j=1,nreh)
+
+       open(plu,file=plfilename//ccount//'.dat',status='unknown')
+       write(plu,*) (header(i),i=1,npar-1)
+       write(plu,*) (param(i),i=1,npar-1)
+       write(plu,*) header(npar),(header(npar+i),i=1,neps) &
+            ,(header(npar+neps+npl+j),j=1,nreh)
+       write(plu,*) param(npar),(pl(i),i=1,neps),(reh(j),j=1,nreh)
+
+       close(sru,plu)
+
+    else
+
+       open(sru,file=srfilename//ccount//'.dat',status='append')
+       write(sru,*) param(npar),(epsv(i),i=1,neps),(reh(j),j=1,nreh)
+
+       open(plu,file=plfilename//ccount//'.dat',status='append')
+       write(plu,*) param(npar),(pl(i),i=1,neps),(reh(j),j=1,nreh)
+
+       close(sru,plu)
+
+    endif
+
+    stored = param(npar-1)
+
 
   end subroutine cleanwrite_data
 
+
+  subroutine cleanwrite_end()
+    implicit none
+
+    reset = .true.
+    
+  end subroutine cleanwrite_end
 
 
 
