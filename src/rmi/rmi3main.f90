@@ -6,7 +6,8 @@ program rmi3main
   use rmi3reheat, only : rmi3_lnrhoreh_max, rmi3_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
-
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use rmi3sr, only : rmi3_norm_potential, rmi3_numacc_xendmax, rmi3_numacc_xendmin
   use rmi3reheat, only : rmi3_x_rreh, rmi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
@@ -33,7 +34,8 @@ program rmi3main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End 
 
-
+  character(len=30), dimension(3) :: labparams
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!                            !!!!!!!!!!
@@ -47,6 +49,12 @@ program rmi3main
   call delete_file('rmi3_predic.dat')
   call delete_file('rmi3_nsr.dat')
 
+  labparams(1) = '$x_{\mathrm{end}}$'
+  labparams(2) = '$\phi_{0}/M_\mathrm{Pl}$'
+  labparams(3) = '$c$'
+  
+  call aspicwrite_header('rmi3',labeps12, labnsr, labbfoldreh, labparams)
+  
   Nc=10
   Nphi0=8
   Nxend=50
@@ -107,12 +115,16 @@ program rmi3main
 
            call livewrite('rmi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,phi0,c/))
+           
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   ! end do
 
   write(*,*)

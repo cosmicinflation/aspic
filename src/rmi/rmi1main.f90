@@ -6,6 +6,8 @@ program rmi1main
   use rmi1sr, only : rmi1_numacc_xendmax
   use rmi1reheat, only : rmi1_lnrhoreh_max, rmi1_x_star
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use rmi1sr, only : rmi1_norm_potential
@@ -34,7 +36,7 @@ program rmi1main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
-
+  character(len=30), dimension(3) :: labparams
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -48,6 +50,12 @@ program rmi1main
 
   call delete_file('rmi1_predic.dat')
   call delete_file('rmi1_nsr.dat')
+
+  labparams(1) = '$x_{\mathrm{end}}$'
+  labparams(2) = '$\phi_{0}/M_\mathrm{Pl}$'
+  labparams(3) = '$c$'
+  
+  call aspicwrite_header('rmi1',labeps12, labnsr, labbfoldreh, labparams)
 
   Nc=10
   Nphi0=8
@@ -117,12 +125,16 @@ program rmi1main
 
            call livewrite('rmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,phi0,c/))
+
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   !end do
 
   write(*,*)

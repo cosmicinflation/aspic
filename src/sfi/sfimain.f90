@@ -6,13 +6,14 @@ program sfimain
   use sfireheat, only : sfi_xpmu_fromepsilon, sfi_lnrhoreh_fromepsilon
   use sfisr, only : sfi_epsilon_one, sfi_epsilon_two,sfi_epsilon_three
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use sfisr, only : sfi_norm_potential, sfi_x_endinf
   use sfireheat, only : sfi_x_rreh, sfi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
   implicit none
 
   type(transfert) :: sfiData
@@ -44,6 +45,10 @@ program sfimain
   call delete_file('sfi_predic.dat')
   call delete_file('sfi_nsr.dat')
 
+
+  call aspicwrite_header('sfi',labeps12, labnsr, labbfoldreh,(/'$\mu$','$p$  '/))
+
+  
 !!!!!!!!!!!!!! 
 !!!! p=1  !!!!
 !!!!!!!!!!!!!!
@@ -88,6 +93,9 @@ program sfimain
 
         call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+
+        
      end do
 
   end do
@@ -135,6 +143,8 @@ program sfimain
         call livewrite('sfi_predic.dat',p,mu,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
 
      end do
 
@@ -184,10 +194,14 @@ program sfimain
 
         call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

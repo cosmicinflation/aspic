@@ -5,6 +5,8 @@ program himain
   use hisr, only : hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
   use hireheat, only : hi_lnrhoreh_max, hi_x_star
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use hisr, only : hi_norm_potential, hi_x_endinf
@@ -39,7 +41,8 @@ program himain
   !  w = 1._kp/3._kp
   w=0._kp
 
-
+  call aspicwrite_header('hi',labeps12,labnsr,labbfoldreh)
+  
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = hi_lnrhoreh_max(Pstar)
 
@@ -76,8 +79,13 @@ program himain
 
      call livewrite('hi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+     call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/))
+     
   end do
 
+  call aspicwrite_end()
+
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

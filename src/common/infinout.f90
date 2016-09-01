@@ -20,16 +20,36 @@ integer :: npar, neps, npl, nreh
 
 integer, parameter :: reclUnit = 4
 
+
+
+integer, parameter :: lenhead = 30
+character(len=lenhead), dimension(:), allocatable :: header
+
+integer, parameter :: srun = 300
+integer, parameter :: plun = 301
 integer, parameter :: lenmax = 80
-character(len=lenmax), dimension(:), allocatable :: header
+character(len=lenmax) :: srfileprefix, plfileprefix
+
+character(len=*), dimension(2), parameter :: labeps12 = &
+     (/'$\epsilon_1$','$\epsilon_2$'/)
+character(len=*), dimension(3) , parameter :: labeps123 = &
+     (/'$\epsilon_1$','$\epsilon_2$','$\epsilon_3$'/)
+character(len=*), dimension(2), parameter :: labnsr = &
+     (/'$n_\mathrm{S}$','$r$           '/)
+character(len=*), dimension(2), parameter :: labbfoldreh = &
+     (/'$\Delta N_*$            ','$\ln(\rho_\mathrm{reh})$'/)
+
 
 logical, save :: reset = .true.
 
+
 public delete_file
 public livewrite, allwrite, binallwrite
+public has_shifted, has_not_shifted
 
-public cleanwrite_header, cleanwrite_data
-public has_shifted, has_not_shifted 
+public labeps12, labeps123, labnsr, labbfoldreh
+public aspicwrite_header, aspicwrite_data, aspicwrite_end
+
 
 
 contains
@@ -480,58 +500,71 @@ contains
 
 
   
-  subroutine cleanwrite_header(asname,texpar,texeps,texpl,texreh)
+  subroutine aspicwrite_header(asname,labeps,labpl,labreh,labpar)
     implicit none
     character(len=*), intent(in) :: asname
-    character(len=lenmax), dimension(:), intent(in) :: texpar, texeps
-    character(len=lenmax), dimension(:), intent(in) :: texpl, texreh
-
-    integer :: i, ncols
-    character :: c
+    character(len=*), dimension(:), intent(in) :: labeps, labpl, labreh
+    character(len=*), dimension(:), intent(in), optional :: labpar
+    
+    integer :: i, j, ncols
     
     if (allocated(header)) stop 'cleanwrite_header: already created!'
-    if (allocated(srfilenames).or.allocated(plfilenames)) then
-       stop 'cleanwrite_header: filenames already set!'
+
+    srfileprefix = trim(asname)//'_slowroll_'
+    plfileprefix = trim(asname)//'_powerlaw_'
+       
+    neps = size(labeps,1)
+    npl = size(labpl,1)
+    nreh = size(labreh,1)
+    
+    if (present(labpar)) then
+       npar = size(labpar,1)
+    else
+       npar = 0
     endif
-
-    npar = size(texpar,1)
-    neps = size(texeps,1)
-    npl = size(texpl,1)
-    nreh = size(texreh,1)
-
-    ncols = npar + neps + npl + nreh
+    
+    ncols = neps + npl + nreh + npar
     allocate(header(ncols))
-
-    do i=1,npar
-       header(i) = '#'//trim(adjustl(texpar(i)))
-    enddo
+    
     do i=1,neps
-       header(npar+i) = '#'//trim(adjustl(texeps(i)))
+       header(i) = trim(adjustl(labeps(i)))
     enddo
     do i=1,npl
-       header(npar+neps+i) = '#'//trim(adjustl(texpl(i)))
+       header(neps+i) = trim(adjustl(labpl(i)))
     enddo
     do i=1,nreh
-       header(npar+neps+npl+i) = '#'//trim(adjustl(texreh(i)))
+       header(neps+npl+i) = trim(adjustl(labreh(i)))
     enddo
-           
+
+    if (present(labpar)) then
+       header(neps+npl+nreh+1) = trim(adjustl(labpar(1)))
+       do i=2,npar
+          header(neps+npl+nreh+i) = '# '//trim(adjustl(labpar(i)))
+       enddo
+    endif
+
+    header(1)='# '//trim(header(1))
+    header(neps+1)='# '//trim(header(neps+1))
+    
+    
+    reset = .true.
        
-  end subroutine cleanwrite_header
+  end subroutine aspicwrite_header
 
 
 
-  subroutine cleanwrite_data(param, epsv, pl, reh)
+  subroutine aspicwrite_data(epsv, pl, reh, param)
     implicit none
-!varying model parameters, from slowest to fastest
-    real(kp), dimension(:), intent(in) :: param
 !slow-roll parameters: epsV1, epsV2 etc...
     real(kp), dimension(:), intent(in) :: epsv
 !powerlaw parameters: ns, r, alphaS etc...
     real(kp), dimension(:), intent(in) :: pl
 !reheating parameters, Treh, Ereh, Delta Nstar...
     real(kp), dimension(:), intent(in) :: reh
-
-    character(len=lenmax) :: srfilename, plfilename
+!varying model parameters, from fastest to slowest: only param(1) is
+!varying in the output file. There are as many outout files as
+!different values of params(2) x params(3) x ...
+    real(kp), dimension(:), intent(in), optional :: param
     
     real(kp), save :: stored
     integer, save :: count
@@ -539,71 +572,96 @@ contains
     integer, parameter :: clen = 2
     character(len=clen), save :: ccount
 
-    integer, parameter :: slu = 300
-    integer, parameter :: plu = 301
+    integer :: i,j,ipar
+    logical :: sane, isopened
+    character(len=lenmax) :: filename
+    real(kp) :: current
     
-    logical :: sane
-
-    
-    sane = (size(param,1).eq.npar).and.(size(epsv,1).eq.neps) &
+    sane = (size(epsv,1).eq.neps) &
          .and.(size(pl,1).eq.npl).and.(size(reh,1).eq.nreh)
 
+    if (present(param)) then
+       sane = sane.and.(size(param,1).eq.npar)
+    else
+       sane = sane.and.(npar.eq.0)
+    endif
+    
     if (.not.sane) stop 'cleanwrite_data: sizes input do no match header!'
 
     if (reset) then
        count = 0
        stored = 0._kp
+       current = -1._kp
        reset = .false.
     endif
     
-    srfilename = trim(asname)//'_slowroll_'
-    plfilename = trim(asname)//'_powerlaw_'
-        
-    if ((param(npar-1).ne.stored)) then
+    if (npar.gt.1) current = param(2)
+
+    ipar = neps+npl+nreh
+    
+    if (current.ne.stored) then
 
        count = count + 1
        call int2char_adjtrim(count,clen,ccount)
 
-       open(sru,file=srfilename//ccount//'.dat',status='unknown')
-       write(sru,*) (header(i),i=1,npar-1)
-       write(sru,*) (param(i),i=1,npar-1)
-       write(sru,*) header(npar),(header(npar+i),i=1,neps) &
-            ,(header(npar+neps+npl+j),j=1,nreh)
-       write(sru,*) param(npar),(epsv(i),i=1,neps),(reh(j),j=1,nreh)
+       inquire(unit=srun,opened=isopened)
+       if (isopened) close(srun)
+       filename = trim(srfileprefix)//trim(ccount)//'.dat'
+       open(srun,file=trim(filename),status='replace',position='append')
 
-       open(plu,file=plfilename//ccount//'.dat',status='unknown')
-       write(plu,*) (header(i),i=1,npar-1)
-       write(plu,*) (param(i),i=1,npar-1)
-       write(plu,*) header(npar),(header(npar+i),i=1,neps) &
-            ,(header(npar+neps+npl+j),j=1,nreh)
-       write(plu,*) param(npar),(pl(i),i=1,neps),(reh(j),j=1,nreh)
+       inquire(unit=plun,opened=isopened)
+       if (isopened) close(plun)
+       filename = trim(plfileprefix)//trim(ccount)//'.dat'
+       open(plun,file=trim(filename),status='replace',position='append')
 
-       close(sru,plu)
+       if (npar.gt.1) then
+          do i=2,npar           
+             write(srun,*) trim(header(i+ipar)),param(i)
+             write(plun,*) trim(header(i+ipar)),param(i)
+          enddo          
+       endif
+       
+       if (npar.ge.1) then
+          write(srun,*) (header(i),i=1,neps),(header(neps+npl+j),j=1,nreh),header(ipar+1)
+          write(srun,*) (epsv(i),i=1,neps),(reh(j),j=1,nreh),param(1)
 
+          write(plun,*) (header(neps+i),i=1,npl),(header(neps+npl+j),j=1,nreh),header(ipar+1)
+          write(plun,*) (pl(i),i=1,neps),(reh(j),j=1,nreh),param(1)
+
+       else
+          write(srun,*) (header(i),i=1,neps),(header(neps+npl+j),j=1,nreh)
+          write(srun,*) (epsv(i),i=1,neps),(reh(j),j=1,nreh)
+          
+          write(plun,*) (header(neps+i),i=1,npl),(header(neps+npl+j),j=1,nreh)
+          write(plun,*) (pl(i),i=1,neps),(reh(j),j=1,nreh)
+       endif
+                
     else
 
-       open(sru,file=srfilename//ccount//'.dat',status='append')
-       write(sru,*) param(npar),(epsv(i),i=1,neps),(reh(j),j=1,nreh)
-
-       open(plu,file=plfilename//ccount//'.dat',status='append')
-       write(plu,*) param(npar),(pl(i),i=1,neps),(reh(j),j=1,nreh)
-
-       close(sru,plu)
+       if (npar.ge.1) then
+          write(srun,*) (epsv(i),i=1,neps),(reh(j),j=1,nreh),param(1)
+          write(plun,*) (pl(i),i=1,neps),(reh(j),j=1,nreh),param(1)
+       else
+          write(srun,*) (epsv(i),i=1,neps),(reh(j),j=1,nreh)
+          write(plun,*) (pl(i),i=1,neps),(reh(j),j=1,nreh)
+       endif
 
     endif
 
-    stored = param(npar-1)
+    stored = current
 
 
-  end subroutine cleanwrite_data
+  end subroutine aspicwrite_data
 
 
-  subroutine cleanwrite_end()
+  subroutine aspicwrite_end()
     implicit none
 
     reset = .true.
+    close(srun)
+    close(plun)
     
-  end subroutine cleanwrite_end
+  end subroutine aspicwrite_end
 
 
 

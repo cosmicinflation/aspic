@@ -5,6 +5,8 @@ program rmi2main
   use rmi2sr, only : rmi2_epsilon_one, rmi2_epsilon_two, rmi2_epsilon_three, rmi2_numacc_xendmin
   use rmi2reheat, only : rmi2_lnrhoreh_max, rmi2_x_star
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use rmi2sr, only : rmi2_norm_potential
@@ -33,6 +35,8 @@ program rmi2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
+  character(len=30), dimension(3) :: labparams
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!                            !!!!!!!!!!
@@ -45,6 +49,12 @@ program rmi2main
 
   call delete_file('rmi2_predic.dat')
   call delete_file('rmi2_nsr.dat')
+
+  labparams(1) = '$x_{\mathrm{end}}$'
+  labparams(2) = '$\phi_{0}/M_\mathrm{Pl}$'
+  labparams(3) = '$c$'
+  
+  call aspicwrite_header('rmi2',labeps12, labnsr, labbfoldreh, labparams)
 
   Nc=10
   Nphi0=7
@@ -137,12 +147,16 @@ program rmi2main
 
            call livewrite('rmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,phi0,c/))
+           
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   ! end do
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

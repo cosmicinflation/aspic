@@ -6,6 +6,9 @@ program lfimain
   use lfireheat, only : lfi_lnrhoreh_max, lfi_lnrhoreh_fromepsilon 
   use lfireheat, only : lfi_xp_fromepsilon, lfi_x_star
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+
   use srreheat, only : log_energy_reheat_ingev
   use srflow, only : scalar_spectral_index, tensor_to_scalar_ratio
 
@@ -15,7 +18,6 @@ program lfimain
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
   use srreheat, only : potential_normalization, primscalar
-
   implicit none
 
   
@@ -41,8 +43,10 @@ program lfimain
   call delete_file('lfi_predic.dat')
   call delete_file('lfi_nsr.dat')
 
+  call aspicwrite_header('lfi',labeps12, labnsr, labbfoldreh,(/'$p$'/))
+
   p = 0._kp 
-  do while (p<13._kp)
+  do while (p<8._kp)
     
      p=p+1._kp
      w = (p-2)/(p+2)
@@ -73,11 +77,15 @@ program lfimain
        call livewrite('lfi_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('lfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-  
+
+       call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/p/))
+       
     end do
 
   enddo
 
+  call aspicwrite_end()
+  
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
