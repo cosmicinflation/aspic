@@ -22,7 +22,7 @@ integer, parameter :: reclUnit = 4
 
 
 
-integer, parameter :: lenhead = 30
+integer, parameter :: lenhead = 26
 character(len=lenhead), dimension(:), allocatable :: header
 
 integer, parameter :: srun = 300
@@ -30,14 +30,10 @@ integer, parameter :: plun = 301
 integer, parameter :: lenmax = 80
 character(len=lenmax) :: srfileprefix, plfileprefix
 
-character(len=*), dimension(2), parameter :: labeps12 = &
-     (/'$\epsilon_1$','$\epsilon_2$'/)
-character(len=*), dimension(3) , parameter :: labeps123 = &
-     (/'$\epsilon_1$','$\epsilon_2$','$\epsilon_3$'/)
-character(len=*), dimension(2), parameter :: labnsr = &
-     (/'$n_\mathrm{S}$','$r$           '/)
-character(len=*), dimension(2), parameter :: labbfoldreh = &
-     (/'$\Delta N_*$            ','$\ln(\rho_\mathrm{reh})$'/)
+character(len=*), dimension(2), parameter :: labeps12 = (/'eps1','eps2'/)
+character(len=*), dimension(3) , parameter :: labeps123 = (/'eps1','eps2','eps3'/)
+character(len=*), dimension(2), parameter :: labnsr = (/'ns','r '/)
+character(len=*), dimension(2), parameter :: labbfoldreh = (/'Nstar','lnRho'/)
 
 
 logical, save :: reset = .true.
@@ -543,8 +539,8 @@ contains
        enddo
     endif
 
-    header(1)='# '//trim(header(1))
-    header(neps+1)='# '//trim(header(neps+1))
+    header(1)='# '//trim(adjustl(header(1)))
+    header(neps+1)='# '//trim(adjustl(header(neps+1)))
     
     
     reset = .true.

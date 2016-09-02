@@ -46,7 +46,7 @@ program sfimain
   call delete_file('sfi_nsr.dat')
 
 
-  call aspicwrite_header('sfi',labeps12, labnsr, labbfoldreh,(/'$\mu$','$p$  '/))
+  call aspicwrite_header('sfi',labeps12, labnsr, labbfoldreh,(/'mu','p '/))
 
   
 !!!!!!!!!!!!!! 

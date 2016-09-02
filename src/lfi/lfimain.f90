@@ -43,7 +43,7 @@ program lfimain
   call delete_file('lfi_predic.dat')
   call delete_file('lfi_nsr.dat')
 
-  call aspicwrite_header('lfi',labeps12, labnsr, labbfoldreh,(/'$p$'/))
+  call aspicwrite_header('lfi',labeps12, labnsr, labbfoldreh,(/'p'/))
 
   p = 0._kp 
   do while (p<8._kp)

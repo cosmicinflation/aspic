@@ -48,10 +48,10 @@ program rmi3main
 
   call delete_file('rmi3_predic.dat')
   call delete_file('rmi3_nsr.dat')
-
-  labparams(1) = '$x_{\mathrm{end}}$'
-  labparams(2) = '$\phi_{0}/M_\mathrm{Pl}$'
-  labparams(3) = '$c$'
+  
+  labparams(1) = 'xend'
+  labparams(2) = 'phi0'
+  labparams(3) = 'c   '
   
   call aspicwrite_header('rmi3',labeps12, labnsr, labbfoldreh, labparams)
   
