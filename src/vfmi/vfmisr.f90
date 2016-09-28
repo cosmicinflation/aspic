@@ -96,7 +96,7 @@ contains
 
     real(kp) :: y
 
-    if (alpha.eq.1_kp) then
+    if (alpha.eq.1._kp) then
 
        y = 1._kp + 0.5_kp*x/sqrt(3._kp*beta)
 
