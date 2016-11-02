@@ -8,5 +8,4 @@ for x in $mainlist; do
     count=$[$count + 1]
     [[ $((count%njobs)) -eq 0 ]] && wait
 done
-
-exit 0
+wait

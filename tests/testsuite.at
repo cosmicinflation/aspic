@@ -1,11 +1,6 @@
 AT_INIT([mainaspic])
-
 AT_COLOR_TESTS
-
 AT_SETUP([running all main programs... (be patient!)])
 AT_CHECK([runmains.bash $abs_top_srcdir],[],[ignore],[stderr])
 AT_CHECK([cat stderr],[])
-
-
-
 AT_CLEANUP
