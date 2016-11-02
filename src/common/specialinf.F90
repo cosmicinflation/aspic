@@ -454,6 +454,29 @@ contains
     end if
   END FUNCTION expintkp
 
+
+! Complex exponential Integral, by VV
+subroutine cei (z,result)
+  complex(kp), intent(in) :: z
+  complex(kp), intent(inout) :: result
+  complex(kp) :: Gamma0
+  integer :: i,imax
+
+  imax = 1000
+
+  ! This computes Gamma[0,-z] by means of a continued fraction
+  Gamma0=1._kp/(-z+(2._kp*(imax+1)-1._kp))
+  do i=imax,1,-1
+    Gamma0 = -z+2._kp*i-1._kp-i**2/Gamma0
+  end do
+  Gamma0 = exp(z)/Gamma0
+
+  result = -Gamma0+0.5_kp*(log(z)-log(1._kp/z))-log(-z)
+
+end subroutine cei
+
+
+
   FUNCTION arthint(first,increment,n)
     INTEGER, INTENT(IN) :: first,increment,n
     INTEGER, DIMENSION(n) :: arthint
