@@ -3,10 +3,9 @@ AT_INIT([mainaspic])
 AT_COLOR_TESTS
 
 AT_SETUP([running all main programs... (be patient!)])
-mainlist=`ls $abs_top_srcdir/src/*/*main`
-for x in $mainlist; do
-AT_KEYWORDS ([$x])
-AT_CHECK([$x],[],[ignore],[stderr])
+AT_CHECK([runmains.bash $abs_top_srcdir],[],[ignore],[stderr])
 AT_CHECK([cat stderr],[])
-done
+
+
+
 AT_CLEANUP
