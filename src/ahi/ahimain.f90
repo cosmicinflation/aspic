@@ -12,7 +12,9 @@ program ahimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -37,10 +39,10 @@ program ahimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  phi0values(1)=10._kp**(0._kp)
+  phi0values(1)=2*10._kp**(0._kp)
   phi0values(2)=3._kp*10._kp**(0._kp)
-  phi0values(3)=10._kp**(1._kp)
-  phi0values(4)=10._kp**(2._kp)
+  phi0values(3)=5._kp**(1._kp)
+  phi0values(4)=10._kp**(1._kp)
 
   Pstar = powerAmpScalar
 
@@ -48,6 +50,8 @@ program ahimain
   call delete_file('ahi_predic.dat')
   call delete_file('ahi_nsr.dat')
 
+  call aspicwrite_header('ahi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
+  
   do j=1,size(phi0values)
 
      phi0=phi0values(j)
@@ -80,9 +84,12 @@ program ahimain
 
         call livewrite('ahi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+        
      end do
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
