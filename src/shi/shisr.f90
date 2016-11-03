@@ -24,7 +24,7 @@ contains
     real(kp), intent(in) :: x,alpha
     real(kp), intent(in) :: phi0
 
-    shi_norm_potential = (1._kp-x**2)**2+alpha*x**4*(log(x)-1._kp/4._kp)+alpha/4._kp
+    shi_norm_potential = (1._kp-x**2)**2+alpha*x**4*(log(x)-0.25_kp)+alpha/4._kp
 
   end function shi_norm_potential
 

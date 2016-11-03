@@ -5,6 +5,9 @@ program shimain
   use shisr, only : shi_epsilon_one, shi_epsilon_two, shi_epsilon_three
   use shireheat, only : shi_lnrhoreh_max, shi_x_star
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+
   use srreheat, only : log_energy_reheat_ingev 
   use specialinf, only : lambert 
 
@@ -60,6 +63,8 @@ program shimain
 
   call delete_file('shi_predic.dat')
 
+  call aspicwrite_header('shi',labeps12,labnsr,labbfoldreh,(/'alpha','phi0 '/))
+
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -94,6 +99,8 @@ program shimain
 
           call livewrite('shi_predic.dat',alpha,phi0,eps1,eps2,eps3,r,ns,Treh)
 
+          call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,phi0/))
+          
        end do
 
     end do
