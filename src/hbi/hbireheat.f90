@@ -8,7 +8,7 @@ module hbireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use hbisr, only : hbi_epsilon_one, hbi_epsilon_two, hbi_epsilon_three
-  use hbisr, only : hbi_norm_potential
+  use hbisr, only : hbi_norm_potential, hbi_numacc_x_potbig
   use hbisr, only : hbi_x_endinf, hbi_efold_primitive
   implicit none
 
@@ -53,7 +53,7 @@ contains
     hbiData%real4 = calF + primEnd
 
     mini = xEnd + epsilon(1._kp)
-    maxi = log(1000./epsilon(1._kp))
+    maxi = hbi_numacc_x_potbig(n)
 
     x = zbrent(find_hbi_x_star,mini,maxi,tolFind,hbiData)
     hbi_x_star = x
@@ -121,7 +121,7 @@ contains
     hbiData%real3 = calF + primEnd
 
     mini = xEnd + epsilon(1._kp)
-    maxi = log(1000./epsilon(1._kp))
+    maxi = hbi_numacc_x_potbig(n)
 
     x = zbrent(find_hbi_x_rrad,mini,maxi,tolFind,hbiData)
     hbi_x_rrad = x
@@ -189,7 +189,7 @@ contains
     hbiData%real3 = calF + primEnd
 
     mini = xEnd + epsilon(1._kp)
-    maxi = log(1000./epsilon(1._kp))
+    maxi = hbi_numacc_x_potbig(n)
 
     x = zbrent(find_hbi_x_rreh,mini,maxi,tolFind,hbiData)
     hbi_x_rreh = x

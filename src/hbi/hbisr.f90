@@ -12,7 +12,10 @@ module hbisr
 
   private
 
+  real(kp), parameter :: hbiBig = epsilon(1._kp)*huge(1._kp)
+  
   public hbi_norm_potential, hbi_norm_deriv_potential, hbi_norm_deriv_second_potential
+  public hbi_phizeromin, hbi_numacc_x_potbig
   public hbi_epsilon_one, hbi_epsilon_two,hbi_epsilon_three
   public hbi_x_endinf, hbi_efold_primitive, hbi_x_trajectory
 
@@ -20,6 +23,8 @@ module hbisr
 
  
 contains
+
+
 !returns V/M^4
   function hbi_norm_potential(x,n,phi0)
     implicit none
@@ -55,13 +60,37 @@ contains
 
   end function hbi_norm_deriv_second_potential
 
+
+!minimal value of phi0 to get eps1<1
+  function hbi_phizeromin(n)
+    implicit none
+    real(kp) :: hbi_phizeromin
+    real(kp), intent(in) :: n
+
+    hbi_phizeromin = n/sqrt(2._kp)
+
+  end function hbi_phizeromin
+
+
+!returns the value of x at which the potential equals hbiBig (above
+!which numerical accuracy is lost)
+  function hbi_numacc_x_potbig(n)
+    implicit none
+    real(kp) :: hbi_numacc_x_potbig
+    real(kp) :: n
+
+    hbi_numacc_x_potbig = log(hbiBig)/n
+    
+  end function hbi_numacc_x_potbig
+  
+  
 !epsilon1(x)
   function hbi_epsilon_one(x,n,phi0)    
     implicit none
     real(kp) :: hbi_epsilon_one
     real(kp), intent(in) :: x,n,phi0
     
-    hbi_epsilon_one = 0.5*n**2/(phi0**2*tanh(x)**2)
+    hbi_epsilon_one = 0.5_kp*n**2/(phi0**2*tanh(x)**2)
     
   end function hbi_epsilon_one
 
@@ -76,6 +105,7 @@ contains
     
   end function hbi_epsilon_two
 
+  
 !epsilon3(x)
   function hbi_epsilon_three(x,n,phi0)    
     implicit none

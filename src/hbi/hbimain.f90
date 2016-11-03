@@ -6,6 +6,8 @@ program hbimain
   use hbireheat, only : hbi_xnphi0_fromepsilon, hbi_lnrhoreh_fromepsilon
   use hbisr, only : hbi_epsilon_one, hbi_epsilon_two,hbi_epsilon_three
   use infinout, only : delete_file, livewrite
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use hbisr, only : hbi_norm_potential, hbi_x_endinf
@@ -44,6 +46,8 @@ program hbimain
   call delete_file('hbi_predic.dat')
   call delete_file('hbi_nsr.dat')
 
+  call aspicwrite_header('hbi',labeps12,labnsr,labbfoldreh,(/'phi0','n   '/))
+  
 !!!!!!!!!!!!!! 
 !!!! n=1  !!!!
 !!!!!!!!!!!!!!
@@ -88,6 +92,8 @@ program hbimain
 
         call livewrite('hbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,n/))
+        
      end do
 
   end do
@@ -135,6 +141,8 @@ program hbimain
         call livewrite('hbi_predic.dat',n,phi0,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('hbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,n/))
 
      end do
 
@@ -184,6 +192,8 @@ program hbimain
 
         call livewrite('hbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,n/))
+        
      end do
 
   end do
@@ -191,7 +201,7 @@ program hbimain
 
 
 
-
+  call aspicwrite_end()
 
 
 
