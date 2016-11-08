@@ -110,12 +110,13 @@ AC_CONFIG_FILES([Makefile
 		 src/ahi/Makefile
 		 src/sbki/Makefile
 		 src/sdi/Makefile
-         src/saai/Makefile
-         src/sabi/Makefile
-         src/saci/Makefile
-         src/hbi/Makefile
-         src/shi/Makefile
-         src/rpqdi/Makefile
-         src/rpqti/Makefile
+		 src/saai/Makefile
+		 src/sabi/Makefile
+		 src/saci/Makefile
+		 src/hbi/Makefile
+		 src/shi/Makefile
+		 src/rpqdi/Makefile
+		 src/rpqti/Makefile
+		 src/rcpi/Makefile
                 ])
 AC_OUTPUT
