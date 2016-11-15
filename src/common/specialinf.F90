@@ -456,26 +456,26 @@ contains
 
 
 ! Complex exponential Integral, by VV
-subroutine cei (z,resultcei)
-  complex(kp), intent(in) :: z
-  complex(kp), intent(inout) :: resultcei
-  complex(kp) :: Gamma0
-  integer :: i,imax
+  function cei(z) result(resultcei)
+    complex(kp), intent(in) :: z
+    complex(kp) :: resultcei
+    complex(kp) :: Gamma0
+    integer :: i,imax
 
-  if (z.eq.cmplx(0._kp)) stop 'cei: z= 0 + i 0'
-   
-  imax = 1000
+    if (z.eq.cmplx(0._kp)) stop 'cei: z= 0 + i 0'
 
-  ! This computes Gamma[0,-z] by means of a continued fraction
-  Gamma0=1._kp/(-z+(2._kp*(imax+1)-1._kp))
-  do i=imax,1,-1
-    Gamma0 = -z+2._kp*i-1._kp-i**2/Gamma0
-  end do
-  Gamma0 = exp(z)/Gamma0
+    imax = 1000
 
-  resultcei = -Gamma0+0.5_kp*(log(z)-log(1._kp/z))-log(-z)
+    ! This computes Gamma[0,-z] by means of a continued fraction
+    Gamma0=1._kp/(-z+(2._kp*(imax+1)-1._kp))
+    do i=imax,1,-1
+       Gamma0 = -z+2._kp*i-1._kp-i**2/Gamma0
+    end do
+    Gamma0 = exp(z)/Gamma0
 
-end subroutine cei
+    resultcei = -Gamma0+0.5_kp*(log(z)-log(1._kp/z))-log(-z)
+
+  end function cei
 
 
 
