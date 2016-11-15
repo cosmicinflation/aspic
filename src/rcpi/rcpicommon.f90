@@ -547,12 +547,12 @@ contains
     zb = (sqrtdelta + p*alpha + 2*beta)/p/beta
 
     if (aimag(za).ne.0._kp) then
-       call cei(za+2._kp*lnx,expinta)
+       expinta = cei(za+2._kp*lnx)
     else
        expinta = ei(real(za+2._kp*lnx,kp))
     endif
     if (aimag(zb).ne.0._kp) then
-       call cei(zb+2._kp*lnx,expintb)
+       expintb = cei(zb+2._kp*lnx)
     else
        expintb = ei(real(zb+2._kp*lnx,kp))
     endif

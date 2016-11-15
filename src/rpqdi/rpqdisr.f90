@@ -323,8 +323,8 @@ contains
     xa = exp((-(alpha+beta)-sqrt(Delta))/(2._kp*(beta+1._kp)))
     xb = exp((-(alpha+beta)+sqrt(Delta))/(2._kp*(beta+1._kp)))
 
-    call cei(2._kp*log(x/xa),expinta)
-    call cei(2._kp*log(x/xb),expintb)
+    expinta =  cei(2._kp*log(x/xa))
+    expintb = cei(2._kp*log(x/xb))
 
     result =0.25_kp*phi0**2*(x**2-(1._kp-A)*xa**2*(expinta)-(1._kp+A)*xb**2*(expintb))
     
