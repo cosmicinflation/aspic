@@ -1,0 +1,91 @@
+.TH librcpi 3 "November 15, 2016" "libaspic" "Module convention" 
+
+.SH NAME
+.I rcpi
+- the radiatively corrected plateau inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 x^p [ 1 + alpha ln(x) + beta ln^2(x) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp
+.TP
+Parameters
+.I real(kp)
+::
+.B p, alpha, beta
+
+.SH DESCRIPTION
+The
+.I rcpi
+module is used for the radiatively corrected plateau inflation models
+assuming 'p > 0', 'beta > 0' and 'alpha^2 < 4 beta'. These conditions ensure
+that the potential remains definite positive over the whole domain 'x
+> 0'. A
+.I logical
+function
+.IP
+.BR rcpi_checkparams(p,alpha,beta)
+.RE
+.P
+returns 'true' if these conditions are satisfied, 'false'
+otherwise. The potential functional shape of
+.I rcpi
+includes all the models proposed in
+.UR http://arxiv.org/abs/1510.05669
+arXiv:1510.05669
+.UE
+
+Depending on the parameter values for 'alpha' and 'beta', inflation
+may be temporarilly interrupted by slow-roll violations while running
+from large field values to small field values. For this reason, the
+.I
+real(kp)
+function
+.IP
+.BR rcpi_xinimax(p,alpha,beta)
+.RE
+.P
+returns the maximal initial field value such that inflation remains
+slow-roll. Inflation ends at the field value given by the
+.I
+real(kp)
+function
+.IP
+.BR rcpi_x_endinf(p,alpha,beta)
+.RE
+.P
+while the maximal number of e-folds can be obtained by the
+.I
+real(kp)
+function
+.IP
+.BR rcpi_efoldmax(p,alpha,beta)
+.RE
+.P
+Numerical limitations forbid very small values for the
+parameter 'beta' as well as values of 'alpha^2' close to '4
+beta'. Three
+.I
+real(kp)
+functions
+are provided in order to determine these
+numerical bounds:
+.IP
+.BR rcpi_numacc_betamin(p)
+.RE
+.RS
+.BR rcpi_numacc_alphamin(p,beta)
+.RE
+.RS
+.BR rcpi_numacc_alphamax(p,beta)
+.RE
+.P
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

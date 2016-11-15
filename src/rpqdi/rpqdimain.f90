@@ -26,8 +26,9 @@ program rpqdimain
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  real(kp) ::x,xmin,xmax
-
+  real(kp) ::x,xmin,xmax, alphaprime, betaprime, normprime
+  real(kp) :: alphaprimemin, alphaprimemax, betaprimemax, betaprimemin
+  
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
@@ -41,8 +42,14 @@ program rpqdimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  alphaprimemin = 1e10
+  alphaprimemax = -1e10
+  betaprimemax = -1e10
+  betaprimemin = 1e10
+  
   call delete_file('rpqdi_predic.dat')
   call delete_file('rpqdi_nsr.dat')
+  call delete_file('rpqdi_prime.dat')
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -73,6 +80,13 @@ program rpqdimain
 
         print *,'phi0,alpha,beta=',phi0,alpha,beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
+        call rcpi_conversion(2._kp,alpha,beta,phi0,alphaprime,betaprime,normprime)
+
+        alphaprimemin = min(alphaprime,alphaprimemin)
+        alphaprimemax = max(alphaprime, alphaprimemax)
+        betaprimemax = max(betaprime, betaprimemax)
+        betaprimemin = min(betaprime, betaprimemin)
+        
         do i=1,npts
 
           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
@@ -106,13 +120,15 @@ program rpqdimain
 
           call livewrite('rpqdi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+          call livewrite('rpqdi_prime.dat',alphaprime,betaprime)
+          
         end do
 
       end do
     end do
   end do
 
-
+  print *,'alphaminmax betaminmax= ',alphaprimemin, alphaprimemax,betaprimemin,betaprimemax
 
 
   write(*,*)
@@ -158,5 +174,20 @@ program rpqdimain
 
   enddo
 
+contains
 
+  subroutine rcpi_conversion(p,a,b,mu,alpha,beta,norm)
+    implicit none
+    real(kp), intent(in) :: p,a,b,mu
+    real(kp), intent(out) :: alpha,beta,norm
+    real(kp) :: M4om4
+    
+    M4om4 = 1._kp + 2*(1_kp - a)*log(mu) + 2*(1._kp + b)*log(mu)**2
+    
+    alpha = -( 2*(1._kp - a) + 4*(1._kp + b)*log(mu))/M4om4
+    beta = 2*(1._kp+b)/M4om4
+    norm = M4om4/mu**p
+    
+  end subroutine rcpi_conversion
+  
 end program rpqdimain

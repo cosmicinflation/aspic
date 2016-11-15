@@ -327,7 +327,7 @@ contains
     call cei(2._kp*log(x/xb),expintb)
 
     result =0.25_kp*phi0**2*(x**2-(1._kp-A)*xa**2*(expinta)-(1._kp+A)*xb**2*(expintb))
-
+    
     rpqdi_efold_primitive = real(result)
 
   end function rpqdi_efold_primitive

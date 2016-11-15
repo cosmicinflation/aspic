@@ -6,7 +6,7 @@ module inftools
 
   public easydverk, tunedverk
   public zbrent
-  public QuarticRoots, Sort
+  public quarticroots, sort, selectsort
 
 
 
@@ -972,6 +972,8 @@ contains
       real(kp), parameter :: tolExpand = 1e-2
       integer :: iex
       logical :: notbracketed
+
+      logical :: display
       
       interface
          function func(x,otherdata)
@@ -989,6 +991,7 @@ contains
       
 
       notbracketed = .true.
+      display = .true.
       iex = 0
 
       a=x1
@@ -998,19 +1001,36 @@ contains
          fa=func(a,extradata)
          fb=func(b,extradata)
          if((fa.gt.0._kp.and.fb.gt.0._kp).or.(fa.lt.0._kp.and.fb.lt.0._kp)) then
-            write(*,*)'x1=',a,'f(x1)=',fa
-            write(*,*)'x2=',b,'f(x2)=',fb            
-            write(*,*)'zbrent: expanding interval!'
+            if (display) then
+               write(*,*)
+               write(*,*)'------------------------------------------------------'
+               write(*,*)'x1=',a,'f(x1)=',fa
+               write(*,*)'x2=',b,'f(x2)=',fb            
+               write(*,*)'zbrent: expanding interval!'
+            endif
             a = a - abs(a)*tolExpand
             b = b + abs(b)*tolExpand
             iex = iex + 1
             notbracketed = .true.
+            display = .false.
          else
             notbracketed = .false.
          endif
       enddo
 
-      if (notbracketed) stop 'root must be bracketed for zbrent'
+      if (notbracketed) then
+         write(*,*)'x1=',a,'f(x1)=',fa
+         write(*,*)'x2=',b,'f(x2)=',fb            
+         write(*,*)'zbrent: expanding interval!'
+         stop 'root must be bracketed for zbrent'
+      elseif(iex.ne.0) then
+         write(*,*)
+         write(*,*)'x1=',a,'f(x1)=',fa
+         write(*,*)'x2=',b,'f(x2)=',fb            
+         write(*,*)'zbrent: interval expansion number: ',iex
+         write(*,*)'------------------------------------------------------'
+         write(*,*)
+      endif
 
       c=b
       fc=fb
@@ -1178,7 +1198,7 @@ SUBROUTINE QuadraticRoots(a, z)
 
   REAL(kp):: d, r, w, x, y
 !----------------------------------------------------------------------------
-  IF(a(1)==0.0) THEN     ! EPS is a global module constant (private)
+  IF(a(1)==0.0_kp) THEN     ! EPS is a global module constant (private)
     z(1) = CZERO               ! one root is obviously zero
     z(2) = CMPLX(-a(2)/a(3), ZERO,kp)    ! remainder is a linear eq.
     outputCode=21   ! two identical real roots
@@ -1226,7 +1246,7 @@ SUBROUTINE CubicRoots(a, z)
   REAL(kp),INTENT(IN),DIMENSION(:):: a
   COMPLEX(kp),INTENT(OUT),DIMENSION(:):: z
 
-  REAL(kp),PARAMETER:: RT3=1.7320508075689D0    ! (Sqrt(3)
+  REAL(kp),PARAMETER:: RT3=sqrt(3._kp)    ! (Sqrt(3)
   REAL (kp) :: aq(3), arg, c, cf, d, p, p1, q, q1
   REAL(kp):: r, ra, rb, rq, rt
   REAL(kp):: r1, s, sf, sq, sum, t, tol, t1, w
@@ -1240,7 +1260,7 @@ SUBROUTINE CubicRoots(a, z)
 
 ! NOTE -   It is assumed that a(4) is non-zero. No test is made here.
 !----------------------------------------------------------------------------
-  IF (a(1)==0.0) THEN
+  IF (a(1)==0.0_kp) THEN
     z(1) = CZERO  ! one root is obviously zero
     CALL QuadraticRoots(a(2:4), z(2:3))   ! remaining 2 roots here
     RETURN
@@ -1267,11 +1287,11 @@ SUBROUTINE CubicRoots(a, z)
   q1 = a(2)/s
   r1 = a(1)/s
 
-  t1 = q - 2.25D0*p*p
+  t1 = q - 2.25_KP*p*p
   IF (ABS(t1) <= tol*ABS(q)) t1 = ZERO
   w = FOURTH*r1*r1
   w1 = HALF*p1*r1*t
-  w2 = q1*q1*t1/27.0D0
+  w2 = q1*q1*t1/27.0_KP
 
   IF (w1 >= ZERO) THEN
     w = w + w1
@@ -1307,8 +1327,8 @@ SUBROUTINE CubicRoots(a, z)
 
   w = x3
 
-  IF (ABS(x2) < 0.1D0*ABS(x3)) GO TO 70
-  IF (ABS(x1) < 0.1D0*ABS(x2)) x1 = - (r/x3)/x2
+  IF (ABS(x2) < 0.1_KP*ABS(x3)) GO TO 70
+  IF (ABS(x1) < 0.1_KP*ABS(x2)) x1 = - (r/x3)/x2
   z(1) = CMPLX(x1, ZERO,kp)
   z(2) = CMPLX(x2, ZERO,kp)
   z(3) = CMPLX(x3, ZERO,kp)
@@ -1335,10 +1355,10 @@ SUBROUTINE CubicRoots(a, z)
   GO TO 51
 50 s = ABS(y)
   t = x/y
-51 IF (s < 0.1D0*ABS(w)) GO TO 70
+51 IF (s < 0.1_KP*ABS(w)) GO TO 70
   w1 = w/s
   sum = ONE + t*t
-  IF (w1*w1 < 0.01D0*sum) w = - ((r/sum)/s)/s
+  IF (w1*w1 < 0.01_KP*sum) w = - ((r/sum)/s)/s
   z(1) = CMPLX(w, ZERO,kp)
   z(2) = CMPLX(x, y,kp)
   z(3) = CMPLX(x,-y,kp)
@@ -1347,12 +1367,12 @@ SUBROUTINE CubicRoots(a, z)
 !               AT LEAST TWO ROOTS ARE EQUAL
 
 60 IF (ABS(x) < ABS(w)) GO TO 61
-  IF (ABS(w) < 0.1D0*ABS(x)) w = - (r/x)/x
+  IF (ABS(w) < 0.1_KP*ABS(x)) w = - (r/x)/x
   z(1) = CMPLX(w, ZERO,kp)
   z(2) = CMPLX(x, ZERO,kp)
   z(3) = z(2)
   RETURN
-  61 IF (ABS(x) < 0.1D0*ABS(w)) GO TO 70
+  61 IF (ABS(x) < 0.1_KP*ABS(w)) GO TO 70
   z(1) = CMPLX(x, ZERO,kp)
   z(2) = z(1)
   z(3) = CMPLX(w, ZERO,kp)
@@ -1430,7 +1450,7 @@ SUBROUTINE QuarticRoots(a,z)
 
 !----------------------------------------------------------------------------
 
-  IF (a(1)==0.0) THEN
+  IF (a(1)==0.0_kp) THEN
     z(1) = CZERO    !  one root is obviously zero
     CALL CubicRoots(a(2:), z(2:))
     RETURN
@@ -1443,7 +1463,7 @@ SUBROUTINE QuarticRoots(a,z)
   e = a(1)/a(5)
   b2 = b*b
 
-  p = HALF*(c - 6.0D0*b2)
+  p = HALF*(c - 6.0_KP*b2)
   q = d - TWO*b*(c - FOUR*b2)
   r = b2*(c - THREE*b2) - b*d + e
 
@@ -1454,8 +1474,8 @@ SUBROUTINE QuarticRoots(a,z)
 ! WHERE THE SIGNS OF THE SQUARE ROOTS ARE CHOSEN SO
 ! THAT CSQRT(W1) * CSQRT(W2) * CSQRT(W3) = -Q/8.
 
-  temp(1) = -q*q/64.0D0
-  temp(2) = 0.25D0*(p*p - r)
+  temp(1) = -q*q/64.0_KP
+  temp(2) = 0.25_KP*(p*p - r)
   temp(3) =  p
   temp(4) = ONE
   CALL CubicRoots(temp,z)
@@ -1486,7 +1506,7 @@ SUBROUTINE QuarticRoots(a,z)
   temp(3) = (( x1 - x2) - u) - b
   temp(4) = ((-x1 + x2) - u) - b
   CALL SelectSort(temp)
-  IF (ABS(temp(1)) >= 0.1D0*ABS(temp(4))) GO TO 31
+  IF (ABS(temp(1)) >= 0.1_KP*ABS(temp(4))) GO TO 31
   t = temp(2)*temp(3)*temp(4)
   IF (t /= ZERO) temp(1) = e/t
 31 z(1) = CMPLX(temp(1), ZERO,kp)
@@ -1541,7 +1561,7 @@ IF (q > ZERO) x = -x
   x2 = t
 71 u = -x - b
   h = u*u + v*v
-  IF (x1*x1 < 0.01D0*MIN(x2*x2,h)) x1 = e/(x2*h)
+  IF (x1*x1 < 0.01_kp*MIN(x2*x2,h)) x1 = e/(x2*h)
   z(1) = CMPLX(x1, ZERO,kp)
   z(2) = CMPLX(x2, ZERO,kp)
   z(3) = CMPLX(u, v,kp)

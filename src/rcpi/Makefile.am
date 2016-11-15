@@ -1,16 +1,16 @@
-SRC = rcpicommon.f90 rcp1isr.f90 
-MOD = rcpicommon.$(FC_MODEXT) rcp1isr.$(FC_MODEXT)
+SRC = rcpicommon.f90 rcpisr.f90 rcpireheat.f90
+MOD = rcpicommon.$(FC_MODEXT) rcpisr.$(FC_MODEXT) rcpireheat.$(FC_MODEXT)
 
-check_PROGRAMS = rcpi1main
-rpqdimain_SOURCES = $(SRC) rcpi1main.f90
-rpqdimain_FCFLAGS = -I../$(SRCOMMDIR)
-rpqdimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+check_PROGRAMS = rcpimain
+rcpimain_SOURCES = $(SRC) rcpimain.f90
+rcpimain_FCFLAGS = -I../$(SRCOMMDIR)
+rcpimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = librcpi.la
-librpqdi_la_SOURCES = $(SRC)
-librpqdi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
-librpqdi_la_includedir = $(includedir)/$(SRINCDIR)
-librpqdi_la_include_HEADERS = $(MOD)
+librcpi_la_SOURCES = $(SRC)
+librcpi_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
+librpi_la_includedir = $(includedir)/$(SRINCDIR)
+librpi_la_include_HEADERS = $(MOD)
 
 man_MANS = aspic_rcpi.3
 

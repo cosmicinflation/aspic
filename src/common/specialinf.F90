@@ -456,12 +456,14 @@ contains
 
 
 ! Complex exponential Integral, by VV
-subroutine cei (z,result)
+subroutine cei (z,resultcei)
   complex(kp), intent(in) :: z
-  complex(kp), intent(inout) :: result
+  complex(kp), intent(inout) :: resultcei
   complex(kp) :: Gamma0
   integer :: i,imax
 
+  if (z.eq.cmplx(0._kp)) stop 'cei: z= 0 + i 0'
+   
   imax = 1000
 
   ! This computes Gamma[0,-z] by means of a continued fraction
@@ -471,7 +473,7 @@ subroutine cei (z,result)
   end do
   Gamma0 = exp(z)/Gamma0
 
-  result = -Gamma0+0.5_kp*(log(z)-log(1._kp/z))-log(-z)
+  resultcei = -Gamma0+0.5_kp*(log(z)-log(1._kp/z))-log(-z)
 
 end subroutine cei
 
