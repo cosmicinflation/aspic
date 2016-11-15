@@ -136,6 +136,10 @@ use sabisr
 use sabireheat
 use sacisr
 use sacireheat
+use hbisr
+use hbireheat
+use shisr
+use shireheat
 
 !three parameter models
 use lmi2sr
@@ -172,10 +176,6 @@ use nfi4sr
 use nfi4reheat
 use nclisr
 use nclireheat
-!use shisr
-!use shireheat
-!use su5isr
-!use su5ireheat
-!use pisr
-!use pireheat
+use rcpisr
+use rcpireheat
 
