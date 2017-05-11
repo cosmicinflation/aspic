@@ -130,7 +130,7 @@ contains
 !case, this is nasty and we abort.
     if (r.lt.0._kp) then
        if (hf_slowroll_violated(epsH)) then
-          if (display) write(*,*),'hf_tensor_to_scalar_ratio: epsH(:)= ',epsH(:)
+          if (display) write(*,*)'hf_tensor_to_scalar_ratio: epsH(:)= ',epsH(:)
           hf_tensor_to_scalar_ratio = 16._kp*epsH(1)
        else
           stop 'hf_tensor_to_scalar_ratio: r < 0!'
