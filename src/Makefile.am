@@ -77,7 +77,8 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
 	shi/libshi.la \
 	rpqdi/librpqdi.la \
 	rpqti/librpqti.la \
-	rcpi/librcpi.la
+	rcpi/librcpi.la \
+	gdwi/libgdwi.la
 
 
 #to be build from there
@@ -85,7 +86,7 @@ SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi \
           ai cnai cnbi oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi \
           bi kklti nfi ccsi di hni ncli vfmi fi ahi sbki sdi saai sabi saci hbi \
-          shi rpqdi rpqti rcpi
+          shi rpqdi rpqti rcpi gdwi
 
 
 # for make -j

@@ -118,5 +118,6 @@ AC_CONFIG_FILES([Makefile
 		 src/rpqdi/Makefile
 		 src/rpqti/Makefile
 		 src/rcpi/Makefile
+ 		 src/gdwi/Makefile
                 ])
 AC_OUTPUT
