@@ -175,7 +175,7 @@ contains
        return
     endif
 
-    gdwi_efold_primitive =x*x*(-1+p+(x*x)**(-p))/(8*p*(p-1))
+    gdwi_efold_primitive =x*x*(-1+p+(x*x)**(-p))*phi0**2/(8*p*(p-1))
     
   end function gdwi_efold_primitive
 
@@ -214,13 +214,13 @@ contains
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: gdwiData
     real(kp) :: find_gdwi_x_trajectory
-    real(kp) :: delta,n,NplusPrimEnd
+    real(kp) :: p,phi0,NplusPrimEnd
 
-    delta = gdwiData%real1
-    n = gdwiData%real2
+    p = gdwiData%real1
+    phi0 = gdwiData%real2
     NplusPrimEnd = gdwiData%real3
 
-    find_gdwi_x_trajectory = gdwi_efold_primitive(x,delta,n) - NplusPrimEnd
+    find_gdwi_x_trajectory = gdwi_efold_primitive(x,p,phi0) - NplusPrimEnd
 
   end function find_gdwi_x_trajectory
   
