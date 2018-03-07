@@ -25,7 +25,7 @@ contains
     real(kp), intent(in) :: x,alpha
     real(kp), intent(in) :: Q
 
-    cwi_norm_potential = 1._kp+alpha*x**4._kp*log(x)
+    cwi_norm_potential = 1._kp+0.5_kp*alpha*x**4._kp*log(x*x)
 
   end function cwi_norm_potential
 
@@ -72,7 +72,7 @@ end function cwi_xplus_positive_potential
     real(kp), intent(in) :: x,alpha
     real(kp), intent(in) :: Q
 
-   cwi_norm_deriv_potential = alpha*x**3*(1._kp+4._kp*log(x))
+   cwi_norm_deriv_potential = alpha*x**3*(1._kp+2._kp*log(x*x))
 
   end function cwi_norm_deriv_potential
 
@@ -85,7 +85,7 @@ end function cwi_xplus_positive_potential
     real(kp), intent(in) :: x,alpha
     real(kp), intent(in) :: Q
 
-    cwi_norm_deriv_second_potential = alpha*x**2*(7._kp+12._kp*log(x))
+    cwi_norm_deriv_second_potential = alpha*x**2*(7._kp+6._kp*log(x*x))
 
   end function cwi_norm_deriv_second_potential
 
@@ -99,7 +99,7 @@ end function cwi_xplus_positive_potential
 
   
     cwi_epsilon_one = alpha**2/(2._kp*Q**2)*x**6* &
-          ((1._kp+4._kp*log(x))/(1._kp+alpha*x**4*log(x)))**2
+          ((1._kp+2._kp*log(x*x))/(1._kp+0.5_kp*alpha*x**4*log(x*x)))**2
 
     
   end function cwi_epsilon_one
@@ -112,9 +112,9 @@ end function cwi_xplus_positive_potential
     real(kp), intent(in) :: x,alpha,Q
     
     cwi_epsilon_two = 2._kp*alpha/(Q**2)*x**2 &
-         *(1._kp+alpha*x**4*log(x))**(-2) &
-         *(-7._kp-12._kp*log(x)+alpha*x**4+alpha*x**4*log(x) &
-         +4._kp*alpha*x**4*(log(x))**2)
+         *(1._kp+0.5_kp*alpha*x**4*log(x*x))**(-2) &
+         *(-7._kp-6._kp*log(x*x)+alpha*x**4+0.5_kp*alpha*x**4*log(x*x) &
+         + alpha*x**4*(log(x*x))**2)
     
   end function cwi_epsilon_two
 
@@ -126,13 +126,13 @@ end function cwi_xplus_positive_potential
     real(kp), intent(in) :: x,alpha,Q
     
     cwi_epsilon_three = 1._kp/(Q**2)*(-26._kp*alpha*x**2+21._kp*alpha**2*x**6 &
-         -2._kp*alpha**3*x**10-128._kp*alpha*x**2*log(x) &
-         +152._kp*alpha**2*x**6*log(x)-11*alpha**3*x**10*log(x) &
-         -96._kp*alpha*x**2*(log(x))**2+368._kp*alpha**2*x**6*(log(x))**2 &
-         -14._kp*alpha**3*x**10*(log(x))**2+384._kp*alpha**2*x**6*(log(x))**3 &
-         -16._kp*alpha**3*x**10*(log(x))**3-32._kp*alpha**3*x**10*(log(x))**4) &
-         *(1._kp+alpha*x**4*log(x))**(-2)*(7._kp-alpha*x**4+12._kp*log(x) &
-         -alpha*x**4*log(x)-4._kp*alpha*x**4*(log(x))**2)**(-1)
+         -2._kp*alpha**3*x**10-64._kp*alpha*x**2*log(x*x) &
+         +76._kp*alpha**2*x**6*log(x*x)-0.5_kp*11._kp*alpha**3*x**10*log(x*x) &
+         -24._kp*alpha*x**2*(log(x*x))**2+92._kp*alpha**2*x**6*(log(x*x))**2 &
+         -0.5_kp*7._kp*alpha**3*x**10*(log(x*x))**2+48._kp*alpha**2*x**6*(log(x*x))**3 &
+         -2._kp*alpha**3*x**10*(log(x*x))**3-2._kp*alpha**3*x**10*(log(x*x))**4) &
+         *(1._kp+0.5_kp*alpha*x**4*log(x*x))**(-2)*(7._kp-alpha*x**4+6._kp*log(x*x) &
+         -0.5_kp*alpha*x**4*log(x*x)-alpha*x**4*(log(x*x))**2)**(-1)
     
   end function cwi_epsilon_three
 
@@ -185,9 +185,9 @@ end function cwi_xplus_positive_potential
     if (alpha.eq.0._kp) stop 'cwi_efold_primitive: alpha=0!'
 
     cwi_efold_primitive = Q**2*(sqrt(exp(1._kp))/(4._kp*alpha) &
-                          *ei(-0.5_kp-2._kp*log(x)) &
+                          *ei(-0.5_kp-log(x*x)) &
                           -1._kp/(16._kp*sqrt(exp(1._kp))) &
-                          *ei(0.5+2._kp*log(x))+0.125_kp*x**2)
+                          *ei(0.5+log(x*x))+0.125_kp*x**2)
 
   end function cwi_efold_primitive
 
