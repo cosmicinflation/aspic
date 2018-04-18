@@ -8,23 +8,28 @@ program ccsi1main
   use srreheat, only : log_energy_reheat_ingev
 
   use ccsi1sr, only : ccsi1_norm_potential, ccsi1_x_endinf
+  use ccsi1sr, only : ccsi1_norm_deriv_potential, ccsi1_norm_deriv_second_potential
   use ccsi1reheat, only : ccsi1_x_rreh, ccsi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
 
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j
+  integer :: i,j,n
   integer :: npts = 20
 
   integer :: Np=10
   real(kp) :: alphamin=1d-6
   real(kp) :: alphamax=1d-2
 
+  real(kp) :: xmin = -2
+  real(kp) :: xmax = 20
+  
   real(kp) :: alpha,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
@@ -35,7 +40,39 @@ program ccsi1main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: V1,x,V
+  
   Pstar = powerAmpScalar
+
+
+
+  call delete_file('ccsi1_potential.dat')
+  call delete_file('ccsi1_slowroll.dat')
+
+
+  alpha = 1e-4
+  n=250
+
+
+  do i=1,n
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+
+     V = ccsi1_norm_potential(x,alpha=0._kp)
+     V1 = ccsi1_norm_potential(x,alpha)
+        
+
+     call livewrite('ccsi1_potential.dat',x*sqrt(1.5_kp),V1,V)
+
+     eps1 = ccsi1_epsilon_one(x,alpha)
+     eps2 = ccsi1_epsilon_two(x,alpha)
+     eps3 = ccsi1_epsilon_three(x,alpha)
+
+     call livewrite('ccsi1_slowroll.dat',x*sqrt(1.5_kp),eps1,eps2,eps3)
+
+  enddo
+
+  
+
 
   call delete_file('ccsi1_predic.dat')
   call delete_file('ccsi1_nsr.dat')
