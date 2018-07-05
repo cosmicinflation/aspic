@@ -12,18 +12,20 @@ program ccsi2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20
+  integer :: npts = 10
 
-  integer :: Np=10
-  real(kp) :: alphamin=1d-6
-  real(kp) :: alphamax=1d-2
+  integer :: Np=3
+  real(kp) :: alphamin=1d-5
+  real(kp) :: alphamax=1d-3
 
   real(kp) :: alpha,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -34,7 +36,7 @@ program ccsi2main
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
 
-  integer :: Ne = 5
+  integer :: Ne = 10
   real(kp) :: xendmin, xendmax
   real(kp) :: VendOverVstar, eps1End, xend
 
@@ -43,6 +45,7 @@ program ccsi2main
   call delete_file('ccsi2_predic.dat')
   call delete_file('ccsi2_nsr.dat')
 
+  call aspicwrite_header('ccsi2',labeps12,labnsr,labbfoldreh,(/'xend ','alpha'/))
 
   !  w = 1._kp/3._kp
   w=0._kp
@@ -95,12 +98,16 @@ program ccsi2main
 
            call livewrite('ccsi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,alpha/))
+           
         end do
 
      enddo
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

@@ -12,13 +12,16 @@ program cnaimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 10
+  integer :: npts = 20
   integer :: nalpha
 
   real(kp) :: alpha,w,bfoldstar
@@ -47,6 +50,7 @@ program cnaimain
   call delete_file('cnai_predic.dat')
   call delete_file('cnai_nsr.dat')
 
+  call aspicwrite_header('cnai',labeps12,labnsr,labbfoldreh,(/'alpha'/))
 
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
@@ -79,10 +83,14 @@ program cnaimain
 
         call livewrite('cnai_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

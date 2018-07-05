@@ -182,7 +182,7 @@ contains
     real(kp), intent(out) :: alpha,beta,norm
     real(kp) :: M4om4
     
-    M4om4 = 1._kp + 2*(1_kp - a)*log(mu) + 2*(1._kp + b)*log(mu)**2
+    M4om4 = 1._kp + 2*(1._kp - a)*log(mu) + 2*(1._kp + b)*log(mu)**2
     
     alpha = -( 2*(1._kp - a) + 4*(1._kp + b)*log(mu))/M4om4
     beta = 2*(1._kp+b)/M4om4

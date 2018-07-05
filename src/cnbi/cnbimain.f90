@@ -15,6 +15,9 @@ program cnbimain
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
   use srflow, only : slowroll_violated
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -55,6 +58,8 @@ program cnbimain
   call delete_file('cnbi_predic.dat')
   call delete_file('cnbi_nsr.dat')
 
+  call aspicwrite_header('cnbi',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j-1,kp)/real(nalpha-1,kp))
 
@@ -101,10 +106,15 @@ program cnbimain
 
         call livewrite('cnbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
      end do
 
   end do
 
+
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

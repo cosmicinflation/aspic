@@ -13,6 +13,9 @@ program ccsi1main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
 
   
   implicit none
@@ -23,7 +26,7 @@ program ccsi1main
   integer :: i,j,n
   integer :: npts = 20
 
-  integer :: Np=10
+  integer :: Np=15
   real(kp) :: alphamin=1d-6
   real(kp) :: alphamax=1d-2
 
@@ -49,7 +52,7 @@ program ccsi1main
   call delete_file('ccsi1_potential.dat')
   call delete_file('ccsi1_slowroll.dat')
 
-
+  
   alpha = 1e-4
   n=250
 
@@ -78,6 +81,8 @@ program ccsi1main
   call delete_file('ccsi1_nsr.dat')
 
 
+  call aspicwrite_header('ccsi1',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -121,10 +126,14 @@ program ccsi1main
 
         call livewrite('ccsi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

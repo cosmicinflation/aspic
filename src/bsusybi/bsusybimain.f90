@@ -13,6 +13,9 @@ program bsusybimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -60,12 +63,12 @@ program bsusybimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 8
-  ngamma=10
-  nxend=6
+  npts = 17
+  ngamma=4
+  nxend=8
 
-  gammamin=10._kp**(-3._kp)
-  gammamax=1._kp/sqrt(3._kp)*0.5_kp
+  gammamin=10._kp**(-2_kp)
+  gammamax=1._kp/sqrt(3._kp)*0.05_kp
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -73,7 +76,9 @@ program bsusybimain
   call delete_file('bsusybi_predic.dat')
   call delete_file('bsusybi_nsr.dat')
 
+  call aspicwrite_header('bsusybi',labeps12,labnsr,labbfoldreh,(/'xendomax','gamma   '/))
 
+  
   do j=1,ngamma
      gammaBSUSYB=exp(log(gammamin) +(log(gammamax)-log(gammamin)) &
           * real(j-1,kp)/real(ngamma-1,kp))
@@ -81,7 +86,7 @@ program bsusybimain
      !Prior on xend
 
      xendmax=bsusybi_xendmax(60._kp,gammaBSUSYB)
-     xendmin=1.5_kp*xendmax
+     xendmin=2.0_kp*xendmax
 
 
      do k=1,nxend
@@ -116,12 +121,16 @@ program bsusybimain
 
            call livewrite('bsusybi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmax,gammaBSUSYB/))
+           
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

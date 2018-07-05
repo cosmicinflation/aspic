@@ -13,12 +13,15 @@ program bimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   real(kp) :: Pstar
 
   integer :: i,j
-  integer :: npts = 20,nmu=30.
+  integer :: npts = 20,nmu=10.
 
   real(kp) :: mu,p,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r,Treh
@@ -43,6 +46,8 @@ program bimain
   call delete_file('bi_predic.dat')
   call delete_file('bi_nsr.dat')
 
+  call aspicwrite_header('bi',labeps12,labnsr,labbfoldreh,(/'mu','p '/))
+  
 !!!!!!!!!!!!!! 
 !!!! p=2  !!!!
 !!!!!!!!!!!!!!
@@ -86,6 +91,8 @@ program bimain
 
         call livewrite('bi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+        
      end do
 
   end do
@@ -133,6 +140,9 @@ program bimain
 
         call livewrite('bi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+        
      end do
 
   end do
@@ -180,11 +190,18 @@ program bimain
 
         call livewrite('bi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+        
      end do
 
   end do
 
 
+  
+  call aspicwrite_end()
+
+  
 !!!!!!!!!!!!!!!!!!!
 !!!! p=4 STRING !!!
 !!!!!!!!!!!!!!!!!!
@@ -192,8 +209,11 @@ program bimain
   call delete_file('bistg_nsr.dat')
   call delete_file('bistg_predic.dat')
 
+  call aspicwrite_header('bistg',labeps12,labnsr,labbfoldreh,(/'mu'/))
+  
   mumin=10._kp**(-6._kp)
-  mumax=0.1_kp
+  mumax=0.2_kp
+  nmu = 40
   p = 4._kp
   
   calN = 5
@@ -257,10 +277,14 @@ program bimain
 
         call livewrite('bistg_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

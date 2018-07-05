@@ -12,6 +12,9 @@ program cndimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -50,9 +53,9 @@ program cndimain
   call delete_file('cndi_predic.dat')
   call delete_file('cndi_nsr.dat')
 
+  call aspicwrite_header('cndi',labeps12,labnsr,labbfoldreh,(/'xendomax','alpha   ','beta    '/))
 
-
-  npts = 20
+  npts = 15
 
 !!!!!!!!!!!!!!!!!!!!!!
 !!!!    beta=5    !!!!
@@ -60,16 +63,12 @@ program cndimain
 
   beta=5._kp
 
-  nalpha=4
+  nalpha=2
   alphavalues(1)=0.01_kp
-  alphavalues(2)=0.07_kp
-  alphavalues(3)=0.1_kp
-  alphavalues(4)=0.12_kp
+  alphavalues(2)=0.02_kp
 
-  nxendvalues(1)=1000
-  nxendvalues(2)=200
-  nxendvalues(3)=200
-  nxendvalues(4)=200
+  nxendvalues(1)=30
+  nxendvalues(2)=30
 
   do j=1,nalpha
      alpha=alphavalues(j)
@@ -109,9 +108,9 @@ program cndimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-              cycle
-           endif
+!           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+!              cycle
+!           endif
 
            
            if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
@@ -122,6 +121,7 @@ program cndimain
 
            call livewrite('cndi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmax,alpha,beta/))
 
 
         end do
@@ -134,20 +134,16 @@ program cndimain
 
   beta=0.1_kp
 
-  nalpha=6
-  alphavalues(1)=0.1_kp
-  alphavalues(2)=0.2_kp
-  alphavalues(3)=0.3_kp
+  nalpha=4
+  alphavalues(1)=0.25_kp
+  alphavalues(2)=0.3_kp
+  alphavalues(3)=0.35_kp
   alphavalues(4)=0.4_kp
-  alphavalues(5)=0.5_kp
-  alphavalues(6)=0.6_kp
 
-  nxendvalues(1)=200
-  nxendvalues(2)=200
-  nxendvalues(3)=100
-  nxendvalues(4)=60
-  nxendvalues(5)=60
-  nxendvalues(6)=60
+  nxendvalues(1)=30
+  nxendvalues(2)=30
+  nxendvalues(3)=30
+  nxendvalues(4)=30
 
   do j=1,nalpha
      alpha=alphavalues(j)
@@ -187,24 +183,28 @@ program cndimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-              cycle
-           endif
+ !          if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+ !             cycle
+ !          endif
 
            
-           if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
-                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+!           if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
+!                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
 
 
            call livewrite('cndi_predic.dat',alpha,beta,xend,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('cndi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
+           
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmax,alpha,beta/))
+           
         end do
      end do
   end do
 
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

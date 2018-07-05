@@ -656,6 +656,7 @@ contains
     reset = .true.
     close(srun)
     close(plun)
+    deallocate(header)
     
   end subroutine aspicwrite_end
 

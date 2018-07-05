@@ -12,6 +12,10 @@ program beimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
   implicit none
 
 
@@ -57,14 +61,15 @@ program beimain
   call delete_file('bei_predic.dat')
   call delete_file('bei_nsr.dat')
 
+  call aspicwrite_header('bei',labeps12,labnsr,labbfoldreh,(/'beta  ','lambda'/))
 
-  do j=1,nbeta
-     beta=betamin*(betamax/betamin)**(real(j,kp)/real(nbeta,kp))
-
-
-     do k=1,nlambda
-        lambda=lambdamin*(lambdamax/lambdamin)**(real(k,kp)/real(nlambda,kp))
-
+  do k=1,nlambda
+     lambda=lambdamin*(lambdamax/lambdamin)**(real(k,kp)/real(nlambda,kp))
+  
+  
+     do j=1,nbeta
+        beta=betamin*(betamax/betamin)**(real(j,kp)/real(nbeta,kp))
+             
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = bei_lnrhoreh_max(lambda,beta,Pstar)
@@ -98,14 +103,18 @@ program beimain
 
            call livewrite('bei_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/beta,lambda/))
+           
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 
-write(*,*)
+  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42

@@ -12,6 +12,9 @@ program aimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -39,6 +42,7 @@ program aimain
   call delete_file('ai_predic.dat')
   call delete_file('ai_nsr.dat')
 
+  call aspicwrite_header('ai',labeps12,labnsr,labbfoldreh,(/'mu'/))
 
   !  w = -1._kp/3._kp
   !  w = 1._kp
@@ -84,10 +88,14 @@ program aimain
 
         call livewrite('ai_nsr.dat',mu,ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

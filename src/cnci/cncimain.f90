@@ -13,6 +13,8 @@ program cncimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
 
   implicit none
 
@@ -60,8 +62,8 @@ program cncimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 20
-  nxend=20
+  npts = 10
+  nxend=10
 
 
   w=0._kp
@@ -70,30 +72,30 @@ program cncimain
   call delete_file('cnci_predic.dat')
   call delete_file('cnci_nsr.dat')
 
-  alphavalues(3)=10._kp**(-3.)
-  alphavalues(2)=10._kp**(-1.)
-  alphavalues(1)=0.2_kp
+  call aspicwrite_header('cnci',labeps12,labnsr,labbfoldreh,(/'xendomax','alpha   '/))
+  
+  alphavalues(3)=0.001_kp
+  alphavalues(2)=0.01_kp
+  alphavalues(1)=0.1_kp
 
   do j=1,3
      alpha=alphavalues(j)
 
-
-
      !Prior on xend
-     if (alpha .eq. 10._kp**(-3.)) then
+     if (alpha .eq. 0.01_kp) then
         xendmin=cnci_xendmin(55._kp,alpha)
         xendmax=30._kp*xendmin
-        nxend=400
+        nxend=20
      endif
-     if (alpha .eq. 10._kp**(-1.)) then
+     if (alpha .eq. 0.01_kp) then
         xendmin=cnci_xendmin(58._kp,alpha)
         xendmax=10._kp*xendmin
-        nxend=100
+        nxend=20
      endif
-     if (alpha .eq. 0.2_kp) then
+     if (alpha .eq. 0.1_kp) then
         xendmin=cnci_xendmin(60._kp,alpha)
         xendmax=2._kp*xendmin
-        nxend=100
+        nxend=20
      endif
 
 
@@ -126,13 +128,15 @@ program cncimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           if (has_not_shifted(0.0075_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-              cycle
-           endif
+!           if (has_not_shifted(0.0075_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+!              cycle
+!           endif
           
            call livewrite('cnci_predic.dat',alpha,xend,xendmin,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('cnci_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmax,alpha/))
 
         end do
 
@@ -140,6 +144,7 @@ program cncimain
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
