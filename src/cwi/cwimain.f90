@@ -13,13 +13,16 @@ program cwimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 15
 
   integer :: NQ
   real(kp) :: Qmin,Qmax
@@ -79,8 +82,13 @@ program cwimain
   Pstar = powerAmpScalar
 
   call delete_file('cwi_predic1.dat')
+  
 
+  call aspicwrite_header('cwi',labeps12,labnsr,labbfoldreh,(/'Q'/))
+
+  
   !  w = 1._kp/3._kp
+
   w=0._kp
 
   do j=0,NQ 
@@ -111,6 +119,8 @@ program cwimain
 
         call livewrite('cwi_predic1.dat',alpha,Q,eps1,eps2,eps3,r,ns,Treh)
 
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/Q/))
      end do
 
   end do
@@ -160,10 +170,14 @@ program cwimain
 
         call livewrite('cwi_predic2.dat',alpha,Q,eps1,eps2,eps3,r,ns,Treh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/Q/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

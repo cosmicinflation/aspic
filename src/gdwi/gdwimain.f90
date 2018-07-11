@@ -12,6 +12,9 @@ program gdwimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -46,7 +49,8 @@ program gdwimain
   call delete_file('gdwi_predic.dat')
   call delete_file('gdwi_nsr.dat')
 
-
+  call aspicwrite_header('gdwi',labeps12,labnsr,labbfoldreh,(/'phi0','p   '/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -97,10 +101,123 @@ program gdwimain
 
         call livewrite('gdwi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,p/))
+        
      end do
 
   end do
 
+
+   p = 3._kp
+  
+  do j=0,Nphi0 
+
+     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
+     phi0=exp(exp(log(log(phi0min))*(log(log(phi0max))/log(log(phi0min)))**(real(j,kp)/real(Nphi0,kp)))) !ultralogarithmic step
+
+
+
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,Pstar)
+
+     print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+
+
+	xstar = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+
+
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+
+        eps1 = gdwi_epsilon_one(xstar,p,phi0)
+        eps2 = gdwi_epsilon_two(xstar,p,phi0)
+        eps3 = gdwi_epsilon_three(xstar,p,phi0)
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('gdwi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
+
+        call livewrite('gdwi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,p/))
+        
+     end do
+
+  end do
+
+
+ p = 4._kp
+  
+  do j=0,Nphi0 
+
+     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
+     phi0=exp(exp(log(log(phi0min))*(log(log(phi0max))/log(log(phi0min)))**(real(j,kp)/real(Nphi0,kp)))) !ultralogarithmic step
+
+
+
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,Pstar)
+
+     print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+
+
+	xstar = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+
+
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+
+        eps1 = gdwi_epsilon_one(xstar,p,phi0)
+        eps2 = gdwi_epsilon_two(xstar,p,phi0)
+        eps3 = gdwi_epsilon_three(xstar,p,phi0)
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('gdwi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
+
+        call livewrite('gdwi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,p/))
+        
+     end do
+
+  end do
+  
+  
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

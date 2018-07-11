@@ -1,3 +1,4 @@
+
 !test the reheating derivation from slow-roll
 program dsimain
   use infprec, only : kp
@@ -12,6 +13,9 @@ program dsimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -46,7 +50,9 @@ program dsimain
   call delete_file('dsi_predic.dat')
   call delete_file('dsi_nsr.dat')
 
-  npts = 10
+  call aspicwrite_header('dsi',labeps12,labnsr,labbfoldreh,(/'xendnminmax','mu         ','p          '/))
+  
+  npts = 8
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -63,9 +69,9 @@ program dsimain
   qvalues(3)=8._kp
 
   allocate(nmuvalues(1:np))
-  nmuvalues(1)=15
-  nmuvalues(2)=15
-  nmuvalues(3)=15
+  nmuvalues(1)=2
+  nmuvalues(2)=2
+  nmuvalues(3)=2
 
   allocate(mumaxvalues(1:np))
   mumaxvalues(1)=dsi_mumax(60._kp,pvalues(1),qvalues(1))
@@ -73,14 +79,15 @@ program dsimain
   mumaxvalues(3)=dsi_mumax(60._kp,pvalues(3),qvalues(3))
 
   allocate(muminvalues(1:np))
-  muminvalues(1)=mumaxvalues(1)*10.**(-5.)
-  muminvalues(2)=mumaxvalues(2)*10.**(-6.)
-  muminvalues(3)=mumaxvalues(3)*10.**(-7.)
+  muminvalues(:)=mumaxvalues(:)*0.001
+  mumaxvalues(:)=mumaxvalues(:)*0.5
+!  muminvalues(2)=mumaxvalues(2)*10.**(-3.)
+!  muminvalues(3)=mumaxvalues(3)*10.**(-4.)
 
   allocate(nxEndvalues(1:np))
-  nxEndvalues(1)=40
-  nxEndvalues(2)=40
-  nxEndvalues(3)=40
+  nxEndvalues(1)=100
+  nxEndvalues(2)=100
+  nxEndvalues(3)=100
 
   do l=1,np
      p=pvalues(l)
@@ -91,8 +98,8 @@ program dsimain
      mumax=mumaxvalues(l)
 
 
-     do j=0,nmu
-        mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
+     do j=1,nmu
+        mu=mumin*(mumax/mumin)**(real(j-1,kp)/real(nmu-1,kp))
 
         xEndmin=dsi_xendmin(70._kp,p,mu)
         xEndmin=dsi_xendmin(60._kp,p,mu)
@@ -129,13 +136,16 @@ program dsimain
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
 
-              if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-                 cycle
-              endif
+!              if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+!                 cycle
+!              endif
 
               call livewrite('dsi_predic.dat',p,mu,xEnd,eps1,eps2,eps3,r,ns,Treh)
 
               call livewrite('dsi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+              call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
+                   ,(/(xend-xendmin)/(xendmax-xendmin),mu,p/))
 
            end do
 
@@ -145,6 +155,7 @@ program dsimain
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

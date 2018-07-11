@@ -7,6 +7,10 @@ program mlfimain
   use gmlfireheat, only : gmlfi_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
+
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
   implicit none
 
 
@@ -38,6 +42,9 @@ program mlfimain
 
   call delete_file('mlfi_predic.dat')
   call delete_file('mlfi_nsr.dat')
+
+  call aspicwrite_header('mlfi',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
 
   p = 2._kp 
   q = 2._kp
@@ -74,10 +81,14 @@ program mlfimain
 
         call livewrite('mlfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

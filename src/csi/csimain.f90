@@ -12,6 +12,9 @@ program csimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -68,6 +71,8 @@ program csimain
   call delete_file('csi_predic.dat')
   call delete_file('csi_nsr.dat')
 
+  call aspicwrite_header('csi',labeps12,labnsr,labbfoldreh,(/'xendomax','alpha   '/))
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!   alpha=0.001   !!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -77,7 +82,7 @@ program csimain
   !Prior on xend
   xendmax=csi_xendmax(65._kp,alpha)
   xendmin=-0.88*xendmax
-  nxend=400
+  nxend=1000
 
   do k=1,nxend
      xend=xendmin+(xendmax-xendmin)*(real(k,kp)/real(nxend,kp))
@@ -111,6 +116,8 @@ program csimain
         call livewrite('csi_predic.dat',alpha,xend,abs(1._kp-xend/xendmax),eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('csi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmax,alpha/))
 
      end do
 
@@ -125,7 +132,7 @@ program csimain
   !Prior on xend
   xendmax=csi_xendmax(59._kp,alpha)
   xendmin=-1000._kp
-  nxend=400
+  nxend=600
 
   do k=1,nxend
      xend=xendmin+(xendmax-xendmin)*(real(k,kp)/real(nxend,kp))
@@ -157,10 +164,14 @@ program csimain
 
         call livewrite('csi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmax,alpha/))
+
      end do
 
   end do
 
+
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

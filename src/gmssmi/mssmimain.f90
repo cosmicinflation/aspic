@@ -12,6 +12,10 @@ program mssmimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
+  
   implicit none
 
 
@@ -73,7 +77,8 @@ program mssmimain
   call delete_file('mssmi_predic.dat')
   call delete_file('mssmi_nsr.dat')
 
-
+  call aspicwrite_header('mssmi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
+  
   !Prior on phi0
   phi0min=10._kp**(-2.)
   phi0max=10._kp**(3.)
@@ -114,12 +119,15 @@ program mssmimain
 
         call livewrite('mssmi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
 
      end do
 
 
   end do
 
+
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!

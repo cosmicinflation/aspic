@@ -14,6 +14,9 @@ program gmssmimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -109,8 +112,8 @@ program gmssmimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 8
-  nphi0=4
+  npts = 15
+  nphi0=1
 
 
   w=0._kp
@@ -119,6 +122,8 @@ program gmssmimain
   call delete_file('gmssmi_predic.dat')
   call delete_file('gmssmi_nsr.dat')
 
+  call aspicwrite_header('gmssmi',labeps12,labnsr,labbfoldreh,(/'alpham1','phi0   '/))
+  
   !Case alpha>1
 
   do j=0,nphi0
@@ -143,7 +148,7 @@ program gmssmimain
 
 
      do k=0,nalpha
-        alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
+!        alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
         alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
 
 
@@ -172,8 +177,11 @@ program gmssmimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           call livewrite('gmssmi_predic.dat',log(alpha-1._kp)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('gmssmi_predic.dat',log(alpha-1._kp)/log(10._kp),sign(1._kp,alpha-1._kp) &
+                ,phi0,eps1,eps2,eps3,r,ns,Treh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha-1._kp,phi0/))
+           
         end do
 
      end do
@@ -233,13 +241,18 @@ program gmssmimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           call livewrite('gmssmi_predic.dat',log(1._kp-alpha)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('gmssmi_predic.dat',log(1._kp-alpha)/log(10._kp),sign(1._kp,alpha-1._kp) &
+                ,phi0,eps1,eps2,eps3,r,ns,Treh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha-1._kp,phi0/))
+           
         end do
 
      end do
 
   end do
+
+  call aspicwrite_end()
 
    write(*,*)
   write(*,*)'Testing Rrad/Rreh'

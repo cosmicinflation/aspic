@@ -21,6 +21,9 @@ program dimain
   use direheat, only : di_k2_star, di_k2_rrad, di_k2_rreh, di_lambda_star, di_lnrhoreh_max
   use direheat, only : di_x_star, di_x_rrad, di_x_rreh
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   logical, parameter :: testSpline = .false.
@@ -175,10 +178,12 @@ program dimain
 
   call delete_file('di_predic.dat')
   call delete_file('di_nsr.dat')
-    
-  fmin = 5e-5
-  fmax = 0.5
-  n = 5
+
+  call aspicwrite_header('di',labeps12,labnsr,labbfoldreh,(/'f'/))
+  
+  fmin = 5e-6
+  fmax = 0.05
+  n = 10
 
   do j=1,n
      f = exp(log(fmin) + (log(fmax)-log(fmin))*real(j-1,kp)/real(n-1,kp))
@@ -188,7 +193,7 @@ program dimain
 
      print *,'f= lnRhoRehMin= lnRhoRehMax= ',f,lnRhoRehMin,lnRhoRehMax
 
-     npts = 15
+     npts = 8
      do i=1,npts
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
@@ -215,9 +220,13 @@ program dimain
         call livewrite('di_predic.dat',f,eps1,eps2,eps3,r,ns,Treh)
         call livewrite('di_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/f/))
+        
      enddo
   enddo
 
+  call aspicwrite_end()
+  
 ! Test reheating with lnRrad and lnR
 
   write(*,*)
@@ -226,7 +235,7 @@ program dimain
   lnRradmin=-40
   lnRradmax = 10
 
-  npts = 10
+  npts = 3
 
   do i=1,npts
 

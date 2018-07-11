@@ -12,6 +12,9 @@ program dwimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -45,6 +48,7 @@ program dwimain
   call delete_file('dwi_predic.dat')
   call delete_file('dwi_nsr.dat')
 
+  call aspicwrite_header('dwi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
 
   !  w = 1._kp/3._kp
   w=0._kp
@@ -94,9 +98,14 @@ program dwimain
 
         call livewrite('dwi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+        
+
      end do
 
   end do
+
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!

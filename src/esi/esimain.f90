@@ -12,14 +12,16 @@ program esimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 15
 
   real(kp) :: q,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -52,6 +54,10 @@ program esimain
   call delete_file('esi_predic.dat')
   call delete_file('esi_nsr.dat')
 
+  
+  call aspicwrite_header('esi',labeps12,labnsr,labbfoldreh,(/'q'/))
+
+  
   do j=1,size(qvalues)
 
      q=qvalues(j)
@@ -84,9 +90,16 @@ program esimain
 
         call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/q/))
+
      end do
   end do
 
+  call aspicwrite_end()
+
+  
+  call aspicwrite_header('esireh',labeps12,labnsr,labbfoldreh,(/'q'/))
+  
   do j=1,size(qvalues)
 
      q=qvalues(j)
@@ -120,9 +133,13 @@ program esimain
 
         call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/q/))
+
      end do
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

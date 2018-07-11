@@ -586,7 +586,8 @@ contains
 
     if (reset) then
        count = 0
-       stored = 0._kp
+!this number should not match the first actual value used to initialize the routine
+       stored = 1.23456789008765431_kp
        current = -1._kp
        reset = .false.
     endif

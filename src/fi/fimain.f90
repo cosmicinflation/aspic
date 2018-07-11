@@ -17,6 +17,9 @@ program fimain
 
   use fisr, only : fi_x_epstwozero
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
   implicit none
 
 
@@ -139,41 +142,43 @@ end do
 call delete_file('fi_predic_neq0.dat')
 call delete_file('fi_nsr_neq0.dat')
 
-  n=0._kp
+call aspicwrite_header('fi',labeps12,labnsr,labbfoldreh,(/'delta','n    '/))
 
-  npts = 10
-  ndelta = 20
+n=0._kp
 
-  w=0._kp
-  !  w = 1._kp/3._kp
+npts = 10
+ndelta = 100
 
-
-  deltamin=10._kp**(-7.)
-  deltamax=10._kp**(-1.)
-
-  do k=0,ndelta
-    delta=deltamin*(deltamax/deltamin)**(real(k,kp)/real(ndelta,kp))
-
-    print*,'delta=',delta,'n=',n
-
-    print*, 'Nmax=',fi_efoldmax(delta,n)
-    print*, 'epsilon1min=',fi_epsilon_one_min(delta,n)
-    xepsone = fi_x_epsoneunity(delta,n)
-    print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
-
-    if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
-    if (fi_efoldmax(delta,n).lt.efoldNum) cycle
-
-    print*, 'hardprior condition passed'
+w=0._kp
+!  w = 1._kp/3._kp
 
 
-    lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = fi_lnrhoreh_max(delta,n,Pstar)
+deltamin=10._kp**(-8.)
+deltamax=10._kp**(-3.)
 
-    print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+do k=0,ndelta
+   delta=deltamin*(deltamax/deltamin)**(real(k,kp)/real(ndelta,kp))
+
+   print*,'delta=',delta,'n=',n
+
+   print*, 'Nmax=',fi_efoldmax(delta,n)
+   print*, 'epsilon1min=',fi_epsilon_one_min(delta,n)
+   xepsone = fi_x_epsoneunity(delta,n)
+   print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
+
+   if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
+   if (fi_efoldmax(delta,n).lt.efoldNum) cycle
+
+   print*, 'hardprior condition passed'
 
 
-    do i=1,npts
+   lnRhoRehMin = lnRhoNuc
+   lnRhoRehMax = fi_lnrhoreh_max(delta,n,Pstar)
+
+   print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+
+   do i=1,npts
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -192,14 +197,17 @@ call delete_file('fi_nsr_neq0.dat')
       ns = 1._kp - 2._kp*eps1 - eps2
       r =16._kp*eps1
 
-      print*, 'nS=',ns,'r=',r
+      print*, 'nS=',ns,'r=',r,n
+
 
       call livewrite('fi_predic_neq0.dat',delta,n,eps1,eps2,eps3,ns,r,Treh)
 
       call livewrite('fi_nsr_neq0.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+      call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/delta,n/))
 
-    end do
+
+   end do
 
 end do
 
@@ -222,8 +230,8 @@ call delete_file('fi_nsr_neq1.dat')
 
 
 
-  deltamin=10._kp**(-12.)
-  deltamax=10._kp**(-6.)
+  deltamin=10._kp**(-10.)
+  deltamax=10._kp**(-9.)
 
   do k=0,ndelta
     delta=deltamin*(deltamax/deltamin)**(real(k,kp)/real(ndelta,kp))
@@ -270,11 +278,14 @@ call delete_file('fi_nsr_neq1.dat')
 
       call livewrite('fi_nsr_neq1.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-
+      call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/delta,n/))
+      
     end do
 
 end do
 
+
+call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
