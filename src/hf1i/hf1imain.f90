@@ -12,6 +12,9 @@ program hf1imain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -46,6 +49,8 @@ program hf1imain
   call delete_file('hf1i_predic.dat')
   call delete_file('hf1i_nsr.dat')
 
+  call aspicwrite_header('hf1i',labeps12,labnsr,labbfoldreh,(/'A1'/))
+  
   do j=0,nA1
      A1=A1min*(A1max/A1min)**(real(j,kp)/real(nA1,kp))
 
@@ -78,10 +83,14 @@ program hf1imain
 
         call livewrite('hf1i_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/A1/))
+
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

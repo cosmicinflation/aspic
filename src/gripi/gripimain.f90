@@ -16,6 +16,9 @@ program gripimgripin
 
   use gripisr, only : gripi_x_epstwomin,gripi_epstwomin
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
   implicit none
 
   
@@ -92,8 +95,8 @@ program gripimgripin
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 8
-  nphi0=4
+  npts = 20
+  nphi0=1
 
 
   w=0._kp
@@ -103,6 +106,9 @@ program gripimgripin
   call delete_file('gripi_predic.dat')
   call delete_file('gripi_nsr.dat')
 
+
+  call aspicwrite_header('gripi',labeps12,labnsr,labbfoldreh,(/'alpham1','phi0   '/))
+  
 !!!!!!!!!!!!!!!!!!!!
 !!  Case alpha>1  !!
 !!!!!!!!!!!!!!!!!!!!
@@ -165,13 +171,18 @@ program gripimgripin
 
 
          call livewrite('gripi_predic.dat',log(alpha-1._kp)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
-  
+
+         call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha-1._kp,phi0/))
+         
     end do
 
   end do
 
  end do
-! stop
+
+
+ 
+ ! stop
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!          Testing Rrad/Rreh           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -228,7 +239,7 @@ print*,'case alpha>1 done'
 !!  Case alpha<1  !!
 !!!!!!!!!!!!!!!!!!!!
 
-npts=12
+npts=20
 
   do j=0,nphi0
        
@@ -239,8 +250,8 @@ npts=12
        if (j.eq.4) phi0=10._kp**(-2._kp)
 
 
-       if (j.eq.0) nalpha=8
-       if (j.eq.1) nalpha=8
+       if (j.eq.0) nalpha=10
+       if (j.eq.1) nalpha=10
        if (j.eq.2) nalpha=8
        if (j.eq.3) nalpha=8
        if (j.eq.4) nalpha=8
@@ -285,13 +296,17 @@ npts=12
          r =16._kp*eps1
 
          call livewrite('gripi_predic.dat',log(1._kp-alpha)/log(10._kp),sign(1._kp,alpha-1._kp),phi0,eps1,eps2,eps3,r,ns,Treh)
-  
+
+         call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha-1._kp,phi0/))
+         
     end do
 
   end do
 
  end do
 
+ call aspicwrite_end()
+ 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!          Testing Rrad/Rreh           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

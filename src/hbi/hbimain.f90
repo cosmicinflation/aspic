@@ -6,15 +6,16 @@ program hbimain
   use hbireheat, only : hbi_xnphi0_fromepsilon, hbi_lnrhoreh_fromepsilon
   use hbisr, only : hbi_epsilon_one, hbi_epsilon_two,hbi_epsilon_three
   use infinout, only : delete_file, livewrite
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use hbisr, only : hbi_norm_potential, hbi_x_endinf
   use hbireheat, only : hbi_x_rreh, hbi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   type(transfert) :: hbiData

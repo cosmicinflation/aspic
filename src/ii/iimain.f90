@@ -12,6 +12,9 @@ program iimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -54,9 +57,8 @@ program iimain
   call delete_file('ii_predic.dat')
   call delete_file('ii_nsr.dat')
 
-  betamin=0.1_kp
-  betamax=10._kp
-
+  call aspicwrite_header('ii',labeps12,labnsr,labbfoldreh,(/'xendomin','beta    '/))
+  
   betamin=1._kp
   betamax=70._kp
 
@@ -96,12 +98,16 @@ program iimain
 
            call livewrite('ii_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xendinf/xendmin,beta/))
+
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

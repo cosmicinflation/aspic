@@ -14,7 +14,7 @@ module hnisr
   public hni_norm_potential, hni_norm_deriv_potential, hni_norm_deriv_second_potential
   public hni_epsilon_one, hni_epsilon_two, hni_epsilon_three
   public hni_efold_primitive, hni_x_trajectory, hni_x_endinf
-  public hni_alphamin
+  public hni_alphamin, hni_phizeromax
 
 
 contains
@@ -158,6 +158,7 @@ contains
   end function find_hni_x_trajectory
 
 
+
 !Minimum value of alpha (depending on phi0) so that inflation ends naturally
   function hni_alphamin(phi0)
     implicit none
@@ -167,6 +168,16 @@ contains
     hni_alphamin = 1._kp/sqrt(1._kp+0.5_kp/phi0**2)
 
   end function hni_alphamin
+
+!Maximum value of phi0 (depending on alpha) so that inflation ends naturally
+  function hni_phizeromax(alpha)
+    implicit none
+    real(kp) :: hni_phizeromax
+    real(kp), intent(in) :: alpha
+
+    hni_phizeromax = alpha/(sqrt(2._kp*(1._kp - alpha**2)))
+
+  end function hni_phizeromax
 
 
 

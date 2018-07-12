@@ -7,11 +7,15 @@ program hnimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use hnisr, only : hni_norm_potential, hni_x_endinf, hni_alphamin
+  use hnisr, only : hni_norm_potential, hni_x_endinf, hni_alphamin, hni_phizeromax
   use hnireheat, only : hni_x_rreh, hni_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
+  
   implicit none
 
 
@@ -20,7 +24,8 @@ program hnimain
   integer :: i,j,k
   integer :: npts,nalpha,nphi0
 
-  real(kp) :: alpha,phi0,w,bfoldstar,alphamin,alphamax,phi0min,phi0max
+  real(kp) :: alpha,phi0,w,bfoldstar,alphamin,alphamax
+  real(kp) :: phi0min,phi0max,phicutmin,phicutmax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -41,8 +46,7 @@ program hnimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  phi0min=2.8_kp
-  phi0max=200._kp
+
 
 !  allocate(phi0values(1:7))
 
@@ -53,25 +57,39 @@ program hnimain
 !  phi0values(5)=50._kp
 !  phi0values(6)=10._kp**(2.)
 
-  npts = 10
-  nalpha=4
-  nphi0 = 20
+  npts = 15
+  nalpha= 2
+  nphi0 = 100
 
+  phicutmin = 1._kp
+  phicutmax = 200._kp
+  
   w=0._kp
   !  w = 1._kp/3._kp
 
   call delete_file('hni_predic.dat')
   call delete_file('hni_nsr.dat')
 
-  do j=0,nphi0
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
+  call aspicwrite_header('hni',labeps12,labnsr,labbfoldreh,(/'phi0   ','alpham1'/))
 
-     alphamin=hni_alphamin(phi0)*(1._kp+epsilon(1._kp))
-     alphamax=1._kp-epsilon(1._kp)
 
-     do k=0,nalpha
-        alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
 
+  alphamin = hni_alphamin(51._kp)
+  alphamax = 1._kp-epsilon(1._kp)
+
+
+  phi0min= phicutmin
+  
+  do k=0,nalpha
+     alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))
+
+     do j=0,nphi0
+
+        phi0max = min(hni_phizeromax(alpha),phicutmax)
+        
+        phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
+
+           
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = hni_lnrhoreh_max(alpha,phi0,Pstar)
@@ -101,13 +119,15 @@ program hnimain
 
            call livewrite('hni_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,alpha-1._kp/))
+
         end do
 
      end do
 
   end do
 
-
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

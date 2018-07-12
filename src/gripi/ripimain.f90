@@ -12,6 +12,9 @@ program ripimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -48,7 +51,8 @@ program ripimain
   call delete_file('ripi_predic.dat')
   call delete_file('ripi_nsr.dat')
 
-
+  call aspicwrite_header('ripi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
+  
   do j=1,nphi0
 
      phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
@@ -82,10 +86,13 @@ program ripimain
 
         call livewrite('ripi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+
      end do
 
   end do
 
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
