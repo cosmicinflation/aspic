@@ -11,6 +11,9 @@ program ssbi3main
   use ssbi3reheat, only : ssbi3_x_rreh, ssbi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
   
   implicit none
 
@@ -18,7 +21,7 @@ program ssbi3main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 7
+  integer :: npts = 15
 
   integer :: Nalpha,Nbeta
   real(kp) ::alphamin, alphamax, betamin, betamax, alpha, beta
@@ -71,10 +74,12 @@ program ssbi3main
 
   Pstar = powerAmpScalar
 
+  call aspicwrite_header('ssbi3',labeps12,labnsr,labbfoldreh,(/'alpha','beta '/))
+  
   call delete_file('ssbi3_predic.dat')
   call delete_file('ssbi3_nsr.dat')
 
-  Nalpha=20
+  Nalpha=100
   Nbeta=3
 
   !  w = 1._kp/3._kp
@@ -122,6 +127,8 @@ program ssbi3main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
+           
            call livewrite('ssbi3_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('ssbi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -132,7 +139,9 @@ program ssbi3main
 
   end do
 
- write(*,*)
+  call aspicwrite_end()
+
+  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42

@@ -6,8 +6,6 @@ program rmi1main
   use rmi1sr, only : rmi1_numacc_xendmax
   use rmi1reheat, only : rmi1_lnrhoreh_max, rmi1_x_star
   use infinout, only : delete_file, livewrite
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use rmi1sr, only : rmi1_norm_potential
@@ -15,13 +13,16 @@ program rmi1main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
-  integer :: npts = 4
+  integer :: npts = 15
 
   integer :: Nc, Nphi0, Nxend
   real(kp) ::cmin, cmax, phi0min, phi0max, xendmin, xendmax, c, phi0, xend
@@ -36,6 +37,9 @@ program rmi1main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
+  integer, parameter :: nvec = 4
+  real(kp), dimension(nvec) :: cvec, phivec
+  
   character(len=30), dimension(3) :: labparams
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -57,29 +61,22 @@ program rmi1main
   
   call aspicwrite_header('rmi1',labeps12, labnsr, labbfoldreh, labparams)
 
-  Nc=10
-  Nphi0=8
-  Nxend=30
+
+
+  Nxend=50
 
   !  w = 1._kp/3._kp
   w=0._kp
 
-  cmin=10._kp**(-3._kp)
-  cmax=10._kp**(0._kp)
 
-  ! do j=0,Nc
-  ! c=cmin*(cmax/cmin)**(real(j,kp)/Nc)  !logarithmic step
+  cvec = (/0.01, 0.01, 0.05, 0.05/)
+  phivec = (/2.0, 10.0, 2.0, 10.0/)
 
-  c=10._kp**(-2._kp)
-  !  c=10._kp**(-1._kp)
-  !  c=10._kp**(1._kp)
+  
 
-
-  phi0max=1._kp/sqrt(c)
-  phi0min=phi0max/(10._kp**2.)
-
-  do k=0,Nphi0 
-     phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
+  do k=1,nvec
+     c=cvec(k)
+     phi0=phivec(k)
 
 
      xendmax = rmi1_numacc_xendmax(70._kp,c,phi0)

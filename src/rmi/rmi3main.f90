@@ -6,20 +6,21 @@ program rmi3main
   use rmi3reheat, only : rmi3_lnrhoreh_max, rmi3_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use rmi3sr, only : rmi3_norm_potential, rmi3_numacc_xendmax, rmi3_numacc_xendmin
   use rmi3reheat, only : rmi3_x_rreh, rmi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
-  integer :: npts = 4
+  integer :: npts = 15
 
   integer :: Nc, Nphi0, Nxend
   real(kp) ::cmin, cmax, phi0min, phi0max, xendmin, xendmax, c, phi0, xend
@@ -34,6 +35,9 @@ program rmi3main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End 
 
+  integer, parameter :: nvec = 4
+  real(kp), dimension(nvec) :: cvec, phivec
+  
   character(len=30), dimension(3) :: labparams
   
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -55,28 +59,19 @@ program rmi3main
   
   call aspicwrite_header('rmi3',labeps12, labnsr, labbfoldreh, labparams)
   
-  Nc=10
-  Nphi0=8
   Nxend=50
 
   !  w = 1._kp/3._kp
   w=0._kp
 
-!  cmin=10._kp**(-3._kp)
-!  cmax=10._kp**(0._kp)
+  
+  cvec = (/-0.01, -0.01, -0.02, -0.02/)
+  phivec = (/8.0, 15.0, 5.0, 10.0/)
 
-  ! do j=0,Nc 
-  ! c=cmin*(cmax/cmin)**(real(j,kp)/Nc)  !logarithmic step
+  do k=1,nvec
+     c=cvec(k)
+     phi0=phivec(k)
 
-  c=-10._kp**(-2._kp)
-  !  c=-5.*10._kp**(-3._kp)
-  !  c=-10._kp**(-2._kp)
-
-  phi0max=1._kp/sqrt(abs(c))
-  phi0min=phi0max/(50.)
-
-  do k=0,Nphi0 
-     phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
 
      xendmin = exp(-1._kp)
      xendmax = rmi3_numacc_xendmax(c,phi0) !Using an asymptotic expression for eps1 when x->1, and requiring eps1>epsilon(1._kp) for numerical convergence

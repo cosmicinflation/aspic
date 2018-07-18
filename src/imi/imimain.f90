@@ -11,14 +11,17 @@ program imimain
   use imireheat, only : imi_x_rreh, imi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,nxend
-  integer :: npts = 8
+  integer :: npts = 15
 
   real(kp) :: w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -34,17 +37,19 @@ program imimain
 
   Pstar = powerAmpScalar
 
-  nxend=12
+  nxend=20
 
   w=0._kp
 
   call delete_file('imi_predic.dat')
   call delete_file('imi_nsr.dat')
 
+  call aspicwrite_header('imi',labeps12,labnsr,labbfoldreh,(/'xendomin','p       '/))
+  
   pmin=1.
   pmax=6.
 
-  do j=0,int(pmax-pmin)
+  do j=0,int(pmax-pmin),1
 
      p = pmin+real(j,kp)
 
@@ -80,6 +85,7 @@ program imimain
 
            call livewrite('imi_predic.dat',p,xend,eps1,eps2,eps3,r,ns,Treh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmin,p/))
 
         end do
 
@@ -87,6 +93,7 @@ program imimain
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

@@ -5,8 +5,6 @@ program rmi2main
   use rmi2sr, only : rmi2_epsilon_one, rmi2_epsilon_two, rmi2_epsilon_three, rmi2_numacc_xendmin
   use rmi2reheat, only : rmi2_lnrhoreh_max, rmi2_x_star
   use infinout, only : delete_file, livewrite
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use rmi2sr, only : rmi2_norm_potential
@@ -14,13 +12,16 @@ program rmi2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,l
-  integer :: npts = 2
+  integer :: npts = 20
 
   integer :: Nc, Nphi0, Nxend
   real(kp) ::cmin, cmax, phi0min, phi0max, xendmin, xendmax, c, phi0, xend
@@ -35,6 +36,9 @@ program rmi2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
+  integer, parameter :: nvec = 4
+  real(kp), dimension(nvec) :: cvec, phivec
+  
   character(len=30), dimension(3) :: labparams
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -56,44 +60,23 @@ program rmi2main
   
   call aspicwrite_header('rmi2',labeps12, labnsr, labbfoldreh, labparams)
 
-  Nc=10
-  Nphi0=7
+
   Nxend=100
 
   !  w = 1._kp/3._kp
   w=0._kp
 
-  cmin=10._kp**(-3._kp)
-  cmax=10._kp**(0._kp)
 
-  ! do j=0,3 
+  cvec = (/0.005, 0.005, 0.01, 0.01/)
+  phivec = (/2.0, 10.0, 5.0, 15.0/)
 
-  ! if (j .eq. 0) then
-  ! c=10._kp**(-10._kp) 
-  ! end if
-  ! if (j .eq. 1) then
-  ! c=10._kp**(-4._kp) 
-  ! end if
-  ! if (j .eq. 2) then
-  ! c=10._kp**(-3._kp) 
-  ! end if
-  ! if (j .eq. 3) then 
-  ! c=10._kp**(-2._kp) 
-  ! end if
-
-  c=10._kp**(-2._kp)
-  !  c=10._kp**(-1._kp)
-  !  c=10._kp**(1._kp)
-
-  phi0max=1._kp/sqrt(c)
-  phi0min=phi0max/(10._kp**2.)
-
-
-  do k=0,Nphi0 
-     phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/Nphi0)  !logarithmic step
-
-    xendmin = rmi2_numacc_xendmin(70._kp,c,phi0)
-    xendmax = exp(1._kp)
+  
+  do k=1,nvec
+     c=cvec(k)
+     phi0=phivec(k)
+  
+     xendmin = rmi2_numacc_xendmin(70._kp,c,phi0)
+     xendmax = exp(1._kp)
 
 
      if (xendmax .lt. xendmin) then

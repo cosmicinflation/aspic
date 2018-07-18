@@ -12,6 +12,9 @@ program nckimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -46,15 +49,16 @@ program nckimain
   call delete_file('ncki_predic.dat')
   call delete_file('ncki_nsr.dat')
 
-
+  call aspicwrite_header('ncki',labeps12,labnsr,labbfoldreh,(/'alpha','beta '/))
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !!                 Case beta>0                           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-  npts = 5
+  npts = 12
   nalpha=10
-  nbeta=7
+  nbeta=3
 
   do j=0,nbeta
      if (j.eq.0) then
@@ -132,6 +136,8 @@ program nckimain
 
            call livewrite('ncki_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
+
         end do
 
      end do
@@ -143,7 +149,7 @@ program nckimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-  npts = 8
+  npts = 12
   nalpha=15
   nbeta=3
 
@@ -205,12 +211,15 @@ program nckimain
 
            call livewrite('ncki_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
+
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
 
  write(*,*)
   write(*,*)'Testing Rrad/Rreh'

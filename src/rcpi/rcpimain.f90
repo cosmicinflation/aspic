@@ -4,10 +4,7 @@ program rcpimain
 
   use srreheat, only : log_energy_reheat_ingev
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
-  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat 
   
   use rcpisr, only : rcpi_epsilon_one, rcpi_epsilon_two, rcpi_epsilon_three
   use rcpisr, only : rcpi_norm_potential, rcpi_x_endinf, rcpi_efoldmax
@@ -17,6 +14,11 @@ program rcpimain
   use rcpireheat, only : rcpi_x_rreh, rcpi_x_rrad
 
   use srflow, only : scalar_spectral_index, tensor_to_scalar_ratio
+
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
   
   implicit none
   
@@ -34,6 +36,9 @@ program rcpimain
   real(kp) :: betamin, betamax
   real(kp) :: alphamin, alphamax
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: betavec
+  
   logical, parameter :: display = .true.
   real(kp), parameter :: efoldNum = 60._kp
 
@@ -42,8 +47,8 @@ program rcpimain
   w = 0._kp
   Pstar = powerAmpScalar 
   
-  nbet = 20
-  nalp = 100
+
+  nalp = 500
   npts = 15
 
   
@@ -56,10 +61,11 @@ program rcpimain
   lnRhoRehMin = lnRhoNuc
 
   betamin = rcpi_numacc_betamin(p)
-  betamax = 2._kp
+
+  betavec = (/betamin,betamin+0.05, betamin+0.1/)
   
-  do j=1,nbet
-     beta = exp(log(betamin) + (j-1)*(log(betamax)-log(betamin))/real(nbet-1,kp))
+  do j=1,nvec
+     beta = betavec(j)
 
      alphamin = rcpi_numacc_alphamin(p,beta)
      alphamax = rcpi_numacc_alphamax(p,beta)
@@ -99,7 +105,7 @@ program rcpimain
            
            if (display) print *,'lnRhoReh= N*= ns= r= ',lnRhoReh,abs(bfoldstar),ns,r
 
-           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
+!           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
 
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta,p/))
 
@@ -112,12 +118,12 @@ program rcpimain
   p=4._kp
 
   betamin = rcpi_numacc_betamin(p)
-  betamax = 2._kp
+  betavec = (/betamin,betamin+0.1, betamin+0.2/)
 
   lnRhoRehMin = lnRhoNuc
   
-  do j=1,nbet
-     beta = exp(log(betamin) + (j-1)*(log(betamax)-log(betamin))/real(nbet-1,kp))
+  do j=1,nvec
+     beta = betavec(j)
 
      alphamin = rcpi_numacc_alphamin(p,beta)
      alphamax = rcpi_numacc_alphamax(p,beta)
@@ -154,7 +160,7 @@ program rcpimain
            ns = scalar_spectral_index((/eps1,eps2/))
            r = tensor_to_scalar_ratio((/eps1,eps2/))
 
-           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
+!           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
 
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta,p/))
 

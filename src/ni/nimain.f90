@@ -12,6 +12,9 @@ program nimain
   use nireheat, only : ni_x_rreh, ni_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
 
   implicit none
 
@@ -28,7 +31,7 @@ program nimain
   real(kp), dimension(2) :: vecbuffer
 
 
-  real(kp), dimension(1:6) ::fvalues
+  real(kp), dimension(7) ::fvalues
 
   real(kp)  ::fmin,fmax,eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
   integer :: nf
@@ -37,12 +40,13 @@ program nimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  fvalues(1)=3.5_kp
-  fvalues(2)=4._kp
-  fvalues(3)=5._kp
+  fvalues(1)=4_kp
+  fvalues(2)=5._kp
+  fvalues(3)=6._kp
   fvalues(4)=7._kp
   fvalues(5)=10._kp
-  fvalues(6)=100._kp
+  fvalues(6)=50._kp
+  fvalues(7)=100._kp
 
 
   Pstar = powerAmpScalar
@@ -50,6 +54,8 @@ program nimain
   call delete_file('ni_predic.dat')
   call delete_file('ni_nsr.dat')
 
+  call aspicwrite_header('ni',labeps12,labnsr,labbfoldreh,(/'f'/))
+  
   do j=1,size(fvalues)
 
      f=fvalues(j)
@@ -83,10 +89,13 @@ program nimain
 
         call livewrite('ni_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/f/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!

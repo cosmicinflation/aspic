@@ -12,6 +12,9 @@ program lpi1main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -48,18 +51,20 @@ program lpi1main
   call delete_file('lpi1_predic.dat')
   call delete_file('lpi1_nsr.dat')
 
+  call aspicwrite_header('lpi1',labeps12,labnsr,labbfoldreh,(/'phi0','q   ','p   '/))
+  
   w=0._kp
   !  w = 1._kp/3._kp
 
-  npts = 4
+  npts = 20
 
   npq=3
 
   pvalues(1)=4._kp
-  qvalues(1)=2._kp
+  qvalues(1)=1._kp
 
   pvalues(2)=4._kp
-  qvalues(2)=1._kp
+  qvalues(2)=2._kp
 
   pvalues(3)=4._kp
   qvalues(3)=3._kp
@@ -73,7 +78,7 @@ program lpi1main
      p=pvalues(k)
      q=qvalues(k)
 
-     if (k .eq. 1) nphi0=50
+     if (k .eq. 1) nphi0=100
      if (k .eq. 2) nphi0=100
      if (k .eq. 3) nphi0=100
 
@@ -111,12 +116,15 @@ program lpi1main
 
            call livewrite('lpi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,q,p/))
+
         end do
 
      end do
 
   enddo
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

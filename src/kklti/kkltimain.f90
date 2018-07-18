@@ -13,6 +13,10 @@ program kkltimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
+
   implicit none
 
   real(kp) :: Pstar
@@ -43,6 +47,8 @@ program kkltimain
   call delete_file('kklti_predic.dat')
   call delete_file('kklti_nsr.dat')
 
+  call aspicwrite_header('kklti',labeps12,labnsr,labbfoldreh,(/'mu','p '/))
+  
 !!!!!!!!!!!!!! 
 !!!! p=2  !!!!
 !!!!!!!!!!!!!!
@@ -86,6 +92,8 @@ program kkltimain
 
         call livewrite('kklti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+        
      end do
 
   end do
@@ -132,6 +140,8 @@ program kkltimain
         call livewrite('kklti_predic.dat',p,mu,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('kklti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
 
      end do
 
@@ -180,10 +190,14 @@ program kkltimain
 
         call livewrite('kklti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 
 !!!!!!!!!!!!!!!!!!!! 
 !!!! p=4 STRING !!!!
@@ -191,6 +205,8 @@ program kkltimain
 
   call delete_file('kkltistg_nsr.dat')
   call delete_file('kkltistg_predic.dat')
+
+  call aspicwrite_header('kkltistg',labeps12,labnsr,labbfoldreh,(/'mu'/))
 
   mumin=10._kp**(-6._kp)
   mumax=0.1_kp
@@ -263,10 +279,13 @@ program kkltimain
 
         call livewrite('kkltistg_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu/))
+
      end do
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

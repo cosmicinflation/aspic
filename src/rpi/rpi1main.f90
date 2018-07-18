@@ -12,6 +12,9 @@ program rpi1main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -20,7 +23,7 @@ program rpi1main
   integer :: i,j
   integer :: npts = 20
 
-  integer :: Np=30
+  integer :: Np=40
   real(kp) :: pmin=1._kp
   real(kp) :: pmax=1.1_kp
 
@@ -39,7 +42,8 @@ program rpi1main
   call delete_file('rpi1_predic.dat')
   call delete_file('rpi1_nsr.dat')
 
-
+  call aspicwrite_header('rpi1',labeps12,labnsr,labbfoldreh,(/'pm1'/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -80,6 +84,8 @@ program rpi1main
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/p-1._kp/))
+        
         call livewrite('rpi1_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('rpi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -87,6 +93,8 @@ program rpi1main
      end do
 
   end do
+
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

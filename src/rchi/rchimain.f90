@@ -12,6 +12,10 @@ program rchimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
+  
   implicit none
 
 
@@ -50,8 +54,11 @@ program rchimain
   call delete_file('rchi_predic.dat')
   call delete_file('rchi_nsr.dat')
 
+  call aspicwrite_header('rchi',labeps12,labnsr,labbfoldreh,(/'AI'/))
+ 
+
   do j=0,nAI
-     AI=AImin*(AImax/AImin)**(real(j,kp)/real(nAI,kp)) !log step
+!     AI=AImin*(AImax/AImin)**(real(j,kp)/real(nAI,kp)) !log step
      AI=AImin+(AImax-AImin)*(real(j,kp)/real(nAI,kp)) !arithmetic step
 
      lnRhoRehMin = lnRhoNuc
@@ -77,23 +84,27 @@ program rchimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
-        if ((abs(eps2).gt.0.2) .or. (eps1.lt.1e-6)) cycle
+!        if ((abs(eps2).gt.0.2) .or. (eps1.lt.1e-6)) cycle
 
         call livewrite('rchi_predic.dat',AI,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('rchi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/AI/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   call delete_file('rchi_predic_summarized.dat') 
-  nAI=1000
-  AImin=-20._kp
+  nAI=20
+  AImin=-30._kp
   AImax=50._kp
   w=0._kp
   do j=0,nAI

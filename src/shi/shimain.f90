@@ -5,8 +5,6 @@ program shimain
   use shisr, only : shi_epsilon_one, shi_epsilon_two, shi_epsilon_three
   use shireheat, only : shi_lnrhoreh_max, shi_x_star
   use infinout, only : delete_file, livewrite
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
 
   use srreheat, only : log_energy_reheat_ingev 
   use specialinf, only : lambert 
@@ -16,6 +14,9 @@ program shimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  
   implicit none
 
 
@@ -44,21 +45,14 @@ program shimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
-
+  integer, parameter :: nvec = 4
+  real(kp), dimension(nvec) :: phivec
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!      Reheating Predictions       !!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-  phi0min=10.
-  phi0max=100.
-
-  alphamin = 0.1
-  alphamax = 10.
-
-  Nphi0=10
-  Nalpha = 10
-
+ 
   Pstar = powerAmpScalar
 
   call delete_file('shi_predic.dat')
@@ -68,45 +62,55 @@ program shimain
   !  w = 1._kp/3._kp
   w=0._kp
 
-  do j=0,Nphi0 
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/Nphi0) !logarithmic step
 
-    do k=0,Nalpha
-      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/Nalpha) !logarithmic step
 
-       lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = shi_lnrhoreh_max(alpha,phi0,Pstar)
+  alphamin = 0.1
+  alphamax = 20.
+  Nalpha = 500
+  
+  phivec = (/10.0, 15.0, 20.0, 25.0/)
+  
+  do j=1,nvec
+     phi0 = phivec(j)
 
-       print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     do k=0,Nalpha
+        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/Nalpha) !logarithmic step
 
-       do i=1,npts
+        lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = shi_lnrhoreh_max(alpha,phi0,Pstar)
 
-          lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+        print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-          xstar = shi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+        do i=1,npts
 
-          print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-          eps1 = shi_epsilon_one(xstar,alpha,phi0)
-          eps2 = shi_epsilon_two(xstar,alpha,phi0)
-          eps3 = shi_epsilon_three(xstar,alpha,phi0)
+           xstar = shi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
 
-          logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-          Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-          ns = 1._kp - 2._kp*eps1 - eps2
-          r =16._kp*eps1
+           eps1 = shi_epsilon_one(xstar,alpha,phi0)
+           eps2 = shi_epsilon_two(xstar,alpha,phi0)
+           eps3 = shi_epsilon_three(xstar,alpha,phi0)
 
-          call livewrite('shi_predic.dat',alpha,phi0,eps1,eps2,eps3,r,ns,Treh)
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-          call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,phi0/))
-          
-       end do
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
 
-    end do
+           call livewrite('shi_predic.dat',alpha,phi0,eps1,eps2,eps3,r,ns,Treh)
 
-  end do
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,phi0/))
 
+        end do
+
+     end do
+
+  enddo
+
+  call aspicwrite_end()
+  
 
 
   write(*,*)

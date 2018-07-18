@@ -12,13 +12,16 @@ program ssbi5main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 8
+  integer :: npts = 15
 
   integer :: Nalpha,Nbeta
   real(kp) ::alphamin, alphamax, betamin, betamax, alpha, beta
@@ -70,6 +73,8 @@ program ssbi5main
 
   Pstar = powerAmpScalar
 
+  call aspicwrite_header('ssbi5',labeps12,labnsr,labbfoldreh,(/'alpha','beta '/))  
+  
   call delete_file('ssbi5_predic.dat')
   call delete_file('ssbi5_nsr.dat')
 
@@ -120,6 +125,8 @@ program ssbi5main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
+           
             if (has_not_shifted(0.0005_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -137,6 +144,7 @@ program ssbi5main
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

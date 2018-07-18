@@ -12,6 +12,9 @@ program sbimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -46,6 +49,8 @@ program sbimain
   call delete_file('sbi_predic.dat')
   call delete_file('sbi_nsr.dat')
 
+  call aspicwrite_header('sbi',labeps12,labnsr,labbfoldreh,(/'alpha','beta '/))
+  
   npts = 20
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -54,9 +59,9 @@ program sbimain
 
   beta=0.00005
   alphamin=sbi_alphamin(beta)*(1._kp+epsilon(1._kp))
-  alphamax=1000._kp*alphamin
+  alphamax=5000._kp*alphamin
   alphamax=60._kp*alphamin
-  nalpha=20
+  nalpha=100
 
   do k=0,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
@@ -86,6 +91,8 @@ program sbimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
+        
         call livewrite('sbi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('sbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -103,7 +110,7 @@ program sbimain
   beta=0.001
   alphamin=sbi_alphamin(beta)*(1._kp+epsilon(1._kp))
   alphamax=20._kp*alphamin
-  nalpha=30
+  nalpha=100
 
 
   do k=0,nalpha
@@ -134,6 +141,8 @@ program sbimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
+        
         call livewrite('sbi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('sbi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -142,8 +151,10 @@ program sbimain
 
   end do
 
+  
+  call aspicwrite_end()
 
- write(*,*)
+  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42
@@ -190,9 +201,11 @@ program sbimain
   call delete_file('sbi_alphamin_predic.dat')
   call delete_file('sbi_alphamin_nsr.dat')
 
-  betamin=0.0001
+  call aspicwrite_header('sbiamin',labeps12,labnsr,labbfoldreh,(/'beta '/))
+  
+  betamin=0.000009
   betamax=0.1
-  nbeta=30
+  nbeta=100
 
 
   do k=0,nbeta
@@ -223,6 +236,9 @@ program sbimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/beta/))
+        
+        
         call livewrite('sbi_alphamin_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('sbi_alphamin_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -230,7 +246,9 @@ program sbimain
      end do
 
   end do
- 
+
+  call aspicwrite_end()
+  
  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

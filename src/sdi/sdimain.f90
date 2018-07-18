@@ -13,6 +13,9 @@ program sdimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -34,32 +37,33 @@ program sdimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: phivec
+
   Pstar = powerAmpScalar
 
 
-  npts = 10
+  npts = 15
 
   w=0._kp
   !  w = 1._kp/3._kp
 
-
+  call aspicwrite_header('sdi',labeps12,labnsr,labbfoldreh,(/'xend','phi0'/))
+  
   call delete_file('sdi_predic.dat')
   call delete_file('sdi_nsr.dat')
 
-  phi0min=1._kp/sqrt(2._kp)
-  phi0min=5._kp
-  phi0max=10._kp**3
 
-  Nphi0 = 20
 
-  
-  
+  phivec = (/6.0,7.0,10.0/)
 
   Nxend = 20
 
 
-  do j=0,Nphi0
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp))
+  do j=1,nvec
+     phi0 = phivec(j)
+
+
      xendmin = sdi_numacc_xendmin(efoldNum,phi0)
      xendmax = sdi_numacc_xendmax(phi0)
      xinimin = sdi_numacc_xinimin(phi0)
@@ -106,6 +110,8 @@ program sdimain
 
            print*, 'ns=',ns,'r=',r,'bfoldstar=',bfoldstar
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xendinf,phi0/))
+           
            call livewrite('sdi_predic.dat',phi0,xendinf,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('sdi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -116,6 +122,8 @@ program sdimain
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

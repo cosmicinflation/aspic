@@ -13,6 +13,8 @@ program nclimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
 
   implicit none
 
@@ -74,10 +76,12 @@ program nclimain
   w=0._kp
   !  w = 1._kp/3._kp
 
+  call aspicwrite_header('ncli',labeps12,labnsr,labbfoldreh,(/'phi0 ','alpha','n    '/))
+  
   call delete_file('ncli_predic.dat')
   call delete_file('ncli_nsr.dat')
 
-  npts = 20
+  npts = 15
 
 !!!!!!!!!!!!!!!!!!!!!!
 !!!!      n=2     !!!!
@@ -93,7 +97,7 @@ program nclimain
   phi0min = 0.001_kp
   phi0max = 1._kp
 
-  nalpha=6
+  nalpha=4
   nphi0=100
 
   efoldMin = 70._kp
@@ -124,15 +128,17 @@ program nclimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-              cycle
-           endif
+!           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+!              cycle
+!           endif
 
-           if ((eps1.lt.1e-10).or.(eps1.gt.0.1) &
-                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+!           if ((eps1.lt.1e-10).or.(eps1.gt.0.1) &
+!                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
 
            call livewrite('ncli_predic_neq2.dat',alpha,phi0,n,eps1,eps2,ns,r,Treh)
            call livewrite('ncli_nsr_neq2.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,alpha,n/))
 
           end do
         end if
@@ -140,7 +146,61 @@ program nclimain
   end do
 
 
+  n=3._kp
 
+  alphamin = 0.00000001_kp
+  alphamax = 0.01_kp
+  phi0min = 0.001_kp
+  phi0max = 1._kp
+
+  nalpha=4
+  nphi0=100
+
+  efoldMin = 70._kp
+  epsMin = 0.1_kp
+
+  do j=1,nalpha
+     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+      do k=0,nphi0
+        phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/real(nphi0,kp)) !log step
+        if (ncli_check_params(efoldMin,epsMin,alpha,phi0,n)) then
+          lnRhoRehMin = lnRhoNuc
+          lnRhoRehMax = ncli_lnrhoreh_max(alpha,phi0,n,Pstar)
+
+          print *,'alpha=',alpha,'phi0=',phi0,'n=',n,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+          do i=1,npts
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           xstar = ncli_x_star(alpha,phi0,n,w,lnRhoReh,Pstar,bfoldstar)
+
+           eps1 = ncli_epsilon_one(xstar,alpha,phi0,n)
+           eps2 = ncli_epsilon_two(xstar,alpha,phi0,n)
+           eps3 = ncli_epsilon_three(xstar,alpha,phi0,n)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+!           if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+!              cycle
+!           endif
+
+!           if ((eps1.lt.1e-10).or.(eps1.gt.0.1) &
+!                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+
+
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,alpha,n/))
+
+          end do
+        end if
+     end do
+  end do
+  
+
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!      Test Reheating Routines     !!!!

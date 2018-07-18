@@ -14,19 +14,21 @@ program rpi2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 10
+  integer :: npts = 15
 
-  integer, parameter :: Np=8
   real(kp), parameter :: pmin=1.005_kp
   real(kp), parameter :: pmax=1.5_kp
 
-  integer, parameter :: Nyend = 12
+  integer, parameter :: Nyend = 30
   real(kp) :: yendMin, yendMax
 
   real(kp) :: p,w,bfoldstar,yend
@@ -39,28 +41,25 @@ program rpi2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: pvecm1
+  
   Pstar = powerAmpScalar
 
   call delete_file('rpi2_predic.dat')
   call delete_file('rpi2_nsr.dat')
 
-
+  call aspicwrite_header('rpi2',labeps12,labnsr,labbfoldreh,(/'yendnminmax','pm1        '/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
-  do j=0,Np
-     if (j .eq. -1) then 
-       p=1._kp
-     else 
-       p=pmin+(pmax-pmin)*(real(j,kp)/Np) !flat prior
-       p=1._kp+(pmin-1._kp)*((pmax-1._kp)/(pmin-1._kp))**(real(j,kp)/Np) !log prior on p-1
-     end if
+  pvecm1 = (/0.01,0.03, 0.06/)
+  
+  do j=1,nvec
 
-
- !    w=(1._kp-p)/(3._kp-1._kp)
-
-
-
+     p = pvecm1(j)+1._kp
+     
      lnRhoRehMin = lnRhoNuc
 
      if (p.eq.1._kp) then
@@ -99,8 +98,6 @@ program rpi2main
            eps3 = rpi2_epsilon_three(ystar,p)
 
 
-           if ((abs(eps2).gt.0.2)) cycle
-
            logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
 
@@ -110,6 +107,11 @@ program rpi2main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
+                ,(/(yend-yendMin)/(yendMax-yendMin),p-1._kp/))
+
+           if ((abs(eps2).gt.0.2)) cycle
+           
            call livewrite('rpi2_predic.dat',p,yend,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('rpi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -120,6 +122,7 @@ program rpi2main
 
   enddo
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

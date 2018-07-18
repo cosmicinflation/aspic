@@ -12,21 +12,21 @@ program twimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 10
+  integer :: npts = 15
 
-  integer :: Nphi0=10
-  real(kp) :: phi0min=0.01
-  real(kp) :: phi0max=2.
 
-  integer :: NxEnd=30
+  integer :: NxEnd=100
   real(kp) :: yEndmin=1.5
-  real(kp) :: yEndmax=16.
+  real(kp) :: yEndmax=20.
 
   real(kp) :: phi0,xEnd,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -38,8 +38,13 @@ program twimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: phivec
+  
   Pstar = powerAmpScalar
 
+  call aspicwrite_header('twi',labeps12,labnsr,labbfoldreh,(/'xend','phi0'/))
+  
   call delete_file('twi_predic.dat')
   call delete_file('twi_nsr.dat')
 
@@ -47,8 +52,10 @@ program twimain
   !  w = 1._kp/3._kp
   w=0._kp
 
-  do j=0,Nphi0 
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/Nphi0)
+  phivec = (/0.01, 0.1, 1.0/)
+  
+  do j=1,nvec
+     phi0=phivec(j)
 
      do k=0,NxEnd
         xEnd=phi0*yEndmin*(yEndmax/yEndmin)**(real(k,kp)/NxEnd)*(1.+epsilon(1._kp)) !logarithmic step
@@ -84,6 +91,8 @@ program twimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,phi0/))
+           
            if (has_not_shifted(0.0075_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -97,6 +106,8 @@ program twimain
      end do
 
   end do
+
+  call aspicwrite_end()
 
 
  write(*,*)

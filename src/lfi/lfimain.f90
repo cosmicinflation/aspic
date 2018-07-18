@@ -6,8 +6,6 @@ program lfimain
   use lfireheat, only : lfi_lnrhoreh_max, lfi_lnrhoreh_fromepsilon 
   use lfireheat, only : lfi_xp_fromepsilon, lfi_x_star
   use infinout, only : delete_file, livewrite
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
 
   use srreheat, only : log_energy_reheat_ingev
   use srflow, only : scalar_spectral_index, tensor_to_scalar_ratio
@@ -18,6 +16,10 @@ program lfimain
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
   use srreheat, only : potential_normalization, primscalar
+
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
   implicit none
 
   

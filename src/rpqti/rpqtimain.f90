@@ -12,6 +12,9 @@ program rpqtimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -32,6 +35,9 @@ program rpqtimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  integer, parameter :: nvec = 6
+  real(kp), dimension(nvec) :: phivec, alphavec
+  
   Pstar = powerAmpScalar
 
 
@@ -45,26 +51,27 @@ program rpqtimain
   call delete_file('rpqti_predic.dat')
   call delete_file('rpqti_nsr.dat')
 
+  call aspicwrite_header('rpqti',labeps12,labnsr,labbfoldreh,(/'beta ','alpha','phi0 '/))
+  
   w=0._kp
   !  w = 1._kp/3._kp
 
-  npts = 5
+  npts = 30
 
-  alphamin = -0.9
-  alphamax = 0.9
   betamin = -0.9
   betamax = 0.9
-  phi0min = 10._kp
-  phi0max = 1000._kp
 
-  nalpha = 10
-  nbeta = 10
-  nphi0 = 5
 
-  do j=0,nphi0
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
-    do k=0,nalpha
-     alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
+  nbeta = 60
+
+  phivec = (/9.0, 9.0, 20.0, 20.0, 50.0, 50.0/)
+  alphavec = (/0.1,0.2,-0.2,0.2,-0.2,0.2 /)
+
+
+  do j=1,nvec
+     phi0 = phivec(j)
+     alpha = alphavec(j)
+     
       do l=0,nbeta
         beta=betamin+(betamax-betamin)*(real(l,kp)/real(nbeta,kp))
 
@@ -96,6 +103,8 @@ program rpqtimain
           ns = 1._kp - 2._kp*eps1 - eps2
           r =16._kp*eps1
 
+          call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/beta,alpha,phi0/))
+          
           if (has_not_shifted(0.002_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
              cycle
           endif
@@ -110,10 +119,10 @@ program rpqtimain
         end do
 
       end do
-    end do
-  end do
+  
+   end do
 
-
+   call aspicwrite_end()
 
 
   write(*,*)

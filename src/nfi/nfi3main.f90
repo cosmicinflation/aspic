@@ -16,13 +16,16 @@ program nfi3main
   use nficommon, only : nfi_numacc_x_potbig
   use srreheat, only : potential_normalization, primscalar
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
-  integer :: npts = 10
+  integer :: i,j
+  integer :: npts = 15
 
   real(kp) :: a,b,w,bfoldstar
   real(kp) :: astep, bstep
@@ -36,25 +39,30 @@ program nfi3main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: bvec
+
   
   Pstar = powerAmpScalar
 
   call delete_file('nfi3_predic.dat')
   call delete_file('nfi3_nsr.dat')
 
+  
+  call aspicwrite_header('nfi3',labeps12,labnsr,labbfoldreh,(/'a','b'/))
+  
   w = 0
   efoldMax=120
 
-  bstep = 0.05
-  astep = 0.4
+  astep = 0.03
 
 !region a<0 and 0<b<1
 
-  b = 0.005_kp -bstep
+  bvec=(/0.05, 0.25, 0.30/)
 
-  do while (b+bstep<1)
+  do j=1,nvec
 
-     b=b+bstep
+     b=bvec(j)
 
      amin = -nfi3_numacc_absamax(b)
      
@@ -102,6 +110,8 @@ program nfi3main
 
            call livewrite('nfi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/a,b/))
+           
         end do
 
      enddo
@@ -110,15 +120,14 @@ program nfi3main
 
 
 !region a>0 and b<0
-  bstep = 0.6
-  astep = 0.4
 
+  astep = 0.03
 
-  b=-1e-4 + bstep
+  bvec=(/-0.1,-1.1,-2.1/)
 
-  do while (b>-4)
+  do j=1,nvec
 
-     b=b-bstep
+     b=bvec(j)
 
      amax = nfi3_numacc_absamax(b)
 
@@ -166,11 +175,15 @@ program nfi3main
 
            call livewrite('nfi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/a,b/))
+           
         end do
 
      enddo
   enddo
 
+
+  call aspicwrite_end()
 
 
 ! Test reheating with lnRrad and lnR

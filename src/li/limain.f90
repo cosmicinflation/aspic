@@ -13,6 +13,8 @@ program limain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
 
   implicit none
 
@@ -43,6 +45,8 @@ program limain
   call delete_file('li_predic.dat')
   call delete_file('li_nsr.dat')
 
+  call aspicwrite_header('li',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
 !!!!!!!!!!!!!!!!!!
 !!!  Priors    !!!
 !!!!!!!!!!!!!!!!!!
@@ -69,7 +73,7 @@ program limain
   npts = 20
 
   alphamin=0.003
-  alphamax=100000._kp
+  alphamax=2._kp
   nalpha=20
 
 
@@ -107,6 +111,8 @@ program limain
         call livewrite('li_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
 
      end do
 
@@ -164,10 +170,13 @@ program limain
 
         call livewrite('li_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! Write Data for the summarizing plots !!

@@ -12,6 +12,9 @@ program timain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -43,16 +46,18 @@ program timain
 
   allocate(muvalues(1:3))
 
-  muvalues(1)=10._kp**(-6.)
-  muvalues(2)=10._kp**(-4.)
-  muvalues(3)=10._kp**(-2.)
+  muvalues(1)=10._kp**(-2.)
+  muvalues(2)=10._kp**(-1.)
+  muvalues(3)=0.5
 
-  npts = 6
-  nalpha=40
+  npts = 15
+  nalpha=20
 
   w=0._kp
   !  w = 1._kp/3._kp
 
+  call aspicwrite_header('ti',labeps12,labnsr,labbfoldreh,(/'alphamhalf','mu        '/))
+  
   call delete_file('ti_predic.dat')
   call delete_file('ti_nsr.dat')
 
@@ -89,6 +94,8 @@ program timain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha-0.5_kp,mu/))
+           
            call livewrite('ti_predic.dat',alpha,(1-2._kp*alpha)/mu**2,mu,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('ti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -99,7 +106,11 @@ program timain
 
   end do
 
-  nmu=80
+  call aspicwrite_end()
+
+  call aspicwrite_header('tihalf',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha'/))
+  
+  nmu=100
   mumin=10._kp**(-7.)
   mumax=10._kp**(0.)
   alpha=0.5_kp
@@ -130,6 +141,8 @@ program timain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,alpha/))
+        
         call livewrite('ti_predic.dat',alpha,0._kp,mu,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('ti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -138,7 +151,8 @@ program timain
 
   end do
 
-
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

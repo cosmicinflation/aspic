@@ -13,13 +13,16 @@ program lmi2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,NxEnd
-  integer :: npts = 10
+  integer :: npts = 15
 
   real(kp), dimension(1:6) :: gamValues
 
@@ -48,7 +51,8 @@ program lmi2main
   call delete_file('lmi2_predic.dat')
   call delete_file('lmi2_nsr.dat')
 
-
+  call aspicwrite_header('lmi2',labeps12,labnsr,labbfoldreh,(/'xendomin','gamma   ','beta    '/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -58,21 +62,15 @@ program lmi2main
 
   beta=0.1
 
-  gamValues(1)=0.75_kp
-  NxEndValues(1)=20
-  gamValues(2)=0.85_kp
-  NxEndValues(2)=20
-  gamValues(3)=0.92_kp
-  NxEndValues(3)=15
-  gamValues(4)=0.95_kp
-  NxEndValues(4)=15
-  gamValues(5)=0.975_kp
-  NxEndValues(5)=10
-  gamValues(6)=0.995_kp
-  NxEndValues(6)=15
+  gamValues(1)=0.95_kp
+  NxEndValues(1)=15
+  gamValues(2)=0.975_kp
+  NxEndValues(2)=10
+  gamValues(3)=0.995_kp
+  NxEndValues(3)=20
 
 
-  do j=1,size(gamValues) 
+  do j=1,3
      gam=gamValues(j)
      NxEnd=nxEndValues(j)
 
@@ -114,6 +112,8 @@ program lmi2main
 
            call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmin,gam,beta/))
+
         end do
 
      end do
@@ -127,20 +127,14 @@ program lmi2main
 
   beta=1.
 
-  gamValues(1)=0.45_kp
-  NxEndValues(1)=20
-  gamValues(2)=0.5_kp
-  NxEndValues(2)=20
-  gamValues(3)=0.55_kp
+  gamValues(1)=0.6_kp
+  NxEndValues(1)=15
+  gamValues(2)=0.63_kp
+  NxEndValues(2)=10
+  gamValues(3)=0.66_kp
   NxEndValues(3)=20
-  gamValues(4)=0.6_kp
-  NxEndValues(4)=15
-  gamValues(5)=0.63_kp
-  NxEndValues(5)=10
-  gamValues(6)=0.68_kp
-  NxEndValues(6)=10
 
-  do j=1,size(gamValues) 
+  do j=1,3
      gam=gamValues(j)
      NxEnd=nxEndValues(j)
 
@@ -179,6 +173,8 @@ program lmi2main
 
            call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmin,gam,beta/))
+
         end do
 
      end do
@@ -191,20 +187,14 @@ program lmi2main
 
   beta=10.
 
-  gamValues(1)=0.18_kp
+  gamValues(1)=0.22_kp
   NxEndValues(1)=10
-  gamValues(2)=0.2_kp
+  gamValues(2)=0.235_kp
   NxEndValues(2)=10
-  gamValues(3)=0.22_kp
-  NxEndValues(3)=10
-  gamValues(4)=0.235_kp
-  NxEndValues(4)=8
-  gamValues(5)=0.25_kp
-  NxEndValues(5)=10
-  gamValues(6)=0.27_kp
-  NxEndValues(6)=10
+  gamValues(3)=0.24_kp
+  NxEndValues(3)=12
 
-  do j=1,size(gamValues) 
+  do j=1,3
      gam=gamValues(j)
      NxEnd=nxEndValues(j)
 
@@ -250,12 +240,15 @@ program lmi2main
 
            call livewrite('lmi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend/xendmin,gam,beta/))
+
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

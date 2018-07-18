@@ -12,6 +12,8 @@ program saaimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
 
   implicit none
 
@@ -35,9 +37,9 @@ program saaimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  alphamin=0.1
-  alphamax=5.
-  Nalpha = 200
+  alphamin=0.05
+  alphamax=80.
+  Nalpha = 500
 
 
   Pstar = powerAmpScalar
@@ -45,6 +47,8 @@ program saaimain
   call delete_file('saai_predic.dat')
   call delete_file('saai_nsr.dat')
 
+  call aspicwrite_header('saai',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
 !  do j=1,size(alphavalues)
   do j=1,Nalpha
 
@@ -77,12 +81,15 @@ program saaimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
         call livewrite('saai_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 
      end do
 
   end do
 
+  call aspicwrite_end()
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

@@ -17,13 +17,16 @@ program nfi2main
   use nficommon, only : nfi_x_epstwounity,nfi_x_trajectory,nfi_x_epsoneunity
   use srreheat, only : potential_normalization, primscalar
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
-  integer :: npts = 10
+  integer :: i,j
+  integer :: npts = 20
 
   real(kp) :: a,b,w,bfoldstar,y
   real(kp) :: astep, bstep, ystep
@@ -37,24 +40,29 @@ program nfi2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  integer, parameter :: nvec = 4
+  real(kp), dimension(nvec) :: avec, bvec
+  
   Pstar = powerAmpScalar
 
   call delete_file('nfi2_predic.dat')
   call delete_file('nfi2_nsr.dat')
 
+  call aspicwrite_header('nfi2',labeps12,labnsr,labbfoldreh,(/'xendnminmax','a          ','b          '/))
+  
   w = 0
   efoldMax=120
 
-  bstep = 0.6
-  astep = 0.01
-  ystep = 0.2
+  ystep = 0.05
 
+  bvec = (/2.5,2.5,3.5,3.5/)
+  avec = (/-0.4,-0.01,-0.4,-0.01/)
+  
 
-  b = 1.1 - bstep
-
-  do while (b+bstep<4)
+  do j=1,nvec
      
-     b = b+bstep
+     b = bvec(j)
+     a = avec(j)
 
      if (b.lt.2) then
         amin = nfi2_amin(efoldMax,b)
@@ -62,69 +70,74 @@ program nfi2main
         amin=-huge(1._kp)
      endif
 
-     a=0.99*max(amin,-0.5) - astep
+     a=0.99*max(amin,a)
 
      print *,'a= b= amin= ',a,b,amin
     
-     do while (a + astep < -1e-4)
+     
+     
+     
+     
+     xendmin = nfi2_numacc_xendmin(a,b)
 
-        a = a+astep
+     xendmax = nfi2_numacc_xendmax(efoldMax,a,b)
 
-        xendmin = nfi2_numacc_xendmin(a,b)
+     if (xendmax.lt.xendmin) cycle
 
-        xendmax = nfi2_numacc_xendmax(efoldMax,a,b)
-        
-        if (xendmax.lt.xendmin) cycle
+     y=1e-2
 
-        y=1e-2
+     do while (y<1)
 
-        do while (y<1)
-           
-           xend = xendmin + y*(xendmax-xendmin)
+        xend = xendmin + y*(xendmax-xendmin)
 
-           y = exp(log(y)+ystep)
 
-           print *,'a= b= xend= ',a,b,xend
-           print *,'xendmin xendmax=',xendmin,xendmax
+        print *,'a= b= xend= ',a,b,xend
+        print *,'xendmin xendmax=',xendmin,xendmax
 
-           lnRhoRehMin = lnRhoNuc
+        lnRhoRehMin = lnRhoNuc
 
-           lnRhoRehMax = nfi2_lnrhoreh_max(a,b,xend,Pstar)
+        lnRhoRehMax = nfi2_lnrhoreh_max(a,b,xend,Pstar)
 
-           
-           print *,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
 
-           do i=1,npts
+        print *,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
 
-              lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-              xstar = nfi2_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
+        do i=1,npts
 
-              print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           xstar = nfi2_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
 
-              eps1 = nfi2_epsilon_one(xstar,a,b)
-              eps2 = nfi2_epsilon_two(xstar,a,b)
-              eps3 = nfi2_epsilon_three(xstar,a,b)       
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
-              logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-              Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+           eps1 = nfi2_epsilon_one(xstar,a,b)
+           eps2 = nfi2_epsilon_two(xstar,a,b)
+           eps3 = nfi2_epsilon_three(xstar,a,b)       
 
-              ns = 1._kp - 2._kp*eps1 - eps2
-              r =16._kp*eps1
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-              if (abs(ns-1).gt.0.15) cycle
-              if (r.lt.1e-10) cycle
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
 
-              call livewrite('nfi2_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
+           !              if (abs(ns-1).gt.0.15) cycle
+           !              if (r.lt.1e-10) cycle
 
-              call livewrite('nfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           call livewrite('nfi2_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
 
-           end do           
+           call livewrite('nfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-        enddo       
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/y,a,b/))
+
+        end do
+
+        y = exp(log(y)+ystep)
 
      enddo
 
   enddo
+
+  
+
+  call aspicwrite_end()
 
 ! Test reheating with lnRrad and lnR
 

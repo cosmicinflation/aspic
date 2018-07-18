@@ -16,13 +16,17 @@ program nfi1main
 
   use srreheat, only : potential_normalization, primscalar
 
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
-  integer :: npts = 10
+  integer :: i,j
+  integer :: npts = 20
 
   real(kp) :: a,b,w,bfoldstar
   real(kp) :: astep, bstep
@@ -36,22 +40,29 @@ program nfi1main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: bvec
+  
   Pstar = powerAmpScalar
 
   call delete_file('nfi1_predic.dat')
   call delete_file('nfi1_nsr.dat')
 
+  call aspicwrite_header('nfi1',labeps12,labnsr,labbfoldreh,(/'a','b'/))
+  
   w = 0
   efoldMax=120
 
-  bstep =0.2
-  astep = 0.006
 
-  b = 1.8 - bstep
+  astep = 0.001
 
-  do while (b+bstep<4)
 
-     b=b+bstep
+
+  bvec=(/2.7,3.4,4.0/)
+  
+  do j=1,nvec
+
+     b=bvec(j)
 
      amin = nfi1_numacc_amin(b)
      if (b.lt.2) then
@@ -64,7 +75,7 @@ program nfi1main
 
      print *,'a= b= amin= amax= ',a,b,amin,amax
 
-     do while (a+astep < min(0.1,amax))
+     do while (a + astep < min(0.1,amax))
  
         a=a+astep
         
@@ -91,18 +102,22 @@ program nfi1main
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           if (abs(ns-1).gt.0.15) cycle
-           if (r.lt.1e-10) cycle
+!           if (abs(ns-1).gt.0.15) cycle
+!           if (r.lt.1e-10) cycle
 
            call livewrite('nfi1_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('nfi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-        end do
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/a,b/))
 
+        end do
+        
      enddo
   enddo
 
+  call aspicwrite_end()
+  
 ! Test reheating with lnRrad and lnR
 
   write(*,*)

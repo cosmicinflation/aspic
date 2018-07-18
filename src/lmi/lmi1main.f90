@@ -11,6 +11,9 @@ program lmi1main
   use lmi1reheat, only : lmi1_x_rreh, lmi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
   
   implicit none
 
@@ -52,7 +55,10 @@ program lmi1main
   call delete_file('lmi1_predic.dat')
   call delete_file('lmi1_nsr.dat')
 
+  
+  call aspicwrite_header('lmi1',labeps12,labnsr,labbfoldreh,(/'gamma','beta '/))
 
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -61,7 +67,7 @@ program lmi1main
 !!!!!!!!!!!!!!!!!!!!!!!
 
   beta=0.001
-  Ngam=20
+  Ngam=30
   gammin=0.004
   gammax=0.99
   
@@ -103,6 +109,8 @@ program lmi1main
         call livewrite('lmi1_predic.dat',gam,beta,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('lmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/gam,beta/))
 
      end do
 
@@ -156,6 +164,8 @@ program lmi1main
 
         call livewrite('lmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/gam,beta/))
+        
      end do
 
   end do
@@ -165,7 +175,7 @@ program lmi1main
 !!!!!   beta=50   !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!
   beta=50.
-  gammin=0.005
+  gammin=0.02
   gammax=0.07
   Ngam=50
 
@@ -207,12 +217,16 @@ program lmi1main
         call livewrite('lmi1_predic.dat',gam,beta,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('lmi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/gam,beta/))
+        
      end do
 
   end do
 
 
+  call aspicwrite_end()
+  
  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

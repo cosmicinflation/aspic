@@ -13,6 +13,9 @@ program vhimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -39,8 +42,13 @@ program vhimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
+  integer, parameter :: nvec = 3
+  real(kp), dimension(nvec) :: muvec
+  
   Pstar = powerAmpScalar
 
+  call aspicwrite_header('vhi',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
+  
   call delete_file('vhi_predic.dat')
   call delete_file('vhi_nsr.dat')
 
@@ -56,13 +64,12 @@ program vhimain
 !!!!!!!!!!!!!!!!!!!!!
 
   p=0.5_kp
-  Nmu=8
-  mumin=0.001_kp
-  mumax=1000000._kp
-  NxEnd=30
+  NxEnd=100
 
-  do j=0,Nmu
-     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+  muvec = (/0.01, 10.0, 1000.0/)
+  
+  do j=1,nvec
+     mu=muvec(j)
      xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
      xEndmax=vhi_xinimax(p,mu)*0.99
 
@@ -100,6 +107,8 @@ program vhimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,mu,p/))
+           
             if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -120,13 +129,12 @@ program vhimain
 
 
   p=1._kp
-  Nmu=8
-  mumin=0.001_kp
-  mumax=1000._kp
-  NxEnd=15
+  NxEnd=30
 
-  do j=0,Nmu
-     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+  muvec = (/0.1, 1.0, 10./)
+
+  do j=1,nvec
+     mu = muvec(j)
      xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
      xEndmax=vhi_xinimax(p,mu)*0.99
 
@@ -164,6 +172,8 @@ program vhimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,mu,p/))
+           
             if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -184,13 +194,13 @@ program vhimain
 !!!!!!!!!!!!!!!!!!!!!
 
   p=1.5_kp
-  Nmu=15
-  mumin=0.8_kp
-  mumax=1000._kp
-  NxEnd=40
+  NxEnd=80
 
-  do j=0,Nmu
-     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+  muvec = (/1.0, 5.0, 7.0/)
+  
+  do j=1,nvec
+     mu=muvec(j)
+
      xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
      xEndmax=vhi_xinimax(p,mu)*0.99
      xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
@@ -228,6 +238,8 @@ program vhimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,mu,p/))
+           
            if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -248,13 +260,12 @@ program vhimain
 !!!!!!!!!!!!!!!!!!!!!
 
   p=2._kp
-  Nmu=25
-  mumin=0.8_kp
-  mumax=1000._kp
-  NxEnd=50
+  NxEnd=100
 
-  do j=0,Nmu
-     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+  muvec = (/0.8, 8.0, 80.0/)
+  
+  do j=1,nvec
+     mu=muvec(j)
      xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
      xEndmax=vhi_xinimax(p,mu)*0.99
      xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
@@ -293,6 +304,8 @@ program vhimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,mu,p/))
+           
            if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -315,13 +328,12 @@ program vhimain
 !!!!!!!!!!!!!!!!!!!!!
 
   p=3._kp
-  Nmu=20
-  mumin=0.8_kp
-  mumax=1000._kp
   NxEnd=150
 
-  do j=0,Nmu
-     mu=mumin*(mumax/mumin)**(real(j,kp)/Nmu)
+  muvec = (/0.8, 8.0, 80.0/)
+  
+  do j=1,nvec
+     mu=muvec(j)
      xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
      xEndmax=vhi_xinimax(p,mu)*0.99
      xEndmax=min(vhi_xendmax(50._kp,p,mu),10._kp) !To remain vacum dominated
@@ -360,6 +372,8 @@ program vhimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xend,mu,p/))
+           
            if (has_not_shifted(0.01_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
               cycle
            endif
@@ -377,7 +391,7 @@ program vhimain
   end do
 
 
-
+  call aspicwrite_end()
 
 
   write(*,*)

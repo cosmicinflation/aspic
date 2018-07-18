@@ -11,7 +11,10 @@ program oripimain
   use oripireheat, only : oripi_x_rreh, oripi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
-
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -48,6 +51,7 @@ program oripimain
   call delete_file('oripi_predic.dat')
   call delete_file('oripi_nsr.dat')
 
+  call aspicwrite_header('oripi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
 
   do j=1,nphi0
 
@@ -81,11 +85,14 @@ program oripimain
         call livewrite('oripi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('oripi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+        
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
 
      end do
 
   end do
 
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!

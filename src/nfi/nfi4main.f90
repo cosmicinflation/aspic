@@ -15,13 +15,16 @@ program nfi4main
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
   use srreheat, only : potential_normalization, primscalar
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
-  integer :: npts = 10
+  integer :: i,j
+  integer :: npts = 20
 
   real(kp) :: a,b,w,bfoldstar,y
   real(kp) :: astep, bstep, ystep
@@ -35,165 +38,167 @@ program nfi4main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  Pstar = powerAmpScalar
+  integer, parameter :: nvec = 4
+  real(kp), dimension(nvec) :: avec, bvec
 
+  Pstar = powerAmpScalar
+  
   call delete_file('nfi4_predic.dat')
   call delete_file('nfi4_nsr.dat')
 
+  call aspicwrite_header('nfi4',labeps12,labnsr,labbfoldreh,(/'xendnminmax','a          ','b          '/))
+  
   w = 0
   efoldMax=120
 
 !region a>0 and 0<b<1
-  bstep = 0.2
-  astep = 0.3
-  ystep = 0.2
+
+  ystep = 0.01
 
 
-  b = 0.001 - bstep
+  bvec = (/0.7,0.7,0.8,0.8/)
+  avec = (/0.8,2.0,0.2,0.8/)
 
-  do while (b+bstep<1)
+  do j=1,nvec
+
+     b = bvec(j)        
+     a = avec(j)
      
-     b = b+bstep
-         
-     a = 0.05
 
-     do while (a + astep < 2)
+     xendmin = nfi4_xendmin(efoldMax,a,b)
+     xendmax = nfi4_numacc_xendmax(a,b)
 
-        a = a+astep
+     if (xendmax.le.xendmin) then
+        print *,'a= b=',a,b,xendmin,xendmax
+        cycle
 
-        xendmin = nfi4_xendmin(efoldMax,a,b)
-        
-        xendmax = nfi4_numacc_xendmax(a,b)
+     endif
+     y=1e-2
 
-        if (xendmax.le.xendmin) cycle
+     do while (y<1)
 
-        y=1e-2
+        xend = xendmin + y*(xendmax-xendmin)
 
-        do while (y<1)
-           
-           xend = xendmin + y*(xendmax-xendmin)
+        print *,'a= b= xend= ',a,b,xend
+        print *,'xendmin xendmax=',xendmin,xendmax
 
-           y = exp(log(y)+ystep)
+        lnRhoRehMin = lnRhoNuc
 
-           print *,'a= b= xend= ',a,b,xend
-           print *,'xendmin xendmax=',xendmin,xendmax
+        lnRhoRehMax = nfi4_lnrhoreh_max(a,b,xend,Pstar)
 
-           lnRhoRehMin = lnRhoNuc
 
-           lnRhoRehMax = nfi4_lnrhoreh_max(a,b,xend,Pstar)
+        print *,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
 
-           
-           print *,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
+        do i=1,npts
 
-           do i=1,npts
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           xstar = nfi4_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
 
-              lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-              xstar = nfi4_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
-              print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
+           eps1 = nfi4_epsilon_one(xstar,a,b)
+           eps2 = nfi4_epsilon_two(xstar,a,b)
+           eps3 = nfi4_epsilon_three(xstar,a,b)       
 
-              eps1 = nfi4_epsilon_one(xstar,a,b)
-              eps2 = nfi4_epsilon_two(xstar,a,b)
-              eps3 = nfi4_epsilon_three(xstar,a,b)       
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-              logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-              Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
 
-              ns = 1._kp - 2._kp*eps1 - eps2
-              r =16._kp*eps1
+!           if (abs(ns-1).gt.0.15) cycle
+!           if (r.lt.1e-10) cycle
 
-              if (abs(ns-1).gt.0.15) cycle
-              if (r.lt.1e-10) cycle
+           call livewrite('nfi4_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
 
-              call livewrite('nfi4_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('nfi4_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-              call livewrite('nfi4_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/y,a,b/))
 
-           end do           
+        end do
 
-        enddo       
+        y = exp(log(y)+ystep)
 
      enddo
 
   enddo
+
+
 
 
 !region a<0 and b<0
-  bstep = 0.2
-  astep = 0.3
-  ystep = 0.2
+
+  ystep = 0.01
 
 
-  b = -2 - bstep
-
-  do while (b+bstep<0)
+  bvec = (/-5.0, -5.0, -0.05,-0.05/)
+  avec = (/-1.0, -0.001,-1.0,-0.0000001/)
+  
+  do j=1,nvec
      
-     b = b+bstep
+     b = bvec(j)
          
-     a = -3
+     a = avec(j)
 
-     do while (a + astep < 0)
+     xendmin = nfi4_xendmin(efoldMax,a,b)
 
-        a = a+astep
+     xendmax = nfi4_numacc_xendmax(a,b)
 
-        xendmin = nfi4_xendmin(efoldMax,a,b)
-        
-        xendmax = nfi4_numacc_xendmax(a,b)
+     print *,'test',xendmin,xendmax
 
-        print *,'test',xendmin,xendmax
+     if (xendmax.le.xendmin) cycle
 
-        if (xendmax.le.xendmin) cycle
+     y=1e-2
 
-        y=1e-2
+     do while (y<1)
 
-        do while (y<1)
-           
-           xend = xendmin + y*(xendmax-xendmin)
+        xend = xendmin + y*(xendmax-xendmin)         
 
-           y = exp(log(y)+ystep)
+        print *,'a= b= xend= ',a,b,xend
+        print *,'xendmin xendmax=',xendmin,xendmax
 
-           print *,'a= b= xend= ',a,b,xend
-           print *,'xendmin xendmax=',xendmin,xendmax
+        lnRhoRehMin = lnRhoNuc
 
-           lnRhoRehMin = lnRhoNuc
+        lnRhoRehMax = nfi4_lnrhoreh_max(a,b,xend,Pstar)
 
-           lnRhoRehMax = nfi4_lnrhoreh_max(a,b,xend,Pstar)
 
-           
-           print *,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
+        print *,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
 
-           do i=1,npts
+        do i=1,npts
 
-              lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-              xstar = nfi4_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           xstar = nfi4_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
 
-              print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
-              eps1 = nfi4_epsilon_one(xstar,a,b)
-              eps2 = nfi4_epsilon_two(xstar,a,b)
-              eps3 = nfi4_epsilon_three(xstar,a,b)       
+           eps1 = nfi4_epsilon_one(xstar,a,b)
+           eps2 = nfi4_epsilon_two(xstar,a,b)
+           eps3 = nfi4_epsilon_three(xstar,a,b)       
 
-              logErehGeV = log_energy_reheat_ingev(lnRhoReh)
-              Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-              ns = 1._kp - 2._kp*eps1 - eps2
-              r =16._kp*eps1
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
 
-              if (abs(ns-1).gt.0.15) cycle
-              if (r.lt.1e-10) cycle
+!           if (abs(ns-1).gt.0.15) cycle
+!           if (r.lt.1e-10) cycle
 
-              call livewrite('nfi4_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('nfi4_predic.dat',a,b,eps1,eps2,eps3,r,ns,Treh)
 
-              call livewrite('nfi4_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           call livewrite('nfi4_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-           end do           
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/y,a,b/))
 
-        enddo       
+        end do
+
+        y = exp(log(y)+ystep)
 
      enddo
 
   enddo
 
+ call aspicwrite_end()
 
 
 

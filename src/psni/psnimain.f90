@@ -12,6 +12,10 @@ program psnimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -43,7 +47,10 @@ program psnimain
   call delete_file('psni_predic.dat')
   call delete_file('psni_nsr.dat')
 
-  npts = 8
+  call aspicwrite_header('psni',labeps12,labnsr,labbfoldreh,(/'alpha','f    '/))
+  
+  
+  npts = 20
   nalpha=40
   w=0._kp
   !  w = 1._kp/3._kp
@@ -89,14 +96,16 @@ program psnimain
            r =16._kp*eps1
 
            
-           if (has_not_shifted(0.002_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-              cycle
-           endif
+!           if (has_not_shifted(0.002_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+!              cycle
+!           endif
           
-           if (abs(eps2).gt.0.2) cycle
+!           if (abs(eps2).gt.0.2) cycle
 
-           if (r.lt.1e-12) cycle
+!           if (r.lt.1e-12) cycle
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,f/))
+           
            call livewrite('psni_predic.dat',alpha,f,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('psni_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -107,7 +116,9 @@ program psnimain
 
   end do
 
+  call aspicwrite_end()
 
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

@@ -12,6 +12,10 @@ program oimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+
+  
   implicit none
 
 
@@ -43,20 +47,21 @@ program oimain
   npts = 20
 
 
-  nphi0=3
+  nphi0=2
   allocate(phi0values(1:nphi0))
   phi0values(1)=0.0001_kp
-  phi0values(2)=0.01_kp
-  phi0values(3)=1._kp
+  phi0values(2)=0.1_kp
 
 
   alphamin=10._kp**(-3._kp)
   alphamax=10._kp**(-1._kp)
-  nalpha=10
+  nalpha=5
 
   w=0._kp
   !  w = 1._kp/3._kp
 
+  call aspicwrite_header('oi',labeps12,labnsr,labbfoldreh,(/'alpha','phi0 '/))
+  
   call delete_file('oi_predic.dat')
   call delete_file('oi_nsr.dat')
 
@@ -95,13 +100,16 @@ program oimain
 
            call livewrite('oi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,phi0/))
+
         end do
 
      end do
 
   end do
 
-
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

@@ -12,6 +12,9 @@ program kmiimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -46,8 +49,10 @@ program kmiimain
   call delete_file('kmii_predic.dat')
   call delete_file('kmii_nsr.dat')
 
+  call aspicwrite_header('kmii',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
   do j=1,nalpha
-     alpha = alphamin+(real(j,kp)/real(nalpha,kp))*(alphamax-alphamin) !arithmetic step
+!     alpha = alphamin+(real(j,kp)/real(nalpha,kp))*(alphamax-alphamin) !arithmetic step
      alpha = alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp)) !logarithmic step
 
 
@@ -78,10 +83,14 @@ program kmiimain
 
         call livewrite('kmii_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
      end do
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

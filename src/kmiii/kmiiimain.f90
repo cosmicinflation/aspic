@@ -13,13 +13,16 @@ program kmiiimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 20, nalpha=20, nnu=15
+  integer :: npts = 15, nalpha=20, nnu=30
   integer :: nbetaprior, nnuxend
 
   real(kp) :: alpha,beta,w,bfoldstar
@@ -69,6 +72,8 @@ program kmiiimain
   call delete_file('kmiii_predic.dat')
   call delete_file('kmiii_nsr.dat')
 
+  call aspicwrite_header('kmiii',labeps12,labnsr,labbfoldreh,(/'calVs'/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -110,11 +115,14 @@ program kmiiimain
 
            call livewrite('kmiii_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/nu/))
+           
        end do
 
   end do
 
-
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!                                   !!!
 !!!         Further Tests             !!!

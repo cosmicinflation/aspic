@@ -6,14 +6,16 @@ program sfimain
   use sfireheat, only : sfi_xpmu_fromepsilon, sfi_lnrhoreh_fromepsilon
   use sfisr, only : sfi_epsilon_one, sfi_epsilon_two,sfi_epsilon_three
   use infinout, only : delete_file, livewrite
-  use infinout, only : labeps12, labnsr, labbfoldreh
-  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
   use sfisr, only : sfi_norm_potential, sfi_x_endinf
   use sfireheat, only : sfi_x_rreh, sfi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
+
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+
   implicit none
 
   type(transfert) :: sfiData
@@ -53,7 +55,7 @@ program sfimain
 !!!! p=1  !!!!
 !!!!!!!!!!!!!!
 
-  mumin=12.
+  mumin=11.
   mumax=10._kp**(3.)
   p = 1._kp
 

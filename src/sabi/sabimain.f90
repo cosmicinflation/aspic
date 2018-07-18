@@ -12,7 +12,8 @@ program sabimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
 
 
   implicit none
@@ -50,20 +51,22 @@ program sabimain
 !!      n=1      !!
 !!!!!!!!!!!!!!!!!!!
 
-call delete_file('sabi_predic_neq1.dat')
-call delete_file('sabi_nsr_neq1.dat')
+  call delete_file('sabi_predic_neq1.dat')
+  call delete_file('sabi_nsr_neq1.dat')
 
+  call aspicwrite_header('sabi',labeps12,labnsr,labbfoldreh,(/'alpha','n    '/))
+  
   n=1._kp
 
-  npts = 10
-  nalpha = 100
+  npts = 20
+  nalpha = 500
 
   w=0._kp
   !  w = 1._kp/3._kp
 
 
-  alphamin=0.1_kp
-  alphamax=5._kp
+  alphamin=0.05_kp
+  alphamax=80._kp
 
   do k=0,nalpha
     alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
@@ -97,6 +100,8 @@ call delete_file('sabi_nsr_neq1.dat')
 
       print*, 'nS=',ns,'r=',r
 
+      call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,n/))
+      
       call livewrite('sabi_predic_neq1.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
 
       call livewrite('sabi_nsr_neq1.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -115,17 +120,17 @@ end do
 call delete_file('sabi_predic_neq5.dat')
 call delete_file('sabi_nsr_neq5.dat')
 
-  n=2._kp
+  n=5._kp
 
-  npts = 10
-  nalpha = 100
+  npts = 20
+  nalpha = 500
 
   w=0._kp
   !  w = 1._kp/3._kp
 
 
-  alphamin=0.1_kp
-  alphamax=5._kp
+  alphamin=0.05_kp
+  alphamax=80._kp
 
   do k=0,nalpha
     alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
@@ -160,17 +165,79 @@ call delete_file('sabi_nsr_neq5.dat')
 
       print*, 'nS=',ns,'r=',r
 
+      call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,n/))
+      
       call livewrite('sabi_predic_neq5.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
 
       call livewrite('sabi_nsr_neq5.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
 
+   end do
+
+
+ end do
+
+
+ n=10._kp
+
+ npts = 20
+ nalpha = 500
+
+ w=0._kp
+ !  w = 1._kp/3._kp
+
+
+ alphamin=0.05_kp
+ alphamax=80._kp
+
+ do k=0,nalpha
+    alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
+
+    print*,'alpha=',alpha,'n=',n
+
+
+    lnRhoRehMin = lnRhoNuc
+    lnRhoRehMax = sabi_lnrhoreh_max(alpha,n,Pstar)
+
+    print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+
+    do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = sabi_x_star(alpha,n,w,lnRhoReh,Pstar,bfoldstar)
+
+       eps1 = sabi_epsilon_one(xstar,alpha,n)
+       eps2 = sabi_epsilon_two(xstar,alpha,n)
+       eps3 = sabi_epsilon_three(xstar,alpha,n)
+
+       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+
+       print*, 'nS=',ns,'r=',r
+
+       call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,n/))
+
+       call livewrite('sabi_predic_neq5.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
+
+       call livewrite('sabi_nsr_neq5.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+
     end do
 
 
-end do
+ end do
 
 
+ 
+ call aspicwrite_end()
 
 
 

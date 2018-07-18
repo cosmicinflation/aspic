@@ -12,6 +12,9 @@ program rcqimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -42,7 +45,7 @@ program rcqimain
   alphavalues(5)=(10._kp)**(-0.5)
   alphavalues(6)=(10._kp)**(-0.485)
 
-  alphamin=10.**(-2.5)
+  alphamin=10.**(-2.0)
   alphamax=10.**(-0.4)
 
 
@@ -52,6 +55,8 @@ program rcqimain
   call delete_file('rcqi_predic.dat')
   call delete_file('rcqi_nsr.dat')
 
+  call aspicwrite_header('rcqirad',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
   do j=1,1000
      w = 1._kp/3._kp
      alpha=alphamin+(alphamax-alphamin)*(real(j-1,kp)/real(1000,kp))
@@ -81,27 +86,34 @@ program rcqimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
-         if (has_not_shifted(0.005_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
-            cycle
-         endif
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
+        if (has_not_shifted(0.005_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
+           cycle
+        endif
 
-           
-         if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
-                .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
+        if ((eps1.lt.1e-5).or.(eps1.gt.0.1) &
+             .and.(eps2.lt.0.1).and.(eps2.gt.0.15)) cycle
 
 
         call livewrite('rcqi_predic.dat',alpha,w,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('rcqi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+        
+        
      end do
 
   end do
 
-  do j=1,size(alphavalues)
-     w=0._kp
-     alpha=alphavalues(j)
+  call aspicwrite_end()
 
+  call aspicwrite_header('rcqi',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+
+  do j=1,1000
+     w=0._kp
+
+     alpha=alphamin+(alphamax-alphamin)*(real(j-1,kp)/real(1000,kp))
 
      lnRhoRehMin = lnRhoNuc
      lnRhoRehMax = rcqi_lnrhoreh_max(alpha,Pstar)
@@ -126,6 +138,9 @@ program rcqimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
+        
          if (has_not_shifted(0.005_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
             cycle
          endif
@@ -142,6 +157,8 @@ program rcqimain
      end do
 
   end do
+
+  call aspicwrite_end()
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

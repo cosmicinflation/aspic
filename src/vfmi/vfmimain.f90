@@ -21,7 +21,11 @@ program vfmimain
   use vfmireheat, only : vfmi_x_rreh, vfmi_x_rrad
 
   use infinout, only : delete_file, livewrite
+  
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
 
+  
   implicit none
   
   logical, parameter :: testParametric = .true.
@@ -107,7 +111,10 @@ program vfmimain
 
   end if
 
-
+  npts = 20
+  
+  call aspicwrite_header('vfmi',labeps12,labnsr,labbfoldreh,(/'beta ','alpha'/))
+  
   call delete_file('vfmi_predic.dat')
   call delete_file('vfmi_nsr.dat')
 
@@ -117,14 +124,11 @@ program vfmimain
 
      print *,'alpha= ',alpha
 
-     nbeta = 10
+     nbeta = 50
      betamin=0.001
      betamax = min(10.,vfmi_numacc_betamax(300._kp,alpha)) 
      print *,'betamax=',betamax
 
-
-
-     npts = 20
 
      do k=1,nbeta
         beta = exp(log(betamin) + (log(betamax)-log(betamin))*real(k-1,kp)/real(nbeta-1,kp))
@@ -152,6 +156,8 @@ program vfmimain
            ns = 1._kp-2._kp*eps1 - eps2
            r = 16._kp*eps1
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/beta,alpha/))
+           
            !for sparing size
            !           if (abs(ns-1).gt.0.15) cycle
            !           if (r.lt.1e-10) cycle
@@ -165,6 +171,7 @@ program vfmimain
 
   enddo
 
+  call aspicwrite_end()
 
 
   write(*,*)

@@ -12,7 +12,9 @@ program lpi2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
@@ -49,10 +51,12 @@ program lpi2main
   call delete_file('lpi2_predic.dat')
   call delete_file('lpi2_nsr.dat')
 
+  call aspicwrite_header('lpi2',labeps12,labnsr,labbfoldreh,(/'phi0','p   ','q   '/))
+  
   w=0._kp
   !  w = 1._kp/3._kp
 
-  npts = 7
+  npts = 15
 
   npq=3
 
@@ -112,12 +116,15 @@ program lpi2main
 
            call livewrite('lpi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0,p,q/))
+
         end do
 
      end do
 
   end do
 
+  call aspicwrite_end()
 
  write(*,*)
   write(*,*)'Testing Rrad/Rreh'

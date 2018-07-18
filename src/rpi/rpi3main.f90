@@ -12,13 +12,16 @@ program rpi3main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh
+  
   implicit none
 
 
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 10
+  integer :: npts = 15
 
   integer :: Np=20
   real(kp) :: pmin=0.8_kp
@@ -39,7 +42,8 @@ program rpi3main
   call delete_file('rpi3_predic.dat')
   call delete_file('rpi3_nsr.dat')
 
-
+  call aspicwrite_header('rpi3',labeps12,labnsr,labbfoldreh,(/'1mp'/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -80,6 +84,8 @@ program rpi3main
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/1._kp-p/))
+        
         call livewrite('rpi3_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('rpi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -88,6 +94,8 @@ program rpi3main
 
   end do
 
+  call aspicwrite_end()
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 

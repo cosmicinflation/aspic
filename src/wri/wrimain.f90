@@ -12,6 +12,9 @@ program wrimwrin
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
+  use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
+  use infinout, only : labeps12, labnsr, labbfoldreh 
+  
   implicit none
 
   
@@ -34,10 +37,12 @@ program wrimwrin
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  Nphi0=10
+  Nphi0=100
 
   Pstar = powerAmpScalar
 
+  call aspicwrite_header('wri',labeps12,labnsr,labbfoldreh,(/'phi0'/))
+  
   call delete_file('wri_predic.dat')
   call delete_file('wri_nsr.dat')
 
@@ -46,8 +51,8 @@ program wrimwrin
 
  do j=0,Nphi0
 
- phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
- phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+! phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+    phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
 
   lnRhoRehMin = lnRhoNuc
   lnRhoRehMax = wri_lnrhoreh_max(phi0,Pstar)
@@ -73,6 +78,8 @@ program wrimwrin
        ns = 1._kp - 2._kp*eps1 - eps2
        r =16._kp*eps1
 
+       call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+       
        call livewrite('wri_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
 
        call livewrite('wri_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -81,6 +88,8 @@ program wrimwrin
 
  end do
 
+ call aspicwrite_end()
+ 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!          Testing Rrad/Rreh           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
