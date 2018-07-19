@@ -57,7 +57,8 @@ program kmiimain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = kmii_lnrhoreh_max(alpha,Pstar)
+     xEnd = kmii_x_endinf(alpha)
+     lnRhoRehMax = kmii_lnrhoreh_max(alpha,xend,Pstar)
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -65,7 +66,7 @@ program kmiimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = kmii_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = kmii_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -102,14 +103,15 @@ program kmiimain
   w=0._kp
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+     xEnd = kmii_x_endinf(alpha)
      lnRhoReh = lnRhoNuc
-     xstarA = kmii_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = kmii_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = kmii_epsilon_one(xstarA,alpha)
      eps2A = kmii_epsilon_two(xstarA,alpha)
      eps3A = kmii_epsilon_three(xstarA,alpha)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = kmii_lnrhoreh_max(alpha,Pstar)
+     lnRhoReh = kmii_lnrhoreh_max(alpha,xend,Pstar)
      xstarB = kmii_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = kmii_epsilon_one(xstarB,alpha)
      eps2B = kmii_epsilon_two(xstarB,alpha)
@@ -125,11 +127,12 @@ program kmiimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 10
+  xEnd = kmii_x_endinf(alpha)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = kmii_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = kmii_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -137,14 +140,13 @@ program kmiimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = kmii_x_endinf(alpha)
      eps1end =  kmii_epsilon_one(xend,alpha)
      VendOverVstar = kmii_norm_potential(xend,alpha)/kmii_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = kmii_x_rreh(alpha,lnR,bfoldstar)
+     xstar = kmii_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -152,7 +154,7 @@ program kmiimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = kmii_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = kmii_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

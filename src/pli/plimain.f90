@@ -7,7 +7,7 @@ program plimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use plisr, only : pli_norm_potential
+  use plisr, only : pli_norm_potential, pli_x_endinf
   use plireheat, only : pli_x_rreh, pli_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -52,7 +52,8 @@ program plimain
      w=0._kp
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = pli_lnrhoreh_max(alpha,Pstar)
+     xEnd=pli_x_endinf(alpha)
+     lnRhoRehMax = pli_lnrhoreh_max(alpha,xend,Pstar)
   
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -62,7 +63,7 @@ program plimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = pli_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = pli_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -101,15 +102,16 @@ program plimain
   w=0._kp
   do i=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(i,kp)/real(nalpha,kp))
+     xEnd=pli_x_endinf(alpha)
      lnRhoReh = lnRhoNuc
-     xstarA = pli_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = pli_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = pli_epsilon_one(xstarA,alpha)
      eps2A = pli_epsilon_two(xstarA,alpha)
      eps3A = pli_epsilon_three(xstarA,alpha)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = pli_lnrhoreh_max(alpha,Pstar)
-     xstarB = pli_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = pli_lnrhoreh_max(alpha,xend,Pstar)
+     xstarB = pli_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = pli_epsilon_one(xstarB,alpha)
      eps2B = pli_epsilon_two(xstarB,alpha)
      eps3B = pli_epsilon_three(xstarB,alpha)
@@ -126,11 +128,14 @@ program plimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 0.99
+
+  xEnd=pli_x_endinf(alpha)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = pli_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = pli_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -145,7 +150,7 @@ program plimain
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = pli_x_rreh(alpha,lnR,bfoldstar)
+     xstar = pli_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -153,7 +158,7 @@ program plimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = pli_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = pli_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

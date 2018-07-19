@@ -22,15 +22,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function hbi_x_star(n,phi0,w,lnRhoReh,Pstar,bfold)
+  function hbi_x_star(n,phi0,xend,w,lnRhoReh,Pstar,bfold)
     implicit none
     real(kp) :: hbi_x_star
-    real(kp), intent(in) :: n,phi0,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: n,phi0,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hbiData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = hbi_x_endinf(n,phi0)
     epsOneEnd = hbi_epsilon_one(xEnd,n,phi0)
 
     potEnd = hbi_norm_potential(xEnd,n,phi0)
@@ -92,15 +91,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function hbi_x_rrad(n,phi0,lnRrad,Pstar,bfold)
+  function hbi_x_rrad(n,phi0,xend,lnRrad,Pstar,bfold)
     implicit none
     real(kp) :: hbi_x_rrad
-    real(kp), intent(in) :: n,phi0,lnRrad,Pstar
+    real(kp), intent(in) :: n,phi0,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hbiData
     
@@ -108,7 +107,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
    
-    xEnd = hbi_x_endinf(n,phi0)
     epsOneEnd = hbi_epsilon_one(xEnd,n,phi0)
 
     potEnd = hbi_norm_potential(xEnd,n,phi0)
@@ -160,15 +158,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function hbi_x_rreh(n,phi0,lnRreh,bfold)    
+  function hbi_x_rreh(n,phi0,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: hbi_x_rreh
-    real(kp), intent(in) :: n,phi0,lnRreh
+    real(kp), intent(in) :: n,phi0,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hbiData
     
@@ -176,7 +174,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
    
-    xEnd = hbi_x_endinf(n,phi0)
     epsOneEnd = hbi_epsilon_one(xEnd,n,phi0)
 
     potEnd = hbi_norm_potential(xEnd,n,phi0)
@@ -225,23 +222,22 @@ contains
 
 
 
-  function hbi_lnrhoreh_max(n,phi0,Pstar) 
+  function hbi_lnrhoreh_max(n,phi0,xend,Pstar) 
     implicit none
     real(kp) :: hbi_lnrhoreh_max
-    real(kp), intent(in) :: n,phi0,Pstar
+    real(kp), intent(in) :: n,phi0,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
     
-    xEnd = hbi_x_endinf(n,phi0)       
     potEnd  = hbi_norm_potential(xEnd,n,phi0)
     epsOneEnd = hbi_epsilon_one(xEnd,n,phi0)
        
-    x = hbi_x_star(n,phi0,wrad,junk,Pstar)    
+    x = hbi_x_star(n,phi0,xend,wrad,junk,Pstar)    
     potStar = hbi_norm_potential(x,n,phi0)
     epsOneStar = hbi_epsilon_one(x,n,phi0)
     

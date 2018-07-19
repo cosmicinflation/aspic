@@ -105,17 +105,21 @@ program nclimain
 
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
-      do k=0,nphi0
+
+     do k=0,nphi0
         phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/real(nphi0,kp)) !log step
+
         if (ncli_check_params(efoldMin,epsMin,alpha,phi0,n)) then
-          lnRhoRehMin = lnRhoNuc
-          lnRhoRehMax = ncli_lnrhoreh_max(alpha,phi0,n,Pstar)
+
+           lnRhoRehMin = lnRhoNuc
+           xEnd = ncli_x_endinf(alpha,phi0,n)
+           lnRhoRehMax = ncli_lnrhoreh_max(alpha,phi0,n,xend,Pstar)
 
           print *,'alpha=',alpha,'phi0=',phi0,'n=',n,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
           do i=1,npts
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-           xstar = ncli_x_star(alpha,phi0,n,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            eps1 = ncli_epsilon_one(xstar,alpha,phi0,n)
            eps2 = ncli_epsilon_two(xstar,alpha,phi0,n)
@@ -161,17 +165,21 @@ program nclimain
 
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
-      do k=0,nphi0
+
+     do k=0,nphi0
         phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/real(nphi0,kp)) !log step
+
         if (ncli_check_params(efoldMin,epsMin,alpha,phi0,n)) then
-          lnRhoRehMin = lnRhoNuc
-          lnRhoRehMax = ncli_lnrhoreh_max(alpha,phi0,n,Pstar)
+
+           lnRhoRehMin = lnRhoNuc
+           xEnd = ncli_x_endinf(alpha,phi0,n)
+           lnRhoRehMax = ncli_lnrhoreh_max(alpha,phi0,n,xend,Pstar)
 
           print *,'alpha=',alpha,'phi0=',phi0,'n=',n,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
           do i=1,npts
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-           xstar = ncli_x_star(alpha,phi0,n,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            eps1 = ncli_epsilon_one(xstar,alpha,phi0,n)
            eps2 = ncli_epsilon_two(xstar,alpha,phi0,n)
@@ -215,11 +223,12 @@ program nclimain
   n=2._kp
   phi0=200._kp
   alpha=0.5_kp
+  xEnd = ncli_x_endinf(alpha,phi0,n)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ncli_x_rrad(alpha,phi0,n,lnRrad,Pstar,bfoldstar)
+     xstar = ncli_x_rrad(alpha,phi0,n,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -228,14 +237,13 @@ program nclimain
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
 
-     xEnd=ncli_x_endinf(alpha,phi0,n)
      eps1end =  ncli_epsilon_one(xEnd,alpha,phi0,n)
      VendOverVstar = ncli_norm_potential(xEnd,alpha,phi0,n)/ncli_norm_potential(xstar,alpha,phi0,n)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ncli_x_rreh(alpha,phi0,n,lnR,bfoldstar)
+     xstar = ncli_x_rreh(alpha,phi0,n,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -243,7 +251,7 @@ program nclimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ncli_x_star(alpha,phi0,n,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

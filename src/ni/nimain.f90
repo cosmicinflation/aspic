@@ -62,7 +62,8 @@ program nimain
      w = 0._kp
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = ni_lnrhoreh_max(f,Pstar)
+     xEnd = ni_x_endinf(f)
+     lnRhoRehMax = ni_lnrhoreh_max(f,xend,Pstar)
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -70,7 +71,7 @@ program nimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = ni_x_star(f,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = ni_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar
 
@@ -108,15 +109,16 @@ program nimain
   w=0._kp
   do j=1,nf
      f=fmin*(fmax/fmin)**(real(j,kp)/real(nf,kp))
+     xEnd = ni_x_endinf(f)
      lnRhoReh = lnRhoNuc
-     xstarA = ni_x_star(f,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = ni_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = ni_epsilon_one(xstarA,f)
      eps2A = ni_epsilon_two(xstarA,f)
      eps3A = ni_epsilon_three(xstarA,f)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = ni_lnrhoreh_max(f,Pstar)
-     xstarB = ni_x_star(f,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = ni_lnrhoreh_max(f,xend,Pstar)
+     xstarB = ni_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = ni_epsilon_one(xstarB,f)
      eps2B = ni_epsilon_two(xstarB,f)
      eps3B = ni_epsilon_three(xstarB,f)
@@ -131,11 +133,14 @@ program nimain
   lnRradmin=-42
   lnRradmax = 10
   f = 1.5
+
+  xEnd = ni_x_endinf(f)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ni_x_rrad(f,lnRrad,Pstar,bfoldstar)
+     xstar = ni_x_rrad(f,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -143,14 +148,13 @@ program nimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = ni_x_endinf(f)
      eps1end =  ni_epsilon_one(xend,f)
      VendOverVstar = ni_norm_potential(xend,f)/ni_norm_potential(xstar,f)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ni_x_rreh(f,lnR,bfoldstar)
+     xstar = ni_x_rreh(f,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -158,7 +162,7 @@ program nimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ni_x_star(f,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ni_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

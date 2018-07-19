@@ -135,7 +135,7 @@ program gripimgripin
 
 
        do k=0,nalpha
-       alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
+!       alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
 !       alpha=1._kp-(1._kp-alphamin)*((1._kp-alphamax)/(1._kp-alphamin))** &
 !            (real(k,kp)/real(nalpha,kp))!logarithmic step on 1-alpha
@@ -145,7 +145,8 @@ program gripimgripin
 
 
        lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,Pstar)
+       xEnd = gripi_x_endinf(alpha,phi0)
+       lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,xend,Pstar)
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -153,7 +154,7 @@ program gripimgripin
 
          lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-         xstar = gripi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+         xstar = gripi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
          eps1 = gripi_epsilon_one(xstar,alpha,phi0)
@@ -197,12 +198,13 @@ program gripimgripin
   alphamax=1._kp+2*phi0**4/60._kp**2*acos(-1._kp)**2/576._kp
   alpha=alphamin*(alphamax/alphamin)**(0.1_kp)
   
- 
+  xEnd = gripi_x_endinf(alpha,phi0)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = gripi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = gripi_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -210,14 +212,13 @@ program gripimgripin
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = gripi_x_endinf(alpha,phi0)
      eps1end =  gripi_epsilon_one(xend,alpha,phi0)
      VendOverVstar = gripi_norm_potential(xend,alpha,phi0)/gripi_norm_potential(xstar,alpha,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = gripi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     xstar = gripi_x_rreh(alpha,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -225,7 +226,7 @@ program gripimgripin
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = gripi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = gripi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
@@ -263,14 +264,15 @@ npts=20
 
 
        do k=0,nalpha
-       alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
+!       alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp)) !arithmetic step
        alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !logarithmic step
 !       alpha=1._kp-(1._kp-alphamin)*((1._kp-alphamax)/(1._kp-alphamin))** &
 !            (real(k,kp)/real(nalpha,kp))!logarithmic step on 1-alpha
      
 
        lnRhoRehMin = lnRhoNuc
-       lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,Pstar)
+       xend = gripi_x_endinf(alpha,phi0)
+       lnRhoRehMax = gripi_lnrhoreh_max(alpha,phi0,xend,Pstar)
 
 
        print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -279,7 +281,7 @@ npts=20
 
          lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-         xstar = gripi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+         xstar = gripi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
          eps1 = gripi_epsilon_one(xstar,alpha,phi0)
@@ -320,11 +322,14 @@ npts=20
   alphamin=1._kp-2*phi0**4/50._kp**2*acos(-1._kp)**2/576._kp
   alphamax=1._kp-10.*epsilon(1._kp)
   alpha=alphamin*(alphamax/alphamin)**(0.9_kp)
+
+  xend = gripi_x_endinf(alpha,phi0)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = gripi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = gripi_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -332,14 +337,13 @@ npts=20
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = gripi_x_endinf(alpha,phi0)
      eps1end =  gripi_epsilon_one(xend,alpha,phi0)
      VendOverVstar = gripi_norm_potential(xend,alpha,phi0)/gripi_norm_potential(xstar,alpha,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = gripi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     xstar = gripi_x_rreh(alpha,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -347,7 +351,7 @@ npts=20
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = gripi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = gripi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

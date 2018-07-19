@@ -22,15 +22,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function rchi_x_star(AI,w,lnRhoReh,Pstar,bfoldstar)    
+  function rchi_x_star(AI,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rchi_x_star
-    real(kp), intent(in) :: AI,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: AI,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rchiData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = rchi_x_endinf(AI)
     epsOneEnd = rchi_epsilon_one(xEnd,AI)
     potEnd = rchi_norm_potential(xEnd,AI)
     primEnd = rchi_efold_primitive(xEnd,AI)
@@ -89,15 +88,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function rchi_x_rrad(AI,lnRrad,Pstar,bfoldstar)    
+  function rchi_x_rrad(AI,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rchi_x_rrad
-    real(kp), intent(in) :: AI,lnRrad,Pstar
+    real(kp), intent(in) :: AI,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rchiData
     
@@ -105,7 +104,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = rchi_x_endinf(AI)
     epsOneEnd = rchi_epsilon_one(xEnd,AI)
     potEnd = rchi_norm_potential(xEnd,AI)
     primEnd = rchi_efold_primitive(xEnd,AI)
@@ -153,15 +151,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function rchi_x_rreh(AI,lnRreh,bfoldstar)    
+  function rchi_x_rreh(AI,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: rchi_x_rreh
-    real(kp), intent(in) :: AI,lnRreh
+    real(kp), intent(in) :: AI,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rchiData
     
@@ -169,7 +167,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = rchi_x_endinf(AI)
     epsOneEnd = rchi_epsilon_one(xEnd,AI)
     potEnd = rchi_norm_potential(xEnd,AI)
     primEnd = rchi_efold_primitive(xEnd,AI)
@@ -215,12 +212,12 @@ contains
 
 
 
-  function rchi_lnrhoreh_max(AI,Pstar) 
+  function rchi_lnrhoreh_max(AI,xend,Pstar) 
     implicit none
     real(kp) :: rchi_lnrhoreh_max
-    real(kp), intent(in) :: AI,Pstar
+    real(kp), intent(in) :: AI,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -228,13 +225,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = rchi_x_endinf(AI)
     potEnd  = rchi_norm_potential(xEnd,AI)
     epsOneEnd = rchi_epsilon_one(xEnd,AI)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = rchi_x_star(AI,wrad,junk,Pstar)    
+    x = rchi_x_star(AI,xend,wrad,junk,Pstar)    
     potStar = rchi_norm_potential(x,AI)
     epsOneStar = rchi_epsilon_one(x,AI)
 

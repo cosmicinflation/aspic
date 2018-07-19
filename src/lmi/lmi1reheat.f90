@@ -24,15 +24,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)    
+  function lmi1_x_star(gam,beta,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: lmi1_x_star
-    real(kp), intent(in) :: gam,beta,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: gam,beta,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x,xVmax
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: lmi1Data
 
   
@@ -40,7 +40,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = lmi1_x_endinf(gam,beta)
     xVmax = lmi_x_potmax(gam,beta)
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
@@ -91,15 +90,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function lmi1_x_rrad(gam,beta,lnRrad,Pstar,bfoldstar)    
+  function lmi1_x_rrad(gam,beta,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: lmi1_x_rrad
-    real(kp), intent(in) :: gam,beta,lnRrad,Pstar
+    real(kp), intent(in) :: gam,beta,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x,xVmax
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: lmi1Data
 
   
@@ -107,7 +106,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = lmi1_x_endinf(gam,beta)
     xVmax = lmi_x_potmax(gam,beta)
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
@@ -157,15 +155,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function lmi1_x_rreh(gam,beta,lnRreh,bfoldstar)    
+  function lmi1_x_rreh(gam,beta,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: lmi1_x_rreh
-    real(kp), intent(in) :: gam,beta,lnRreh
+    real(kp), intent(in) :: gam,beta,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x,xVmax
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: lmi1Data
 
   
@@ -173,7 +171,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = lmi1_x_endinf(gam,beta)
     xVmax = lmi_x_potmax(gam,beta)
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
@@ -220,12 +217,12 @@ contains
 
 
 
-  function lmi1_lnrhoreh_max(gam,beta,Pstar) 
+  function lmi1_lnrhoreh_max(gam,beta,xend,Pstar) 
     implicit none
     real(kp) :: lmi1_lnrhoreh_max
-    real(kp), intent(in) :: gam,beta,Pstar
+    real(kp), intent(in) :: gam,beta,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -233,8 +230,6 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = lmi1_x_endinf(gam,beta)
-
     potEnd  = lmi1_norm_potential(xEnd,gam,beta)
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
@@ -242,7 +237,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = lmi1_x_star(gam,beta,wrad,junk,Pstar)  
+    x = lmi1_x_star(gam,beta,xend,wrad,junk,Pstar)  
 
 
     potStar = lmi1_norm_potential(x,gam,beta)

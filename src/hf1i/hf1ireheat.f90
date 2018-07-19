@@ -22,15 +22,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function hf1i_x_star(A1,w,lnRhoReh,Pstar,bfoldstar)    
+  function hf1i_x_star(A1,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: hf1i_x_star
-    real(kp), intent(in) :: A1,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: A1,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hf1iData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = hf1i_x_endinf(A1)
     epsOneEnd = hf1i_epsilon_one(xEnd,A1)
     potEnd = hf1i_norm_potential(xEnd,A1)
     primEnd = hf1i_efold_primitive(xEnd,A1)
@@ -84,15 +83,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function hf1i_x_rrad(A1,lnRrad,Pstar,bfoldstar)    
+  function hf1i_x_rrad(A1,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: hf1i_x_rrad
-    real(kp), intent(in) :: A1,lnRrad,Pstar
+    real(kp), intent(in) :: A1,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hf1iData
     
@@ -101,7 +100,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = hf1i_x_endinf(A1)
     epsOneEnd = hf1i_epsilon_one(xEnd,A1)
     potEnd = hf1i_norm_potential(xEnd,A1)
     primEnd = hf1i_efold_primitive(xEnd,A1)
@@ -146,15 +144,15 @@ contains
   
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function hf1i_x_rreh(A1,lnRreh,bfoldstar)    
+  function hf1i_x_rreh(A1,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: hf1i_x_rreh
-    real(kp), intent(in) :: A1,lnRreh
+    real(kp), intent(in) :: A1,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hf1iData
     
@@ -163,7 +161,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = hf1i_x_endinf(A1)
     epsOneEnd = hf1i_epsilon_one(xEnd,A1)
     potEnd = hf1i_norm_potential(xEnd,A1)
     primEnd = hf1i_efold_primitive(xEnd,A1)
@@ -207,12 +204,12 @@ contains
 
 
 
-  function hf1i_lnrhoreh_max(A1,Pstar) 
+  function hf1i_lnrhoreh_max(A1,xend,Pstar) 
     implicit none
     real(kp) :: hf1i_lnrhoreh_max
-    real(kp), intent(in) :: A1,Pstar
+    real(kp), intent(in) :: A1,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -220,13 +217,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = hf1i_x_endinf(A1)
     potEnd  = hf1i_norm_potential(xEnd,A1)
     epsOneEnd = hf1i_epsilon_one(xEnd,A1)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = hf1i_x_star(A1,wrad,junk,Pstar)    
+    x = hf1i_x_star(A1,xend,wrad,junk,Pstar)    
     potStar = hf1i_norm_potential(x,A1)
     epsOneStar = hf1i_epsilon_one(x,A1)
 

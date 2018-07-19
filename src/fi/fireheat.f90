@@ -21,27 +21,23 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function fi_x_star(delta,n,w,lnRhoReh,Pstar,bfold)    
+  function fi_x_star(delta,n,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: fi_x_star
-    real(kp), intent(in) :: delta,n,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: delta,n,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
-    real(kp), dimension(2) :: xEpsOne
-
+    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp), dimension(2) :: xepsone
+    
     type(transfert) :: fiData
     
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
 
-
-    xEpsOne = fi_x_epsoneunity(delta,n)
-
-    xEnd=xEpsOne(1)
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
     potEnd = fi_norm_potential(xEnd,delta,n)
     primEnd = fi_efold_primitive(xEnd,delta,n)
@@ -53,6 +49,8 @@ contains
     fiData%real3 = w
     fiData%real4 = calF + primEnd
 
+    xepsone = fi_x_epsoneunity(delta,n)
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = xEpsOne(2)*(1._kp-epsilon(1._kp))
 
@@ -88,27 +86,23 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function fi_x_rrad(delta,n,lnRrad,Pstar,bfold)    
+  function fi_x_rrad(delta,n,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: fi_x_rrad
-    real(kp), intent(in) :: delta,n,lnRrad,Pstar
+    real(kp), intent(in) :: delta,n,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
-
-    real(kp), dimension(2) :: xEpsOne
-
+    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp), dimension(2) :: xepsone
+    
     type(transfert) :: fiData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEpsOne = fi_x_epsoneunity(delta,n)
-    
-    xEnd=xEpsOne(1)
+   
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
     potEnd = fi_norm_potential(xEnd,delta,n)
     primEnd = fi_efold_primitive(xEnd,delta,n)
@@ -119,6 +113,8 @@ contains
     fiData%real2 = n
     fiData%real3 = calF + primEnd
 
+    xepsone = fi_x_epsoneunity(delta,n)
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = xEpsOne(2)*(1._kp-epsilon(1._kp))
 
@@ -154,26 +150,22 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function fi_x_rreh(delta,n,lnRreh,bfold)    
+  function fi_x_rreh(delta,n,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: fi_x_rreh
-    real(kp), intent(in) :: delta,n,lnRreh
+    real(kp), intent(in) :: delta,n,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
-
-    real(kp), dimension(2) :: xEpsOne
-
+    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp), dimension(2) :: xepsone
+    
     type(transfert) :: fiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEpsOne = fi_x_epsoneunity(delta,n)
-    xEnd = xEpsOne(1)
 
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
     potEnd = fi_norm_potential(xEnd,delta,n)
@@ -185,6 +177,8 @@ contains
     fiData%real2 = n
     fiData%real3 = calF + primEnd
 
+    xepsone = fi_x_epsoneunity(delta,n)
+        
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = xEpsOne(2)*(1._kp-epsilon(1._kp))
 
@@ -217,23 +211,22 @@ contains
   end function find_fi_x_rreh
 
 
-  function fi_lnrhoreh_max(delta,n,Pstar) 
+  function fi_lnrhoreh_max(delta,n,xend,Pstar) 
     implicit none
     real(kp) :: fi_lnrhoreh_max
-    real(kp), intent(in) :: delta,n,Pstar
+    real(kp), intent(in) :: delta,n,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
-        
-    xEnd = fi_x_endinf(delta,n)
+    
     potEnd  = fi_norm_potential(xEnd,delta,n)
     epsOneEnd = fi_epsilon_one(xEnd,delta,n)
        
-    x = fi_x_star(delta,n,wrad,junk,Pstar)
+    x = fi_x_star(delta,n,xend,wrad,junk,Pstar)
 
     potStar = fi_norm_potential(x,delta,n)
     epsOneStar = fi_epsilon_one(x,delta,n)

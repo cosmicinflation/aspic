@@ -23,15 +23,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ncki_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)    
+  function ncki_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ncki_x_star
-    real(kp), intent(in) :: alpha,beta,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: nckiData
     
@@ -40,7 +40,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = ncki_x_endinf(alpha,beta)
     epsOneEnd = ncki_epsilon_one(xEnd,alpha,beta)
     potEnd = ncki_norm_potential(xEnd,alpha,beta)
     primEnd = ncki_efold_primitive(xEnd,alpha,beta)
@@ -94,15 +93,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ncki_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)    
+  function ncki_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ncki_x_rrad
-    real(kp), intent(in) :: alpha,beta,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: nckiData
     
@@ -111,7 +110,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = ncki_x_endinf(alpha,beta)
     epsOneEnd = ncki_epsilon_one(xEnd,alpha,beta)
     potEnd = ncki_norm_potential(xEnd,alpha,beta)
     primEnd = ncki_efold_primitive(xEnd,alpha,beta)
@@ -164,15 +162,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function ncki_x_rreh(alpha,beta,lnRreh,bfoldstar)    
+  function ncki_x_rreh(alpha,beta,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: ncki_x_rreh
-    real(kp), intent(in) :: alpha,beta,lnRreh
+    real(kp), intent(in) :: alpha,beta,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: nckiData
     
@@ -181,7 +179,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = ncki_x_endinf(alpha,beta)
     epsOneEnd = ncki_epsilon_one(xEnd,alpha,beta)
     potEnd = ncki_norm_potential(xEnd,alpha,beta)
     primEnd = ncki_efold_primitive(xEnd,alpha,beta)
@@ -231,12 +228,12 @@ contains
 
 
 
-  function ncki_lnrhoreh_max(alpha,beta,Pstar) 
+  function ncki_lnrhoreh_max(alpha,beta,xend,Pstar) 
     implicit none
     real(kp) :: ncki_lnrhoreh_max
-    real(kp), intent(in) :: alpha,beta,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -244,13 +241,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = ncki_x_endinf(alpha,beta)
     potEnd  = ncki_norm_potential(xEnd,alpha,beta)
     epsOneEnd = ncki_epsilon_one(xEnd,alpha,beta)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = ncki_x_star(alpha,beta,wrad,junk,Pstar)    
+    x = ncki_x_star(alpha,beta,xend,wrad,junk,Pstar)    
     potStar = ncki_norm_potential(x,alpha,beta)
     epsOneStar = ncki_epsilon_one(x,alpha,beta)
 

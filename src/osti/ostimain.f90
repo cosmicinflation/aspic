@@ -51,26 +51,27 @@ program ostimostin
 
  do j=0,Nphi0+2
 
- phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
- phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+    phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+    phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
 
 
-   if (j .eq. Nphi0+1) phi0=10._kp**4.
-   if (j .eq. Nphi0+2) phi0=10._kp**5.
+    if (j .eq. Nphi0+1) phi0=10._kp**4.
+    if (j .eq. Nphi0+2) phi0=10._kp**5.
 
-  lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = osti_lnrhoreh_max(phi0,Pstar)
+    lnRhoRehMin = lnRhoNuc
+    xEnd = osti_x_endinf(phi0)
+    lnRhoRehMax = osti_lnrhoreh_max(phi0,xend,Pstar)
 
-  print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+    print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-  do i=1,npts
+    do i=1,npts
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-	xstar = osti_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = osti_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
- 
+
        eps1 = osti_epsilon_one(xstar,phi0)
        eps2 = osti_epsilon_two(xstar,phi0)
        eps3 = osti_epsilon_three(xstar,phi0)
@@ -90,13 +91,13 @@ program ostimostin
        call livewrite('osti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
-  
+
     end do
 
  end do
 
  call aspicwrite_end()
- 
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!          Testing Rrad/Rreh           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -107,11 +108,14 @@ program ostimostin
   lnRradmin=-42
   lnRradmax = 10
   phi0 = 100._kp
+
+  xEnd = osti_x_endinf(phi0)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = osti_x_rrad(phi0,lnRrad,Pstar,bfoldstar)
+     xstar = osti_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -119,14 +123,13 @@ program ostimostin
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = osti_x_endinf(phi0)
      eps1end =  osti_epsilon_one(xend,phi0)
      VendOverVstar = osti_norm_potential(xend,phi0)/osti_norm_potential(xstar,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = osti_x_rreh(phi0,lnR,bfoldstar)
+     xstar = osti_x_rreh(phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -134,7 +137,7 @@ program ostimostin
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = osti_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = osti_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

@@ -1,5 +1,25 @@
-* version 0.3.4 (brussels release)
+* version 1.0.0 (GW release)
 
-- added models vfmi, fi, ahi, sbki, sdi, saai, sabi, saci, hbi, shi, rcpi
+- Change of API in essentially all reheating routines:
+  By default, all reheating routines take "xend" as an argument, to be
+  passed after the list of regular potential model parameters. That
+  used to be the case if xend were a model parameter. Now, even if
+  xend is not a model parameter, it has to be precomputed by calling
 
-- various bugs and precision issues fixed
+       xend = foo_x_endinf()
+
+  before any calls to reheating routines.
+
+- Support for OpenMP:
+  By default, the aspic library is compiled with "-fopenmp". Some
+  checks being super long, such as for Dual Inflation, the main test
+  programs have been parallelized. This can be disabled using:
+
+       ./configure --disable-openmp
+
+  at compilation time.
+       
+- Plotting python routines added in the directory "plots". Check the
+  readme file for usage.
+
+- A bunch of new models added!

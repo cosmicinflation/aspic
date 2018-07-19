@@ -22,15 +22,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)    
+  function cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: cwi_x_star
-    real(kp), intent(in) :: alpha,Q,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,Q,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: cwiData
     
@@ -39,8 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = cwi_x_endinf(alpha,Q)
-
     epsOneEnd = cwi_epsilon_one(xEnd,alpha,Q)
     potEnd = cwi_norm_potential(xEnd,alpha,Q)
 
@@ -89,15 +87,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function cwi_x_rrad(alpha,Q,lnRrad,Pstar,bfoldstar)    
+  function cwi_x_rrad(alpha,Q,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: cwi_x_rrad
-    real(kp), intent(in) :: alpha,Q,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,Q,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: cwiData
     
@@ -105,8 +103,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = cwi_x_endinf(alpha,Q)
-
     epsOneEnd = cwi_epsilon_one(xEnd,alpha,Q)
     potEnd = cwi_norm_potential(xEnd,alpha,Q)
 
@@ -153,23 +149,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function cwi_x_rreh(alpha,Q,lnRreh,bfoldstar)    
+  function cwi_x_rreh(alpha,Q,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: cwi_x_rreh
-    real(kp), intent(in) :: alpha,Q,lnRreh
+    real(kp), intent(in) :: alpha,Q,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: cwiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
-    endif
-    
-    xEnd = cwi_x_endinf(alpha,Q)
+    endif    
 
     epsOneEnd = cwi_epsilon_one(xEnd,alpha,Q)
     potEnd = cwi_norm_potential(xEnd,alpha,Q)
@@ -215,20 +209,18 @@ contains
 
 
 
-  function cwi_lnrhoreh_max(alpha,Q,Pstar) 
+  function cwi_lnrhoreh_max(alpha,Q,xend,Pstar) 
     implicit none
     real(kp) :: cwi_lnrhoreh_max
-    real(kp), intent(in) :: alpha,Q,Pstar
+    real(kp), intent(in) :: alpha,Q,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd
-    
-    xEnd = cwi_x_endinf(alpha,Q)
+    real(kp) :: lnRhoEnd    
 
     potEnd  = cwi_norm_potential(xEnd,alpha,Q)
 
@@ -237,7 +229,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = cwi_x_star(alpha,Q,wrad,junk,Pstar)  
+    x = cwi_x_star(alpha,Q,xend,wrad,junk,Pstar)  
 
  
     potStar = cwi_norm_potential(x,alpha,Q)

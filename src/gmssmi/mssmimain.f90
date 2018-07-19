@@ -93,7 +93,8 @@ program mssmimain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = mssmi_lnrhoreh_max(phi0,Pstar)
+     xEnd = mssmi_x_endinf(phi0)
+     lnRhoRehMax = mssmi_lnrhoreh_max(phi0,xend,Pstar)
 
      print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -101,7 +102,7 @@ program mssmimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = mssmi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         eps1 = mssmi_epsilon_one(xstar,phi0)
@@ -140,14 +141,15 @@ program mssmimain
   w=0._kp
   do j=0,nphi0
      phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
+     xEnd = mssmi_x_endinf(phi0)
      lnRhoReh = lnRhoNuc
-     xstarA = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = mssmi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = mssmi_epsilon_one(xstarA,phi0)
      eps2A = mssmi_epsilon_two(xstarA,phi0)
      eps3A = mssmi_epsilon_three(xstarA,phi0)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = mssmi_lnrhoreh_max(phi0,Pstar)
+     lnRhoReh = mssmi_lnrhoreh_max(phi0,xend,Pstar)
      xstarB = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = mssmi_epsilon_one(xstarB,phi0)
      eps2B = mssmi_epsilon_two(xstarB,phi0)
@@ -169,11 +171,12 @@ program mssmimain
   lnRradmin=-42
   lnRradmax = 10
   phi0 = 10
+  xEnd = mssmi_x_endinf(phi0)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = mssmi_x_rrad(phi0,lnRrad,Pstar,bfoldstar)
+     xstar = mssmi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -181,14 +184,13 @@ program mssmimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = mssmi_x_endinf(phi0)
      eps1end =  mssmi_epsilon_one(xend,phi0)
      VendOverVstar = mssmi_norm_potential(xend,phi0)/mssmi_norm_potential(xstar,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = mssmi_x_rreh(phi0,lnR,bfoldstar)
+     xstar = mssmi_x_rreh(phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -196,7 +198,7 @@ program mssmimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = mssmi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

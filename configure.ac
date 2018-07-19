@@ -1,4 +1,4 @@
-AC_INIT([aspic],[0.4.0],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
+AC_INIT([aspic],[1.0.0],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
 
 AM_INIT_AUTOMAKE
 
@@ -10,7 +10,7 @@ AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
 
-version_info="3:1:1"
+version_info="4:0:0"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
@@ -33,6 +33,21 @@ AM_COND_IF([USE_QUAD],
 ],
 [
 	SRINCDIR="aspic"
+]
+)
+
+
+AC_ARG_ENABLE(openmp,
+	[AC_HELP_STRING([--enable-openmp],
+	[enable openmp parallel instructions in aspic])],
+	ok=$enableval, ok=yes)
+AM_CONDITIONAL([USE_OPENMP],[test "$ok" = "yes"])
+AM_COND_IF([USE_OPENMP],
+[
+	FCFLAGS+=" -fopenmp"
+],
+[
+	AC_MSG_WARN([disabling openmp parallel instructions!])	
 ]
 )
 

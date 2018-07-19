@@ -67,7 +67,8 @@ program hbimain
      !xstar stands for phistar/phi0
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = hbi_lnrhoreh_max(n,phi0,Pstar)
+     xEnd = hbi_x_endinf(n,phi0)       
+     lnRhoRehMax = hbi_lnrhoreh_max(n,phi0,xend,Pstar)
 
      print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -75,7 +76,7 @@ program hbimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = hbi_x_star(n,phi0,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = hbi_x_star(n,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
         eps1 = hbi_epsilon_one(xstar,n,phi0)
         eps2 = hbi_epsilon_two(xstar,n,phi0)
         eps3 = hbi_epsilon_three(xstar,n,phi0)
@@ -117,7 +118,8 @@ program hbimain
      !xstar stands for phistar/phi0
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = hbi_lnrhoreh_max(n,phi0,Pstar)
+     xEnd = hbi_x_endinf(n,phi0)       
+     lnRhoRehMax = hbi_lnrhoreh_max(n,phi0,xend,Pstar)
 
      print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -125,7 +127,7 @@ program hbimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = hbi_x_star(n,phi0,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = hbi_x_star(n,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
         eps1 = hbi_epsilon_one(xstar,n,phi0)
         eps2 = hbi_epsilon_two(xstar,n,phi0)
         eps3 = hbi_epsilon_three(xstar,n,phi0)
@@ -167,7 +169,8 @@ program hbimain
      !xstar stands for phistar/phi0
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = hbi_lnrhoreh_max(n,phi0,Pstar)
+     xEnd = hbi_x_endinf(n,phi0)       
+     lnRhoRehMax = hbi_lnrhoreh_max(n,phi0,xend,Pstar)
 
      print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -175,7 +178,7 @@ program hbimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = hbi_x_star(n,phi0,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = hbi_x_star(n,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
         eps1 = hbi_epsilon_one(xstar,n,phi0)
         eps2 = hbi_epsilon_two(xstar,n,phi0)
         eps3 = hbi_epsilon_three(xstar,n,phi0)
@@ -215,11 +218,13 @@ program hbimain
   lnRradmax = 10
   n=2.5
   phi0 = 10._kp
+  xEnd = hbi_x_endinf(n,phi0)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = hbi_x_rrad(n,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = hbi_x_rrad(n,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -227,14 +232,13 @@ program hbimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = hbi_x_endinf(n,phi0)
      eps1end =  hbi_epsilon_one(xend,n,phi0)
      VendOverVstar = hbi_norm_potential(xend,n,phi0)/hbi_norm_potential(xstar,n,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = hbi_x_rreh(n,phi0,lnR,bfoldstar)
+     xstar = hbi_x_rreh(n,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -242,7 +246,7 @@ program hbimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = hbi_x_star(n,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = hbi_x_star(n,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

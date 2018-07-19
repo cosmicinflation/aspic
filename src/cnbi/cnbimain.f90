@@ -77,7 +77,7 @@ program cnbimain
          print *,'too small efoldMax=',efoldMax
         cycle
      end if
-     lnRhoRehMax = cnbi_lnrhoreh_max(alpha,Pstar)
+     lnRhoRehMax = cnbi_lnrhoreh_max(alpha,xend,Pstar)
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -86,7 +86,7 @@ program cnbimain
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
         
 
-        xstar = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = cnbi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = cnbi_epsilon_one(xstar,alpha)
         eps2 = cnbi_epsilon_two(xstar,alpha)
@@ -127,15 +127,16 @@ program cnbimain
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xEnd = cnbi_x_endinf(alpha)
+     xstarA = cnbi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = cnbi_epsilon_one(xstarA,alpha)
      eps2A = cnbi_epsilon_two(xstarA,alpha)
      eps3A = cnbi_epsilon_three(xstarA,alpha)
 
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = cnbi_lnrhoreh_max(alpha,Pstar)
-     xstarB = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = cnbi_lnrhoreh_max(alpha,xend,Pstar)
+     xstarB = cnbi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = cnbi_epsilon_one(xstarB,alpha)
      eps2B = cnbi_epsilon_two(xstarB,alpha)
      eps3B = cnbi_epsilon_three(xstarB,alpha)
@@ -151,11 +152,12 @@ program cnbimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 1e-2
+  xEnd = cnbi_x_endinf(alpha)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = cnbi_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = cnbi_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -163,14 +165,13 @@ program cnbimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = cnbi_x_endinf(alpha)
      eps1end =  cnbi_epsilon_one(xend,alpha)
      VendOverVstar = cnbi_norm_potential(xend,alpha)/cnbi_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = cnbi_x_rreh(alpha,lnR,bfoldstar)
+     xstar = cnbi_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -178,7 +179,7 @@ program cnbimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = cnbi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = cnbi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

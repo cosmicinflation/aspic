@@ -153,7 +153,8 @@ program gmssmimain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
+        xEnd = gmssmi_x_endinf(alpha,phi0)
+        lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,xend,Pstar)
 
         print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -161,7 +162,7 @@ program gmssmimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = gmssmi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
            eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
@@ -217,7 +218,8 @@ program gmssmimain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,Pstar)
+        xEnd = gmssmi_x_endinf(alpha,phi0)
+        lnRhoRehMax = gmssmi_lnrhoreh_max(alpha,phi0,xend,Pstar)
 
         print *,'alpha=',alpha,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -225,7 +227,7 @@ program gmssmimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = gmssmi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
            eps1 = gmssmi_epsilon_one(xstar,alpha,phi0)
@@ -261,11 +263,12 @@ program gmssmimain
   lnRradmax = 10
   alpha = 1e-2
   phi0 = 100
+  xEnd = gmssmi_x_endinf(alpha,phi0)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = gmssmi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = gmssmi_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -273,14 +276,13 @@ program gmssmimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = gmssmi_x_endinf(alpha,phi0)
      eps1end =  gmssmi_epsilon_one(xend,alpha,phi0)
      VendOverVstar = gmssmi_norm_potential(xend,alpha,phi0)/gmssmi_norm_potential(xstar,alpha,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = gmssmi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     xstar = gmssmi_x_rreh(alpha,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -288,7 +290,7 @@ program gmssmimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = gmssmi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = gmssmi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

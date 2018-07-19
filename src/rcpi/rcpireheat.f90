@@ -23,15 +23,15 @@ contains
   
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function rcpi_x_star(p,alpha,beta,w,lnRhoReh,Pstar,bfold)    
+  function rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: rcpi_x_star
-    real(kp), intent(in) :: p,alpha,beta,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: p,alpha,beta,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: rcpiData
 
     if (.not.rcpi_check_params(p,alpha,beta)) stop 'rcpi_x_star: out-of-range params!'
@@ -40,7 +40,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=rcpi_x_endinf(p,alpha,beta)
     epsOneEnd = rcpi_epsilon_one(xEnd,p,alpha,beta)
     potEnd = rcpi_norm_potential(xEnd,p,alpha,beta)
     primEnd = rcpi_efold_primitive(xEnd,p,alpha,beta)
@@ -93,15 +92,15 @@ contains
   
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function rcpi_x_rrad(p,alpha,beta,lnRrad,Pstar,bfold)    
+  function rcpi_x_rrad(p,alpha,beta,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: rcpi_x_rrad
-    real(kp), intent(in) :: p,alpha,beta,lnRrad,Pstar
+    real(kp), intent(in) :: p,alpha,beta,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolfind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rcpiData
 
@@ -110,9 +109,7 @@ contains
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
         
-    xEnd=rcpi_x_endinf(p,alpha,beta)
     epsOneEnd = rcpi_epsilon_one(xEnd,p,alpha,beta)
     potEnd = rcpi_norm_potential(xEnd,p,alpha,beta)
     primEnd = rcpi_efold_primitive(xEnd,p,alpha,beta)
@@ -161,15 +158,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function rcpi_x_rreh(p,alpha,beta,lnRreh,bfold)    
+  function rcpi_x_rreh(p,alpha,beta,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: rcpi_x_rreh
-    real(kp), intent(in) :: p,alpha,beta,lnRreh
+    real(kp), intent(in) :: p,alpha,beta,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rcpiData
 
@@ -177,9 +174,7 @@ contains
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
-    endif
-    
-    xEnd = rcpi_x_endinf(p,alpha,beta)
+    endif    
 
     epsOneEnd = rcpi_epsilon_one(xEnd,p,alpha,beta)
     potEnd = rcpi_norm_potential(xEnd,p,alpha,beta)
@@ -226,23 +221,22 @@ contains
   end function find_rcpi_x_rreh
 
 
-  function rcpi_lnrhoreh_max(p,alpha,beta,Pstar) 
+  function rcpi_lnrhoreh_max(p,alpha,beta,xend,Pstar) 
     implicit none
     real(kp) :: rcpi_lnrhoreh_max
-    real(kp), intent(in) :: p,alpha,beta,Pstar
+    real(kp), intent(in) :: p,alpha,beta,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd = rcpi_x_endinf(p,alpha,beta)
     potEnd  = rcpi_norm_potential(xEnd,p,alpha,beta)
     epsOneEnd = rcpi_epsilon_one(xEnd,p,alpha,beta)
 
-    x = rcpi_x_star(p,alpha,beta,wrad,junk,Pstar)
+    x = rcpi_x_star(p,alpha,beta,xend,wrad,junk,Pstar)
 
     potStar = rcpi_norm_potential(x,p,alpha,beta)
     epsOneStar = rcpi_epsilon_one(x,p,alpha,beta)

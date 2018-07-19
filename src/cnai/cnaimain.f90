@@ -56,7 +56,8 @@ program cnaimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = cnai_lnrhoreh_max(alpha,Pstar)
+     xend = cnai_x_endinf(alpha)
+     lnRhoRehMax = cnai_lnrhoreh_max(alpha,xend,Pstar)
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -64,7 +65,7 @@ program cnaimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = cnai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = cnai_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = cnai_epsilon_one(xstar,alpha)
         eps2 = cnai_epsilon_two(xstar,alpha)
@@ -103,14 +104,15 @@ program cnaimain
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = cnai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xend = cnai_x_endinf(alpha)
+     xstarA = cnai_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = cnai_epsilon_one(xstarA,alpha)
      eps2A = cnai_epsilon_two(xstarA,alpha)
      eps3A = cnai_epsilon_three(xstarA,alpha)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = cnai_lnrhoreh_max(alpha,Pstar)
-     xstarB = cnai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = cnai_lnrhoreh_max(alpha,xend,Pstar)
+     xstarB = cnai_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = cnai_epsilon_one(xstarB,alpha)
      eps2B = cnai_epsilon_two(xstarB,alpha)
      eps3B = cnai_epsilon_three(xstarB,alpha)
@@ -126,11 +128,12 @@ program cnaimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 1e-2
+  xend = cnai_x_endinf(alpha)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = cnai_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = cnai_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -138,14 +141,13 @@ program cnaimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = cnai_x_endinf(alpha)
      eps1end =  cnai_epsilon_one(xend,alpha)
      VendOverVstar = cnai_norm_potential(xend,alpha)/cnai_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = cnai_x_rreh(alpha,lnR,bfoldstar)
+     xstar = cnai_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -153,7 +155,7 @@ program cnaimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = cnai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = cnai_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

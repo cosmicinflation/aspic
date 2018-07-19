@@ -19,13 +19,12 @@ module displine
   character(len=*), parameter :: tablefile = 'fieldvalues.sav'
 
   integer, parameter :: order = 3
-  integer, save :: bcoefNum = 0
   integer, save :: ndata = 0
-
+  
   real(kp), save :: xmin, xmax, k2min, k2max
   real(kp), dimension(:), allocatable :: xknots, xbcoef
   real(kp), dimension(:), allocatable :: k2knots, k2bcoef
-
+  
 !max number of records in precomputed data file
   integer, parameter :: nrecmax = 1000
   integer, parameter :: ncols = 2
@@ -74,7 +73,10 @@ contains
     k2data = buffer(:,1)
     xdata = buffer(:,2)
 
+
     ndata = nrec
+
+
     k2min = k2data(1)
     k2max = k2data(ndata)
     xmin = xdata(ndata)

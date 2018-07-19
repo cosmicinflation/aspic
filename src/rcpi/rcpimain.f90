@@ -88,12 +88,13 @@ program rcpimain
 
         print *,' p alpha beta= ',p,alpha,beta
 
-        lnRhoRehMax = rcpi_lnrhoreh_max(p,alpha,beta,Pstar)
+        xEnd = rcpi_x_endinf(p,alpha,beta)
+        lnRhoRehMax = rcpi_lnrhoreh_max(p,alpha,beta,xend,Pstar)
 
         do k=1,npts
            lnRhoReh = lnRhoRehMin + (k-1)*(lnRhoRehMax-lnRhoRehMin)/real(npts-1,kp)
 
-           xstar = rcpi_x_star(p,alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
            eps1 = rcpi_epsilon_one(xstar,p,alpha,beta)
            eps2 = rcpi_epsilon_two(xstar,p,alpha,beta)
            eps3 = rcpi_epsilon_three(xstar,p,alpha,beta)                     
@@ -105,9 +106,10 @@ program rcpimain
            
            if (display) print *,'lnRhoReh= N*= ns= r= ',lnRhoReh,abs(bfoldstar),ns,r
 
-!           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
-
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta,p/))
+           
+           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
+
 
         enddo
 
@@ -144,13 +146,14 @@ program rcpimain
         endif
 
         print *,' p alpha beta= ',p,alpha,beta
-        
-        lnRhoRehMax = rcpi_lnrhoreh_max(p,alpha,beta,Pstar)
+
+        xEnd = rcpi_x_endinf(p,alpha,beta)
+        lnRhoRehMax = rcpi_lnrhoreh_max(p,alpha,beta,xend,Pstar)
 
         do k=1,npts
            lnRhoReh = lnRhoRehMin + (k-1)*(lnRhoRehMax-lnRhoRehMin)/real(npts-1,kp)
 
-           xstar = rcpi_x_star(p,alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
            eps1 = rcpi_epsilon_one(xstar,p,alpha,beta)
            eps2 = rcpi_epsilon_two(xstar,p,alpha,beta)
            eps3 = rcpi_epsilon_three(xstar,p,alpha,beta)
@@ -160,9 +163,10 @@ program rcpimain
            ns = scalar_spectral_index((/eps1,eps2/))
            r = tensor_to_scalar_ratio((/eps1,eps2/))
 
-!           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
-
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta,p/))
+           
+           if ((eps1.gt.0.01).or.(eps2.lt.-0.08).or.(eps2.gt.0.08)) cycle
+
 
         enddo
      enddo
@@ -181,6 +185,8 @@ program rcpimain
   alpha = -0.1_kp
   beta = 0.5_kp
 
+  xEnd = rcpi_x_endinf(p,alpha,beta)
+
   if (rcpi_efoldmax(p,alpha,beta).lt.efoldNum) then
      stop 'efoldmax too small!'
   endif
@@ -189,7 +195,7 @@ program rcpimain
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rcpi_x_rrad(p,alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = rcpi_x_rrad(p,alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -197,14 +203,13 @@ program rcpimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = rcpi_x_endinf(p,alpha,beta)
      eps1end =  rcpi_epsilon_one(xend,p,alpha,beta)
      VendOverVstar = rcpi_norm_potential(xend,p,alpha,beta)/rcpi_norm_potential(xstar,p,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rcpi_x_rreh(p,alpha,beta,lnR,bfoldstar)
+     xstar = rcpi_x_rreh(p,alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -212,7 +217,7 @@ program rcpimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rcpi_x_star(p,alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

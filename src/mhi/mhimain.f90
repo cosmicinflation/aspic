@@ -54,11 +54,12 @@ program mhimain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = mhi_lnrhoreh_max(mu,Pstar)
+     xEnd = mhi_x_endinf(mu)
+     lnRhoRehMax = mhi_lnrhoreh_max(mu,xend,Pstar)
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     print*,'mu=',mu,'xEnd=',mhi_x_endinf(mu)
+     print*,'mu=',mu,'xEnd=',xend
 
      do i=1,npts
 
@@ -66,7 +67,7 @@ program mhimain
 
 
 
-	xstar = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+	xstar = mhi_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
@@ -111,15 +112,16 @@ program mhimain
   w=0._kp
   do j=1,nmu
      mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
+     xEnd = mhi_x_endinf(mu)
      lnRhoReh = lnRhoNuc
-     xstarA = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = mhi_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = mhi_epsilon_one(xstarA,mu)
      eps2A = mhi_epsilon_two(xstarA,mu)
      eps3A = mhi_epsilon_three(xstarA,mu)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = mhi_lnrhoreh_max(mu,Pstar)
-     xstarB = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = mhi_lnrhoreh_max(mu,xend,Pstar)
+     xstarB = mhi_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = mhi_epsilon_one(xstarB,mu)
      eps2B = mhi_epsilon_two(xstarB,mu)
      eps3B = mhi_epsilon_three(xstarB,mu)
@@ -135,11 +137,14 @@ program mhimain
   lnRradmin=-42
   lnRradmax = 10
   mu = 0.5
+
+  xEnd = mhi_x_endinf(mu)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = mhi_x_rrad(mu,lnRrad,Pstar,bfoldstar)
+     xstar = mhi_x_rrad(mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -147,14 +152,13 @@ program mhimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = mhi_x_endinf(mu)
      eps1end =  mhi_epsilon_one(xend,mu)
      VendOverVstar = mhi_norm_potential(xend,mu)/mhi_norm_potential(xstar,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = mhi_x_rreh(mu,lnR,bfoldstar)
+     xstar = mhi_x_rreh(mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -162,7 +166,7 @@ program mhimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = mhi_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = mhi_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

@@ -162,8 +162,7 @@ contains
     real(kp), intent(in) :: k2
     real(kp), save :: k2sav = -1._kp
     real(kp), save :: Ksav = -1._kp
-!$omp private(k2sav, Ksav)
-
+!$omp threadprivate(k2sav, Ksav)
     if (k2.eq.k2sav) then
        ellipticK = Ksav
        return
@@ -188,7 +187,7 @@ contains
     real(kp), intent(in) :: k2
     real(kp), save :: k2sav = -1._kp
     real(kp), save :: Esav = -1._kp
-!$omp private(k2sav, Esav)
+!$omp threadprivate(k2sav, Esav)
 
     if (k2.eq.k2sav) then
        ellipticE = Esav

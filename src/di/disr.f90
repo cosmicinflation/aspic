@@ -35,6 +35,7 @@ module disr
   logical, parameter :: useKahlerSpline = .true.
   logical, save :: splineSet = .false.
 
+  
   public di_x, di_k2
   public di_norm_potential, di_epsilon_one, di_epsilon_two, di_epsilon_three
   public di_x_endinf, di_efold_primitive, di_x_trajectory
@@ -64,11 +65,13 @@ contains
        return
     endif
 
+
     if (.not.splineSet) then
        call di_set_splines()
        splineSet = .true.
     endif
 
+    
     if (outSplineExp) then
 !integration of first order expansion of di_deriv_x in k2=1
        if (k2.gt.k2max) then
@@ -106,7 +109,7 @@ contains
        di_k2 = di_direct_k2(x)
        return
     endif
-
+    
     if (.not.splineSet) then
        call di_set_splines()
        splineSet = .true.

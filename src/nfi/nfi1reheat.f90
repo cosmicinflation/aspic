@@ -23,20 +23,18 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function nfi1_x_star(a,b,w,lnRhoReh,Pstar,bfoldstar)
+  function nfi1_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
     real(kp) :: nfi1_x_star
-    real(kp), intent(in) :: a,b,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: a,b,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
     
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
     if (.not.nfi1_check_params(a,b)) then
        stop 'nfi1_x_star: nfi1 requires a>0, b>1'
     endif
    
-    xEnd = nfi1_x_endinf(a,b)
     mini = nfi1_numacc_xinimin(a,b)
     maxi = xEnd
 
@@ -48,20 +46,18 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function nfi1_x_rrad(a,b,lnRrad,Pstar,bfoldstar)    
+  function nfi1_x_rrad(a,b,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: nfi1_x_rrad
-    real(kp), intent(in) :: a,b,lnRrad,Pstar    
+    real(kp), intent(in) :: a,b,xend,lnRrad,Pstar    
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
     if (.not.nfi1_check_params(a,b)) then
        stop 'nfi1_x_rrad: nfi1 requires a>0, b>1'
     endif
 
-    xEnd = nfi1_x_endinf(a,b)
     mini = nfi1_numacc_xinimin(a,b)
     maxi = xEnd
     
@@ -72,20 +68,18 @@ contains
 
 !returns x given potential parameters, scalar power, and lnR.
 !If present, returns the corresponding bfoldstar
-  function nfi1_x_rreh(a,b,lnRreh,bfoldstar)    
+  function nfi1_x_rreh(a,b,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: nfi1_x_rreh
-    real(kp), intent(in) :: a,b,lnRreh 
+    real(kp), intent(in) :: a,b,xend,lnRreh 
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
     if (.not.nfi1_check_params(a,b)) then
        stop 'nfi1_x_rreh: nfi1 requires a>0, b>1'
     endif
 
-    xEnd = nfi1_x_endinf(a,b)
     mini = nfi1_numacc_xinimin(a,b)
     maxi = xEnd
     
@@ -95,12 +89,12 @@ contains
 
 
 
-  function nfi1_lnrhoreh_max(a,b,Pstar) 
+  function nfi1_lnrhoreh_max(a,b,xend,Pstar) 
     implicit none
     real(kp) :: nfi1_lnrhoreh_max
-    real(kp), intent(in) :: a,b,Pstar
+    real(kp), intent(in) :: a,b,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -108,7 +102,6 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = nfi1_x_endinf(a,b)
 
     potEnd  = nfi1_norm_potential(xEnd,a,b)
 
@@ -116,7 +109,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = nfi1_x_star(a,b,wrad,junk,Pstar)  
+    x = nfi1_x_star(a,b,xend,wrad,junk,Pstar)  
 
     potStar = nfi1_norm_potential(x,a,b)
     epsOneStar = nfi1_epsilon_one(x,a,b)

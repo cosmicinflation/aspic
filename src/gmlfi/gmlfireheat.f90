@@ -23,15 +23,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)    
+  function gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: gmlfi_x_star
-    real(kp), intent(in) :: alpha,p,q,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,q,alpha,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: gmlfiData
     
@@ -40,7 +40,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = gmlfi_x_endinf(p,q,alpha)
     epsOneEnd = gmlfi_epsilon_one(xEnd,p,q,alpha)
     potEnd = gmlfi_norm_potential(xEnd,p,q,alpha)
     primEnd = gmlfi_efold_primitive(xEnd,p,q,alpha) 
@@ -95,15 +94,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function gmlfi_x_rrad(p,q,alpha,lnRrad,Pstar,bfoldstar)    
+  function gmlfi_x_rrad(p,q,alpha,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: gmlfi_x_rrad
-    real(kp), intent(in) :: alpha,p,q,lnRrad,Pstar
+    real(kp), intent(in) :: p,q,alpha,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: gmlfiData
     
@@ -112,7 +111,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
         
-    xEnd = gmlfi_x_endinf(p,q,alpha)
     epsOneEnd = gmlfi_epsilon_one(xEnd,p,q,alpha)
     potEnd = gmlfi_norm_potential(xEnd,p,q,alpha)
     primEnd = gmlfi_efold_primitive(xEnd,p,q,alpha) 
@@ -164,15 +162,15 @@ contains
   
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function gmlfi_x_rreh(p,q,alpha,lnRreh,bfoldstar)    
+  function gmlfi_x_rreh(p,q,alpha,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: gmlfi_x_rreh
-    real(kp), intent(in) :: alpha,p,q,lnRreh
+    real(kp), intent(in) :: p,q,alpha,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: gmlfiData
     
@@ -181,7 +179,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
         
-    xEnd = gmlfi_x_endinf(p,q,alpha)
     epsOneEnd = gmlfi_epsilon_one(xEnd,p,q,alpha)
     potEnd = gmlfi_norm_potential(xEnd,p,q,alpha)
     primEnd = gmlfi_efold_primitive(xEnd,p,q,alpha) 
@@ -231,12 +228,12 @@ contains
 
 
 
-  function gmlfi_lnrhoreh_max(p,q,alpha,Pstar) 
+  function gmlfi_lnrhoreh_max(p,q,alpha,xend,Pstar) 
     implicit none
     real(kp) :: gmlfi_lnrhoreh_max
-    real(kp), intent(in) :: alpha,p,q,Pstar
+    real(kp), intent(in) :: p,q,alpha,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -244,13 +241,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = gmlfi_x_endinf(p,q,alpha)
     potEnd  = gmlfi_norm_potential(xEnd,p,q,alpha)
     epsOneEnd = gmlfi_epsilon_one(xEnd,p,q,alpha)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = gmlfi_x_star(p,q,alpha,wrad,junk,Pstar)    
+    x = gmlfi_x_star(p,q,alpha,xend,wrad,junk,Pstar)    
     potStar = gmlfi_norm_potential(x,p,q,alpha)
     epsOneStar = gmlfi_epsilon_one(x,p,q,alpha)
 

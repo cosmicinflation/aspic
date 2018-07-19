@@ -22,24 +22,22 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function hi_x_star(w,lnRhoReh,Pstar,bfoldstar)    
+  function hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: hi_x_star
-    real(kp), intent(in) :: lnRhoReh,w,Pstar
+    real(kp), intent(in) :: xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hiData
     
 
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
-    endif
-    
-    xEnd = hi_x_endinf()
+    endif    
 
     epsOneEnd = hi_epsilon_one(xEnd)
     potEnd = hi_norm_potential(xEnd)
@@ -86,15 +84,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function hi_x_rrad(lnRrad,Pstar,bfoldstar)    
+  function hi_x_rrad(xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: hi_x_rrad
-    real(kp), intent(in) :: lnRrad,Pstar
+    real(kp), intent(in) :: xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hiData
     
@@ -102,9 +100,7 @@ contains
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-    
-    
-    xEnd = hi_x_endinf()
+        
 
     epsOneEnd = hi_epsilon_one(xEnd)
     potEnd = hi_norm_potential(xEnd)
@@ -148,23 +144,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function hi_x_rreh(lnRreh,bfoldstar)    
+  function hi_x_rreh(xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: hi_x_rreh
-    real(kp), intent(in) :: lnRreh
+    real(kp), intent(in) :: xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
-    endif
-  
-    xEnd = hi_x_endinf()
+    endif  
 
     epsOneEnd = hi_epsilon_one(xEnd)
     potEnd = hi_norm_potential(xEnd)
@@ -206,20 +200,18 @@ contains
 
 
 
-  function hi_lnrhoreh_max(Pstar) 
+  function hi_lnrhoreh_max(xend,Pstar) 
     implicit none
     real(kp) :: hi_lnrhoreh_max
-    real(kp), intent(in) :: Pstar
+    real(kp), intent(in) :: xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd
-    
-    xEnd = hi_x_endinf()
+    real(kp) :: lnRhoEnd    
 
     potEnd  = hi_norm_potential(xEnd)
 
@@ -227,7 +219,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = hi_x_star(wrad,junk,Pstar)  
+    x = hi_x_star(xend,wrad,junk,Pstar)  
 
     potStar = hi_norm_potential(x)
     epsOneStar = hi_epsilon_one(x)

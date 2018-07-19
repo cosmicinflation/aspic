@@ -22,15 +22,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function mssmi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)    
+  function mssmi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: mssmi_x_star
-    real(kp), intent(in) :: phi0,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: phi0,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: mssmiData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = mssmi_x_endinf(phi0)
     epsOneEnd = mssmi_epsilon_one(xEnd,phi0)
     potEnd = mssmi_norm_potential(xEnd,phi0)
     primEnd = mssmi_efold_primitive(xEnd,phi0)     
@@ -89,15 +88,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function mssmi_x_rrad(phi0,lnRrad,Pstar,bfoldstar)    
+  function mssmi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: mssmi_x_rrad
-    real(kp), intent(in) :: phi0,lnRrad,Pstar
+    real(kp), intent(in) :: phi0,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: mssmiData
     
@@ -106,7 +105,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = mssmi_x_endinf(phi0)
     epsOneEnd = mssmi_epsilon_one(xEnd,phi0)
     potEnd = mssmi_norm_potential(xEnd,phi0)
     primEnd = mssmi_efold_primitive(xEnd,phi0)     
@@ -118,7 +116,7 @@ contains
     mssmiData%real3 = calF + primEnd
 
     mini = xend
-    maxi = mssmi_x_epsonemin(phi0) -epsilon(1._kp)
+    maxi = mssmi_x_epsonemin(phi0)-epsilon(1._kp)
 
     x = zbrent(find_mssmi_x_rrad,mini,maxi,tolzbrent,mssmiData)
     mssmi_x_rrad = x   
@@ -154,15 +152,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function mssmi_x_rreh(phi0,lnRreh,bfoldstar)    
+  function mssmi_x_rreh(phi0,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: mssmi_x_rreh
-    real(kp), intent(in) :: phi0,lnRreh
+    real(kp), intent(in) :: phi0,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: mssmiData
     
@@ -171,7 +169,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = mssmi_x_endinf(phi0)
     epsOneEnd = mssmi_epsilon_one(xEnd,phi0)
     potEnd = mssmi_norm_potential(xEnd,phi0)
     primEnd = mssmi_efold_primitive(xEnd,phi0)     
@@ -218,12 +215,12 @@ contains
 
 
 
-  function mssmi_lnrhoreh_max(phi0,Pstar) 
+  function mssmi_lnrhoreh_max(phi0,xend,Pstar) 
     implicit none
     real(kp) :: mssmi_lnrhoreh_max
-    real(kp), intent(in) :: phi0,Pstar
+    real(kp), intent(in) :: phi0,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -231,13 +228,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = mssmi_x_endinf(phi0)
     potEnd  = mssmi_norm_potential(xEnd,phi0)
     epsOneEnd = mssmi_epsilon_one(xEnd,phi0)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = mssmi_x_star(phi0,wrad,junk,Pstar)    
+    x = mssmi_x_star(phi0,xend,wrad,junk,Pstar)    
     potStar = mssmi_norm_potential(x,phi0)
     epsOneStar = mssmi_epsilon_one(x,phi0)
    

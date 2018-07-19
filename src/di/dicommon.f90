@@ -302,7 +302,8 @@ contains
 
     real(kp), save :: fdone = -1._kp
     real(kp), save :: k2null = 1._kp
-
+!$omp threadprivate(fdone,k2null)
+    
     if (f.eq.fdone) then
        di_k2_nunull = k2null
        return
@@ -407,7 +408,8 @@ contains
 
     real(kp), save :: upliftcte = 0._kp
     real(kp), save :: fdone = -1._kp
-    
+!$omp threadprivate(upliftcte,fdone)
+
     real(kp) :: k2atmin
 
     if (f.eq.fdone) then
@@ -783,10 +785,10 @@ contains
     real(kp), save :: k2null = -1._kp
     real(kp), save :: fdone = -1._kp
     real(kp), save :: ucte = -1._kp
-
+!$omp threadprivate(k2null,fdone,ucte)
     real(kp), save :: ycutAtZero = 0._kp
     real(kp), save :: ycutAtOne = 0._kp
-
+!$omp threadprivate(ycutAtZero,ycutAtOne)
     integer, parameter :: neq = 1
     real(kp) :: xvar ,lnk2
     real(kp), dimension(neq) :: yvar
@@ -892,7 +894,7 @@ contains
 
     real(kp), save :: fdone = -1._kp
     real(kp), save :: k2null = -1._kp
-
+!$omp threadprivate(fdone,k2null)
     if (f.ne.fdone) then
        k2null = di_k2_nunull(f)
        fdone = f

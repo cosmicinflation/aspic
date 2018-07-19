@@ -73,15 +73,16 @@ program lmi1main
   
 
   do j=0,Ngam 
-     gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
-     gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
+!     gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
+!     gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
      gam=sqrt(gammin+(gammax-gammin)*(real(j,kp)/Ngam))  !square root step
 
      !  alpha=4.*(1.-gam)
      !  w=(alpha-2.)/(alpha+2.)
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,Pstar)
+     xEnd = lmi1_x_endinf(gam,beta)
+     lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,xend,Pstar)
 
      print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -89,7 +90,7 @@ program lmi1main
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = lmi1_x_star(gam,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -126,8 +127,8 @@ program lmi1main
   Ngam=30
 
   do j=0,Ngam 
-     gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
-     gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
+!     gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
+!     gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
      gam=sqrt(gammin+(gammax-gammin)*(real(j,kp)/Ngam))  !square root step
 
 
@@ -135,7 +136,8 @@ program lmi1main
      !  w=(alpha-2.)/(alpha+2.)
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,Pstar)
+     xEnd = lmi1_x_endinf(gam,beta)
+     lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,xend,Pstar)
 
      print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -143,7 +145,7 @@ program lmi1main
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = lmi1_x_star(gam,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -180,8 +182,8 @@ program lmi1main
   Ngam=50
 
   do j=0,Ngam 
-     gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
-     gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
+!     gam=gammin*(gammax/gammin)**(real(j,kp)/Ngam)  !logarithmic step
+!     gam=gammin+(gammax-gammin)*(real(j,kp)/Ngam)  !arithmetic step
      gam=gammin+(gammax-gammin)*sqrt(real(j,kp)/real(Ngam,kp))  !square root step
 
 
@@ -189,7 +191,8 @@ program lmi1main
      !  w=(alpha-2.)/(alpha+2.)
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,Pstar)
+     xEnd = lmi1_x_endinf(gam,beta)
+     lnRhoRehMax = lmi1_lnrhoreh_max(gam,beta,xend,Pstar)
 
      print *,'gam=',gam,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -197,7 +200,7 @@ program lmi1main
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = lmi1_x_star(gam,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -234,11 +237,12 @@ program lmi1main
   lnRradmax = 10
   gam = 0.05
   beta = 50
+  xEnd = lmi1_x_endinf(gam,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = lmi1_x_rrad(gam,beta,lnRrad,Pstar,bfoldstar)
+     xstar = lmi1_x_rrad(gam,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -246,14 +250,13 @@ program lmi1main
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = lmi1_x_endinf(gam,beta)
      eps1end =  lmi1_epsilon_one(xend,gam,beta)
      VendOverVstar = lmi1_norm_potential(xend,gam,beta)/lmi1_norm_potential(xstar,gam,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = lmi1_x_rreh(gam,beta,lnR,bfoldstar)
+     xstar = lmi1_x_rreh(gam,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -261,7 +264,7 @@ program lmi1main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = lmi1_x_star(gam,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = lmi1_x_star(gam,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

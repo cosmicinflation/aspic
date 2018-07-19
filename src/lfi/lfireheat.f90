@@ -24,15 +24,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)   
+  function lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)   
     implicit none
     real(kp) :: lfi_x_star
-    real(kp), intent(in) :: p,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: lfiData
     
@@ -41,7 +41,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = lfi_x_endinf(p)
     epsOneEnd = lfi_epsilon_one(xEnd,p)
     potEnd = lfi_norm_potential(xEnd,p)
     primEnd = lfi_efold_primitive(xEnd,p)
@@ -88,15 +87,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function lfi_x_rrad(p,lnRrad,Pstar,bfoldstar)    
+  function lfi_x_rrad(p,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: lfi_x_rrad
-    real(kp), intent(in) :: p,lnRrad,Pstar
+    real(kp), intent(in) :: p,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: lfiData
     
@@ -105,7 +104,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for instantaneous reheating!'
     endif
     
-    xEnd = lfi_x_endinf(p)
     epsOneEnd = lfi_epsilon_one(xEnd,p)
     potEnd = lfi_norm_potential(xEnd,p)
     primEnd = lfi_efold_primitive(xEnd,p)
@@ -152,15 +150,15 @@ contains
 
 !returns x given potential parameters and lnR (no need of Pstar, lnR
 !is optimal for CMB). If present, returns the corresponding bfoldstar
-  function lfi_x_rreh(p,lnRreh,bfoldstar)    
+  function lfi_x_rreh(p,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: lfi_x_rreh
-    real(kp), intent(in) :: p,lnRreh
+    real(kp), intent(in) :: p,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: lfiData
     
@@ -169,7 +167,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for instantaneous reheating!'
     endif
     
-    xEnd = lfi_x_endinf(p)
     epsOneEnd = lfi_epsilon_one(xEnd,p)
     potEnd = lfi_norm_potential(xEnd,p)
     primEnd = lfi_efold_primitive(xEnd,p)
@@ -214,12 +211,12 @@ contains
 
 
 
-  function lfi_lnrhoreh_max(p,Pstar) 
+  function lfi_lnrhoreh_max(p,xend,Pstar) 
     implicit none
     real(kp) :: lfi_lnrhoreh_max
-    real(kp), intent(in) :: p,Pstar
+    real(kp), intent(in) :: p,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -228,13 +225,12 @@ contains
     real(kp) :: lnRhoEnd
 
     
-    xEnd = lfi_x_endinf(p)
     potEnd  = lfi_norm_potential(xEnd,p)
     epsOneEnd = lfi_epsilon_one(xEnd,p)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = lfi_x_star(p,wrad,junk,Pstar)    
+    x = lfi_x_star(p,xend,wrad,junk,Pstar)    
     potStar = lfi_norm_potential(x,p)
     epsOneStar = lfi_epsilon_one(x,p)
     

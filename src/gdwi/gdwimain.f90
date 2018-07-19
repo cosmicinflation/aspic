@@ -58,15 +58,16 @@ program gdwimain
   
   do j=0,Nphi0 
 
-     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
-     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
+!     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+!     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+!     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
      phi0=exp(exp(log(log(phi0min))*(log(log(phi0max))/log(log(phi0min)))**(real(j,kp)/real(Nphi0,kp)))) !ultralogarithmic step
 
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,Pstar)
+     xEnd = gdwi_x_endinf(p,phi0)
+     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,xend,Pstar)
 
      print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -76,7 +77,7 @@ program gdwimain
 
 
 
-	xstar = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+	xstar = gdwi_x_star(p,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
@@ -112,15 +113,16 @@ program gdwimain
   
   do j=0,Nphi0 
 
-     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
-     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
+!     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+!     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+!     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
      phi0=exp(exp(log(log(phi0min))*(log(log(phi0max))/log(log(phi0min)))**(real(j,kp)/real(Nphi0,kp)))) !ultralogarithmic step
 
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,Pstar)
+     xEnd = gdwi_x_endinf(p,phi0)
+     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,xend,Pstar)
 
      print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -130,7 +132,7 @@ program gdwimain
 
 
 
-	xstar = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+	xstar = gdwi_x_star(p,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
@@ -166,17 +168,18 @@ program gdwimain
   
   do j=0,Nphi0 
 
-     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
-     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
-     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
+!     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+!     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+!     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
      phi0=exp(exp(log(log(phi0min))*(log(log(phi0max))/log(log(phi0min)))**(real(j,kp)/real(Nphi0,kp)))) !ultralogarithmic step
 
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,Pstar)
+     xEnd = gdwi_x_endinf(p,phi0)
+     lnRhoRehMax = gdwi_lnrhoreh_max(p,phi0,xend,Pstar)
 
-     print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     print *,'phi0= p=',phi0,p,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
      do i=1,npts
 
@@ -184,7 +187,7 @@ program gdwimain
 
 
 
-	xstar = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+	xstar = gdwi_x_star(p,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
@@ -230,14 +233,15 @@ program gdwimain
   do j=1,nphi0
      phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xEnd = gdwi_x_endinf(p,phi0)
+     xstarA = gdwi_x_star(p,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = gdwi_epsilon_one(xstarA,p,phi0)
      eps2A = gdwi_epsilon_two(xstarA,p,phi0)
      eps3A = gdwi_epsilon_three(xstarA,p,phi0)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = gdwi_lnrhoreh_max(p,phi0,Pstar)
-     xstarB = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = gdwi_lnrhoreh_max(p,phi0,xend,Pstar)
+     xstarB = gdwi_x_star(p,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = gdwi_epsilon_one(xstarB,p,phi0)
      eps2B = gdwi_epsilon_two(xstarB,p,phi0)
      eps3B = gdwi_epsilon_three(xstarB,p,phi0)
@@ -253,11 +257,13 @@ program gdwimain
   lnRradmin=-42
   lnRradmax = 10
   phi0 = 20
+
+  xEnd = gdwi_x_endinf(p,phi0)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = gdwi_x_rrad(p,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = gdwi_x_rrad(p,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -265,14 +271,13 @@ program gdwimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = gdwi_x_endinf(p,phi0)
      eps1end =  gdwi_epsilon_one(xend,p,phi0)
      VendOverVstar = gdwi_norm_potential(xend,p,phi0)/gdwi_norm_potential(xstar,p,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = gdwi_x_rreh(p,phi0,lnR,bfoldstar)
+     xstar = gdwi_x_rreh(p,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -280,7 +285,7 @@ program gdwimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = gdwi_x_star(p,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = gdwi_x_star(p,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

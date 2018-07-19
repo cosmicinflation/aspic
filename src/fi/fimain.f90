@@ -164,6 +164,9 @@ do k=0,ndelta
    print*, 'Nmax=',fi_efoldmax(delta,n)
    print*, 'epsilon1min=',fi_epsilon_one_min(delta,n)
    xepsone = fi_x_epsoneunity(delta,n)
+
+   xend = xepsone(1)
+   
    print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
 
    if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
@@ -173,7 +176,7 @@ do k=0,ndelta
 
 
    lnRhoRehMin = lnRhoNuc
-   lnRhoRehMax = fi_lnrhoreh_max(delta,n,Pstar)
+   lnRhoRehMax = fi_lnrhoreh_max(delta,n,xend,Pstar)
 
    print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -182,7 +185,7 @@ do k=0,ndelta
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-      xstar = fi_x_star(delta,n,w,lnRhoReh,Pstar,bfoldstar)
+      xstar = fi_x_star(delta,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
       eps1 = fi_epsilon_one(xstar,delta,n)
       eps2 = fi_epsilon_two(xstar,delta,n)
@@ -222,7 +225,7 @@ call delete_file('fi_nsr_neq1.dat')
 
   n=1._kp
 
-  npts = 10
+  npts = 15
   ndelta=100
 
   w=0._kp
@@ -244,13 +247,15 @@ call delete_file('fi_nsr_neq1.dat')
     xepsone = fi_x_epsoneunity(delta,n)
     print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
 
+    xend = xepsone(1)
+    
     if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
     if (fi_efoldmax(delta,n).lt.efoldNum) cycle
 
     print*, 'hardprior condition passed'
 
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = fi_lnrhoreh_max(delta,n,Pstar)
+    lnRhoRehMax = fi_lnrhoreh_max(delta,n,xend,Pstar)
 
     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -259,7 +264,7 @@ call delete_file('fi_nsr_neq1.dat')
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-      xstar = fi_x_star(delta,n,w,lnRhoReh,Pstar,bfoldstar)
+      xstar = fi_x_star(delta,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
       eps1 = fi_epsilon_one(xstar,delta,n)
       eps2 = fi_epsilon_two(xstar,delta,n)
@@ -294,11 +299,13 @@ call aspicwrite_end()
   lnRradmax = 10
   delta = 10._kp**(-6.)
   n = 0._kp
+  xepsone = fi_x_epsoneunity(delta,n)
+  xend = xepsone(1)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = fi_x_rrad(delta,n,lnRrad,Pstar,bfoldstar)
+     xstar = fi_x_rrad(delta,n,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -306,14 +313,13 @@ call aspicwrite_end()
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = fi_x_endinf(delta,n)
      eps1end =  fi_epsilon_one(xend,delta,n)
      VendOverVstar = fi_norm_potential(xend,delta,n)/fi_norm_potential(xstar,delta,n)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = fi_x_rreh(delta,n,lnR,bfoldstar)
+     xstar = fi_x_rreh(delta,n,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -321,7 +327,7 @@ call aspicwrite_end()
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = fi_x_star(delta,n,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = fi_x_star(delta,n,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

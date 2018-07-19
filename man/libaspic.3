@@ -230,33 +230,35 @@ module encapsulates the following
 of kind
 .I real(kp)
 .IP
-.BR foo_lnrhoreh_max (...,Pstar)
+.BR foo_lnrhoreh_max (...,xend,Pstar)
 .RS
-.BR foo_x_star (...,w,lnRhoReh,Pstar)
+.BR foo_x_star (...,xend,w,lnRhoReh,Pstar)
 .RE
 .RS
-.BR foo_x_star (...,w,lnRhoReh,Pstar,
+.BR foo_x_star (...,xend,w,lnRhoReh,Pstar,
 .B deltaNstar)
 .RE
 .RS
-.BR foo_x_rrad (...,lnRrad,Pstar)
+.BR foo_x_rrad (...,xend,lnRrad,Pstar)
 .RE
 .RS
-.BR foo_x_rrad (...,lnRrad,Pstar,
+.BR foo_x_rrad (...,xend,lnRrad,Pstar,
 .B deltaNstar)
 .RE
 .RS
-.BR foo_x_rreh (...,lnR)
+.BR foo_x_rreh (...,xend,lnR)
 .RE
 .RS
-.BR foo_x_rreh (...,lnR,
+.BR foo_x_rreh (...,xend,lnR,
 .B deltaNstar)
 .RE
 .P
 These functions take as first arguments the dimensionless potential
 parameters '...' as specified in the man pages
 .BR aspic_foo (3)
-and in the header of the module files 'foosr.f90' and 'fooreheat.f90'.
+and in the header of the module files 'foosr.f90'
+and 'fooreheat.f90'. They also require to specify the field value at
+the end of inflation 'xend'.
 .P
 The function
 .BR foo_lnrhoreh_max ()

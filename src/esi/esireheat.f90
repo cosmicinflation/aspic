@@ -22,15 +22,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)    
+  function esi_x_star(q,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: esi_x_star
-    real(kp), intent(in) :: q,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: q,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: esiData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = esi_x_endinf(q)
     epsOneEnd = esi_epsilon_one(xEnd,q)
     potEnd = esi_norm_potential(xEnd,q)
     primEnd = esi_efold_primitive(xEnd,q)
@@ -85,15 +84,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function esi_x_rrad(q,lnRrad,Pstar,bfoldstar)    
+  function esi_x_rrad(q,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: esi_x_rrad
-    real(kp), intent(in) :: q,lnRrad,Pstar
+    real(kp), intent(in) :: q,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: esiData
     
@@ -102,7 +101,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = esi_x_endinf(q)
     epsOneEnd = esi_epsilon_one(xEnd,q)
     potEnd = esi_norm_potential(xEnd,q)
     primEnd = esi_efold_primitive(xEnd,q)
@@ -147,15 +145,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function esi_x_rreh(q,lnRreh,bfoldstar)    
+  function esi_x_rreh(q,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: esi_x_rreh
-    real(kp), intent(in) :: q,lnRreh
+    real(kp), intent(in) :: q,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: esiData
     
@@ -164,7 +162,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = esi_x_endinf(q)
     epsOneEnd = esi_epsilon_one(xEnd,q)
     potEnd = esi_norm_potential(xEnd,q)
     primEnd = esi_efold_primitive(xEnd,q)
@@ -207,12 +204,12 @@ contains
 
 
 
-  function esi_lnrhoreh_max(q,Pstar) 
+  function esi_lnrhoreh_max(q,xend,Pstar) 
     implicit none
     real(kp) :: esi_lnrhoreh_max
-    real(kp), intent(in) :: q,Pstar
+    real(kp), intent(in) :: q,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -220,13 +217,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = esi_x_endinf(q)
     potEnd  = esi_norm_potential(xEnd,q)
     epsOneEnd = esi_epsilon_one(xEnd,q)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = esi_x_star(q,wrad,junk,Pstar)    
+    x = esi_x_star(q,xend,wrad,junk,Pstar)    
     potStar = esi_norm_potential(x,q)
     epsOneStar = esi_epsilon_one(x,q)
 

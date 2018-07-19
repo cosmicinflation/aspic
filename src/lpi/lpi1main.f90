@@ -87,7 +87,8 @@ program lpi1main
         phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = lpi1_lnrhoreh_max(p,q,phi0,Pstar)
+        xEnd = lpi1_x_endinf(p,q,phi0)
+        lnRhoRehMax = lpi1_lnrhoreh_max(p,q,phi0,xend,Pstar)
 
 
         print *,'phi0=',phi0,'p=',p,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -96,7 +97,7 @@ program lpi1main
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = lpi1_x_star(p,q,phi0,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = lpi1_x_star(p,q,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
            eps1 = lpi1_epsilon_one(xstar,p,q,phi0)
@@ -134,11 +135,12 @@ program lpi1main
   p=4
   q=2
   phi0=0.1
+  xEnd = lpi1_x_endinf(p,q,phi0)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = lpi1_x_rrad(p,q,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = lpi1_x_rrad(p,q,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -146,14 +148,13 @@ program lpi1main
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = lpi1_x_endinf(p,q,phi0)
      eps1end =  lpi1_epsilon_one(xend,p,q,phi0)
      VendOverVstar = lpi1_norm_potential(xend,p,q,phi0)/lpi1_norm_potential(xstar,p,q,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = lpi1_x_rreh(p,q,phi0,lnR,bfoldstar)
+     xstar = lpi1_x_rreh(p,q,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -161,7 +162,7 @@ program lpi1main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = lpi1_x_star(p,q,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = lpi1_x_star(p,q,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

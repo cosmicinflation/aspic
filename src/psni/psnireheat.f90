@@ -22,15 +22,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function psni_x_star(alpha,f,w,lnRhoReh,Pstar,bfoldstar)    
+  function psni_x_star(alpha,f,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: psni_x_star
-    real(kp), intent(in) :: alpha,f,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,f,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: psniData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = psni_x_endinf(alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
     potEnd = psni_norm_potential(xEnd,alpha,f)
     primEnd = psni_efold_primitive(xEnd,alpha,f)
@@ -87,15 +86,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function psni_x_rrad(alpha,f,lnRrad,Pstar,bfoldstar)    
+  function psni_x_rrad(alpha,f,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: psni_x_rrad
-    real(kp), intent(in) :: alpha,f,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,f,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: psniData
     
@@ -103,7 +102,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd = psni_x_endinf(alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
     potEnd = psni_norm_potential(xEnd,alpha,f)
     primEnd = psni_efold_primitive(xEnd,alpha,f)
@@ -150,15 +148,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function psni_x_rreh(alpha,f,lnRreh,bfoldstar)    
+  function psni_x_rreh(alpha,f,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: psni_x_rreh
-    real(kp), intent(in) :: alpha,f,lnRreh
+    real(kp), intent(in) :: alpha,f,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: psniData
     
@@ -166,7 +164,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd = psni_x_endinf(alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
     potEnd = psni_norm_potential(xEnd,alpha,f)
     primEnd = psni_efold_primitive(xEnd,alpha,f)
@@ -211,12 +208,12 @@ contains
 
 
 
-  function psni_lnrhoreh_max(alpha,f,Pstar) 
+  function psni_lnrhoreh_max(alpha,f,xend,Pstar) 
     implicit none
     real(kp) :: psni_lnrhoreh_max
-    real(kp), intent(in) :: alpha,f,Pstar
+    real(kp), intent(in) :: alpha,f,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -224,13 +221,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = psni_x_endinf(alpha,f)
     potEnd  = psni_norm_potential(xEnd,alpha,f)
     epsOneEnd = psni_epsilon_one(xEnd,alpha,f)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = psni_x_star(alpha,f,wrad,junk,Pstar)    
+    x = psni_x_star(alpha,f,xend,wrad,junk,Pstar)    
     potStar = psni_norm_potential(x,alpha,f)
     epsOneStar = psni_epsilon_one(x,alpha,f)
 

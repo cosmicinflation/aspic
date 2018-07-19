@@ -70,7 +70,8 @@ program rcmimain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = rcmi_lnrhoreh_max(alpha,Pstar)
+     xEnd = rcmi_x_endinf(alpha)
+     lnRhoRehMax = rcmi_lnrhoreh_max(alpha,xend,Pstar)
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -78,7 +79,7 @@ program rcmimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = rcmi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar, 'xstar=',xstar
 
@@ -94,7 +95,9 @@ program rcmimain
 
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
-      
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
+        
         if (has_not_shifted(0.002_kp,0.1_kp*log10(eps1),5._kp*eps2)) then
            cycle
         endif
@@ -107,7 +110,6 @@ program rcmimain
 
         call livewrite('rcmi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha/))
 
      end do
 
@@ -126,15 +128,16 @@ program rcmimain
      alphamax=10._kp**(-3.)
      do j=1,nalpha
         alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+        xEnd = rcmi_x_endinf(alpha)
         lnRhoReh = lnRhoNuc
-        xstarA = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstarA = rcmi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
         eps1A = rcmi_epsilon_one(xstarA,alpha)
         eps2A = rcmi_epsilon_two(xstarA,alpha)
         eps3A = rcmi_epsilon_three(xstarA,alpha)
         nsA = 1._kp - 2._kp*eps1A - eps2A
         rA = 16._kp*eps1A
-        lnRhoReh = rcmi_lnrhoreh_max(alpha,Pstar)
-        xstarB = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        lnRhoReh = rcmi_lnrhoreh_max(alpha,xend,Pstar)
+        xstarB = rcmi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
         eps1B = rcmi_epsilon_one(xstarB,alpha)
         eps2B = rcmi_epsilon_two(xstarB,alpha)
         eps3B = rcmi_epsilon_three(xstarB,alpha)
@@ -150,11 +153,14 @@ program rcmimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 5e-4
+
+  xEnd = rcmi_x_endinf(alpha)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rcmi_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = rcmi_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -162,14 +168,13 @@ program rcmimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = rcmi_x_endinf(alpha)
      eps1end =  rcmi_epsilon_one(xend,alpha)
      VendOverVstar = rcmi_norm_potential(xend,alpha)/rcmi_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rcmi_x_rreh(alpha,lnR,bfoldstar)
+     xstar = rcmi_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -177,7 +182,7 @@ program rcmimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rcmi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rcmi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

@@ -23,15 +23,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function lpi3_x_star(p,q,phi0,w,lnRhoReh,Pstar,bfoldstar)    
+  function lpi3_x_star(p,q,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: lpi3_x_star
-    real(kp), intent(in) :: phi0,p,q,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,q,phi0,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: lpi3Data
     
@@ -40,7 +40,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = lpi3_x_endinf(p,q,phi0)
     epsOneEnd = lpi3_epsilon_one(xEnd,p,q,phi0)
     potEnd = lpi3_norm_potential(xEnd,p,q,phi0)
     primEnd = lpi3_efold_primitive(xEnd,p,q,phi0) 
@@ -94,15 +93,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function lpi3_x_rrad(p,q,phi0,lnRrad,Pstar,bfoldstar)    
+  function lpi3_x_rrad(p,q,phi0,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: lpi3_x_rrad
-    real(kp), intent(in) :: phi0,p,q,lnRrad,Pstar
+    real(kp), intent(in) :: p,q,phi0,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: lpi3Data
     
@@ -112,7 +111,6 @@ contains
     endif
 
     
-    xEnd = lpi3_x_endinf(p,q,phi0)
     epsOneEnd = lpi3_epsilon_one(xEnd,p,q,phi0)
     potEnd = lpi3_norm_potential(xEnd,p,q,phi0)
     primEnd = lpi3_efold_primitive(xEnd,p,q,phi0) 
@@ -164,15 +162,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function lpi3_x_rreh(p,q,phi0,lnRreh,bfoldstar)    
+  function lpi3_x_rreh(p,q,phi0,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: lpi3_x_rreh
-    real(kp), intent(in) :: phi0,p,q,lnRreh
+    real(kp), intent(in) :: p,q,phi0,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: lpi3Data
     
@@ -180,9 +178,7 @@ contains
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    
-    xEnd = lpi3_x_endinf(p,q,phi0)
+   
     epsOneEnd = lpi3_epsilon_one(xEnd,p,q,phi0)
     potEnd = lpi3_norm_potential(xEnd,p,q,phi0)
     primEnd = lpi3_efold_primitive(xEnd,p,q,phi0) 
@@ -232,12 +228,12 @@ contains
 
 
 
-  function lpi3_lnrhoreh_max(p,q,phi0,Pstar) 
+  function lpi3_lnrhoreh_max(p,q,phi0,xend,Pstar) 
     implicit none
     real(kp) :: lpi3_lnrhoreh_max
-    real(kp), intent(in) :: phi0,p,q,Pstar
+    real(kp), intent(in) :: p,q,phi0,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -245,13 +241,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = lpi3_x_endinf(p,q,phi0)
     potEnd  = lpi3_norm_potential(xEnd,p,q,phi0)
     epsOneEnd = lpi3_epsilon_one(xEnd,p,q,phi0)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = lpi3_x_star(p,q,phi0,wrad,junk,Pstar)    
+    x = lpi3_x_star(p,q,phi0,xend,wrad,junk,Pstar)    
     potStar = lpi3_norm_potential(x,p,q,phi0)
     epsOneStar = lpi3_epsilon_one(x,p,q,phi0)
 

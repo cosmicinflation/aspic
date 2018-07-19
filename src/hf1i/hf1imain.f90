@@ -57,7 +57,8 @@ program hf1imain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = hf1i_lnrhoreh_max(A1,Pstar)
+     xEnd = hf1i_x_endinf(A1)
+     lnRhoRehMax = hf1i_lnrhoreh_max(A1,xend,Pstar)
 
      print *,'A1=',A1,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -65,7 +66,7 @@ program hf1imain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = hf1i_x_star(A1,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = hf1i_x_star(A1,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -103,13 +104,14 @@ program hf1imain
   do j=1,nA1
      A1=A1min*(A1max/A1min)**(real(j,kp)/real(nA1,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = hf1i_x_star(A1,w,lnRhoReh,Pstar,bfoldstar)
+     xEnd = hf1i_x_endinf(A1)
+     xstarA = hf1i_x_star(A1,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = hf1i_epsilon_one(xstarA,A1)
      eps2A = hf1i_epsilon_two(xstarA,A1)
      eps3A = hf1i_epsilon_three(xstarA,A1)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = hf1i_lnrhoreh_max(A1,Pstar)
+     lnRhoReh = hf1i_lnrhoreh_max(A1,xend,Pstar)
      xstarB = hf1i_x_star(A1,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = hf1i_epsilon_one(xstarB,A1)
      eps2B = hf1i_epsilon_two(xstarB,A1)
@@ -125,26 +127,26 @@ program hf1imain
   lnRradmin=-42
   lnRradmax = 10
   A1 = 1e-1
+  xEnd = hf1i_x_endinf(A1)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = hf1i_x_rrad(A1,lnRrad,Pstar,bfoldstar)
+     xstar = hf1i_x_rrad(A1,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
      eps1 = hf1i_epsilon_one(xstar,A1)
 
      !consistency test
-     !get lnR from lnRrad and check that it gives the same xstar
-     xend = hf1i_x_endinf(A1)
+     !get lnR from lnRrad and check that it gives the same xstar     
      eps1end =  hf1i_epsilon_one(xend,A1)
      VendOverVstar = hf1i_norm_potential(xend,A1)/hf1i_norm_potential(xstar,A1)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = hf1i_x_rreh(A1,lnR,bfoldstar)
+     xstar = hf1i_x_rreh(A1,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -152,7 +154,7 @@ program hf1imain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = hf1i_x_star(A1,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = hf1i_x_star(A1,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

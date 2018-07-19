@@ -95,7 +95,8 @@ program cwimain
      Q=Qmin*(Qmax/Qmin)**(real(j,kp)/NQ) !logarithmic step
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,Pstar)
+     xend=cwi_x_endinf(alpha,Q)
+     lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,xend,Pstar)
 
      print *,'Q=',Q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -103,7 +104,7 @@ program cwimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar 
 
@@ -146,7 +147,8 @@ program cwimain
      Q=Qmin*(Qmax/Qmin)**(real(j,kp)/NQ) !logarithmic step
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,Pstar)
+     xend=cwi_x_endinf(alpha,Q)
+     lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,xend,Pstar)
 
      print *,'Q=',Q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -154,7 +156,7 @@ program cwimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar 
 
@@ -192,14 +194,15 @@ program cwimain
      Q=Qmin*(Qmax/Qmin)**(real(j,kp)/real(NQ,kp))
      alpha=4._kp*(exp(1._kp))
      lnRhoReh = lnRhoNuc
-     xstarA = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+     xend=cwi_x_endinf(alpha,Q)
+     xstarA = cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = cwi_epsilon_one(xstarA,alpha,Q)
      eps2A = cwi_epsilon_two(xstarA,alpha,Q)
      eps3A = cwi_epsilon_three(xstarA,alpha,Q)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = cwi_lnrhoreh_max(alpha,Q,Pstar)
-     xstarB = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = cwi_lnrhoreh_max(alpha,Q,xend,Pstar)
+     xstarB = cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = cwi_epsilon_one(xstarB,alpha,Q)
      eps2B = cwi_epsilon_two(xstarB,alpha,Q)
      eps3B = cwi_epsilon_three(xstarB,alpha,Q)
@@ -216,11 +219,12 @@ program cwimain
   lnRradmax = 10
   alpha = 4*exp(1._kp)
   Q = 10
+  xend=cwi_x_endinf(alpha,Q)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = cwi_x_rrad(alpha,Q,lnRrad,Pstar,bfoldstar)
+     xstar = cwi_x_rrad(alpha,Q,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -235,7 +239,7 @@ program cwimain
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = cwi_x_rreh(alpha,Q,lnR,bfoldstar)
+     xstar = cwi_x_rreh(alpha,Q,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -243,7 +247,7 @@ program cwimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = cwi_x_star(alpha,Q,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

@@ -20,23 +20,21 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function hni_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfold)    
+  function hni_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: hni_x_star
-    real(kp), intent(in) :: alpha,phi0,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hniData
     
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=hni_x_endinf(alpha,phi0)
     
     epsOneEnd = hni_epsilon_one(xEnd,alpha,phi0)
     potEnd = hni_norm_potential(xEnd,alpha,phi0)
@@ -84,23 +82,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function hni_x_rrad(alpha,phi0,lnRrad,Pstar,bfold)    
+  function hni_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: hni_x_rrad
-    real(kp), intent(in) :: alpha,phi0,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hniData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=hni_x_endinf(alpha,phi0)
     
     epsOneEnd = hni_epsilon_one(xEnd,alpha,phi0)
     potEnd = hni_norm_potential(xEnd,alpha,phi0)
@@ -147,23 +143,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function hni_x_rreh(alpha,phi0,lnRreh,bfold)    
+  function hni_x_rreh(alpha,phi0,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: hni_x_rreh
-    real(kp), intent(in) :: alpha,phi0,lnRreh
+    real(kp), intent(in) :: alpha,phi0,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: hniData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=hni_x_endinf(alpha,phi0)
     
     epsOneEnd = hni_epsilon_one(xEnd,alpha,phi0)
     potEnd = hni_norm_potential(xEnd,alpha,phi0)
@@ -207,23 +201,22 @@ contains
   end function find_hni_x_rreh
 
 
-  function hni_lnrhoreh_max(alpha,phi0,Pstar) 
+  function hni_lnrhoreh_max(alpha,phi0,xend,Pstar) 
     implicit none
     real(kp) :: hni_lnrhoreh_max
-    real(kp), intent(in) :: alpha,phi0,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd = hni_x_endinf(alpha,phi0)
     potEnd  = hni_norm_potential(xEnd,alpha,phi0)
     epsOneEnd = hni_epsilon_one(xEnd,alpha,phi0)
        
-    x = hni_x_star(alpha,phi0,wrad,junk,Pstar)
+    x = hni_x_star(alpha,phi0,xend,wrad,junk,Pstar)
 
     potStar = hni_norm_potential(x,alpha,phi0)
     epsOneStar = hni_epsilon_one(x,alpha,phi0)

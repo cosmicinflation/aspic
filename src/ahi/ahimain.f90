@@ -59,7 +59,9 @@ program ahimain
      w=0._kp
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = ahi_lnrhoreh_max(phi0,Pstar)
+
+     xend = ahi_x_endinf(phi0)
+     lnRhoRehMax = ahi_lnrhoreh_max(phi0,xend,Pstar)
 
      print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -67,7 +69,7 @@ program ahimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = ahi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = ahi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -97,11 +99,14 @@ program ahimain
   lnRradmin=-42
   lnRradmax = 10
   phi0 = 1.
+
+  xend = ahi_x_endinf(phi0)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ahi_x_rrad(phi0,lnRrad,Pstar,bfoldstar)
+     xstar = ahi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -109,14 +114,13 @@ program ahimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = ahi_x_endinf(phi0)
      eps1end =  ahi_epsilon_one(xend,phi0)
      VendOverVstar = ahi_norm_potential(xend,phi0)/ahi_norm_potential(xstar,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ahi_x_rreh(phi0,lnR,bfoldstar)
+     xstar = ahi_x_rreh(phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -124,7 +128,7 @@ program ahimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ahi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ahi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

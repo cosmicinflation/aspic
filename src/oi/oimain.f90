@@ -72,7 +72,8 @@ program oimain
         alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp))!logstep
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = oi_lnrhoreh_max(alpha,phi0,Pstar)
+        xEnd=oi_x_endinf(alpha,phi0) 
+        lnRhoRehMax = oi_lnrhoreh_max(alpha,phi0,xend,Pstar)
 
         print *,'alpha=',alpha,'phi0/Mp=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -80,7 +81,7 @@ program oimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = oi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = oi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
            eps1 = oi_epsilon_one(xstar,alpha,phi0)
@@ -117,11 +118,14 @@ program oimain
   lnRradmax = 10
   alpha = 0.01
   phi0 = 0.5
+
+  xEnd=oi_x_endinf(alpha,phi0) 
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = oi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)
+     xstar = oi_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -129,14 +133,13 @@ program oimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = oi_x_endinf(alpha,phi0)
      eps1end =  oi_epsilon_one(xend,alpha,phi0)
      VendOverVstar = oi_norm_potential(xend,alpha,phi0)/oi_norm_potential(xstar,alpha,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = oi_x_rreh(alpha,phi0,lnR,bfoldstar)
+     xstar = oi_x_rreh(alpha,phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -144,7 +147,7 @@ program oimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = oi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = oi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

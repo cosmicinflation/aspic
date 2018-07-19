@@ -62,7 +62,8 @@ program rchimain
      AI=AImin+(AImax-AImin)*(real(j,kp)/real(nAI,kp)) !arithmetic step
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = rchi_lnrhoreh_max(AI,Pstar)
+     xEnd = rchi_x_endinf(AI)
+     lnRhoRehMax = rchi_lnrhoreh_max(AI,xend,Pstar)
 
      print *,'AI=',AI,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -70,7 +71,7 @@ program rchimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = rchi_x_star(AI,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = rchi_x_star(AI,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -109,15 +110,16 @@ program rchimain
   w=0._kp
   do j=0,nAI
      AI=AImin+(AImax-AImin)*(real(j,kp)/real(nAI,kp)) !arithmetic step
+     xEnd = rchi_x_endinf(AI)
      lnRhoReh = lnRhoNuc
-     xstarA = rchi_x_star(AI,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = rchi_x_star(AI,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = rchi_epsilon_one(xstarA,AI)
      eps2A = rchi_epsilon_two(xstarA,AI)
      eps3A = rchi_epsilon_three(xstarA,AI)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = rchi_lnrhoreh_max(AI,Pstar)
-     xstarB = rchi_x_star(AI,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = rchi_lnrhoreh_max(AI,xend,Pstar)
+     xstarB = rchi_x_star(AI,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = rchi_epsilon_one(xstarB,AI)
      eps2B = rchi_epsilon_two(xstarB,AI)
      eps3B = rchi_epsilon_three(xstarB,AI)
@@ -133,11 +135,14 @@ program rchimain
   lnRradmin=-42
   lnRradmax = 10
   AI = 5
+
+  xEnd = rchi_x_endinf(AI)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rchi_x_rrad(AI,lnRrad,Pstar,bfoldstar)
+     xstar = rchi_x_rrad(AI,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -145,14 +150,13 @@ program rchimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = rchi_x_endinf(AI)
      eps1end =  rchi_epsilon_one(xend,AI)
      VendOverVstar = rchi_norm_potential(xend,AI)/rchi_norm_potential(xstar,AI)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rchi_x_rreh(AI,lnR,bfoldstar)
+     xstar = rchi_x_rreh(AI,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -160,7 +164,7 @@ program rchimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rchi_x_star(AI,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rchi_x_star(AI,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

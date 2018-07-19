@@ -24,20 +24,18 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ccsi3_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+  function ccsi3_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
     real(kp) :: ccsi3_x_star
-    real(kp), intent(in) :: alpha,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
     
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
     if (.not.ccsi3_check_params(alpha)) then
        stop 'ccsi3_x_star: ccsi3 requires alpha>=0'
     endif
    
-    xEnd = ccsi3_x_endinf(alpha)
     mini = xEnd
     maxi = ccsi3_xinimax(alpha)
 
@@ -50,20 +48,18 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ccsi3_x_rrad(alpha,lnRrad,Pstar,bfoldstar)    
+  function ccsi3_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ccsi3_x_rrad
-    real(kp), intent(in) :: alpha,lnRrad,Pstar    
+    real(kp), intent(in) :: alpha,xend,lnRrad,Pstar    
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
     if (.not.ccsi3_check_params(alpha)) then
        stop 'ccsi3_x_rrad: ccsi3 requires alpha>=0'
     endif
 
-    xEnd = ccsi3_x_endinf(alpha)
     mini = xEnd
     maxi = ccsi3_xinimax(alpha)
     
@@ -74,20 +70,18 @@ contains
 
 !returns x given potential parameters, scalar power, and lnR.
 !If present, returns the corresponding bfoldstar
-  function ccsi3_x_rreh(alpha,lnRreh,bfoldstar)    
+  function ccsi3_x_rreh(alpha,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: ccsi3_x_rreh
-    real(kp), intent(in) :: alpha,lnRreh 
+    real(kp), intent(in) :: alpha,xend,lnRreh 
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
     if (.not.ccsi3_check_params(alpha)) then
        stop 'ccsi3_x_rreh: ccsi3 requires alpha>=0'
     endif
 
-    xEnd = ccsi3_x_endinf(alpha)
     mini = xEnd
     maxi = ccsi3_xinimax(alpha)
     
@@ -97,7 +91,7 @@ contains
 
 
 
-  function ccsi3_lnrhoreh_max(alpha,Pstar) 
+  function ccsi3_lnrhoreh_max(alpha,xend,Pstar) 
     implicit none
     real(kp) :: ccsi3_lnrhoreh_max
     real(kp), intent(in) :: alpha,Pstar
@@ -110,15 +104,13 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = ccsi3_x_endinf(alpha)
-
     potEnd  = ccsi3_norm_potential(xEnd,alpha)
 
     epsOneEnd = ccsi3_epsilon_one(xEnd,alpha)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = ccsi3_x_star(alpha,wrad,junk,Pstar)  
+    x = ccsi3_x_star(alpha,xend,wrad,junk,Pstar)  
 
     potStar = ccsi3_norm_potential(x,alpha)
     epsOneStar = ccsi3_epsilon_one(x,alpha)

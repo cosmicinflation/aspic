@@ -22,14 +22,14 @@ contains
 
 !returns x such potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ncli_x_star(alpha,phi0,n,w,lnRhoReh,Pstar,bfoldstar)    
+  function ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ncli_x_star
-    real(kp), intent(in) :: alpha,phi0,n,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,phi0,n,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x,xEnd
+    real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: ncliData
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=ncli_x_endinf(alpha,phi0,n)
     epsOneEnd = ncli_epsilon_one(xEnd,alpha,phi0,n)
     potEnd = ncli_norm_potential(xEnd,alpha,phi0,n)
     primEnd = ncli_efold_primitive(xEnd,alpha,phi0,n)
@@ -90,14 +89,14 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ncli_x_rrad(alpha,phi0,n,lnRrad,Pstar,bfoldstar)    
+  function ncli_x_rrad(alpha,phi0,n,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ncli_x_rrad
-    real(kp), intent(in) :: alpha,phi0,n,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,phi0,n,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x,xEnd
+    real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: ncliData
@@ -107,7 +106,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=ncli_x_endinf(alpha,phi0,n)
     epsOneEnd = ncli_epsilon_one(xEnd,alpha,phi0,n)
 
 
@@ -157,14 +155,14 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function ncli_x_rreh(alpha,phi0,n,lnRreh,bfoldstar)    
+  function ncli_x_rreh(alpha,phi0,n,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: ncli_x_rreh
-    real(kp), intent(in) :: alpha,phi0,n,lnRreh
+    real(kp), intent(in) :: alpha,phi0,n,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: mini,maxi,calF,x,xEnd
+    real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: ncliData
@@ -174,7 +172,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=ncli_x_endinf(alpha,phi0,n)
     epsOneEnd = ncli_epsilon_one(xEnd,alpha,phi0,n)
     potEnd = ncli_norm_potential(xEnd,alpha,phi0,n)
     primEnd = ncli_efold_primitive(xEnd,alpha,phi0,n)
@@ -220,26 +217,25 @@ contains
 
 
 
-  function ncli_lnrhoreh_max(alpha,phi0,n,Pstar) 
+  function ncli_lnrhoreh_max(alpha,phi0,n,xend,Pstar) 
     implicit none
     real(kp) :: ncli_lnrhoreh_max
-    real(kp), intent(in) :: alpha,phi0,n,Pstar
+    real(kp), intent(in) :: alpha,phi0,n,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
-    real(kp) :: x, potStar, epsOneStar, xEnd
+    real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
     real(kp) :: lnRhoEnd
 
-    xEnd = ncli_x_endinf(alpha,phi0,n)
     potEnd  = ncli_norm_potential(xEnd,alpha,phi0,n)
     epsOneEnd = ncli_epsilon_one(xEnd,alpha,phi0,n)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = ncli_x_star(alpha,phi0,n,wrad,junk,Pstar)    
+    x = ncli_x_star(alpha,phi0,n,xend,wrad,junk,Pstar)    
     potStar = ncli_norm_potential(x,alpha,phi0,n)
     epsOneStar = ncli_epsilon_one(x,alpha,phi0,n)
     

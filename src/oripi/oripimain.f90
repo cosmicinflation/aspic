@@ -59,7 +59,8 @@ program oripimain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = oripi_lnrhoreh_max(phi0,Pstar)
+     xEnd = oripi_x_endinf(phi0)
+     lnRhoRehMax = oripi_lnrhoreh_max(phi0,xend,Pstar)
 
      print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -67,7 +68,7 @@ program oripimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = oripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = oripi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = oripi_epsilon_one(xstar,phi0)
         eps2 = oripi_epsilon_two(xstar,phi0)
@@ -105,15 +106,16 @@ program oripimain
   w=0._kp
   do j=1,nphi0
      phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(nphi0,kp))
+     xEnd = oripi_x_endinf(phi0)
      lnRhoReh = lnRhoNuc
-     xstarA = oripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = oripi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = oripi_epsilon_one(xstarA,phi0)
      eps2A = oripi_epsilon_two(xstarA,phi0)
      eps3A = oripi_epsilon_three(xstarA,phi0)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = oripi_lnrhoreh_max(phi0,Pstar)
-     xstarB = oripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = oripi_lnrhoreh_max(phi0,xend,Pstar)
+     xstarB = oripi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = oripi_epsilon_one(xstarB,phi0)
      eps2B = oripi_epsilon_two(xstarB,phi0)
      eps3B = oripi_epsilon_three(xstarB,phi0)
@@ -129,11 +131,14 @@ program oripimain
   lnRradmin=-42
   lnRradmax = 10
   phi0 = 1e-2
+
+  xEnd = oripi_x_endinf(phi0)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = oripi_x_rrad(phi0,lnRrad,Pstar,bfoldstar)
+     xstar = oripi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -141,14 +146,13 @@ program oripimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = oripi_x_endinf(phi0)
      eps1end =  oripi_epsilon_one(xend,phi0)
      VendOverVstar = oripi_norm_potential(xend,phi0)/oripi_norm_potential(xstar,phi0)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = oripi_x_rreh(phi0,lnR,bfoldstar)
+     xstar = oripi_x_rreh(phi0,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -156,7 +160,7 @@ program oripimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = oripi_x_star(phi0,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = oripi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

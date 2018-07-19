@@ -65,7 +65,8 @@ program esimain
      w=0._kp
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
+     xEnd = esi_x_endinf(q)
+     lnRhoRehMax = esi_lnrhoreh_max(q,xend,Pstar)
 
      print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -73,7 +74,7 @@ program esimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = esi_x_star(q,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -108,7 +109,8 @@ program esimain
      w = -1._kp/3._kp
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = esi_lnrhoreh_max(q,Pstar)
+     xEnd = esi_x_endinf(q)
+     lnRhoRehMax = esi_lnrhoreh_max(q,xend,Pstar)
 
      print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -116,7 +118,7 @@ program esimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = esi_x_star(q,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -152,14 +154,15 @@ program esimain
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xEnd = esi_x_endinf(alpha)
+     xstarA = esi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = esi_epsilon_one(xstarA,alpha)
      eps2A = esi_epsilon_two(xstarA,alpha)
      eps3A = esi_epsilon_three(xstarA,alpha)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = esi_lnrhoreh_max(alpha,Pstar)
-     xstarB = esi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = esi_lnrhoreh_max(alpha,xend,Pstar)
+     xstarB = esi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = esi_epsilon_one(xstarB,alpha)
      eps2B = esi_epsilon_two(xstarB,alpha)
      eps3B = esi_epsilon_three(xstarB,alpha)
@@ -175,11 +178,12 @@ program esimain
   lnRradmin=-42
   lnRradmax = 10
   q = 1.
+  xEnd = esi_x_endinf(q)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = esi_x_rrad(q,lnRrad,Pstar,bfoldstar)
+     xstar = esi_x_rrad(q,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -194,7 +198,7 @@ program esimain
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = esi_x_rreh(q,lnR,bfoldstar)
+     xstar = esi_x_rreh(q,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -202,7 +206,7 @@ program esimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = esi_x_star(q,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = esi_x_star(q,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

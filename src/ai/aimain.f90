@@ -56,17 +56,19 @@ program aimain
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = ai_lnrhoreh_max(mu,Pstar)
+
+     xend = ai_x_endinf(mu)
+     lnRhoRehMax = ai_lnrhoreh_max(mu,xend,Pstar)
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     print*,'mu=',mu,'xEnd=',ai_x_endinf(mu)
+     print*,'mu=',mu,'xEnd=',xend
 
      do i=1,npts
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
-
-	xstar = ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+        
+	xstar = ai_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',ai_epsilon_one(xstar,mu)
 
@@ -108,14 +110,15 @@ program aimain
   do j=1,nmu
      mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     xend = ai_x_endinf(mu)
+     xstarA = ai_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = ai_epsilon_one(xstarA,mu)
      eps2A = ai_epsilon_two(xstarA,mu)
      eps3A = ai_epsilon_three(xstarA,mu)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = ai_lnrhoreh_max(mu,Pstar)
-     xstarB = ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = ai_lnrhoreh_max(mu,xend,Pstar)
+     xstarB = ai_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = ai_epsilon_one(xstarB,mu)
      eps2B = ai_epsilon_two(xstarB,mu)
      eps3B = ai_epsilon_three(xstarB,mu)
@@ -134,11 +137,13 @@ program aimain
   lnRradmin=-42
   lnRradmax = 10
   mu = 1e-2
+  xend = ai_x_endinf(mu)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ai_x_rrad(mu,lnRrad,Pstar,bfoldstar)
+     xstar = ai_x_rrad(mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -146,14 +151,13 @@ program aimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = ai_x_endinf(mu)
      eps1end =  ai_epsilon_one(xend,mu)
      VendOverVstar = ai_norm_potential(xend,mu)/ai_norm_potential(xstar,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ai_x_rreh(mu,lnR,bfoldstar)
+     xstar = ai_x_rreh(mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -161,7 +165,7 @@ program aimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ai_x_star(mu,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ai_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

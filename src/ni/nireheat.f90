@@ -22,15 +22,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function ni_x_star(f,w,lnRhoReh,Pstar,bfoldstar)    
+  function ni_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ni_x_star
-    real(kp), intent(in) :: f,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: f,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: niData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = ni_x_endinf(f)
     epsOneEnd = ni_epsilon_one(xEnd,f)
     potEnd = ni_norm_potential(xEnd,f)
     primEnd = ni_efold_primitive(xEnd,f)
@@ -85,15 +84,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ni_x_rrad(f,lnRrad,Pstar,bfoldstar)    
+  function ni_x_rrad(f,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ni_x_rrad
-    real(kp), intent(in) :: f,lnRrad,Pstar
+    real(kp), intent(in) :: f,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: niData
     
@@ -102,7 +101,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = ni_x_endinf(f)
     epsOneEnd = ni_epsilon_one(xEnd,f)
     potEnd = ni_norm_potential(xEnd,f)
     primEnd = ni_efold_primitive(xEnd,f)
@@ -146,15 +144,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function ni_x_rreh(f,lnRreh,bfoldstar)    
+  function ni_x_rreh(f,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: ni_x_rreh
-    real(kp), intent(in) :: f,lnRreh
+    real(kp), intent(in) :: f,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: niData
     
@@ -163,7 +161,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = ni_x_endinf(f)
     epsOneEnd = ni_epsilon_one(xEnd,f)
     potEnd = ni_norm_potential(xEnd,f)
     primEnd = ni_efold_primitive(xEnd,f)
@@ -206,12 +203,12 @@ contains
 
 
 
-  function ni_lnrhoreh_max(f,Pstar) 
+  function ni_lnrhoreh_max(f,xend,Pstar) 
     implicit none
     real(kp) :: ni_lnrhoreh_max
-    real(kp), intent(in) :: f,Pstar
+    real(kp), intent(in) :: f,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsEnd
+    real(kp) :: potEnd, epsEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
@@ -219,13 +216,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = ni_x_endinf(f)      
     potEnd  = ni_norm_potential(xEnd,f)
     epsEnd = ni_epsilon_one(xEnd,f)
 
 !   Trick to return x such that rho_reh=rho_end
        
-    x = ni_x_star(f,wrad,junk,Pstar)    
+    x = ni_x_star(f,xend,wrad,junk,Pstar)    
     potStar = ni_norm_potential(x,f)
     epsOneStar = ni_epsilon_one(x,f)
     

@@ -3,6 +3,7 @@ program mlfimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use gmlfisr, only : gmlfi_epsilon_one, gmlfi_epsilon_two, gmlfi_epsilon_three
+  use gmlfisr, only : gmlfi_x_endinf
   use gmlfireheat, only : gmlfi_lnrhoreh_max 
   use gmlfireheat, only : gmlfi_x_star
   use infinout, only : delete_file, livewrite
@@ -19,7 +20,7 @@ program mlfimain
   integer :: i,j
   integer :: npts = 20
 
-  real(kp) :: p,q,alpha,w,bfoldstar
+  real(kp) :: p,q,alpha,w,bfoldstar, xend
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -54,7 +55,8 @@ program mlfimain
      alpha=alphavalues(j)
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     xEnd = gmlfi_x_endinf(p,q,alpha)
+     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,xend,Pstar)
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -62,7 +64,7 @@ program mlfimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,'bfoldstar= ',bfoldstar
 
@@ -100,13 +102,14 @@ program mlfimain
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
      lnRhoReh = lnRhoNuc
-     xstarA = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xEnd = gmlfi_x_endinf(p,q,alpha)
+     xstarA = gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = gmlfi_epsilon_one(xstarA,p,q,alpha)
      eps2A = gmlfi_epsilon_two(xstarA,p,q,alpha)
      eps3A = gmlfi_epsilon_three(xstarA,p,q,alpha)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     lnRhoReh = gmlfi_lnrhoreh_max(p,q,alpha,xend,Pstar)
      xstarB = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = gmlfi_epsilon_one(xstarB,p,q,alpha)
      eps2B = gmlfi_epsilon_two(xstarB,p,q,alpha)

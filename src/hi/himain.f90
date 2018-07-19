@@ -44,7 +44,8 @@ program himain
   call aspicwrite_header('hi',labeps12,labnsr,labbfoldreh)
   
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = hi_lnrhoreh_max(Pstar)
+  xEnd = hi_x_endinf()
+  lnRhoRehMax = hi_lnrhoreh_max(xend,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -54,7 +55,7 @@ program himain
 
 
 
-     xstar = hi_x_star(w,lnRhoReh,Pstar,bfoldstar)
+     xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
@@ -92,7 +93,8 @@ program himain
 
   call delete_file('hi_predic_summarized.dat')
   lnRhoReh = lnRhoRehMin
-  xstar = hi_x_star(w,lnRhoReh,Pstar,bfoldstar)
+  xEnd = hi_x_endinf()
+  xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
   eps1 = hi_epsilon_one(xstar)
   eps2 = hi_epsilon_two(xstar)
   eps3 = hi_epsilon_three(xstar)
@@ -100,7 +102,7 @@ program himain
   r =16._kp*eps1
   call livewrite('hi_predic_summarized.dat',eps1,eps2,eps3,r,ns)
   lnRhoReh = lnRhoRehMax
-  xstar = hi_x_star(w,lnRhoReh,Pstar,bfoldstar)
+  xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
   eps1 = hi_epsilon_one(xstar)
   eps2 = hi_epsilon_two(xstar)
   eps3 = hi_epsilon_three(xstar)
@@ -113,11 +115,12 @@ program himain
 
   lnRradmin=-42
   lnRradmax = 10
+  xEnd = hi_x_endinf()
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = hi_x_rrad(lnRrad,Pstar,bfoldstar)
+     xstar = hi_x_rrad(xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -125,14 +128,13 @@ program himain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = hi_x_endinf()
      eps1end =  hi_epsilon_one(xend)
      VendOverVstar = hi_norm_potential(xend)/hi_norm_potential(xstar)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = hi_x_rreh(lnR,bfoldstar)
+     xstar = hi_x_rreh(xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -140,7 +142,7 @@ program himain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = hi_x_star(w,lnRhoReh,Pstar,bfoldstar)
+     xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

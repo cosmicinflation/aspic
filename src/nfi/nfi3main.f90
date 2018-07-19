@@ -81,7 +81,8 @@ program nfi3main
         print *,'xpotbig',nfi_numacc_x_potbig(a,b)
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = nfi3_lnrhoreh_max(a,b,Pstar)
+        xEnd = nfi3_x_endinf(a,b)
+        lnRhoRehMax = nfi3_lnrhoreh_max(a,b,xend,Pstar)
 
         print *,'a= b= ',a,b,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
 
@@ -89,7 +90,7 @@ program nfi3main
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = nfi3_x_star(a,b,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = nfi3_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
@@ -146,7 +147,8 @@ program nfi3main
         print *,'xpotbig',nfi_numacc_x_potbig(a,b)
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = nfi3_lnrhoreh_max(a,b,Pstar)
+        xEnd = nfi3_x_endinf(a,b)
+        lnRhoRehMax = nfi3_lnrhoreh_max(a,b,xend,Pstar)
 
         print *,'a= b= ',a,b,'lnRhoRehMin=',lnRhoRehMin,'lnRhoRehMax= ',lnRhoRehMax
 
@@ -154,7 +156,7 @@ program nfi3main
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = nfi3_x_star(a,b,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = nfi3_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
@@ -197,12 +199,13 @@ program nfi3main
   b=-4
   a = 2
 
-
+  xEnd = nfi3_x_endinf(a,b)
+  
   do i=1,npts
 
        lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = nfi3_x_rrad(a,b,lnRrad,Pstar,bfoldstar)
+       xstar = nfi3_x_rrad(a,b,xend,lnRrad,Pstar,bfoldstar)
 
        print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -212,7 +215,6 @@ program nfi3main
        
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
-       xend = nfi3_x_endinf(a,b)
        eps1end =  nfi3_epsilon_one(xend,a,b)
        VendOverVstar = nfi3_norm_potential(xend,a,b) &
             /nfi3_norm_potential(xstar,a,b)
@@ -220,7 +222,7 @@ program nfi3main
        lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
        lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-       xstar = nfi3_x_rreh(a,b,lnR,bfoldstar)
+       xstar = nfi3_x_rreh(a,b,xend,lnR,bfoldstar)
        print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
 
@@ -229,7 +231,7 @@ program nfi3main
        w = 0._kp
        lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
        
-       xstar = nfi3_x_star(a,b,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = nfi3_x_star(a,b,xend,w,lnRhoReh,Pstar,bfoldstar)
        print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
             ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

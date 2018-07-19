@@ -87,7 +87,8 @@ program kmiiimain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = kmiii_lnrhoreh_max(alpha,beta,Pstar)
+        xEnd = kmiii_x_endinf(alpha,beta)
+        lnRhoRehMax = kmiii_lnrhoreh_max(alpha,beta,xend,Pstar)
 
 
         print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -97,7 +98,7 @@ program kmiiimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(k-1,kp)/real(npts-1,kp)
 
-           xstar = kmiii_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = kmiii_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            eps1 = kmiii_epsilon_one(xstar,alpha,beta)
            eps2 = kmiii_epsilon_two(xstar,alpha,beta)
@@ -137,11 +138,12 @@ program kmiiimain
   nu = 10._kp**(6._kp)
   alpha=nu**(5._kp/3._kp)
   beta=nu**(2._kp/3._kp)
+  xEnd = kmiii_x_endinf(alpha,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = kmiii_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = kmiii_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -149,14 +151,14 @@ program kmiiimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = kmiii_x_endinf(alpha,beta)
+
      eps1end =  kmiii_epsilon_one(xend,alpha,beta)
      VendOverVstar = kmiii_norm_potential(xend,alpha,beta)/kmiii_norm_potential(xstar,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = kmiii_x_rreh(alpha,beta,lnR,bfoldstar)
+     xstar = kmiii_x_rreh(alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -164,7 +166,7 @@ program kmiiimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = kmiii_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = kmiii_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

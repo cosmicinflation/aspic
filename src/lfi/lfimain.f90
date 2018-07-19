@@ -54,7 +54,8 @@ program lfimain
      w = (p-2)/(p+2)
  
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = lfi_lnrhoreh_max(p,Pstar)
+    xEnd = lfi_x_endinf(p)
+    lnRhoRehMax = lfi_lnrhoreh_max(p,xend,Pstar)
 
     print *,'p=',p,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -62,7 +63,7 @@ program lfimain
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar
 
@@ -96,15 +97,16 @@ program lfimain
   p=2._kp
   w = (p-2)/(p+2)
   lnRhoReh = lnRhoNuc
-  xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+  xEnd = lfi_x_endinf(p)
+  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
   eps1 = lfi_epsilon_one(xstar,p)
   eps2 = lfi_epsilon_two(xstar,p)
   eps3 = lfi_epsilon_three(xstar,p)
   ns = 1._kp - 2._kp*eps1 - eps2
   r =16._kp*eps1
   call livewrite('lfi2_predic_summarized.dat',eps1,eps2,eps3,r,ns)
-  lnRhoReh = lfi_lnrhoreh_max(p,Pstar)
-  xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+  lnRhoReh = lfi_lnrhoreh_max(p,xend,Pstar)
+  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
   eps1 = lfi_epsilon_one(xstar,p)
   eps2 = lfi_epsilon_two(xstar,p)
   eps3 = lfi_epsilon_three(xstar,p)
@@ -116,15 +118,16 @@ program lfimain
   p=4._kp
   w = (p-2)/(p+2)
   lnRhoReh = lnRhoNuc
-  xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+  xEnd = lfi_x_endinf(p)
+  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
   eps1 = lfi_epsilon_one(xstar,p)
   eps2 = lfi_epsilon_two(xstar,p)
   eps3 = lfi_epsilon_three(xstar,p)
   ns = 1._kp - 2._kp*eps1 - eps2
   r =16._kp*eps1
   call livewrite('lfi4_predic_summarized.dat',eps1,eps2,eps3,r,ns)
-  lnRhoReh = lfi_lnrhoreh_max(p,Pstar)
-  xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+  lnRhoReh = lfi_lnrhoreh_max(p,xend,Pstar)
+  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
   eps1 = lfi_epsilon_one(xstar,p)
   eps2 = lfi_epsilon_two(xstar,p)
   eps3 = lfi_epsilon_three(xstar,p)
@@ -140,11 +143,12 @@ program lfimain
   lnRradmin=-42
   lnRradmax = 10
   p = 2
+  xEnd = lfi_x_endinf(p)
   do i=1,npts
 
        lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = lfi_x_rrad(p,lnRrad,Pstar,bfoldstar)
+       xstar = lfi_x_rrad(p,xend,lnRrad,Pstar,bfoldstar)
 
        print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -154,14 +158,13 @@ program lfimain
        
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
-       xend = lfi_x_endinf(p)
        eps1end =  lfi_epsilon_one(xend,p)
        VendOverVstar = lfi_norm_potential(xend,p)/lfi_norm_potential(xstar,p)
 
        lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
        lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-       xstar = lfi_x_rreh(p,lnR,bfoldstar)
+       xstar = lfi_x_rreh(p,xend,lnR,bfoldstar)
        print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
 
@@ -170,7 +173,7 @@ program lfimain
        w = 0._kp
        lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
        
-       xstar = lfi_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
        print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
             ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

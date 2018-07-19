@@ -55,7 +55,8 @@ program dimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, bfoldstar
 
-
+  real(kp), dimension(:,:), allocatable :: eps1V, eps2V, nsV, rV
+  real(kp), dimension(:,:), allocatable :: bfoldstarV, fV, lnRhoRehV
 
 
   f=0.01_kp
@@ -183,8 +184,20 @@ program dimain
   
   fmin = 5e-6
   fmax = 0.05
-  n = 10
 
+  npts = 10
+  n = 12
+
+  allocate(eps1V(npts,n),eps2V(npts,n),nsV(npts,n),rV(npts,n) &
+       ,bfoldstarV(npts,n),lnRhoRehV(npts,n),fV(npts,n))
+
+  
+!$omp parallel do &
+!$omp default(shared) &
+!$omp private(j,f,lnRhoRehMin,lnRhoRehMax) &
+!$omp private(i,lnRhoReh,k2star,lambda,eps1,eps2,eps3) &
+!$omp private(logErehGev,Treh,ns,r,bfoldstar) &
+!$omp schedule(dynamic,1)  
   do j=1,n
      f = exp(log(fmin) + (log(fmax)-log(fmin))*real(j-1,kp)/real(n-1,kp))
 
@@ -193,7 +206,6 @@ program dimain
 
      print *,'f= lnRhoRehMin= lnRhoRehMax= ',f,lnRhoRehMin,lnRhoRehMax
 
-     npts = 8
      do i=1,npts
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
@@ -213,18 +225,35 @@ program dimain
         ns = 1._kp-2._kp*eps1 - eps2
         r = 16._kp*eps1
 
+        eps1V(i,j) = eps1
+        eps2V(i,j) = eps2
+        nsV(i,j) = ns
+        rV(i,j) = r
+        bfoldstarV(i,j) = bfoldstar
+        lnRhoRehV(i,j) = lnRhoReh
+        fV(i,j) = f
+        
 !for sparing size
-        if (abs(ns-1).gt.0.15) cycle
-        if (r.lt.1e-10) cycle
+!        if (abs(ns-1).gt.0.15) cycle
+!        if (r.lt.1e-10) cycle
 
-        call livewrite('di_predic.dat',f,eps1,eps2,eps3,r,ns,Treh)
-        call livewrite('di_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+!        call livewrite('di_predic.dat',f,eps1,eps2,eps3,r,ns,Treh)
+!        call livewrite('di_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/f/))
         
      enddo
   enddo
+!$omp end parallel do
 
+  do j=1,n
+     do i=1,npts
+     call aspicwrite_data((/eps1V(i,j),eps2V(i,j)/),(/nsV(i,j),rV(i,j)/) &
+          ,(/abs(bfoldstarV(i,j)),lnRhoRehV(i,j)/),(/fV(i,j)/))
+  enddo
+  enddo
+
+  deallocate(eps1V, eps2V, nsV, rV, bfoldstarV, lnRhoRehV, fV)
+  
   call aspicwrite_end()
   
 ! Test reheating with lnRrad and lnR

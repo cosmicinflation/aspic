@@ -20,15 +20,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function oi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfold)    
+  function oi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: oi_x_star
-    real(kp), intent(in) :: alpha,phi0,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: oiData
     
@@ -37,7 +37,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=oi_x_endinf(alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
     potEnd = oi_norm_potential(xEnd,alpha,phi0)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
@@ -86,15 +85,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function oi_x_rrad(alpha,phi0,lnRrad,Pstar,bfold)    
+  function oi_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: oi_x_rrad
-    real(kp), intent(in) :: alpha,phi0,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: oiData
     
@@ -103,7 +102,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=oi_x_endinf(alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
     potEnd = oi_norm_potential(xEnd,alpha,phi0)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
@@ -150,15 +148,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function oi_x_rreh(alpha,phi0,lnRreh,bfold)    
+  function oi_x_rreh(alpha,phi0,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: oi_x_rreh
-    real(kp), intent(in) :: alpha,phi0,lnRreh
+    real(kp), intent(in) :: alpha,phi0,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: oiData
     
@@ -167,7 +165,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
 
-    xEnd=oi_x_endinf(alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
     potEnd = oi_norm_potential(xEnd,alpha,phi0)
     primEnd = oi_efold_primitive(xEnd,alpha,phi0)
@@ -212,23 +209,22 @@ contains
 
 
 
-  function oi_lnrhoreh_max(alpha,phi0,Pstar) 
+  function oi_lnrhoreh_max(alpha,phi0,xend,Pstar) 
     implicit none
     real(kp) :: oi_lnrhoreh_max
-    real(kp), intent(in) :: alpha,phi0,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd=oi_x_endinf(alpha,phi0) 
     potEnd  = oi_norm_potential(xEnd,alpha,phi0)
     epsOneEnd = oi_epsilon_one(xEnd,alpha,phi0)
 
-    x = oi_x_star(alpha,phi0,wrad,junk,Pstar)    
+    x = oi_x_star(alpha,phi0,xend,wrad,junk,Pstar)    
     potStar = oi_norm_potential(x,alpha,phi0)
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
 

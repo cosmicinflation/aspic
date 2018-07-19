@@ -69,7 +69,8 @@ program gmlfimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     xEnd = gmlfi_x_endinf(p,q,alpha)
+     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,xend,Pstar)
 
 
      print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -78,7 +79,7 @@ program gmlfimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
@@ -121,7 +122,8 @@ program gmlfimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     xEnd = gmlfi_x_endinf(p,q,alpha)
+     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,xend,Pstar)
 
 
      print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -130,7 +132,7 @@ program gmlfimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
@@ -174,7 +176,8 @@ program gmlfimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,Pstar)
+     xEnd = gmlfi_x_endinf(p,q,alpha)
+     lnRhoRehMax = gmlfi_lnrhoreh_max(p,q,alpha,xend,Pstar)
 
 
      print *,'alpha,p,q=',alpha,p,q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -183,7 +186,7 @@ program gmlfimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = gmlfi_x_star(p,q,alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
@@ -222,26 +225,27 @@ program gmlfimain
   p=2
   q=3
   alpha = 0.01
+  xEnd = gmlfi_x_endinf(p,q,alpha)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = gmlfi_x_rrad(alpha,p,q,lnRrad,Pstar,bfoldstar)
+     xstar = gmlfi_x_rrad(p,q,alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = gmlfi_epsilon_one(xstar,alpha,p,q)
+     eps1 = gmlfi_epsilon_one(xstar,p,q,alpha)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = gmlfi_x_endinf(alpha,p,q)
-     eps1end =  gmlfi_epsilon_one(xend,alpha,p,q)
-     VendOverVstar = gmlfi_norm_potential(xend,alpha,p,q)/gmlfi_norm_potential(xstar,alpha,p,q)
+     xend = gmlfi_x_endinf(p,q,alpha)
+     eps1end =  gmlfi_epsilon_one(xend,p,q,alpha)
+     VendOverVstar = gmlfi_norm_potential(xend,p,q,alpha)/gmlfi_norm_potential(xstar,p,q,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = gmlfi_x_rreh(alpha,p,q,lnR,bfoldstar)
+     xstar = gmlfi_x_rreh(p,q,alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -249,7 +253,7 @@ program gmlfimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = gmlfi_x_star(alpha,p,q,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = gmlfi_x_star(p,q,alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
