@@ -34,7 +34,8 @@ program kksftest
 !chi stands for phi/mu
  
   lnRhoRehMin = lnRhoNuc
-  lnRhoRehMax = kksf_lnrhoreh_max(p,mu,Pstar)
+  xEnd = kksf_x_endinf(p,mu)       
+  lnRhoRehMax = kksf_lnrhoreh_max(p,mu,xend,Pstar)
 
   print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -42,7 +43,7 @@ program kksftest
 
      lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-     chi = kksf_x_star(p,mu,wreh,lnRhoReh,Pstar,bfold)     
+     chi = kksf_x_star(p,mu,xend,wreh,lnRhoReh,Pstar,bfold)     
      eps1 = kksf_epsilon_one(chi,p,mu)
      eps2 = kksf_epsilon_two(chi,p,mu)
 

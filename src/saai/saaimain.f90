@@ -58,7 +58,8 @@ program saaimain
      w=0._kp
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = saai_lnrhoreh_max(alpha,Pstar)
+     xEnd = saai_x_endinf(alpha)
+     lnRhoRehMax = saai_lnrhoreh_max(alpha,xend,Pstar)
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -66,7 +67,7 @@ program saaimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = saai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = saai_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -97,11 +98,14 @@ program saaimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 2._kp
+
+  xEnd = saai_x_endinf(alpha)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = saai_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = saai_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -109,14 +113,13 @@ program saaimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = saai_x_endinf(alpha)
      eps1end =  saai_epsilon_one(xend,alpha)
      VendOverVstar = saai_norm_potential(xend,alpha)/saai_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = saai_x_rreh(alpha,lnR,bfoldstar)
+     xstar = saai_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -124,7 +127,7 @@ program saaimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = saai_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = saai_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

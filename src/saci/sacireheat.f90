@@ -20,23 +20,21 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function saci_x_star(alpha,n,w,lnRhoReh,Pstar,bfold)    
+  function saci_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: saci_x_star
-    real(kp), intent(in) :: alpha,n,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: alpha,n,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: saciData
     
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=saci_x_endinf(alpha,n)
     
     epsOneEnd = saci_epsilon_one(xEnd,alpha,n)
     potEnd = saci_norm_potential(xEnd,alpha,n)
@@ -84,23 +82,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function saci_x_rrad(alpha,n,lnRrad,Pstar,bfold)    
+  function saci_x_rrad(alpha,n,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: saci_x_rrad
-    real(kp), intent(in) :: alpha,n,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,n,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: saciData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=saci_x_endinf(alpha,n)
     
     epsOneEnd = saci_epsilon_one(xEnd,alpha,n)
     potEnd = saci_norm_potential(xEnd,alpha,n)
@@ -147,23 +143,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function saci_x_rreh(alpha,n,lnRreh,bfold)    
+  function saci_x_rreh(alpha,n,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: saci_x_rreh
-    real(kp), intent(in) :: alpha,n,lnRreh
+    real(kp), intent(in) :: alpha,n,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: saciData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=saci_x_endinf(alpha,n)
     
     epsOneEnd = saci_epsilon_one(xEnd,alpha,n)
     potEnd = saci_norm_potential(xEnd,alpha,n)
@@ -207,23 +201,22 @@ contains
   end function find_saci_x_rreh
 
 
-  function saci_lnrhoreh_max(alpha,n,Pstar) 
+  function saci_lnrhoreh_max(alpha,n,xend,Pstar) 
     implicit none
     real(kp) :: saci_lnrhoreh_max
-    real(kp), intent(in) :: alpha,n,Pstar
+    real(kp), intent(in) :: alpha,n,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd = saci_x_endinf(alpha,n)
     potEnd  = saci_norm_potential(xEnd,alpha,n)
     epsOneEnd = saci_epsilon_one(xEnd,alpha,n)
        
-    x = saci_x_star(alpha,n,wrad,junk,Pstar)
+    x = saci_x_star(alpha,n,xend,wrad,junk,Pstar)
 
     potStar = saci_norm_potential(x,alpha,n)
     epsOneStar = saci_epsilon_one(x,alpha,n)

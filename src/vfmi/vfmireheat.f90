@@ -25,15 +25,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function vfmi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfold)
+  function vfmi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfold)
     implicit none
     real(kp) :: vfmi_x_star
-    real(kp), intent(in) :: alpha,beta,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini, maxi, calF, x
-    real(kp) :: primEnd, epsOneEnd, xEnd, potEnd
+    real(kp) :: primEnd, epsOneEnd, potEnd
     real(kp) :: betamax
 
     type(transfert) :: vfmiData
@@ -47,8 +47,6 @@ contains
        write(*,*)'vfmi_x_star: beta= betamax= ',beta,betamax
        stop 'beta too large!'
     endif
-
-    xEnd = vfmi_x_endinf(alpha,beta)
 
 
 !should be one    
@@ -108,15 +106,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function vfmi_x_rrad(alpha,beta,lnRrad,Pstar,bfold)    
+  function vfmi_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: vfmi_x_rrad
-    real(kp), intent(in) :: alpha,beta,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
     real(kp) :: betamax
     type(transfert) :: vfmiData
     
@@ -129,8 +127,6 @@ contains
        write(*,*)'vfmi_x_rrad: beta= betamax= ',beta,betamax
        stop 'beta too large!'
     endif
-
-    xEnd=vfmi_x_endinf(alpha,beta)
     
     epsOneEnd = vfmi_epsilon_one(xEnd,alpha,beta)
     potEnd = vfmi_norm_potential(xEnd,alpha,beta)
@@ -184,15 +180,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function vfmi_x_rreh(alpha,beta,lnRreh,bfold)    
+  function vfmi_x_rreh(alpha,beta,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: vfmi_x_rreh
-    real(kp), intent(in) :: alpha,beta,lnRreh
+    real(kp), intent(in) :: alpha,beta,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
     real(kp) :: betamax
     type(transfert) :: vfmiData
     
@@ -205,8 +201,6 @@ contains
        write(*,*)'vfmi_x_rreh: beta= betamax= ',beta,betamax
        stop 'beta too large!'
     endif
-
-    xEnd=vfmi_x_endinf(alpha,beta)
     
     epsOneEnd = vfmi_epsilon_one(xEnd,alpha,beta)
     potEnd = vfmi_norm_potential(xEnd,alpha,beta)
@@ -257,23 +251,22 @@ contains
   end function find_vfmi_x_rreh
 
 
-  function vfmi_lnrhoreh_max(alpha,beta,Pstar) 
+  function vfmi_lnrhoreh_max(alpha,beta,xend,Pstar) 
     implicit none
     real(kp) :: vfmi_lnrhoreh_max
-    real(kp), intent(in) :: alpha,beta,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd = vfmi_x_endinf(alpha,beta)
     potEnd  = vfmi_norm_potential(xEnd,alpha,beta)
     epsOneEnd = vfmi_epsilon_one(xEnd,alpha,beta)
        
-    x = vfmi_x_star(alpha,beta,wrad,junk,Pstar)
+    x = vfmi_x_star(alpha,beta,xend,wrad,junk,Pstar)
 
     potStar = vfmi_norm_potential(x,alpha,beta)
     epsOneStar = vfmi_epsilon_one(x,alpha,beta)

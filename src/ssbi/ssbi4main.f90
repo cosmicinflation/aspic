@@ -72,7 +72,8 @@ program ssbi4main
         alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/Nalpha)  !logarithmic step
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = ssbi4_lnrhoreh_max(alpha,beta,Pstar)
+        xEnd = ssbi4_x_endinf(alpha,beta)            
+        lnRhoRehMax = ssbi4_lnrhoreh_max(alpha,beta,xend,Pstar)
 
 
         print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -81,7 +82,7 @@ program ssbi4main
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = ssbi4_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = ssbi4_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -119,11 +120,13 @@ program ssbi4main
   lnRradmax = 10
   beta = -0.05
   alpha = 9.
+  xEnd = ssbi4_x_endinf(alpha,beta)
+    
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ssbi4_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = ssbi4_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -131,14 +134,13 @@ program ssbi4main
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = ssbi4_x_endinf(alpha,beta)
      eps1end =  ssbi4_epsilon_one(xend,alpha,beta)
      VendOverVstar = ssbi4_norm_potential(xend,alpha,beta)/ssbi4_norm_potential(xstar,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ssbi4_x_rreh(alpha,beta,lnR,bfoldstar)
+     xstar = ssbi4_x_rreh(alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -146,7 +148,7 @@ program ssbi4main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ssbi4_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ssbi4_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

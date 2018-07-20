@@ -74,7 +74,8 @@ program sacimain
     print*,'alpha=',alpha,'n=',n
 
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = saci_lnrhoreh_max(alpha,n,Pstar)
+    xEnd = saci_x_endinf(alpha,n)
+    lnRhoRehMax = saci_lnrhoreh_max(alpha,n,xend,Pstar)
 
     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -83,7 +84,7 @@ program sacimain
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-      xstar = saci_x_star(alpha,n,w,lnRhoReh,Pstar,bfoldstar)
+      xstar = saci_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
       eps1 = saci_epsilon_one(xstar,alpha,n)
       eps2 = saci_epsilon_two(xstar,alpha,n)
@@ -139,7 +140,8 @@ program sacimain
 
 
     lnRhoRehMin = lnRhoNuc
-    lnRhoRehMax = saci_lnrhoreh_max(alpha,n,Pstar)
+    xEnd = saci_x_endinf(alpha,n)
+    lnRhoRehMax = saci_lnrhoreh_max(alpha,n,xend,Pstar)
 
     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -148,7 +150,7 @@ program sacimain
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-      xstar = saci_x_star(alpha,n,w,lnRhoReh,Pstar,bfoldstar)
+      xstar = saci_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
       eps1 = saci_epsilon_one(xstar,alpha,n)
       eps2 = saci_epsilon_two(xstar,alpha,n)
@@ -197,7 +199,8 @@ end do
 
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = saci_lnrhoreh_max(alpha,n,Pstar)
+     xEnd = saci_x_endinf(alpha,n)
+     lnRhoRehMax = saci_lnrhoreh_max(alpha,n,xend,Pstar)
 
      print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -206,7 +209,7 @@ end do
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = saci_x_star(alpha,n,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = saci_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = saci_epsilon_one(xstar,alpha,n)
         eps2 = saci_epsilon_two(xstar,alpha,n)
@@ -247,11 +250,13 @@ end do
   lnRradmax = 10
   alpha = 2._kp
   n = 2._kp
+  xEnd = saci_x_endinf(alpha,n)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = saci_x_rrad(alpha,n,lnRrad,Pstar,bfoldstar)
+     xstar = saci_x_rrad(alpha,n,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -259,14 +264,13 @@ end do
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = saci_x_endinf(alpha,n)
      eps1end =  saci_epsilon_one(xend,alpha,n)
      VendOverVstar = saci_norm_potential(xend,alpha,n)/saci_norm_potential(xstar,alpha,n)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = saci_x_rreh(alpha,n,lnR,bfoldstar)
+     xstar = saci_x_rreh(alpha,n,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -274,7 +278,7 @@ end do
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = saci_x_star(alpha,n,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = saci_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

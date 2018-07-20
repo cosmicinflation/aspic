@@ -24,24 +24,22 @@ contains
 !returns y =phi/Mp * sqrt(2/3) such given potential parameters, scalar
 !power, wreh and lnrhoreh. If present, returns the corresponding
 !bfoldstar
-  function rpi1_x_star(p,w,lnRhoReh,Pstar,bfoldstar)    
+  function rpi1_x_star(p,yend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rpi1_x_star
-    real(kp), intent(in) :: p,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,yend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,yend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rpi1Data
     
 
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
-    endif
-    
-    yEnd = rpi1_x_endinf(p)
+    endif    
 
     epsOneEnd = rpi1_epsilon_one(yEnd,p)
     potEnd = rpi1_norm_potential(yEnd,p)
@@ -107,15 +105,15 @@ contains
 
 !returns y given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function rpi1_x_rrad(p,lnRrad,Pstar,bfoldstar)    
+  function rpi1_x_rrad(p,yend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rpi1_x_rrad
-    real(kp), intent(in) :: p,lnRrad,Pstar
+    real(kp), intent(in) :: p,yend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,yend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rpi1Data
     
@@ -123,8 +121,6 @@ contains
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
-    yEnd = rpi1_x_endinf(p)
 
     epsOneEnd = rpi1_epsilon_one(yEnd,p)
     potEnd = rpi1_norm_potential(yEnd,p)
@@ -187,15 +183,15 @@ contains
 
 !returns y given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function rpi1_x_rreh(p,lnRreh,bfoldstar)    
+  function rpi1_x_rreh(p,yend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: rpi1_x_rreh
-    real(kp), intent(in) :: p,lnRreh
+    real(kp), intent(in) :: p,yend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,yend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rpi1Data
     
@@ -203,8 +199,6 @@ contains
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    yEnd = rpi1_x_endinf(p)
 
     epsOneEnd = rpi1_epsilon_one(yEnd,p)
     potEnd = rpi1_norm_potential(yEnd,p)
@@ -264,21 +258,18 @@ contains
 
 
 
-  function rpi1_lnrhoreh_max(p,Pstar) 
+  function rpi1_lnrhoreh_max(p,yend,Pstar) 
     implicit none
     real(kp) :: rpi1_lnrhoreh_max
-    real(kp), intent(in) :: p,Pstar
+    real(kp), intent(in) :: p,yend,Pstar
 
-    real(kp) :: yEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: y, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd
-    
-    yEnd = rpi1_x_endinf(p)
-
+    real(kp) :: lnRhoEnd    
 
     potEnd  = rpi1_norm_potential(yEnd,p)
 
@@ -286,7 +277,7 @@ contains
 
 !   Trick to return y such that rho_reh=rho_end
 
-    y = rpi1_x_star(p,wrad,junk,Pstar)  
+    y = rpi1_x_star(p,yend,wrad,junk,Pstar)  
      
     potStar = rpi1_norm_potential(y,p)
     epsOneStar = rpi1_epsilon_one(y,p)

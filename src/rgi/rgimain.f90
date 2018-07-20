@@ -58,7 +58,8 @@ program rgimain
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(Nalpha,kp))
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = rgi_lnrhoreh_max(alpha,Pstar)
+     xEnd = rgi_x_endinf(alpha)
+     lnRhoRehMax = rgi_lnrhoreh_max(alpha,xend,Pstar)
 
      print *,'alpha=',alpha,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -66,7 +67,7 @@ program rgimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = rgi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = rgi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
@@ -103,15 +104,16 @@ program rgimain
   w=0._kp
   do j=1,nalpha
      alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+     xEnd = rgi_x_endinf(alpha)
      lnRhoReh = lnRhoNuc
-     xstarA = rgi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstarA = rgi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1A = rgi_epsilon_one(xstarA,alpha)
      eps2A = rgi_epsilon_two(xstarA,alpha)
      eps3A = rgi_epsilon_three(xstarA,alpha)
      nsA = 1._kp - 2._kp*eps1A - eps2A
      rA = 16._kp*eps1A
-     lnRhoReh = rgi_lnrhoreh_max(alpha,Pstar)
-     xstarB = rgi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     lnRhoReh = rgi_lnrhoreh_max(alpha,xend,Pstar)
+     xstarB = rgi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      eps1B = rgi_epsilon_one(xstarB,alpha)
      eps2B = rgi_epsilon_two(xstarB,alpha)
      eps3B = rgi_epsilon_three(xstarB,alpha)
@@ -127,11 +129,12 @@ program rgimain
   lnRradmin=-42
   lnRradmax = 10
   alpha = 5e-4
+  xEnd = rgi_x_endinf(alpha)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rgi_x_rrad(alpha,lnRrad,Pstar,bfoldstar)
+     xstar = rgi_x_rrad(alpha,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -139,14 +142,13 @@ program rgimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = rgi_x_endinf(alpha)
      eps1end =  rgi_epsilon_one(xend,alpha)
      VendOverVstar = rgi_norm_potential(xend,alpha)/rgi_norm_potential(xstar,alpha)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rgi_x_rreh(alpha,lnR,bfoldstar)
+     xstar = rgi_x_rreh(alpha,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -154,7 +156,7 @@ program rgimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rgi_x_star(alpha,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rgi_x_star(alpha,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

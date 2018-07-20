@@ -22,15 +22,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function sfi_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function sfi_x_star(p,mu,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: sfi_x_star
-    real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,mu,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: sfiData
     
@@ -39,7 +39,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = sfi_x_endinf(p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
 
     potEnd = sfi_norm_potential(xEnd,p,mu)
@@ -92,15 +91,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function sfi_x_rrad(p,mu,lnRrad,Pstar,bfold)    
+  function sfi_x_rrad(p,mu,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: sfi_x_rrad
-    real(kp), intent(in) :: p,mu,lnRrad,Pstar
+    real(kp), intent(in) :: p,mu,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: sfiData
     
@@ -108,7 +107,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
    
-    xEnd = sfi_x_endinf(p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
 
     potEnd = sfi_norm_potential(xEnd,p,mu)
@@ -160,15 +158,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function sfi_x_rreh(p,mu,lnRreh,bfold)    
+  function sfi_x_rreh(p,mu,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: sfi_x_rreh
-    real(kp), intent(in) :: p,mu,lnRreh
+    real(kp), intent(in) :: p,mu,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: sfiData
     
@@ -176,7 +174,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
    
-    xEnd = sfi_x_endinf(p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
 
     potEnd = sfi_norm_potential(xEnd,p,mu)
@@ -225,23 +222,22 @@ contains
 
 
 
-  function sfi_lnrhoreh_max(p,mu,Pstar) 
+  function sfi_lnrhoreh_max(p,mu,xend,Pstar) 
     implicit none
     real(kp) :: sfi_lnrhoreh_max
-    real(kp), intent(in) :: p,mu,Pstar
+    real(kp), intent(in) :: p,mu,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
     
-    xEnd = sfi_x_endinf(p,mu)       
     potEnd  = sfi_norm_potential(xEnd,p,mu)
     epsOneEnd = sfi_epsilon_one(xEnd,p,mu)
        
-    x = sfi_x_star(p,mu,wrad,junk,Pstar)    
+    x = sfi_x_star(p,mu,xend,wrad,junk,Pstar)    
     potStar = sfi_norm_potential(x,p,mu)
     epsOneStar = sfi_epsilon_one(x,p,mu)
     

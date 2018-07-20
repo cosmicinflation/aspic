@@ -67,7 +67,8 @@ program sbimain
      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
+     xEnd = sbi_x_endinf(alpha,beta)
+     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,xend,Pstar)
 
      print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -75,7 +76,7 @@ program sbimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = sbi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         eps1 = sbi_epsilon_one(xstar,alpha,beta)
@@ -117,7 +118,8 @@ program sbimain
      alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
+     xEnd = sbi_x_endinf(alpha,beta)
+     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,xend,Pstar)
 
      print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -125,7 +127,7 @@ program sbimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = sbi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         eps1 = sbi_epsilon_one(xstar,alpha,beta)
@@ -161,11 +163,12 @@ program sbimain
   lnRradmax = 10
   alpha =50.*sbi_alphamin(beta)
   beta =5e-3
+  xEnd = sbi_x_endinf(alpha,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = sbi_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = sbi_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -173,14 +176,13 @@ program sbimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = sbi_x_endinf(alpha,beta)
      eps1end =  sbi_epsilon_one(xend,alpha,beta)
      VendOverVstar = sbi_norm_potential(xend,alpha,beta)/sbi_norm_potential(xstar,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = sbi_x_rreh(alpha,beta,lnR,bfoldstar)
+     xstar = sbi_x_rreh(alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -188,7 +190,7 @@ program sbimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = sbi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
@@ -213,7 +215,8 @@ program sbimain
      alpha=sbi_alphamin(beta)
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,Pstar)
+     xend = sbi_x_endinf(alpha,beta)
+     lnRhoRehMax = sbi_lnrhoreh_max(alpha,beta,xend,Pstar)
 
      print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -221,7 +224,7 @@ program sbimain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = sbi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = sbi_epsilon_one(xstar,alpha,beta)
         eps2 = sbi_epsilon_two(xstar,alpha,beta)
@@ -256,11 +259,12 @@ program sbimain
   lnRradmax = 10
   beta =5e-3
   alpha =50.*sbi_alphamin(beta)
+  xend = sbi_x_endinf(alpha,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = sbi_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = sbi_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -268,14 +272,13 @@ program sbimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = sbi_x_endinf(alpha,beta)
      eps1end =  sbi_epsilon_one(xend,alpha,beta)
      VendOverVstar = sbi_norm_potential(xend,alpha,beta)/sbi_norm_potential(xstar,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = sbi_x_rreh(alpha,beta,lnR,bfoldstar)
+     xstar = sbi_x_rreh(alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -283,7 +286,7 @@ program sbimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = sbi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = sbi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

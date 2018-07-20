@@ -23,15 +23,15 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function rpqti_x_star(phi0,alpha,beta,w,lnRhoReh,Pstar,bfoldstar)    
+  function rpqti_x_star(phi0,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rpqti_x_star
-    real(kp), intent(in) :: phi0,alpha,beta,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: phi0,alpha,beta,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rpqtiData
 
@@ -45,7 +45,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = rpqti_x_endinf(phi0,alpha,beta)
     epsOneEnd = rpqti_epsilon_one(xEnd,phi0,alpha,beta)
     potEnd = rpqti_norm_potential(xEnd,phi0,alpha,beta)
     primEnd = rpqti_efold_primitive(xEnd,phi0,alpha,beta) 
@@ -95,15 +94,15 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function rpqti_x_rrad(phi0,alpha,beta,lnRrad,Pstar,bfoldstar)    
+  function rpqti_x_rrad(phi0,alpha,beta,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rpqti_x_rrad
-    real(kp), intent(in) :: phi0,alpha,beta,lnRrad,Pstar
+    real(kp), intent(in) :: phi0,alpha,beta,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rpqtiData
 
@@ -117,7 +116,6 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
         
-    xEnd = rpqti_x_endinf(phi0,alpha,beta)
     epsOneEnd = rpqti_epsilon_one(xEnd,phi0,alpha,beta)
     potEnd = rpqti_norm_potential(xEnd,phi0,alpha,beta)
     primEnd = rpqti_efold_primitive(xEnd,phi0,alpha,beta) 
@@ -164,15 +162,15 @@ contains
   
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function rpqti_x_rreh(phi0,alpha,beta,lnRreh,bfoldstar)    
+  function rpqti_x_rreh(phi0,alpha,beta,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: rpqti_x_rreh
-    real(kp), intent(in) :: phi0,alpha,beta,lnRreh
+    real(kp), intent(in) :: phi0,alpha,beta,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: rpqtiData
 
@@ -187,7 +185,6 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
         
-    xEnd = rpqti_x_endinf(phi0,alpha,beta)
     epsOneEnd = rpqti_epsilon_one(xEnd,phi0,alpha,beta)
     potEnd = rpqti_norm_potential(xEnd,phi0,alpha,beta)
     primEnd = rpqti_efold_primitive(xEnd,phi0,alpha,beta) 
@@ -231,12 +228,12 @@ contains
   end function find_rpqti_x_rreh
 
 
-  function rpqti_lnrhoreh_max(phi0,alpha,beta,Pstar) 
+  function rpqti_lnrhoreh_max(phi0,alpha,beta,xend,Pstar) 
     implicit none
     real(kp) :: rpqti_lnrhoreh_max
-    real(kp), intent(in) :: phi0,alpha,beta,Pstar
+    real(kp), intent(in) :: phi0,alpha,beta,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -244,13 +241,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = rpqti_x_endinf(phi0,alpha,beta)
     potEnd  = rpqti_norm_potential(xEnd,phi0,alpha,beta)
     epsOneEnd = rpqti_epsilon_one(xEnd,phi0,alpha,beta)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = rpqti_x_star(phi0,alpha,beta,wrad,junk,Pstar)    
+    x = rpqti_x_star(phi0,alpha,beta,xend,wrad,junk,Pstar)    
     potStar = rpqti_norm_potential(x,phi0,alpha,beta)
     epsOneStar = rpqti_epsilon_one(x,phi0,alpha,beta)
 

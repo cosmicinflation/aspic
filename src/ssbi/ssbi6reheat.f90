@@ -23,16 +23,14 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ssbi6_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+  function ssbi6_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
     real(kp) :: ssbi6_x_star
-    real(kp), intent(in) :: alpha,beta,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
     
     real(kp) :: mini,maxi
-    real(kp) :: xend
-   
-    xEnd=ssbi6_x_endinf(alpha,beta)
+
     mini = ssbi6_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
     maxi = Ssbi6MaxFactor*mini
 
@@ -43,16 +41,14 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ssbi6_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)    
+  function ssbi6_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ssbi6_x_rrad
-    real(kp), intent(in) :: alpha,beta,lnRrad,Pstar    
+    real(kp), intent(in) :: alpha,beta,xend,lnRrad,Pstar    
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
-    xEnd=ssbi6_x_endinf(alpha,beta)
     mini = ssbi6_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
     maxi = Ssbi6MaxFactor*mini
     
@@ -63,16 +59,14 @@ contains
 
 !returns x given potential parameters, scalar power, and lnR.
 !If present, returns the corresponding bfoldstar
-  function ssbi6_x_rreh(alpha,beta,lnRreh,bfoldstar)    
+  function ssbi6_x_rreh(alpha,beta,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: ssbi6_x_rreh
-    real(kp), intent(in) :: alpha,beta,lnRreh 
+    real(kp), intent(in) :: alpha,beta,xend,lnRreh 
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp) :: mini,maxi
-    real(kp) :: xend
 
-    xEnd=ssbi6_x_endinf(alpha,beta)
     mini = ssbi6_x_endinf(alpha,beta)*(1._kp+epsilon(1._kp))
     maxi = Ssbi6MaxFactor*mini
     
@@ -81,12 +75,12 @@ contains
   end function ssbi6_x_rreh
 
 
-  function ssbi6_lnrhoreh_max(alpha,beta,Pstar) 
+  function ssbi6_lnrhoreh_max(alpha,beta,xend,Pstar) 
     implicit none
     real(kp) :: ssbi6_lnrhoreh_max
-    real(kp), intent(in) :: alpha,beta,Pstar
+    real(kp), intent(in) :: alpha,beta,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -94,8 +88,6 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    xEnd = ssbi6_x_endinf(alpha,beta)
-
     potEnd  = ssbi6_norm_potential(xEnd,alpha,beta)
 
     epsOneEnd = ssbi6_epsilon_one(xEnd,alpha,beta)
@@ -106,7 +98,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = ssbi6_x_star(alpha,beta,wrad,junk,Pstar)  
+    x = ssbi6_x_star(alpha,beta,xend,wrad,junk,Pstar)  
 
 
     potStar = ssbi6_norm_potential(x,alpha,beta)

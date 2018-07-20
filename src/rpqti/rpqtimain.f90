@@ -76,7 +76,8 @@ program rpqtimain
         beta=betamin+(betamax-betamin)*(real(l,kp)/real(nbeta,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = rpqti_lnrhoreh_max(phi0,alpha,beta,Pstar)
+        xEnd = rpqti_x_endinf(phi0,alpha,beta)
+        lnRhoRehMax = rpqti_lnrhoreh_max(phi0,alpha,beta,xend,Pstar)
 
 
         print *,'phi0,alpha,beta=',phi0,alpha,beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -85,9 +86,8 @@ program rpqtimain
 
           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-          xend = rpqti_x_endinf(phi0,alpha,beta)
 
-          xstar = rpqti_x_star(phi0,alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+          xstar = rpqti_x_star(phi0,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
           eps1 = rpqti_epsilon_one(xstar,phi0,alpha,beta)
@@ -134,12 +134,13 @@ program rpqtimain
   alpha = 0.01_kp
   beta = -0.01_kp
 
-
+  xend = rpqti_x_endinf(phi0,alpha,beta)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rpqti_x_rrad(phi0,alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = rpqti_x_rrad(phi0,alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -147,14 +148,13 @@ program rpqtimain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = rpqti_x_endinf(phi0,alpha,beta)
      eps1end =  rpqti_epsilon_one(xend,phi0,alpha,beta)
      VendOverVstar = rpqti_norm_potential(xend,phi0,alpha,beta)/rpqti_norm_potential(xstar,phi0,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rpqti_x_rreh(phi0,alpha,beta,lnR,bfoldstar)
+     xstar = rpqti_x_rreh(phi0,alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -162,7 +162,7 @@ program rpqtimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rpqti_x_star(phi0,alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rpqti_x_star(phi0,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

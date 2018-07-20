@@ -72,7 +72,8 @@ program timain
 
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,Pstar)
+        xEnd=ti_x_endinf(alpha,mu) 
+        lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,xend,Pstar)
 
         print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -80,7 +81,7 @@ program timain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = ti_x_star(alpha,mu,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = ti_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            eps1 = ti_epsilon_one(xstar,alpha,mu)
            eps2 = ti_epsilon_two(xstar,alpha,mu)
@@ -119,7 +120,8 @@ program timain
      mu=mumin*(mumax/mumin)**(real(j,kp)/real(nmu,kp))
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,Pstar)
+     xEnd=ti_x_endinf(alpha,mu) 
+     lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,xend,Pstar)
 
      print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -127,7 +129,7 @@ program timain
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = ti_x_star(alpha,mu,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = ti_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         eps1 = ti_epsilon_one(xstar,alpha,mu)
         eps2 = ti_epsilon_two(xstar,alpha,mu)
@@ -160,11 +162,12 @@ program timain
   lnRradmax = 10
   alpha = 0.5
   mu = 0.9
+  xEnd=ti_x_endinf(alpha,mu) 
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ti_x_rrad(alpha,mu,lnRrad,Pstar,bfoldstar)
+     xstar = ti_x_rrad(alpha,mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -172,14 +175,13 @@ program timain
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     xend = ti_x_endinf(alpha,mu)
      eps1end =  ti_epsilon_one(xend,alpha,mu)
      VendOverVstar = ti_norm_potential(xend,alpha,mu)/ti_norm_potential(xstar,alpha,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ti_x_rreh(alpha,mu,lnR,bfoldstar)
+     xstar = ti_x_rreh(alpha,mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -187,7 +189,7 @@ program timain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ti_x_star(alpha,mu,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ti_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

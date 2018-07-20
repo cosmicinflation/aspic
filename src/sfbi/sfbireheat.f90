@@ -20,15 +20,15 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function kksf_x_star(p,mu,w,lnRhoReh,Pstar,bfold)    
+  function kksf_x_star(p,mu,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: kksf_x_star
-    real(kp), intent(in) :: p,mu,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,mu,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: nuEnd,epsEnd,xend,potEnd
+    real(kp) :: nuEnd,epsEnd,potEnd
 
     type(transfert) :: kksfData
     
@@ -37,7 +37,6 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    xEnd = kksf_x_endinf(p,mu)
     epsEnd = kksf_epsilon_one(xEnd,p,mu)
 
     potEnd = kksf_norm_potential(xEnd,p)
@@ -70,23 +69,22 @@ contains
 
 
 
-  function kksf_lnrhoreh_max(p,mu,Pstar) 
+  function kksf_lnrhoreh_max(p,mu,xend,Pstar) 
     implicit none
     real(kp) :: kksf_lnrhoreh_max
-    real(kp), intent(in) :: p,mu,Pstar
+    real(kp), intent(in) :: p,mu,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsEnd
+    real(kp) :: potEnd, epsEnd
     real(kp) :: x, potStar, epsStar
 
     real(kp), parameter :: w = 1._kp/3._kp
     real(kp), parameter :: lnRhoReh = 0._kp
     real(kp) :: lnRhoEnd
     
-    xEnd = kksf_x_endinf(p,mu)       
     potEnd  = kksf_norm_potential(xEnd,p)
     epsEnd = kksf_epsilon_one(xEnd,p,mu)
        
-    x = kksf_x_star(p,mu,w,lnRhoReh,Pstar)    
+    x = kksf_x_star(p,mu,xend,w,lnRhoReh,Pstar)    
     potStar = kksf_norm_potential(x,p)
     epsStar = kksf_epsilon_one(x,p,mu)
     

@@ -20,23 +20,21 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function ti_x_star(alpha,mu,w,lnRhoReh,Pstar,bfold)    
+  function ti_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: ti_x_star
-    real(kp), intent(in) :: alpha,mu,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: alpha,mu,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: tiData
     
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=ti_x_endinf(alpha,mu)
     
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
     potEnd = ti_norm_potential(xEnd,alpha,mu)
@@ -84,23 +82,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ti_x_rrad(alpha,mu,lnRrad,Pstar,bfold)    
+  function ti_x_rrad(alpha,mu,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: ti_x_rrad
-    real(kp), intent(in) :: alpha,mu,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,mu,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: tiData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=ti_x_endinf(alpha,mu)
     
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
     potEnd = ti_norm_potential(xEnd,alpha,mu)
@@ -147,23 +143,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function ti_x_rreh(alpha,mu,lnRreh,bfold)    
+  function ti_x_rreh(alpha,mu,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: ti_x_rreh
-    real(kp), intent(in) :: alpha,mu,lnRreh
+    real(kp), intent(in) :: alpha,mu,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: tiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=ti_x_endinf(alpha,mu)
     
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
     potEnd = ti_norm_potential(xEnd,alpha,mu)
@@ -209,24 +203,23 @@ contains
 
 
 
-  function ti_lnrhoreh_max(alpha,mu,Pstar) 
+  function ti_lnrhoreh_max(alpha,mu,xend,Pstar) 
     implicit none
     real(kp) :: ti_lnrhoreh_max
-    real(kp), intent(in) :: alpha,mu,Pstar
+    real(kp), intent(in) :: alpha,mu,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd=ti_x_endinf(alpha,mu) 
     potEnd  = ti_norm_potential(xEnd,alpha,mu)
     epsOneEnd = ti_epsilon_one(xEnd,alpha,mu)
 
        
-    x = ti_x_star(alpha,mu,wrad,junk,Pstar)    
+    x = ti_x_star(alpha,mu,xend,wrad,junk,Pstar)    
     potStar = ti_norm_potential(x,alpha,mu)
     epsOneStar = ti_epsilon_one(x,alpha,mu)
     

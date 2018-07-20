@@ -20,23 +20,21 @@ contains
 
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
-  function sabi_x_star(alpha,n,w,lnRhoReh,Pstar,bfold)    
+  function sabi_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfold)    
     implicit none
     real(kp) :: sabi_x_star
-    real(kp), intent(in) :: alpha,n,w,lnRhoReh,Pstar
+    real(kp), intent(in) :: alpha,n,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: sabiData
     
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=sabi_x_endinf(alpha,n)
     
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
     potEnd = sabi_norm_potential(xEnd,alpha,n)
@@ -84,23 +82,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function sabi_x_rrad(alpha,n,lnRrad,Pstar,bfold)    
+  function sabi_x_rrad(alpha,n,xend,lnRrad,Pstar,bfold)    
     implicit none
     real(kp) :: sabi_x_rrad
-    real(kp), intent(in) :: alpha,n,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,n,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: sabiData
     
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=sabi_x_endinf(alpha,n)
     
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
     potEnd = sabi_norm_potential(xEnd,alpha,n)
@@ -147,23 +143,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function sabi_x_rreh(alpha,n,lnRreh,bfold)    
+  function sabi_x_rreh(alpha,n,xend,lnRreh,bfold)    
     implicit none
     real(kp) :: sabi_x_rreh
-    real(kp), intent(in) :: alpha,n,lnRreh
+    real(kp), intent(in) :: alpha,n,xend,lnRreh
     real(kp), intent(out), optional :: bfold
 
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: sabiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-
-    xEnd=sabi_x_endinf(alpha,n)
     
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
     potEnd = sabi_norm_potential(xEnd,alpha,n)
@@ -207,23 +201,22 @@ contains
   end function find_sabi_x_rreh
 
 
-  function sabi_lnrhoreh_max(alpha,n,Pstar) 
+  function sabi_lnrhoreh_max(alpha,n,xend,Pstar) 
     implicit none
     real(kp) :: sabi_lnrhoreh_max
-    real(kp), intent(in) :: alpha,n,Pstar
+    real(kp), intent(in) :: alpha,n,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
     real(kp) :: lnRhoEnd
         
-    xEnd = sabi_x_endinf(alpha,n)
     potEnd  = sabi_norm_potential(xEnd,alpha,n)
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
        
-    x = sabi_x_star(alpha,n,wrad,junk,Pstar)
+    x = sabi_x_star(alpha,n,xend,wrad,junk,Pstar)
 
     potStar = sabi_norm_potential(x,alpha,n)
     epsOneStar = sabi_epsilon_one(x,alpha,n)

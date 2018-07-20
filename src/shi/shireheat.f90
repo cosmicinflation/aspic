@@ -22,24 +22,22 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function shi_x_star(alpha,phi0,w,lnRhoReh,Pstar,bfoldstar)    
+  function shi_x_star(alpha,phi0,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: shi_x_star
-    real(kp), intent(in) :: alpha,phi0,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: shiData
     
 
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
-    endif
-    
-    xEnd = shi_x_endinf(alpha,phi0)
+    endif    
 
     epsOneEnd = shi_epsilon_one(xEnd,alpha,phi0)
     potEnd = shi_norm_potential(xEnd,alpha,phi0)
@@ -89,23 +87,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function shi_x_rrad(alpha,phi0,lnRrad,Pstar,bfoldstar)    
+  function shi_x_rrad(alpha,phi0,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: shi_x_rrad
-    real(kp), intent(in) :: alpha,phi0,lnRrad,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: shiData
     
     if (lnRRad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
-    endif
-    
-    xEnd = shi_x_endinf(alpha,phi0)
+    endif    
 
     epsOneEnd = shi_epsilon_one(xEnd,alpha,phi0)
     potEnd = shi_norm_potential(xEnd,alpha,phi0)
@@ -153,23 +149,21 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function shi_x_rreh(alpha,phi0,lnRreh,bfoldstar)    
+  function shi_x_rreh(alpha,phi0,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: shi_x_rreh
-    real(kp), intent(in) :: alpha,phi0,lnRreh
+    real(kp), intent(in) :: alpha,phi0,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,xend,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: shiData
     
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
-    endif
-    
-    xEnd = shi_x_endinf(alpha,phi0)
+    endif    
 
     epsOneEnd = shi_epsilon_one(xEnd,alpha,phi0)
     potEnd = shi_norm_potential(xEnd,alpha,phi0)
@@ -215,20 +209,18 @@ contains
 
 
 
-  function shi_lnrhoreh_max(alpha,phi0,Pstar) 
+  function shi_lnrhoreh_max(alpha,phi0,xend,Pstar) 
     implicit none
     real(kp) :: shi_lnrhoreh_max
-    real(kp), intent(in) :: alpha,phi0,Pstar
+    real(kp), intent(in) :: alpha,phi0,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd
-    
-    xEnd = shi_x_endinf(alpha,phi0)
+    real(kp) :: lnRhoEnd    
 
     potEnd  = shi_norm_potential(xEnd,alpha,phi0)
 
@@ -237,7 +229,7 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = shi_x_star(alpha,phi0,wrad,junk,Pstar)  
+    x = shi_x_star(alpha,phi0,xend,wrad,junk,Pstar)  
 
  
     potStar = shi_norm_potential(x,alpha,phi0)

@@ -54,7 +54,8 @@ program rpi1main
      print *,'p= ',p
 
      lnRhoRehMin = lnRhoNuc
-     lnRhoRehMax = rpi1_lnrhoreh_max(p,Pstar)
+     xEnd = rpi1_x_endinf(p)
+     lnRhoRehMax = rpi1_lnrhoreh_max(p,xend,Pstar)
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -64,7 +65,7 @@ program rpi1main
 
 
 
-        ystar = rpi1_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+        ystar = rpi1_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'ystar=',ystar
@@ -102,11 +103,12 @@ program rpi1main
   lnRradmin=-42
   lnRradmax = 10
   p = 1.3
+  xEnd = rpi1_x_endinf(p)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     ystar = rpi1_x_rrad(p,lnRrad,Pstar,bfoldstar)
+     ystar = rpi1_x_rrad(p,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'ystar', ystar
 
@@ -114,14 +116,13 @@ program rpi1main
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same ystar
-     xend = rpi1_x_endinf(p)
      eps1end =  rpi1_epsilon_one(xend,p)
      VendOverVstar = rpi1_norm_potential(xend,p)/rpi1_norm_potential(ystar,p)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     ystar = rpi1_x_rreh(p,lnR,bfoldstar)
+     ystar = rpi1_x_rreh(p,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'ystar', ystar
 
      !second consistency check
@@ -129,7 +130,7 @@ program rpi1main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     ystar = rpi1_x_star(p,w,lnRhoReh,Pstar,bfoldstar)
+     ystar = rpi1_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'ystar',ystar
 

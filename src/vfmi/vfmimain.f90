@@ -134,7 +134,8 @@ program vfmimain
         beta = exp(log(betamin) + (log(betamax)-log(betamin))*real(k-1,kp)/real(nbeta-1,kp))
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = vfmi_lnrhoreh_max(alpha,beta,Pstar)
+        xEnd = vfmi_x_endinf(alpha,beta)
+        lnRhoRehMax = vfmi_lnrhoreh_max(alpha,beta,xend,Pstar)
 
         print *,'alpha= beta= lnRhoRehMin= lnRhoRehMax= ',alpha,beta,lnRhoRehMin,lnRhoRehMax
 
@@ -142,7 +143,7 @@ program vfmimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = vfmi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = vfmi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
 
            print *,'lnRhoReh= ',lnRhoReh, 'xstar= ', xstar, 'bfoldstar= ',bfoldstar
 
@@ -159,8 +160,8 @@ program vfmimain
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/beta,alpha/))
            
            !for sparing size
-           !           if (abs(ns-1).gt.0.15) cycle
-           !           if (r.lt.1e-10) cycle
+           if (abs(ns-1).gt.0.15) cycle
+           if (r.lt.1e-10) cycle
 
            call livewrite('vfmi_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
            call livewrite('vfmi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
@@ -182,12 +183,12 @@ program vfmimain
   n=2._kp
   alpha=0.5_kp
   beta = 0.1_kp
-
+  xEnd = vfmi_x_endinf(alpha,beta)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = vfmi_x_rrad(alpha,beta,lnRrad,Pstar,bfoldstar)
+     xstar = vfmi_x_rrad(alpha,beta,xend,lnRrad,Pstar,bfoldstar)
      print *
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
@@ -196,14 +197,13 @@ program vfmimain
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
 
-     xEnd=vfmi_x_endinf(alpha,beta)
      eps1end =  vfmi_epsilon_one(xEnd,alpha,beta)
      VendOverVstar = vfmi_norm_potential(xEnd,alpha,beta)/vfmi_norm_potential(xstar,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = vfmi_x_rreh(alpha,beta,lnR,bfoldstar)
+     xstar = vfmi_x_rreh(alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -211,7 +211,7 @@ program vfmimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = vfmi_x_star(alpha,beta,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = vfmi_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
