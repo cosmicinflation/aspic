@@ -1,3 +1,886 @@
+commit 89f4fa19c5f0ae10882d5427f97c6a81b8e15f85
+Date:   Fri Jul 20 16:23:01 2018 +0200
+
+    Add plot tools
+
+ README              |  12 ++
+ plots/README        |  21 +++
+ plots/aspicfigs.py  | 454 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ plots/aspicio.py    | 123 ++++++++++++++
+ plots/aspictools.py |  95 +++++++++++
+ plots/fooiplots.py  | 144 +++++++++++++++++
+ plots/modeldict.txt |  97 +++++++++++
+ plots/paramdict.txt |  41 +++++
+ 8 files changed, 987 insertions(+)
+
+commit 7518777060cc917fd2b73d6afd9df0987aec1f6d
+Date:   Fri Jul 20 15:55:05 2018 +0200
+
+    Finishing change of API: xend in all reheat modules
+
+ man/libaspic.3            |  4 ++--
+ src/rgi/rgimain.f90       | 20 ++++++++--------
+ src/rgi/rgireheat.f90     | 30 +++++++++++-------------
+ src/rpi/rpi1main.f90      | 13 ++++++-----
+ src/rpi/rpi1reheat.f90    | 39 ++++++++++++-------------------
+ src/rpi/rpi3main.f90      | 15 ++++++------
+ src/rpi/rpi3reheat.f90    | 36 +++++++++++------------------
+ src/rpqdi/rpqdimain.f90   | 16 ++++++-------
+ src/rpqdi/rpqdireheat.f90 | 32 +++++++++++--------------
+ src/rpqti/rpqtimain.f90   | 16 ++++++-------
+ src/rpqti/rpqtireheat.f90 | 30 +++++++++++-------------
+ src/saai/saaimain.f90     | 15 +++++++-----
+ src/saai/saaireheat.f90   | 30 +++++++++++-------------
+ src/sabi/sabimain.f90     | 24 +++++++++++--------
+ src/sabi/sabireheat.f90   | 33 +++++++++++---------------
+ src/saci/sacimain.f90     | 24 +++++++++++--------
+ src/saci/sacireheat.f90   | 33 +++++++++++---------------
+ src/sbi/sbimain.f90       | 31 ++++++++++++++-----------
+ src/sbi/sbireheat.f90     | 30 +++++++++++-------------
+ src/sbki/sbkimain.f90     | 13 ++++++-----
+ src/sbki/sbkireheat.f90   | 30 +++++++++++-------------
+ src/sfbi/sfbimain.f90     |  5 ++--
+ src/sfbi/sfbireheat.f90   | 16 ++++++-------
+ src/sfi/sfimain.f90       | 23 ++++++++++--------
+ src/sfi/sfireheat.f90     | 30 +++++++++++-------------
+ src/shi/shimain.f90       | 13 ++++++-----
+ src/shi/shireheat.f90     | 42 ++++++++++++++-------------------
+ src/ssbi/ssbi1main.f90    | 13 ++++++-----
+ src/ssbi/ssbi1reheat.f90  | 28 ++++++++--------------
+ src/ssbi/ssbi2main.f90    | 13 ++++++-----
+ src/ssbi/ssbi2reheat.f90  | 28 ++++++++--------------
+ src/ssbi/ssbi3main.f90    | 13 ++++++-----
+ src/ssbi/ssbi3reheat.f90  | 31 ++++++++++---------------
+ src/ssbi/ssbi4main.f90    | 14 ++++++-----
+ src/ssbi/ssbi4reheat.f90  | 30 +++++++++---------------
+ src/ssbi/ssbi5main.f90    | 14 ++++++-----
+ src/ssbi/ssbi5reheat.f90  | 30 +++++++++---------------
+ src/ssbi/ssbi6main.f90    | 13 ++++++-----
+ src/ssbi/ssbi6reheat.f90  | 30 +++++++++---------------
+ src/ti/timain.f90         | 18 ++++++++-------
+ src/ti/tireheat.f90       | 33 +++++++++++---------------
+ src/vfmi/vfmimain.f90     | 18 +++++++--------
+ src/vfmi/vfmireheat.f90   | 33 +++++++++++---------------
+ src/wri/wrimain.f90       | 59 ++++++++++++++++++++++++-----------------------
+ src/wri/wrireheat.f90     | 39 +++++++++++++------------------
+ 45 files changed, 499 insertions(+), 601 deletions(-)
+
+commit 75016328f63cd75e785242f864070369d9ef4892
+Date:   Thu Jul 19 17:37:37 2018 +0200
+
+    Change of API on reheat modules, from a*i to rcqi
+
+ NEWS                        | 26 ++++++++++++++++---
+ TODO                        |  6 +----
+ configure.ac                | 19 ++++++++++++--
+ man/libaspic.3              | 18 +++++++------
+ src/ahi/ahimain.f90         | 16 +++++++-----
+ src/ahi/ahireheat.f90       | 30 ++++++++++------------
+ src/ai/aimain.f90           | 26 +++++++++++--------
+ src/ai/aireheat.f90         | 32 ++++++++++--------------
+ src/bei/beimain.f90         | 16 ++++++------
+ src/bei/beireheat.f90       | 33 ++++++++++--------------
+ src/ccsi/ccsi1main.f90      | 14 ++++++-----
+ src/ccsi/ccsi1reheat.f90    | 28 ++++++++-------------
+ src/ccsi/ccsi3main.f90      | 13 +++++-----
+ src/ccsi/ccsi3reheat.f90    | 24 ++++++------------
+ src/cnai/cnaimain.f90       | 20 ++++++++-------
+ src/cnai/cnaireheat.f90     | 30 ++++++++++------------
+ src/cnbi/cnbimain.f90       | 19 +++++++-------
+ src/cnbi/cnbireheat.f90     | 33 +++++++++++-------------
+ src/common/specialinf.F90   |  5 ++--
+ src/cwi/cwimain.f90         | 24 ++++++++++--------
+ src/cwi/cwireheat.f90       | 38 +++++++++++-----------------
+ src/di/dicommon.f90         | 12 +++++----
+ src/di/dimain.f90           | 45 +++++++++++++++++++++++++++------
+ src/di/displine.F90         |  8 +++---
+ src/di/disr.f90             |  5 +++-
+ src/dwi/dwimain.f90         | 20 ++++++++-------
+ src/dwi/dwireheat.f90       | 35 ++++++++++----------------
+ src/esi/esimain.f90         | 24 ++++++++++--------
+ src/esi/esireheat.f90       | 30 ++++++++++------------
+ src/fi/fimain.f90           | 24 +++++++++++-------
+ src/fi/fireheat.f90         | 61 ++++++++++++++++++++-------------------------
+ src/gdwi/gdwimain.f90       | 51 ++++++++++++++++++++-----------------
+ src/gdwi/gdwireheat.f90     | 36 +++++++++++---------------
+ src/gmlfi/gmlfimain.f90     | 30 ++++++++++++----------
+ src/gmlfi/gmlfireheat.f90   | 30 ++++++++++------------
+ src/gmlfi/mlfimain.f90      | 13 ++++++----
+ src/gmssmi/gmssmimain.f90   | 18 +++++++------
+ src/gmssmi/gmssmireheat.f90 | 30 ++++++++++------------
+ src/gmssmi/mssmimain.f90    | 18 +++++++------
+ src/gmssmi/mssmireheat.f90  | 32 +++++++++++-------------
+ src/gripi/gripimain.f90     | 34 ++++++++++++++-----------
+ src/gripi/gripireheat.f90   | 30 ++++++++++------------
+ src/gripi/ripimain.f90      | 20 ++++++++-------
+ src/gripi/ripireheat.f90    | 42 +++++++++++++------------------
+ src/hbi/hbimain.f90         | 24 ++++++++++--------
+ src/hbi/hbireheat.f90       | 30 ++++++++++------------
+ src/hf1i/hf1imain.f90       | 20 ++++++++-------
+ src/hf1i/hf1ireheat.f90     | 30 ++++++++++------------
+ src/hi/himain.f90           | 18 +++++++------
+ src/hi/hireheat.f90         | 42 +++++++++++++------------------
+ src/hni/hnimain.f90         | 13 +++++-----
+ src/hni/hnireheat.f90       | 33 ++++++++++--------------
+ src/kmii/kmiimain.f90       | 18 +++++++------
+ src/kmii/kmiireheat.f90     | 30 ++++++++++------------
+ src/kmiii/kmiiimain.f90     | 14 ++++++-----
+ src/kmiii/kmiiireheat.f90   | 30 ++++++++++------------
+ src/lfi/lfimain.f90         | 27 +++++++++++---------
+ src/lfi/lfireheat.f90       | 30 ++++++++++------------
+ src/li/limain.f90           | 31 ++++++++++++-----------
+ src/li/lireheat.f90         | 30 ++++++++++------------
+ src/lmi/lmi1main.f90        | 35 ++++++++++++++------------
+ src/lmi/lmi1reheat.f90      | 31 ++++++++++-------------
+ src/lpi/lpi1main.f90        | 13 +++++-----
+ src/lpi/lpi1reheat.f90      | 30 ++++++++++------------
+ src/lpi/lpi2main.f90        | 14 +++++------
+ src/lpi/lpi2reheat.f90      | 30 ++++++++++------------
+ src/lpi/lpi3main.f90        | 13 +++++-----
+ src/lpi/lpi3reheat.f90      | 33 +++++++++++-------------
+ src/mhi/mhimain.f90         | 24 ++++++++++--------
+ src/mhi/mhireheat.f90       | 38 +++++++++++-----------------
+ src/ncki/nckimain.f90       | 18 +++++++------
+ src/ncki/nckireheat.f90     | 30 ++++++++++------------
+ src/ncli/nclimain.f90       | 32 +++++++++++++++---------
+ src/ncli/nclireheat.f90     | 30 ++++++++++------------
+ src/nfi/nfi1main.f90        | 14 ++++++-----
+ src/nfi/nfi1reheat.f90      | 27 ++++++++------------
+ src/nfi/nfi3main.f90        | 20 ++++++++-------
+ src/nfi/nfi3reheat.f90      | 30 ++++++++--------------
+ src/ni/nimain.f90           | 22 +++++++++-------
+ src/ni/nireheat.f90         | 30 ++++++++++------------
+ src/oi/oimain.f90           | 15 ++++++-----
+ src/oi/oireheat.f90         | 30 ++++++++++------------
+ src/oripi/oripimain.f90     | 22 +++++++++-------
+ src/oripi/oripireheat.f90   | 40 ++++++++++++-----------------
+ src/osti/ostimain.f90       | 35 ++++++++++++++------------
+ src/osti/ostireheat.f90     | 37 +++++++++++----------------
+ src/pli/plimain.f90         | 23 ++++++++++-------
+ src/pli/plireheat.f90       | 37 +++++++++++----------------
+ src/psni/psnimain.f90       | 15 ++++++-----
+ src/psni/psnireheat.f90     | 30 ++++++++++------------
+ src/rchi/rchimain.f90       | 22 +++++++++-------
+ src/rchi/rchireheat.f90     | 30 ++++++++++------------
+ src/rcmi/rcmimain.f90       | 27 ++++++++++++--------
+ src/rcmi/rcmireheat.f90     | 30 ++++++++++------------
+ src/rcpi/rcpimain.f90       | 31 +++++++++++++----------
+ src/rcpi/rcpireheat.f90     | 34 +++++++++++--------------
+ src/rcqi/rcqimain.f90       | 27 ++++++++++++--------
+ src/rcqi/rcqireheat.f90     | 30 ++++++++++------------
+ 98 files changed, 1265 insertions(+), 1302 deletions(-)
+
+commit 3c51cd003638c233c603ae39eea978cf5df0cc79
+Date:   Wed Jul 18 15:15:17 2018 +0200
+
+    Finishing main update for new figs generation
+
+ src/imi/imimain.f90     |  15 ++--
+ src/kklti/kkltimain.f90 |  19 +++++
+ src/kmii/kmiimain.f90   |  11 ++-
+ src/kmiii/kmiiimain.f90 |  12 +++-
+ src/lfi/lfimain.f90     |   6 +-
+ src/li/limain.f90       |  11 ++-
+ src/lmi/lmi1main.f90    |  20 +++++-
+ src/lmi/lmi2main.f90    |  77 ++++++++++-----------
+ src/lpi/lpi1main.f90    |  16 +++--
+ src/lpi/lpi2main.f90    |  11 ++-
+ src/lpi/lpi3main.f90    |  10 ++-
+ src/mhi/mhimain.f90     |  11 ++-
+ src/ncki/nckimain.f90   |  17 +++--
+ src/ncli/nclimain.f90   |  74 ++++++++++++++++++--
+ src/nfi/nfi1main.f90    |  37 +++++++---
+ src/nfi/nfi2main.f90    | 101 +++++++++++++++------------
+ src/nfi/nfi3main.f90    |  37 ++++++----
+ src/nfi/nfi4main.f90    | 179 +++++++++++++++++++++++++-----------------------
+ src/ni/nimain.f90       |  19 +++--
+ src/oi/oimain.f90       |  18 +++--
+ src/oripi/oripimain.f90 |   9 ++-
+ src/osti/ostimain.f90   |   8 +++
+ src/pli/plimain.f90     |   9 +++
+ src/psni/psnimain.f90   |  23 +++++--
+ src/rchi/rchimain.f90   |  19 +++--
+ src/rcmi/rcmimain.f90   |   9 +++
+ src/rcpi/rcpimain.f90   |  34 +++++----
+ src/rcqi/rcqimain.f90   |  35 +++++++---
+ src/rgi/rgimain.f90     |   9 +++
+ src/rmi/rmi1main.f90    |  35 +++++-----
+ src/rmi/rmi2main.f90    |  51 +++++---------
+ src/rmi/rmi3main.f90    |  31 ++++-----
+ src/rmi/rmi4main.f90    |  52 +++++---------
+ src/rpi/aspic_rpi3.3    |   3 +-
+ src/rpi/rpi1main.f90    |  12 +++-
+ src/rpi/rpi2main.f90    |  39 ++++++-----
+ src/rpi/rpi3main.f90    |  12 +++-
+ src/rpqdi/rpqdimain.f90 |  36 ++++++----
+ src/rpqti/rpqtimain.f90 |  39 +++++++----
+ src/saai/aspic_saai.3   |   2 +-
+ src/saai/saaimain.f90   |  13 +++-
+ src/sabi/sabimain.f90   |  93 +++++++++++++++++++++----
+ src/saci/sacimain.f90   |  95 +++++++++++++++++++++----
+ src/sbi/sbimain.f90     |  32 +++++++--
+ src/sbki/sbkimain.f90   |  10 ++-
+ src/sdi/sdimain.f90     |  28 +++++---
+ src/sfi/sfimain.f90     |   8 ++-
+ src/shi/shimain.f90     |  78 +++++++++++----------
+ src/ssbi/ssbi1main.f90  |  12 +++-
+ src/ssbi/ssbi2main.f90  |  20 ++++--
+ src/ssbi/ssbi3main.f90  |  15 +++-
+ src/ssbi/ssbi4main.f90  |  14 +++-
+ src/ssbi/ssbi5main.f90  |  10 ++-
+ src/ssbi/ssbi6main.f90  |  13 +++-
+ src/ti/timain.f90       |  28 ++++++--
+ src/twi/twimain.f90     |  27 +++++---
+ src/vfmi/vfmimain.f90   |  17 +++--
+ src/vhi/vhimain.f90     |  74 ++++++++++++--------
+ src/wri/wrimain.f90     |  15 +++-
+ 59 files changed, 1179 insertions(+), 591 deletions(-)
+
+commit d6dddfa48ae23ac47ade97fe9fde2d8431dc73ec
+Date:   Thu Jul 12 17:18:39 2018 +0200
+
+    Add support for new plot in gripi, hni, hf1i, ii
+
+ src/gripi/gripimain.f90 | 31 +++++++++++++++++++++++--------
+ src/gripi/ripimain.f90  |  9 ++++++++-
+ src/hbi/hbimain.f90     |  7 ++++---
+ src/hf1i/hf1imain.f90   |  9 +++++++++
+ src/hni/hnimain.f90     | 48 ++++++++++++++++++++++++++++++++++--------------
+ src/hni/hnisr.f90       | 13 ++++++++++++-
+ src/ii/iimain.f90       | 12 +++++++++---
+ 7 files changed, 99 insertions(+), 30 deletions(-)
+
+commit b933280700016765457e7735f1448bb6fd0aa7f1
+Date:   Wed Jul 11 17:32:06 2018 +0200
+
+    aspicplot update for csi, cwi, di, esi, fi, gdwi, gmlfi, gmssmi
+
+ src/common/infinout.f90   |   3 +-
+ src/csi/csimain.f90       |  15 +++++-
+ src/cwi/cwimain.f90       |  16 ++++++-
+ src/di/dimain.f90         |  21 +++++---
+ src/dsi/dsimain.f90       |  41 ++++++++++------
+ src/dwi/dwimain.f90       |   9 ++++
+ src/esi/esimain.f90       |  21 +++++++-
+ src/fi/fimain.f90         |  63 ++++++++++++++----------
+ src/gdwi/gdwimain.f90     | 119 +++++++++++++++++++++++++++++++++++++++++++++-
+ src/gmlfi/gmlfimain.f90   |  41 +++++++---------
+ src/gmlfi/mlfimain.f90    |  11 +++++
+ src/gmssmi/gmssmimain.f90 |  23 +++++++--
+ src/gmssmi/mssmimain.f90  |  10 +++-
+ 13 files changed, 309 insertions(+), 84 deletions(-)
+
+commit fcf579d5d3888e2ce88002e8b4b08d14958f6bfc
+Date:   Thu Jul 5 17:43:05 2018 +0200
+
+    Update figure generation for ai->cndi
+
+ src/ai/aimain.f90           |  8 ++++++
+ src/bei/beimain.f90         | 25 ++++++++++++------
+ src/bi/bimain.f90           | 28 ++++++++++++++++++--
+ src/bsusybi/bsusybimain.f90 | 21 ++++++++++-----
+ src/ccsi/ccsi1main.f90      | 13 ++++++++--
+ src/ccsi/ccsi2main.f90      | 19 +++++++++-----
+ src/ccsi/ccsi3main.f90      | 20 +++++++--------
+ src/cnai/cnaimain.f90       | 10 +++++++-
+ src/cnbi/cnbimain.f90       | 10 ++++++++
+ src/cnci/cncimain.f90       | 37 +++++++++++++++------------
+ src/cndi/cndimain.f90       | 62 ++++++++++++++++++++++-----------------------
+ src/common/infinout.f90     |  1 +
+ src/rpqdi/rpqdimain.f90     |  2 +-
+ 13 files changed, 173 insertions(+), 83 deletions(-)
+
+commit 074b0c266dc6173f3a7e74625ebfe68bb7d95469
+Date:   Wed Apr 18 11:22:54 2018 +0200
+
+    Added potential output for ccsimain
+
+ src/ccsi/ccsi1main.f90 | 39 ++++++++++++++++++++++++++++++++++++++-
+ src/ccsi/ccsi3main.f90 | 46 +++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 83 insertions(+), 2 deletions(-)
+
+commit 2d9b7ed541e8cb0861a6d4709fda7937e7277806
+Date:   Wed Mar 7 17:09:06 2018 +0100
+
+    Regularize cwi to use negative field values
+
+ configure.ac      |  2 +-
+ src/cwi/cwisr.f90 | 32 ++++++++++++++++----------------
+ 2 files changed, 17 insertions(+), 17 deletions(-)
+
+commit 55387f80b5377573f63b36bdafc346b5e87db797
+Date:   Thu Nov 23 16:03:31 2017 +0100
+
+    Fix bug in gdwi
+
+ src/gdwi/aspic_gdwi.3 |  2 +-
+ src/gdwi/gdwisr.f90   | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+commit e41eee6f786b08231e18ef971d6ed41dab63cae3
+Date:   Thu Nov 23 09:47:45 2017 +0100
+
+    Creating gdwi, generalized double well inflation
+
+ configure.ac            |   1 +
+ src/Makefile.am         |   5 +-
+ src/gdwi/Makefile.am    |  25 +++++
+ src/gdwi/aspic_gdwi.3   |  29 ++++++
+ src/gdwi/gdwimain.f90   | 174 +++++++++++++++++++++++++++++++
+ src/gdwi/gdwireheat.f90 | 269 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/gdwi/gdwisr.f90     | 228 ++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 729 insertions(+), 2 deletions(-)
+
+commit 3cbff629812ec4d17ab89f4c12450da2042e7e0c
+Date:   Thu May 11 11:37:18 2017 +0200
+
+    Fix legacy extension in write(*,*)
+
+ src/common/huflow.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0d25483e6e2c4b526c3f217eac948e28fd935285
+Date:   Tue Nov 15 19:28:17 2016 +0100
+
+    making cei a function rather than a subroutine
+
+ src/common/specialinf.F90 | 40 ++++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
+
+commit 593090e4172a7665e86ee41ff14753f0cac05e30
+Date:   Tue Nov 15 19:27:57 2016 +0100
+
+    src/common/specialinf.F90
+
+ src/rcpi/rcpicommon.f90 | 4 ++--
+ src/rpqdi/rpqdisr.f90   | 4 ++--
+ src/rpqti/rpqtisr.f90   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 8bdf5276463b94824ad496cb2353addc7f762b37
+Date:   Tue Nov 15 19:00:54 2016 +0100
+
+    Updating man
+
+ NEWS            |  2 +-
+ include/aspic.h | 12 ++++++------
+ man/libaspic.3  | 18 +++++++++++++++---
+ 3 files changed, 22 insertions(+), 10 deletions(-)
+
+commit 1accc20c4d5555118e2ae88fd4c0a859f7a41af5
+Date:   Tue Nov 15 18:53:47 2016 +0100
+
+    Coding rcpi
+
+ src/ccsi/aspic_ccsi1.3                       |   3 +-
+ src/ccsi/aspic_ccsi2.3                       |   3 +-
+ src/ccsi/aspic_ccsi3.3                       |   2 +-
+ src/common/inftools.f90                      |  64 ++++---
+ src/common/specialinf.F90                    |   8 +-
+ src/lpi/aspic_lpi.3                          |   8 +-
+ src/rcpi/Makefile.am                         |  20 +-
+ src/rcpi/aspic_rcpi.3                        |  91 +++++++++
+ src/rcpi/rcpi1main.f90                       | 149 ---------------
+ src/rcpi/rcpi1sr.f90                         | 266 ---------------------------
+ src/rcpi/rcpicommon.f90                      | 225 ++++++++++++++++------
+ src/rcpi/rcpimain.f90                        | 216 ++++++++++++++++++++++
+ src/rcpi/{rcpi1reheat.f90 => rcpireheat.f90} | 164 ++++++++---------
+ src/rcpi/rcpisr.f90                          | 242 ++++++++++++++++++++++++
+ src/rpqdi/rpqdimain.f90                      |  39 +++-
+ src/rpqdi/rpqdisr.f90                        |   2 +-
+ src/vhi/aspic_vhi.3                          |   6 +-
+ 17 files changed, 903 insertions(+), 605 deletions(-)
+
+commit 9e7a42f13ad46816c22681013e6582bea8886cfb
+Date:   Tue Nov 8 19:57:39 2016 +0100
+
+    draft of rcpi1
+
+ configure.ac             |  15 +-
+ src/Makefile.am          |  19 +-
+ src/rcpi/Makefile.am     |  25 +++
+ src/rcpi/aspic_rcpi.3    |   0
+ src/rcpi/rcpi1main.f90   | 149 +++++++++++++++
+ src/rcpi/rcpi1reheat.f90 | 263 +++++++++++++++++++++++++
+ src/rcpi/rcpi1sr.f90     | 266 ++++++++++++++++++++++++++
+ src/rcpi/rcpicommon.f90  | 487 +++++++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 1208 insertions(+), 16 deletions(-)
+
+commit 4c0aa2b5e87ad08d38f21752d2ddf18f451f8505
+Date:   Thu Nov 3 15:31:56 2016 +0100
+
+    polishing shi
+
+ src/shi/aspic_shi.3 | 13 +++++++++----
+ src/shi/shimain.f90 |  7 +++++++
+ src/shi/shisr.f90   |  2 +-
+ 3 files changed, 17 insertions(+), 5 deletions(-)
+
+commit cc565c751faae639f0ca350cf911bd8f1ba827d8
+Date:   Thu Nov 3 14:48:44 2016 +0100
+
+    polishing hbi
+
+ src/hbi/aspic_hbi.3   |  8 ++++----
+ src/hbi/hbimain.f90   | 12 +++++++++++-
+ src/hbi/hbireheat.f90 |  8 ++++----
+ src/hbi/hbisr.f90     | 32 +++++++++++++++++++++++++++++++-
+ 4 files changed, 50 insertions(+), 10 deletions(-)
+
+commit fc19eb266871db4e793f14e15914727487a8fbba
+Date:   Wed Nov 2 18:02:58 2016 +0100
+
+    debug parallel testsuite
+
+ tests/runmains.bash | 3 +--
+ tests/testsuite.at  | 5 -----
+ 2 files changed, 1 insertion(+), 7 deletions(-)
+
+commit 2134a31ffe2ae11f1d0d60de76365cffa652e7c7
+Date:   Wed Nov 2 17:04:09 2016 +0100
+
+    Running testsuite parallel, requires nproc
+
+ tests/runmains.bash | 12 ++++++++++++
+ tests/testsuite.at  | 11 +++++------
+ 2 files changed, 17 insertions(+), 6 deletions(-)
+
+commit 6ba7fc61e966d6fff6abbcb79eb4f37d508f61d9
+Merge: cf88f50 bdd1942
+Date:   Wed Nov 2 14:49:14 2016 +0100
+
+    Merge branch 'vincent'
+
+commit bdd1942b364776cd3c0fa5ca3f0cdbab2f7a4a9e
+Date:   Wed Nov 2 14:48:57 2016 +0100
+
+    4 new models imported
+
+ configure.ac              |   4 +
+ src/Makefile.am           |   9 +-
+ src/common/inftools.f90   | 597 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/common/specialinf.F90 |  23 ++
+ src/hbi/Makefile.am       |  22 ++
+ src/hbi/aspic_hbi.3       |  31 +++
+ src/hbi/hbimain.f90       | 240 +++++++++++++++++++
+ src/hbi/hbireheat.f90     | 338 ++++++++++++++++++++++++++
+ src/hbi/hbisr.f90         | 135 +++++++++++
+ src/rpqdi/Makefile.am     |  25 ++
+ src/rpqdi/aspic_rpqdi.3   |  25 ++
+ src/rpqdi/rpqdimain.f90   | 162 +++++++++++++
+ src/rpqdi/rpqdireheat.f90 | 267 +++++++++++++++++++++
+ src/rpqdi/rpqdisr.f90     | 378 +++++++++++++++++++++++++++++
+ src/rpqti/Makefile.am     |  25 ++
+ src/rpqti/aspic_rpqti.3   |  25 ++
+ src/rpqti/rpqtimain.f90   | 163 +++++++++++++
+ src/rpqti/rpqtireheat.f90 | 267 +++++++++++++++++++++
+ src/rpqti/rpqtisr.f90     | 381 +++++++++++++++++++++++++++++
+ src/shi/Makefile.am       |  25 ++
+ src/shi/aspic_shi.3       |  25 ++
+ src/shi/shimain.f90       | 147 ++++++++++++
+ src/shi/shireheat.f90     | 256 ++++++++++++++++++++
+ src/shi/shisr.f90         | 229 ++++++++++++++++++
+ 24 files changed, 3797 insertions(+), 2 deletions(-)
+
+commit cf88f5059a13ec2df25c5dfb3a7cdf60d0fc210a
+Date:   Wed Nov 2 14:34:37 2016 +0100
+
+    plotting support for ahi
+
+ src/ahi/ahimain.f90 | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+commit d37254183662992bf963376cfb4184a6919d4bd6
+Date:   Wed Sep 28 14:36:28 2016 +0200
+
+    Fix missing ._kp breaking quadprec compilation with ifort compiler
+
+ src/vfmi/vfmisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2b64991398db2b7eb58ae59f2acd97d7dfb375ae
+Date:   Fri Sep 2 14:35:56 2016 +0200
+
+    Simplify label:
+
+ src/common/infinout.f90 | 18 +++++++-----------
+ src/lfi/lfimain.f90     |  2 +-
+ src/rmi/rmi1main.f90    |  6 +++---
+ src/rmi/rmi2main.f90    |  6 +++---
+ src/rmi/rmi3main.f90    |  8 ++++----
+ src/rmi/rmi4main.f90    |  6 +++---
+ src/sfi/sfimain.f90     |  2 +-
+ 7 files changed, 22 insertions(+), 26 deletions(-)
+
+commit 3940bd5c1eafbc079069d5cef0311bc48ebb960e
+Date:   Thu Sep 1 18:03:54 2016 +0200
+
+    Implementing aspicwrite_ to zero, one, two and three parameter models for debugging
+
+ src/common/infinout.f90 | 196 +++++++++++++++++++++++++++++++-----------------
+ src/hi/himain.f90       |  10 ++-
+ src/lfi/lfimain.f90     |  14 +++-
+ src/rmi/rmi1main.f90    |  14 +++-
+ src/rmi/rmi2main.f90    |  14 ++++
+ src/rmi/rmi3main.f90    |  16 +++-
+ src/rmi/rmi4main.f90    |  16 +++-
+ src/sfi/sfimain.f90     |  16 +++-
+ 8 files changed, 218 insertions(+), 78 deletions(-)
+
+commit dbc64f36ed91ac19c9be93cbc5256037fcca8d06
+Date:   Fri Aug 26 19:12:02 2016 +0200
+
+    adding semaphore to cleanwrite
+
+ src/common/infinout.f90 | 81 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 65 insertions(+), 16 deletions(-)
+
+commit d2f6844f5f1af494ddf6ce6bfed8c114dad87d95
+Date:   Thu Jul 14 19:17:40 2016 +0200
+
+    Preparing the field for cleanwrite
+
+ src/common/infinout.f90 | 115 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 114 insertions(+), 1 deletion(-)
+
+commit 9f67f5ffd89cbb90dfd818d655878a076e211aa4
+Date:   Wed Jul 6 10:14:12 2016 +0200
+
+    Adding third order corrections to the mapping between epsV and epsH
+
+ src/common/srflow.f90 | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+commit 44d9d2b8a664b8b1109be77ee5a1f52036357ec1
+Date:   Thu Apr 28 17:58:09 2016 +0200
+
+    adding saai, sabi, saci, tuning main for QUADPREC integration
+
+ NEWS                   |  7 ++-----
+ include/aspic.h        | 16 ++++++++++++++++
+ man/libaspic.3         | 45 ++++++++++++++++++++++++++++++++++++++++-----
+ src/common/infprec.F90 |  4 ++--
+ src/di/dicommon.f90    |  5 +++--
+ src/di/dimain.f90      |  4 +++-
+ src/di/direheat.f90    | 12 ++++++++----
+ src/fi/fisr.f90        | 12 +++++++++---
+ src/ncli/nclisr.f90    |  6 ++++--
+ src/saai/aspic_saai.3  |  4 ++--
+ src/sabi/aspic_sabi.3  |  4 ++--
+ src/sabi/sabisr.f90    |  2 +-
+ src/saci/aspic_saci.3  |  4 ++--
+ 13 files changed, 94 insertions(+), 31 deletions(-)
+
+commit ec3f08d57b7dce3217e7cf879ba8e6d304e672f3
+Merge: 14ce08b eda2f00
+Author: chris <chris@ringeval.com>
+Date:   Thu Apr 28 14:47:23 2016 +0200
+
+    Merge branch for saai, sabi, saci
+
+commit eda2f0033142b55a140b639944b5bb17fee9d7b6
+Date:   Thu Apr 28 14:47:11 2016 +0200
+
+    remove make.in files
+
+ src/saai/Makefile.in | 731 ---------------------------------------------------
+ src/sabi/Makefile.in | 730 --------------------------------------------------
+ src/saci/Makefile.in | 730 --------------------------------------------------
+ 3 files changed, 2191 deletions(-)
+
+commit 25f85f072559d046bac7991e3a8305b6ec1499d4
+Date:   Thu Apr 28 14:46:34 2016 +0200
+
+    3 new models, saai, sabi, saci
+
+ configure.ac            |   4 +-
+ src/Makefile.am         |   7 +-
+ src/fi/fimain.f90       |   2 +
+ src/saai/Makefile.am    |  25 ++
+ src/saai/Makefile.in    | 731 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/saai/aspic_saai.3   |  26 ++
+ src/saai/saaimain.f90   | 126 +++++++++
+ src/saai/saaireheat.f90 | 242 ++++++++++++++++
+ src/saai/saaisr.f90     | 131 +++++++++
+ src/sabi/Makefile.am    |  22 ++
+ src/sabi/Makefile.in    | 730 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/sabi/aspic_sabi.3   |  24 ++
+ src/sabi/sabimain.f90   | 221 +++++++++++++++
+ src/sabi/sabireheat.f90 | 244 ++++++++++++++++
+ src/sabi/sabisr.f90     | 123 ++++++++
+ src/saci/Makefile.am    |  22 ++
+ src/saci/Makefile.in    | 730 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/saci/aspic_saci.3   |  24 ++
+ src/saci/sacimain.f90   | 221 +++++++++++++++
+ src/saci/sacireheat.f90 | 244 ++++++++++++++++
+ src/saci/sacisr.f90     | 130 +++++++++
+ 21 files changed, 4026 insertions(+), 3 deletions(-)
+
+commit 14ce08baaa5b9d08f518c128c53dde11e27e2699
+Date:   Thu Apr 28 13:55:37 2016 +0200
+
+    Fixing function names to match our previous policy, editing comments
+
+ src/ahi/ahimain.f90     |  8 ++++----
+ src/ahi/ahireheat.f90   | 14 ++++++--------
+ src/ahi/ahisr.f90       | 24 ++++++++++++++++--------
+ src/fi/fisr.f90         |  2 +-
+ src/sbki/sbkimain.f90   |  2 +-
+ src/sbki/sbkireheat.f90 |  8 ++++----
+ src/sbki/sbkisr.f90     | 12 ++++++------
+ src/vfmi/vfmisr.f90     |  8 ++++----
+ 8 files changed, 42 insertions(+), 36 deletions(-)
+
+commit 1baf66bdcb2eed6e40445dd85889590af9456909
+Date:   Tue Apr 26 18:10:51 2016 +0200
+
+    Polishing fi and sdi
+
+ src/fi/aspic_fi.3   |  10 +--
+ src/fi/fimain.f90   |  27 +++---
+ src/fi/fireheat.f90 |  27 ++++--
+ src/fi/fisr.f90     | 235 +++++++++++++++++++++++++++++++++++-----------------
+ src/sdi/aspic_sdi.3 |  20 ++++-
+ src/sdi/sdimain.f90 |  41 ++++++---
+ src/sdi/sdisr.f90   |  65 +++++++++++----
+ 7 files changed, 291 insertions(+), 134 deletions(-)
+
+commit 8dbcff4b2f61d2c58c642082646aba329c7c9a6a
+Date:   Mon Apr 25 18:02:07 2016 +0200
+
+    Polishing ahi and sbki
+
+ src/ahi/ahimain.f90     |  4 ++--
+ src/ahi/ahireheat.f90   |  8 ++++----
+ src/ahi/ahisr.f90       | 38 +++++++++++++++++++-------------------
+ src/ahi/aspic_ahi.3     |  2 +-
+ src/fi/fisr.f90         |  7 +++++--
+ src/sbki/aspic_sbki.3   | 33 +++++++++++++++++++++++++++++++--
+ src/sbki/sbkimain.f90   | 15 +++++++++++----
+ src/sbki/sbkireheat.f90 |  2 +-
+ src/sbki/sbkisr.f90     | 35 ++++++++++++++++++++++++-----------
+ 9 files changed, 98 insertions(+), 46 deletions(-)
+
+commit ae34d634c925be95493a6ddba1d7f27c905c9c09
+Merge: ad42bb7 f096492
+Date:   Mon Apr 25 16:03:32 2016 +0200
+
+    Adding 4 models, reverting hardprior in cosmopar
+
+commit f096492c6eb3562e55dcdea822205ec9969cbabd
+Date:   Mon Apr 25 15:58:55 2016 +0200
+
+    3 new models
+
+ configure.ac              |   4 +
+ src/Makefile.am           |   8 +-
+ src/ahi/Makefile.am       |  25 ++++
+ src/ahi/ahimain.f90       | 126 +++++++++++++++++
+ src/ahi/ahireheat.f90     | 242 ++++++++++++++++++++++++++++++++
+ src/ahi/ahisr.f90         | 214 +++++++++++++++++++++++++++++
+ src/ahi/aspic_ahi.3       |  26 ++++
+ src/common/cosmopar.f90   |   7 +
+ src/common/infinout.f90   |  32 +++--
+ src/common/specialinf.F90 |  19 ++-
+ src/fi/Makefile.am        |  22 +++
+ src/fi/aspic_fi.3         |  42 ++++++
+ src/fi/fimain.f90         | 315 ++++++++++++++++++++++++++++++++++++++++++
+ src/fi/fireheat.f90       | 245 +++++++++++++++++++++++++++++++++
+ src/fi/fisr.f90           | 341 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/ncli/nclisr.f90       |   2 +-
+ src/sbki/Makefile.am      |  25 ++++
+ src/sbki/aspic_sbki.3     |  26 ++++
+ src/sbki/sbkimain.f90     | 138 +++++++++++++++++++
+ src/sbki/sbkireheat.f90   | 248 +++++++++++++++++++++++++++++++++
+ src/sbki/sbkisr.f90       | 230 +++++++++++++++++++++++++++++++
+ src/sdi/Makefile.am       |  25 ++++
+ src/sdi/aspic_sdi.3       |  31 +++++
+ src/sdi/sdimain.f90       | 143 +++++++++++++++++++
+ src/sdi/sdireheat.f90     | 250 +++++++++++++++++++++++++++++++++
+ src/sdi/sdisr.f90         | 141 +++++++++++++++++++
+ 26 files changed, 2914 insertions(+), 13 deletions(-)
+
+commit ad42bb7a35f8552bc1656371d01d854ce565381c
+Date:   Thu Apr 7 16:54:59 2016 +0200
+
+    Sign convention changed in eosflow, fixing bugs in vfmi
+
+ Makefile.am            |   2 +
+ configure.ac           |   2 +
+ src/common/eosflow.f90 |  24 +-
+ src/vfmi/Makefile.in   | 737 -------------------------------------------------
+ src/vfmi/vfmimain.f90  |   8 +-
+ src/vfmi/vfmisr.f90    |  11 +-
+ 6 files changed, 26 insertions(+), 758 deletions(-)
+
+commit fe654c5581c966a99a4858590c6d5fc96a56698b
+Date:   Thu Apr 7 15:59:06 2016 +0200
+
+    updating man page for vfmi
+
+ src/vfmi/aspic_vfmi.3 | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
+
+commit c63c7dd609b7a492debaf5e8cfd36da6edc95eed
+Date:   Thu Apr 7 15:43:31 2016 +0200
+
+    Reparametrization of vfmi to unify all alpha cases
+
+ src/vfmi/vfmieos.f90    |  8 ++---
+ src/vfmi/vfmireheat.f90 | 15 +++++----
+ src/vfmi/vfmisr.f90     | 89 +++++++++++++++++++++++++++++++------------------
+ 3 files changed, 69 insertions(+), 43 deletions(-)
+
+commit 557b28b8e38a74d4eaa025f784746b150b72a7e8
+Date:   Wed Apr 6 17:56:57 2016 +0200
+
+    Fix sign in vfmi_x_trajectory
+
+ src/vfmi/vfmimain.f90 | 9 ++++++---
+ src/vfmi/vfmisr.f90   | 2 +-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+commit ef2722ce4f4a00618ffe703bd4be279a07545335
+Date:   Fri Mar 18 11:41:29 2016 +0100
+
+    renaming to vfmi, fixing bugs
+
+ configure.ac                               |   2 +-
+ src/Makefile.am                            |   4 +-
+ src/abi/Makefile.am                        |  26 -
+ src/abi/abieos.f90                         |  93 ----
+ src/abi/abireheat.f90                      | 295 ------------
+ src/abi/aspic_abi.3                        |   0
+ src/vfmi/Makefile.am                       |  26 +
+ src/vfmi/Makefile.in                       | 737 +++++++++++++++++++++++++++++
+ src/vfmi/aspic_vfmi.3                      | 133 ++++++
+ src/vfmi/vfmieos.f90                       |  93 ++++
+ src/{abi/abimain.f90 => vfmi/vfmimain.f90} | 108 +++--
+ src/vfmi/vfmireheat.f90                    | 293 ++++++++++++
+ src/{abi/abisr.f90 => vfmi/vfmisr.f90}     | 127 ++---
+ 13 files changed, 1427 insertions(+), 510 deletions(-)
+
+commit c2c99f575cdae35b11db3d4387f216ad28b1b55f
+Date:   Thu Mar 17 19:47:38 2016 +0100
+
+    debugging abi
+
+ src/abi/abieos.f90     |  14 +++++--
+ src/abi/abimain.f90    | 111 ++++++++++++++++++++++++++++++++++++++++---------
+ src/abi/abireheat.f90  |  44 ++++++++++++++++----
+ src/abi/abisr.f90      |  28 +++++++++++--
+ src/common/eosflow.f90 |  34 +++++++--------
+ 5 files changed, 178 insertions(+), 53 deletions(-)
+
+commit 3e54c972c8661a95f0736823c9c86b3b5df7a57a
+Date:   Tue Mar 15 19:10:16 2016 +0100
+
+    First draft of abi
+
+ configure.ac           |   1 +
+ src/Makefile.am        |   5 +-
+ src/abi/Makefile.am    |  26 +++++
+ src/abi/abieos.f90     |  85 ++++++++++++++++
+ src/abi/abimain.f90    |  94 +++++++++++++++++
+ src/abi/abireheat.f90  | 269 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/abi/abisr.f90      | 258 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/abi/aspic_abi.3    |   0
+ src/common/eosflow.f90 |   3 +-
+ 9 files changed, 738 insertions(+), 3 deletions(-)
+
+commit 325938b5f9aee2bd91eb00e82e4eebecba8558ed
+Date:   Tue Mar 15 12:03:17 2016 +0100
+
+    Fix misprints in di man
+
+ src/di/aspic_di.3 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 5cf81aa1ca808ff5e9fab9b25da335de0e6709b2
+Date:   Tue Mar 15 11:52:36 2016 +0100
+
+    adding potential derivatives
+
+ src/common/eosflow.f90 | 61 +++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 50 insertions(+), 11 deletions(-)
+
+commit 9a87947bc84b0b031698cfbaf27f70e41202d19a
+Date:   Tue Mar 15 10:16:51 2016 +0100
+
+    Adding eosflow module in common
+
+ src/common/Makefile.am |  4 +--
+ src/common/eosflow.f90 | 73 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+), 2 deletions(-)
+
+commit 9145bfe599f329e0af4fc206a27647b81cbf00a4
+Date:   Tue Feb 9 17:54:02 2016 +0100
+
+    Check d3V, ok!
+
+ src/di/dicommon.f90 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 84f235d5c62015ab978ee70c9e783728c48029a4
+Date:   Tue Feb 9 17:51:55 2016 +0100
+
+    Fix parametric_slowroll.dat output
+
+ src/di/dimain.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 46d4a13bd0459a2196b85f642e66bcd5d024a032
+Date:   Mon Feb 8 11:13:50 2016 +0100
+
+    Fix automatic allocating of splines
+
+ src/di/dimain.f90 | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
+
+commit c4960cd90a0c76cf2a2f605be7c2377f35e9fe8d
+Date:   Mon Feb 8 10:37:07 2016 +0100
+
+    Add msg if attempting to allocate already allocated splines
+
+ src/di/displine.F90 | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 23d8f145e7baab722a0979965fa25eb72c953e8f
+Date:   Tue Feb 2 17:06:56 2016 +0100
+
+    Fix warning with missing script
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 9289a10c6c67d54c5f0905d08376f53cbb8b08a1
+Date:   Fri Dec 4 19:09:45 2015 +0100
+
+    fix misprint in man
+
+ man/libaspic.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d1d19f941f677e63a336126730b4e02008096ea4
+Date:   Fri Dec 4 19:03:42 2015 +0100
+
+    Update man and include files
+
+ include/aspic.h |  4 ++++
+ man/libaspic.3  | 22 ++++++++++++++++------
+ 2 files changed, 20 insertions(+), 6 deletions(-)
+
+commit ff18ed618a225ba010b4940667c22b71b7e7a74e
+Date:   Fri Dec 4 18:02:58 2015 +0100
+
+    fixing dimain for ifort, regularizing ncli pot for exact integ
+
+ ChangeLog           | 151 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS                |  14 ++---
+ src/di/dimain.f90   |   5 +-
+ src/ncli/nclisr.f90 |   8 +--
+ 4 files changed, 162 insertions(+), 16 deletions(-)
+
 commit 975a704d240622276472bdbf9dfa58487ed45a46
 Date:   Fri Dec 4 15:17:19 2015 +0100
 
