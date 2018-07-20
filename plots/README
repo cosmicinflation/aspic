@@ -1,0 +1,21 @@
+* Python utilities to draw plots from the output of any main
+  programs. Remember to actually run the main programs before!
+
+* Example usage within the "plots" directory:
+
+  - Higgs inflation:
+
+      python ./fooiplots.py ../src/hi hi slowroll
+      python ./fooiplots.py ../src/hi hi powerlaw      	     
+
+  - Spontaneous symmetry breaking 3
+
+      python ./fooiplots.py ../src/ssbi ssbi3 slowroll
+      python ./fooiplots.py ../src/ssbi ssbi3 powerlaw
+
+* For more advanced options, check out
+
+      python ./fooiplots.py --help
+
+NB: you can add contour plot showing one- and two-sigma constraints
+    only by providing the contour files, see the source file fooiplots.py.

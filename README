@@ -65,3 +65,15 @@ along the rules specified in COPYING.
   The new modules are located in $PREFIX/include/aspicq and the
   library name is accordingly changed to "libaspicq".
 
+- parallel processing is switched by default using the "-fopenmp"
+  flag. It is compatible with both gcc, gfortran and other proprietary
+  compilers. In case of incompatibility with your compiler, parallel
+  processing can be deactivated with:
+
+  ./configure --disable-openmp
+
+  In case you want to specify your own OpenMP compilation flag,
+  you can do:
+
+  export FCFLAGS=" -myopenmpflag"
+  ./configure --disable-openmp
