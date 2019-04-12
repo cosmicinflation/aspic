@@ -14,7 +14,7 @@ def aspic_cmap(numcolors=32, name='aspicolor',
     return cmap
 
 
-def sci_notation(num, decimal_digits=1, precision=None, exponent=None, expmin=3):
+def sci_notation(num, decimal_digits=1, precision=None, exponent=None, expmin=3, decfmt='%.2g'):
     """
     Returns a string representation of the scientific
     notation of the given number formatted for use with
@@ -25,7 +25,7 @@ def sci_notation(num, decimal_digits=1, precision=None, exponent=None, expmin=3)
     """
 
     if num == 0.0:
-        return r'$%s$' % float('%.2g' % num)
+        return r'$%s$' % float(decfmt % num)
 
     if not exponent:
         exponent = int(np.floor(np.log10(abs(num))))        
@@ -36,7 +36,7 @@ def sci_notation(num, decimal_digits=1, precision=None, exponent=None, expmin=3)
     if np.abs(exponent) > expmin:
         return r"${0:.{2}f}\times10^{{{1:d}}}$".format(coeff, exponent, precision)
     else:
-        return r'$%s$' % float('%.2g' % num)
+        return r'$%s$' % float(decfmt % num)
 
 
 def get_axsize(ax,fig):
@@ -123,7 +123,8 @@ def check_hardxybounds(xy,allminmax):
     return xycheck
 
 
-def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=0.1,threshlabel=1.0):
+def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=0.1,threshlabel=1.0
+                      ,decfmt='%.2g'):
 
     xmin = xybounds[0]
     xmax = xybounds[1]
@@ -138,7 +139,8 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
     sannotate = []
     labangles = []
     
-    parval = 0.0
+#    parval = 0.0
+    parval = 1e99
     xysavscat = (0.0,0.0)
     xysavlab = (0.0,0.0)
     labangle = 0.0
@@ -171,8 +173,8 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
             if not_overlap(xysavlab,(xinch,yinch),threshlabel):
                 xysavlab = (xinch,yinch)
                 xyannotate.append((par[0].getvalue(),par[1].getvalue()))
-#                sannotate.append(par[4].getlabel() + r'$= %s$' % float('%.2g' % par[4].getvalue()))
-                sannotate.append(par[4].getlabel() + r'$=$'+sci_notation(par[4].getvalue()))
+                sannotate.append(par[4].getlabel() + r'$=$'+sci_notation(par[4].getvalue()
+                                                                             ,decfmt=decfmt))
                 plotscat = True
 
             else:
@@ -190,8 +192,10 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
             xysavscat = (xinch,yinch)
             xscat.append(par[0].getvalue())
             yscat.append(par[1].getvalue())
-            cscat.append(ast.log_energy_reheat_ingev(par[3].getvalue()))
+            #            cscat.append(ast.log_energy_reheat_ingev(par[3].getvalue()))
+            cscat.append(float(decfmt % ast.log_energy_reheat_ingev(par[3].getvalue())))
 
+            
             inrange = par[0].getvalue() > xyrange[0] and par[0].getvalue() < xyrange[1] \
                       and par[1].getvalue() > xyrange[2] and par[1].getvalue() < xyrange[3]
             
@@ -307,6 +311,10 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
     semilog = args.semilog
     wrehbar = args.wreh
 
+    if args.decimalfmt is not None:
+        decfmt = args.decimalfmt
+    else:
+        decfmt = '%.2g'
 
     if args.zoomplot is not None:
         zoomplot = args.zoomplot
@@ -337,7 +345,7 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
         
     while zoomcount < zoomsteps + 1:
         xycscat, sannotate, xyannotate, xylabel, labangles, countplot, countrange = filter_model_data(
-            fig.get_size_inches(),xybounds,xyzoomrange,allpars,semilog,threshscat,threshlabel)
+            fig.get_size_inches(),xybounds,xyzoomrange,allpars,semilog,threshscat,threshlabel,decfmt)
         
         if args.nozoomout is not None and args.nozoomout:
             break
@@ -443,12 +451,13 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
     
     
     if wrehbar:
-        add_model_name(ax,model.getlabel()+r' $\mathrm{&}$ $\bar{w}_\mathrm{reh} =$'+ r''+str(wrehbar))
+        add_model_name(ax,model.getlabel()+r' $\mathrm{&}$ $\overline{w}_\mathrm{reh} =$'+ r''
+                       +str(wrehbar))
     else:
-        add_model_name(ax,model.getlabel()+r' $\mathrm{&}$ $\bar{w}_\mathrm{reh} = 0$')
+        add_model_name(ax,model.getlabel()+r' $\mathrm{&}$ $\overline{w}_\mathrm{reh} = 0$')
 
-    add_model_fixparams(ax,allfixed)
-
+    add_model_fixparams(ax,allfixed)    
+    
     plt.savefig(figfile,bbox_inches='tight')
     plt.close()
 

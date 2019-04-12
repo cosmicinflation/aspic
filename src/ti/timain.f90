@@ -50,24 +50,26 @@ program timain
   muvalues(2)=10._kp**(-1.)
   muvalues(3)=0.5
 
-  npts = 15
-  nalpha=20
+  npts = 30
+  nalpha=21
 
   w=0._kp
   !  w = 1._kp/3._kp
 
-  call aspicwrite_header('ti',labeps12,labnsr,labbfoldreh,(/'alphamhalf','mu        '/))
+
   
   call delete_file('ti_predic.dat')
   call delete_file('ti_nsr.dat')
 
+  call aspicwrite_header('tip',labeps12,labnsr,labbfoldreh,(/'alphamhalf','mu        '/))
+  
   do j=1,size(muvalues)
      mu=muvalues(j)
 
-     alphamin=0.5_kp-mu**2/10._kp
+     alphamin=0.5_kp
      alphamax=0.5_kp+mu**2/20._kp
 
-     do k=0,nalpha
+     do k=1,nalpha
         alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
 
 
@@ -77,7 +79,7 @@ program timain
 
         print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-        do i=1,npts
+        do i=npts,1,-1
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -109,6 +111,59 @@ program timain
 
   call aspicwrite_end()
 
+
+  call aspicwrite_header('tin',labeps12,labnsr,labbfoldreh,(/'alphamhalf','mu        '/))
+  
+
+  do j=1,size(muvalues)
+     mu=muvalues(j)
+
+     alphamin=0.5_kp-mu**2/10._kp
+     alphamax=0.5_kp
+
+     do k=0,nalpha-1
+        alpha=alphamin+(alphamax-alphamin)*(real(k,kp)/real(nalpha,kp))
+
+
+        lnRhoRehMin = lnRhoNuc
+        xEnd=ti_x_endinf(alpha,mu) 
+        lnRhoRehMax = ti_lnrhoreh_max(alpha,mu,xend,Pstar)
+
+        print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+        do i=npts,1,-1
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           xstar = ti_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+           eps1 = ti_epsilon_one(xstar,alpha,mu)
+           eps2 = ti_epsilon_two(xstar,alpha,mu)
+           eps3 = ti_epsilon_three(xstar,alpha,mu)
+
+           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           ns = 1._kp - 2._kp*eps1 - eps2
+           r =16._kp*eps1
+
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha-0.5_kp,mu/))
+           
+           call livewrite('ti_predic.dat',alpha,(1-2._kp*alpha)/mu**2,mu,eps1,eps2,eps3,r,ns,Treh)
+
+           call livewrite('ti_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        end do
+
+     end do
+
+  end do
+
+  call aspicwrite_end()
+
+  
   call aspicwrite_header('tihalf',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha'/))
   
   nmu=100
@@ -125,7 +180,7 @@ program timain
 
      print *,'alpha=',alpha,'mu/Mp=',mu,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

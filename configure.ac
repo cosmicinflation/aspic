@@ -1,4 +1,4 @@
-AC_INIT([aspic],[1.0.0],[aspic@ringeval.info],[],[http://cp3.irmp.ucl.ac.be/~ringeval/aspic.html])
+AC_INIT([aspic],[1.0.0],[aspic@ringeval.info],[],[http://curl.irmp.ucl.ac.be/~chris/aspic.html])
 
 AM_INIT_AUTOMAKE
 

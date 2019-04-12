@@ -49,7 +49,7 @@ program iimain
 
   !Calculates the CMB constraints space
 
-  npts = 20
+  npts = 30
 
   w=0._kp
   !  w = 1._kp/3._kp
@@ -76,7 +76,7 @@ program iimain
 
         print *,'beta=',beta,'xendinf=',xendinf,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-        do i=1,npts
+        do i=npts,1,-1
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

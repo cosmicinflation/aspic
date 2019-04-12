@@ -58,7 +58,7 @@ program psnimain
 
   nf=3
   allocate(fvalues(1:3))
-  fvalues(3)=0.001_kp
+  fvalues(3)=0.01_kp
   fvalues(2)=0.1_kp
   fvalues(1)=10._kp
 

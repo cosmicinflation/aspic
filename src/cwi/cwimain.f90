@@ -126,10 +126,14 @@ program cwimain
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!
   !! Other Regime !!
 !!!!!!!!!!!!!!!!!!
 
+  
+  
   Qmin=1.
   Qmax=400.
 
@@ -137,9 +141,11 @@ program cwimain
   alpha=4._kp*exp(1._kp)
 
   Pstar = powerAmpScalar
-
+  
   call delete_file('cwi_predic2.dat')
 
+  call aspicwrite_header('cwil',labeps12,labnsr,labbfoldreh,(/'Q'/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 
@@ -152,7 +158,7 @@ program cwimain
 
      print *,'Q=',Q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

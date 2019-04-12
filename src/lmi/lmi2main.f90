@@ -22,7 +22,7 @@ program lmi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,NxEnd
-  integer :: npts = 15
+  integer :: npts = 25
 
   real(kp), dimension(1:6) :: gamValues
 
@@ -77,7 +77,7 @@ program lmi2main
      alpha=4._kp*(1._kp-gam)
 
      xEndMin=lmi2_xendmin(60._kp,gam,beta)
-     xEndMax=xEndMin*20
+     xEndMax=xEndMin*15
      
        
      do k=0,NxEnd
@@ -140,7 +140,7 @@ program lmi2main
 
      alpha=4._kp*(1._kp-gam)
      xEndMin=lmi2_xendmin(60._kp,gam,beta)
-     xendmax =  20*xendmin
+     xendmax =  15*xendmin
 !     xEndMax=100._kp*max(alpha,(beta*gam)**(1._kp/(1._kp-gam)),(alpha*beta*gam)**(1._kp/(2._kp-gam)))
 
      do k=0,NxEnd

@@ -63,8 +63,8 @@ program bsusybimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 17
-  ngamma=4
+  npts = 25
+  ngamma=2
   nxend=8
 
   gammamin=10._kp**(-2_kp)
@@ -97,7 +97,7 @@ program bsusybimain
 
         print *,'gamma=',gammaBSUSYB,'xend=',xend,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-        do i=1,npts
+        do i=npts,1,-1
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

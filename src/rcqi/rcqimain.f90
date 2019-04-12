@@ -111,10 +111,10 @@ program rcqimain
 
   call aspicwrite_header('rcqi',labeps12,labnsr,labbfoldreh,(/'alpha'/))
 
-  do j=1,1000
+  do j=1,800
      w=0._kp
 
-     alpha=alphamin+(alphamax-alphamin)*(real(j-1,kp)/real(1000,kp))
+     alpha=alphamin+(alphamax-alphamin)*(real(j-1,kp)/real(800,kp))
 
      lnRhoRehMin = lnRhoNuc
      xEnd = rcqi_x_endinf(alpha)

@@ -24,7 +24,7 @@ program rpi1main
   integer :: npts = 20
 
   integer :: Np=40
-  real(kp) :: pmin=1._kp
+  real(kp) :: pmin=1.00001_kp
   real(kp) :: pmax=1.1_kp
 
   real(kp) :: p,w,bfoldstar
@@ -59,7 +59,7 @@ program rpi1main
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

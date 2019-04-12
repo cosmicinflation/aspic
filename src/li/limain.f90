@@ -45,7 +45,7 @@ program limain
   call delete_file('li_predic.dat')
   call delete_file('li_nsr.dat')
 
-  call aspicwrite_header('li',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  call aspicwrite_header('lip',labeps12,labnsr,labbfoldreh,(/'alpha'/))
   
 !!!!!!!!!!!!!!!!!!
 !!!  Priors    !!!
@@ -119,19 +119,22 @@ program limain
 
   end do
 
+  call aspicwrite_end()
 
+  
 !!!!!!!!!!!!!!!!!!
 !!!  alpha<0   !!!
 !!!!!!!!!!!!!!!!!!
 
-  npts = 5
+  npts = 20
   
   nalpha=100
 
   alphamin=-0.35
   alphamax=-0.1
 
-
+  call aspicwrite_header('lin',labeps12,labnsr,labbfoldreh,(/'alpha'/))
+  
   !  w = 1._kp/3._kp
   w=0._kp
 

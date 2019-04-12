@@ -100,6 +100,8 @@ program esimain
 
   
   call aspicwrite_header('esireh',labeps12,labnsr,labbfoldreh,(/'q'/))
+
+  npts = 25
   
   do j=1,size(qvalues)
 
@@ -114,7 +116,7 @@ program esimain
 
      print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

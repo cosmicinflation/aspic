@@ -23,6 +23,7 @@ cnci		\mathrm{CNCI}
 cndi		\mathrm{CNDI}
 csi		\mathrm{CSI}
 cwi		\mathrm{CWI}
+cwil		\mathrm{CWI}
 di		\mathrm{DI}
 dsi		\mathrm{DSI}
 dwi		\mathrm{DWI}
@@ -45,7 +46,8 @@ kklti		\mathrm{KKLTI}
 kkltistg	\mathrm{KKLTI}_\mathrm{stg}
 kmii		\mathrm{KMII}
 kmiii		\mathrm{KMIII}
-li		\mathrm{LI}
+lip		\mathrm{LI}
+lin		\mathrm{LI}
 lmi1		\mathrm{LMI}_1
 lmi2		\mathrm{LMI}_2
 lpi1		\mathrm{LPI}_1
@@ -90,6 +92,8 @@ ssbi4		\mathrm{SSBI}_4
 ssbi5		\mathrm{SSBI}_5
 ssbi6		\mathrm{SSBI}_6
 ti		\mathrm{TI}
+tip		\mathrm{TI}
+tin		\mathrm{TI}
 tihalf		\mathrm{TI}_{1/2}
 twi		\mathrm{TWI}
 vfmi		\mathrm{VFMI}

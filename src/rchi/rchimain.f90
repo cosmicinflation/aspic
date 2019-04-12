@@ -39,7 +39,7 @@ program rchimain
   real(kp) :: VendOverVstar, eps1End, xend
 
   nAI=70
-  AImin=-30._kp
+  AImin=-10._kp
   AImax=100._kp
 
 !  AImin=-0.5_kp

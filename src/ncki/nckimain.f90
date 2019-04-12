@@ -56,7 +56,7 @@ program nckimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-  npts = 12
+  npts = 20
   nalpha=10
   nbeta=3
 
@@ -73,27 +73,27 @@ program nckimain
         beta=10._kp**(-2.2_kp)
         alphamax=10._kp**(0._kp)
         alphamin=10._kp**(-4._kp)
-     else if (j.eq.3) then 
-        beta=10._kp**(-1.9_kp)
-        alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4._kp)
-     else if (j.eq.4) then
-        beta=10._kp**(-1.7_kp)
-        alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4.7_kp)
-     else if (j.eq.5) then
-        beta=10._kp**(-1.5_kp)
-        alphamax=10._kp**(0._kp)
-        alphamin=10._kp**(-4._kp)
-     else if (j.eq.6) then
+!    else if (j.eq.3) then 
+!       beta=10._kp**(-1.9_kp)
+!       alphamax=10._kp**(0._kp)
+!       alphamin=10._kp**(-4._kp)
+!    else if (j.eq.4) then
+!       beta=10._kp**(-1.7_kp)
+!       alphamax=10._kp**(0._kp)
+!       alphamin=10._kp**(-4.7_kp)
+    else if (j.eq.3) then
+       beta=10._kp**(-1.5_kp)
+       alphamax=10._kp**(0._kp)
+       alphamin=10._kp**(-4._kp)
+!    else if (j.eq.6) then
 !        nalpha=20
-        beta=10._kp**(-1.2_kp)
-        alphamax=10._kp**(-1.5_kp)
-        alphamin=10._kp**(-5._kp)
-     else if (j.eq.7) then
-        beta=0.5_kp
-        alphamin=10._kp**(-3.5_kp)
-        alphamax=10._kp**(-0._kp)
+!       beta=10._kp**(-1.2_kp)
+!       alphamax=10._kp**(-1.5_kp)
+!       alphamin=10._kp**(-5._kp)
+!    else if (j.eq.7)then
+!       beta=0.5_kp
+!       alphamin=10._kp**(-3.5_kp)
+!       alphamax=10._kp**(-0._kp)
      endif
 
      print*,'beta=',beta
@@ -150,7 +150,7 @@ program nckimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-  npts = 12
+  npts = 20
   nalpha=15
   nbeta=3
 

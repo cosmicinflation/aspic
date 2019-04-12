@@ -23,7 +23,7 @@ program rpi2main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 15
+  integer :: npts = 25
 
   real(kp), parameter :: pmin=1.005_kp
   real(kp), parameter :: pmax=1.5_kp

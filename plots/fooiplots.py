@@ -6,7 +6,6 @@ import glob
 import aspicio as aio
 import aspicfigs as asf
 
-
 def swap_in(alist,f,t):
     alist[f], alist[t] = alist[t], alist[f]
 
@@ -28,38 +27,34 @@ def sort_nicely(l):
     """
     l.sort(key=alphanum_key)
 
-    
+
+
 
 parser = argparse.ArgumentParser()
+
 parser.add_argument("dir", help="data file directory")
 parser.add_argument("name", help="model name")
 parser.add_argument("type", help="'powerlaw' or 'slowroll' data file")
-parser.add_argument("--ste", action="store_true", \
-                    help="draw STE separatrix")
-parser.add_argument("--fillste", action="store_true", \
-                    help="color fill the STE regions")
-parser.add_argument("--contour", action="store_true", \
-                    help="draw one- and two-sigma contours")
-parser.add_argument("--fillcontour", action="store_true", \
-                    help="color fill one- and two-sigma contours")
-parser.add_argument("--semilog", action="store_true", \
-                    help="vertical axis in logarithmic scale")
-parser.add_argument("--wreh", help="value of wreh if non zero, in laTeX format, e.g. '$-1/3$'")
-parser.add_argument("--tiltlabel", type=float, \
-                    help="add an additional tilt angle to labels, in degrees")
-parser.add_argument("--nozoomout", action="store_true", \
-                    help="forbids zooming out")
-parser.add_argument("--zoomplot", type=int,
-                    help="zoom out till the number of points visible in the plot reached the input value")
-parser.add_argument("--zoomrange", type=int, \
-                    help="zoom out till the number of points visible in some [x,y]\
-                    range reached the input value")
-parser.add_argument("--zoomsteps", type=int, \
-                    help="number of zooming out steps allowed")
-parser.add_argument("--threshlabel", type=float, \
-                    help="minimal separation between labels (in inches)")
-parser.add_argument("--threshscat", type=float, \
-                    help="minimal separation between points (in inches)")
+parser.add_argument("--ste", action="store_true", help="draw STE separatrix")
+parser.add_argument("--fillste", action="store_true", help="color fill the STE regions")
+parser.add_argument("--contour", action="store_true",help="draw one- and two-sigma contours")
+parser.add_argument("--fillcontour", action="store_true",help="color fill one- and two-sigma contours")
+parser.add_argument("--semilog", action="store_true",help="vertical axis in logarithmic scale")
+parser.add_argument("--wreh", type=str, help="value of wreh if non zero, in laTeX format, e.g. '$-1/3$'")
+parser.add_argument("--decimalfmt", type=str, help="format to use to display decimal parameter values, e.g. '%%.2g'")
+parser.add_argument("--tiltlabel", type=float, help="add an additional tilt angle to labels, in degrees")
+parser.add_argument("--nozoomout", action="store_true", help="forbids zooming out")
+parser.add_argument("--zoomplot", type=int, help="zoom out till the number of points visible in the plot \
+reached the input value, or till the number of steps reaches --zoomsteps or till the window reaches --xyhardbounds")
+parser.add_argument("--zoomsteps", type=int, help="number of zooming out steps allowed")
+parser.add_argument("--xyhardbounds", type=float, nargs="+", help="absolute minimal and maximal \
+values of all axis: min(xmin) max(xmin) min(xmax) max(xmax) min(ymin) max(ymax) min(ymax) max(ymax)")
+parser.add_argument("--zoomrange", type=int, help="zoom out till the number of points visible \
+in --xyzoomrange range reaches the input value")
+parser.add_argument("--xyzoomrange", type=float, nargs="+", help="count the number of model's \
+points only within the sub-window: xmin xmax ymin ymax")
+parser.add_argument("--threshlabel", type=float, help="minimal separation between labels (in inches)")
+parser.add_argument("--threshscat", type=float, help="minimal separation between points (in inches)")
 
 pargs = parser.parse_args()
 
@@ -73,8 +68,19 @@ if pargs.type == 'powerlaw':
     swapxy = False
 
     xyinibounds = (0.93,1.005,0.0005,0.2)
-    xyhardbounds  = [(0.88,0.945),(0.98,1.2),(1e-20,1e-3),(2e-3,0.8)]
-    xyzoomrange = (0.95,0.97,1e-20,0.8)
+
+    if pargs.xyhardbounds is not None:
+        xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
+                         (pargs.xyhardbounds[2],pargs.xyhardbounds[3]),
+                         (pargs.xyhardbounds[4],pargs.xyhardbounds[5]),
+                         (pargs.xyhardbounds[5],pargs.xyhardbounds[6])]
+    else:
+        xyhardbounds  = [(0.88,0.945),(0.98,1.2),(1e-30,1e-3),(2e-3,0.8)]
+
+    if pargs.xyzoomrange is not None:
+        xyzoomrange = tuple(pargs.xyzoomrange)
+    else:
+        xyzoomrange = (0.95,0.97,1e-20,0.8)
 
     
     contourfiles=('data/contour_sr2ndlog_bkppol_ns_logr_level_0.dat'
@@ -87,8 +93,19 @@ elif pargs.type == 'slowroll':
     swapxy = True
 
     xyinibounds = (0.005,0.08,9e-6,1e-2)
-    xyhardbounds  = [(-0.1,0.02),(0.05,0.1),(1e-20,1e-3),(2e-3,0.8)]
-    xyzoomrange = (0.03,0.05,1e-20,0.5)
+
+    if pargs.xyhardbounds is not None:
+        xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
+                         (pargs.xyhardbounds[2],pargs.xyhardbounds[3]),
+                         (pargs.xyhardbounds[4],pargs.xyhardbounds[5]),
+                         (pargs.xyhardbounds[5],pargs.xyhardbounds[6])]
+    else:
+        xyhardbounds  = [(-0.1,0.02),(0.05,0.15),(1e-40,1e-3),(2e-3,0.8)]
+
+    if pargs.xyzoomrange is not None:
+        xyzoomrange = tuple(pargs.xyzoomrange)
+    else:
+        xyzoomrange = (0.03,0.05,1e-20,0.5)
 
     
     contourfiles=('data/contour_sr2ndlog_bkppol_sr2_sr1_level_0.dat'

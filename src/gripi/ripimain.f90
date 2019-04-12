@@ -40,7 +40,8 @@ program ripimain
 
   nphi0 = 50
 
-  phi0min=4._kp/3._kp*10.**(-3.)
+!  phi0min=4._kp/3._kp*10.**(-3.)
+  phi0min=5._kp*10.**(-3.)
   phi0max=4._kp/3._kp*10.**(3.)
 
   Pstar = powerAmpScalar

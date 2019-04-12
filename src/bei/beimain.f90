@@ -44,12 +44,12 @@ program beimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   npts = 20
-  nlambda=3
+  nlambda=2
   nbeta=10
 
 
 
-  lambdamin=10._kp**(-6._kp)
+  lambdamin=10._kp**(-9._kp)
   lambdamax=10._kp**(3._kp)
 
   betamin=10._kp**(-2._kp)
