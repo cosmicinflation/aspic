@@ -68,8 +68,8 @@ program rmi4main
   w=0._kp
 
 
-  cvec = (/-0.0005, -0.0005, -0.01, -0.01/)
-  phivec = (/2.0, 10.0, 2.0, 10.0/)
+  cvec = (/-0.01, -0.01, -0.02, -0.02/)
+  phivec = (/2.0, 10.0, 2.0, 7.0/)
   
   do k=1,nvec
      c=cvec(k)
@@ -81,7 +81,7 @@ program rmi4main
      do l=0,Nxend 
         xend=xendmin*(xendmax/xendmin)**(real(l,kp)/Nxend)  !logarithmic step
 
-        if (xend.gt.rmi4_xendmax(120._kp,c,phi0)) cycle
+        if (xend.gt.rmi4_xendmax(60._kp,c,phi0)) cycle
 
         lnRhoRehMin = lnRhoNuc
         lnRhoRehMax = rmi4_lnrhoreh_max(c,phi0,xend,Pstar)

@@ -52,7 +52,7 @@ program dsimain
 
   call aspicwrite_header('dsi',labeps12,labnsr,labbfoldreh,(/'xendnminmax','mu         ','p          '/))
   
-  npts = 8
+  npts = 15
 
   w=0._kp
   !  w = 1._kp/3._kp

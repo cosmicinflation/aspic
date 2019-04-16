@@ -98,4 +98,9 @@ tihalf		\mathrm{TI}_{1/2}
 twi		\mathrm{TWI}
 vfmi		\mathrm{VFMI}
 vhi		\mathrm{VHI}
+vhihalf		\mathrm{VHI}
+vhione		\mathrm{VHI}
+vhithreehalf	\mathrm{VHI}
+vhitwo		\mathrm{VHI}
+vhithree	\mathrm{VHI}
 wri		\mathrm{WRI}

@@ -65,10 +65,10 @@ program cndimain
 
   nalpha=2
   alphavalues(1)=0.01_kp
-  alphavalues(2)=0.02_kp
+  alphavalues(2)=0.1_kp
 
-  nxendvalues(1)=30
-  nxendvalues(2)=30
+  nxendvalues(1)=40
+  nxendvalues(2)=40
 
   do j=1,nalpha
      alpha=alphavalues(j)

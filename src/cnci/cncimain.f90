@@ -62,7 +62,7 @@ program cncimain
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  npts = 10
+  npts = 20
   nxend=10
 
 
@@ -74,9 +74,9 @@ program cncimain
 
   call aspicwrite_header('cnci',labeps12,labnsr,labbfoldreh,(/'xendomax','alpha   '/))
   
-  alphavalues(3)=0.001_kp
-  alphavalues(2)=0.01_kp
-  alphavalues(1)=0.1_kp
+  alphavalues(1)=0.01_kp
+  alphavalues(2)=0.1_kp
+  alphavalues(3)=0.2_kp
 
   do j=1,3
      alpha=alphavalues(j)
@@ -84,18 +84,18 @@ program cncimain
      !Prior on xend
      if (alpha .eq. 0.01_kp) then
         xendmin=cnci_xendmin(55._kp,alpha)
-        xendmax=30._kp*xendmin
+        xendmax=12._kp*xendmin
         nxend=20
      endif
-     if (alpha .eq. 0.01_kp) then
+     if (alpha .eq. 0.1_kp) then
         xendmin=cnci_xendmin(58._kp,alpha)
         xendmax=10._kp*xendmin
         nxend=20
      endif
-     if (alpha .eq. 0.1_kp) then
-        xendmin=cnci_xendmin(60._kp,alpha)
-        xendmax=2._kp*xendmin
-        nxend=20
+     if (alpha .eq. 0.2_kp) then
+        xendmin=cnci_xendmin(65._kp,alpha)
+        xendmax=2_kp*xendmin
+        nxend=30
      endif
 
 

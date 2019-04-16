@@ -66,7 +66,7 @@ program rmi3main
 
   
   cvec = (/-0.01, -0.01, -0.02, -0.02/)
-  phivec = (/8.0, 15.0, 5.0, 10.0/)
+  phivec = (/8.0, 10.0, 5.0, 7.0/)
 
   do k=1,nvec
      c=cvec(k)

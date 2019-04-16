@@ -123,8 +123,8 @@ def check_hardxybounds(xy,allminmax):
     return xycheck
 
 
-def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=0.1,threshlabel=1.0
-                      ,decfmt='%.2g'):
+def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0.1,
+                      threshlabel=1.0,modlabel=1,decfmt='%.2g'):
 
     xmin = xybounds[0]
     xmax = xybounds[1]
@@ -139,18 +139,22 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
     sannotate = []
     labangles = []
     
-#    parval = 0.0
-    parval = 1e99
-    xysavscat = (0.0,0.0)
-    xysavlab = (0.0,0.0)
+
+    parval = None
+    xysavscat = (None,None)
+    xysavlab = (None,None)
     labangle = 0.0
+    countlabel = 0
+    
     count = 0
+    
     plotscat=True
 
     countrange = 0
     inrange = False
 
     for par in allpars:
+        
         xinch = (par[0].getvalue()-xmin) * inches[0]/(xmax-xmin)
         if not semilog:
             yinch = (par[1].getvalue()-ymin) * inches[1]/(ymax-ymin)
@@ -163,7 +167,7 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
         if len(par) < 5:
             plotscat = True
 
-            
+
         elif par[4].getvalue() <> parval:
             if count <> 0:
                 labangles.append(labangle)
@@ -173,26 +177,34 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
             if not_overlap(xysavlab,(xinch,yinch),threshlabel):
                 xysavlab = (xinch,yinch)
                 xyannotate.append((par[0].getvalue(),par[1].getvalue()))
-                sannotate.append(par[4].getlabel() + r'$=$'+sci_notation(par[4].getvalue()
+
+                if countlabel % modlabel == 0:
+                    sannotate.append(par[4].getlabel() + r'$=$'+sci_notation(par[4].getvalue()
                                                                              ,decfmt=decfmt))
+                else:
+                    sannotate.append(None)
+                    
+                countlabel += 1
                 plotscat = True
 
+
+                
             else:
                 plotscat = False
 
+#was elif (!?)                
+        if par[4].getvalue() == parval and plotscat:
 
-        elif par[4].getvalue() == parval and plotscat:
-            if xysavlab <> (0.0,0.0):
-                count += 1
-                labangle = (labangle*(count-1)
-                            + np.arctan2(yinch - xysavlab[1],xinch - xysavlab[0]))/count               
+#unnecessary?            if xysavlab <> (None,None):
+            count += 1
+            labangle = (labangle*(count-1)
+                        + np.arctan2(yinch - xysavlab[1],xinch - xysavlab[0]))/count               
                 
 
         if plotscat and not_overlap(xysavscat,(xinch,yinch),threshscat):
             xysavscat = (xinch,yinch)
             xscat.append(par[0].getvalue())
             yscat.append(par[1].getvalue())
-            #            cscat.append(ast.log_energy_reheat_ingev(par[3].getvalue()))
             cscat.append(float(decfmt % ast.log_energy_reheat_ingev(par[3].getvalue())))
 
             
@@ -201,10 +213,18 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
             
             if inrange:
                 countrange += 1
-            
+
+
+#    print(len(xyannotate), len(labangles), len(sannotate))
+#    print("test",xyannotate)
+#    print("label",labangles)
+                
 #by construction the for loop may miss appending the very last label            
     if len(xyannotate) == len(labangles)+1:
         labangles.append(labangle)
+
+
+
         
     return (xscat,yscat,cscat), sannotate, xyannotate, \
            (par[0].getlabel(),par[1].getlabel()), \
@@ -214,6 +234,9 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False, threshscat=
 
 
 def not_overlap(xy1,xy2,thresh):
+    if any(x is None for x in xy1) or any(x is None for x in xy2):
+        return True
+   
     dist = np.sqrt((xy2[0]-xy1[0])**2 + (xy2[1]-xy1[1])**2)
     if dist==0 or dist <= thresh:
         return False
@@ -250,14 +273,15 @@ def add_model_annotate(ax,s,xy,xytextpts=None,cstyle=None,depth=3):
 
         if xytextpts is not None:
             xtext,ytext = xytextpts[i]
-        
-        ax.annotate(s[i],xy[i],xycoords='data',
-                    xytext=(xtext,ytext),textcoords='offset points',
-                    fontsize=8, zorder=depth, color='black',
-                    clip_on=False, annotation_clip=False, horizontalalignment = 'center',
-                    bbox=dict(boxstyle="roundtooth", fc="w", color='slategray'),
-                    arrowprops=dict(arrowstyle="->",color='slategray',
-                                    connectionstyle=cstyle))
+
+        if s[i] is not None:
+            ax.annotate(s[i],xy[i],xycoords='data',
+                        xytext=(xtext,ytext),textcoords='offset points',
+                        fontsize=8, zorder=depth, color='black',
+                        clip_on=False, annotation_clip=False, horizontalalignment = 'center',
+                        bbox=dict(boxstyle="roundtooth", fc="w", color='slategray'),
+                        arrowprops=dict(arrowstyle="->",color='slategray',
+                                        connectionstyle=cstyle))
 
 
 def add_contour_plot(ax,file1,col1,file2,col2,alpha,depth=None,style=None,log=None,**kwargs):
@@ -297,7 +321,8 @@ def add_model_fixparams(ax,pars):
 
 
 def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, xyhardbounds, xyzoomrange,
-                  args, zoomplot=10, zoomrange=0, zoomsteps=10, dpi=150, threshscat=0.1,threshlabel=1.0,tiltlabel=0.0):
+                  args, zoomplot=10, zoomrange=0, zoomsteps=10, dpi=150, threshscat=0.1,
+                  threshlabel=1.0,modlabel=1,tiltlabel=0.0,movielabel=None):
     import matplotlib.pyplot as plt
     from matplotlib.patches import Polygon
 
@@ -345,7 +370,8 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
         
     while zoomcount < zoomsteps + 1:
         xycscat, sannotate, xyannotate, xylabel, labangles, countplot, countrange = filter_model_data(
-            fig.get_size_inches(),xybounds,xyzoomrange,allpars,semilog,threshscat,threshlabel,decfmt)
+            fig.get_size_inches(),xybounds,xyzoomrange,allpars,semilog,threshscat,
+            threshlabel,modlabel,decfmt)
         
         if args.nozoomout is not None and args.nozoomout:
             break
@@ -378,13 +404,19 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
 
     xyptoffset = []
     rptoffset = 40
+    
     addangle = np.pi + tiltlabel
     
     for i in range(len(labangles)):
-        xyptoffset.append((rptoffset*np.cos(labangles[i]+addangle),rptoffset*np.sin(labangles[i]+addangle)))
 
+        xptoffset = rptoffset*np.cos(labangles[i]+addangle)
+        yptoffset = rptoffset*np.sin(labangles[i]+addangle)
 
-     
+        xyptoffset.append((xptoffset,yptoffset))
+            
+        if movielabel is not None:
+            addangle = addangle + movielabel
+    
 
 #Swartchz Terro-Escalante regions
     if fillste or ste:

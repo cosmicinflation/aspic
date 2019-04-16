@@ -21,7 +21,7 @@ program imimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k,nxend
-  integer :: npts = 15
+  integer :: npts = 20
 
   real(kp) :: w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -47,7 +47,7 @@ program imimain
   call aspicwrite_header('imi',labeps12,labnsr,labbfoldreh,(/'xendomin','p       '/))
   
   pmin=1.
-  pmax=6.
+  pmax=4.
 
   do j=0,int(pmax-pmin),1
 

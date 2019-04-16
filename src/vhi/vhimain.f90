@@ -22,7 +22,7 @@ program vhimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,k
-  integer :: npts = 10
+  integer :: npts = 30
 
   integer :: Nmu
   real(kp) :: mumin
@@ -42,12 +42,11 @@ program vhimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
 
-  integer, parameter :: nvec = 3
+  integer, parameter :: nvec = 2
   real(kp), dimension(nvec) :: muvec
   
   Pstar = powerAmpScalar
 
-  call aspicwrite_header('vhi',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
   
   call delete_file('vhi_predic.dat')
   call delete_file('vhi_nsr.dat')
@@ -57,7 +56,7 @@ program vhimain
   w=0._kp
 
 
-
+  call aspicwrite_header('vhihalf',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!    p=0.5    !!!!
@@ -66,7 +65,9 @@ program vhimain
   p=0.5_kp
   NxEnd=100
 
-  muvec = (/0.01, 10.0, 1000.0/)
+!  muvec = (/0.01, 10.0, 100.0/)
+
+    muvec = (/0.01, 20.0/)
   
   do j=1,nvec
      mu=muvec(j)
@@ -123,20 +124,23 @@ program vhimain
 
   end do
 
+  call aspicwrite_end()
+  
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=1     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-
+  call aspicwrite_header('vhione',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
+  
   p=1._kp
-  NxEnd=30
+  NxEnd=100
 
-  muvec = (/0.1, 1.0, 10./)
+  muvec = (/0.1, 2.0/)
 
   do j=1,nvec
      mu = muvec(j)
      xEndmin=vhi_xendmin(p,mu)*(1._kp+epsilon(1._kp))
-     xEndmax=vhi_xinimax(p,mu)*0.99
+     xEndmax=vhi_xinimax(p,mu)*0.1
 
      do k=0,NxEnd
         xEnd=xEndmin*(xEndmax/xEndmin)**(real(k,kp)/NxEnd) !logarithmic step
@@ -188,16 +192,20 @@ program vhimain
 
   end do
 
+  call aspicwrite_end()
 
+  
 !!!!!!!!!!!!!!!!!!!!!
 !!!!    p=1.5    !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
-  p=1.5_kp
-  NxEnd=80
-
-  muvec = (/1.0, 5.0, 7.0/)
+  call aspicwrite_header('vhithreehalf',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
   
+  p=1.5_kp
+  NxEnd=100
+
+!  muvec = (/1.0, 5.0, 7.0/)
+  muvec = (/1.0, 5.0/)
   do j=1,nvec
      mu=muvec(j)
 
@@ -254,15 +262,21 @@ program vhimain
 
   end do
 
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=2     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
+  call aspicwrite_header('vhitwo',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
+  
   p=2._kp
   NxEnd=100
 
-  muvec = (/0.8, 8.0, 80.0/)
+!  muvec = (/0.8, 8.0, 80.0/)
+
+  muvec = (/0.8, 8.0/)
+
   
   do j=1,nvec
      mu=muvec(j)
@@ -322,15 +336,18 @@ program vhimain
 
   end do
 
+  call aspicwrite_end()
 
 !!!!!!!!!!!!!!!!!!!!!
 !!!!     p=3     !!!!
 !!!!!!!!!!!!!!!!!!!!!
 
+  call aspicwrite_header('vhithree',labeps12,labnsr,labbfoldreh,(/'xend','mu  ','p   '/))
+  
   p=3._kp
-  NxEnd=150
+  NxEnd=300
 
-  muvec = (/0.8, 8.0, 80.0/)
+  muvec = (/5.0, 10.0/)
   
   do j=1,nvec
      mu=muvec(j)

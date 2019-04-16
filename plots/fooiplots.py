@@ -41,20 +41,24 @@ parser.add_argument("--contour", action="store_true",help="draw one- and two-sig
 parser.add_argument("--fillcontour", action="store_true",help="color fill one- and two-sigma contours")
 parser.add_argument("--semilog", action="store_true",help="vertical axis in logarithmic scale")
 parser.add_argument("--wreh", type=str, help="value of wreh if non zero, in laTeX format, e.g. '$-1/3$'")
+
 parser.add_argument("--decimalfmt", type=str, help="format to use to display decimal parameter values, e.g. '%%.2g'")
+parser.add_argument("--threshscat", type=float, help="minimal separation between points (in inches)")
+parser.add_argument("--modulolabel", type=int, help="skip labels using this modulo conditional")
 parser.add_argument("--tiltlabel", type=float, help="add an additional tilt angle to labels, in degrees")
+parser.add_argument("--threshlabel", type=float, help="minimal separation between labels (in inches)")
+parser.add_argument("--movielabel", type=float, help="add a tilt angle beetween two consecutive labels, in degrees")
+parser.add_argument("--xyinibounds", type=float, nargs="+", help="initial values of the window boundary: xmin xmax ymin ymax")
 parser.add_argument("--nozoomout", action="store_true", help="forbids zooming out")
 parser.add_argument("--zoomplot", type=int, help="zoom out till the number of points visible in the plot \
 reached the input value, or till the number of steps reaches --zoomsteps or till the window reaches --xyhardbounds")
 parser.add_argument("--zoomsteps", type=int, help="number of zooming out steps allowed")
 parser.add_argument("--xyhardbounds", type=float, nargs="+", help="absolute minimal and maximal \
-values of all axis: min(xmin) max(xmin) min(xmax) max(xmax) min(ymin) max(ymax) min(ymax) max(ymax)")
+values of all axis: min(xmin) max(xmin) min(xmax) max(xmax) min(ymin) max(ymin) min(ymax) max(ymax)")
 parser.add_argument("--zoomrange", type=int, help="zoom out till the number of points visible \
 in --xyzoomrange range reaches the input value")
 parser.add_argument("--xyzoomrange", type=float, nargs="+", help="count the number of model's \
 points only within the sub-window: xmin xmax ymin ymax")
-parser.add_argument("--threshlabel", type=float, help="minimal separation between labels (in inches)")
-parser.add_argument("--threshscat", type=float, help="minimal separation between points (in inches)")
 
 pargs = parser.parse_args()
 
@@ -67,7 +71,10 @@ if pargs.type == 'powerlaw':
 
     swapxy = False
 
-    xyinibounds = (0.93,1.005,0.0005,0.2)
+    if pargs.xyinibounds is not None:
+        xyinibounds = tuple(pargs.xyinibounds)
+    else:
+        xyinibounds = (0.93,1.005,0.0005,0.2)
 
     if pargs.xyhardbounds is not None:
         xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
@@ -92,7 +99,10 @@ elif pargs.type == 'slowroll':
 
     swapxy = True
 
-    xyinibounds = (0.005,0.08,9e-6,1e-2)
+    if pargs.xyinibounds is not None:
+        xyinibounds = tuple(pargs.xyinibounds)
+    else:
+        xyinibounds = (0.005,0.08,9e-6,1e-2)
 
     if pargs.xyhardbounds is not None:
         xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
@@ -119,16 +129,25 @@ else:
 
 
 
+    
+
+if pargs.threshscat is not None:
+    myThreshScat = pargs.threshscat
+else:
+    myThreshScat = 0.1
+
+    
+
 if pargs.threshlabel is not None:
     myThreshLabel = pargs.threshlabel
 else:
     myThreshLabel = 0.8
 
 
-if pargs.threshscat is not None:
-    myThreshScat = pargs.threshscat
+if pargs.modulolabel is not None:
+    myModLabel = pargs.modulolabel
 else:
-    myThreshScat = 0.1
+    myModLabel = 1
 
 
 if pargs.tiltlabel is not None:
@@ -136,6 +155,14 @@ if pargs.tiltlabel is not None:
 else:
     myTiltLabel = 0.0
 
+
+if pargs.movielabel is not None:
+    myMovieLabel = pargs.movielabel*np.pi/180.0
+else:
+    myMovieLabel = None
+
+
+    
 fileprefix = pargs.dir+'/'+model.getname()+'_'+pargs.type+'_'
 
 aspicfiles = glob.glob(fileprefix+'*.dat')
@@ -155,7 +182,8 @@ for i in range(len(aspicfiles)):
     print 'Generating figure',figfile
     asf.create_figure(model,fixedParams,varParams,contourfiles,figfile,xyinibounds,
                       xyhardbounds,xyzoomrange,pargs,threshscat=myThreshScat,
-                      threshlabel=myThreshLabel, tiltlabel=myTiltLabel)
+                      threshlabel=myThreshLabel, modlabel=myModLabel, tiltlabel=myTiltLabel,
+                      movielabel=myMovieLabel)
 
     print
 
