@@ -40,7 +40,7 @@ program nimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  fvalues(1)=4_kp
+  fvalues(1)=4._kp
   fvalues(2)=5._kp
   fvalues(3)=6._kp
   fvalues(4)=7._kp
