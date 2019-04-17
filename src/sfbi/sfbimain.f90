@@ -22,7 +22,7 @@ program kksftest
   logical, parameter :: inversion = .true.
 
   p = 4._kp
-  mu = 1_kp
+  mu = 1._kp
   wreh = -0.3_kp
 
   Pstar = powerAmpScalar

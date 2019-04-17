@@ -67,7 +67,7 @@ program bsusybimain
   ngamma=2
   nxend=8
 
-  gammamin=10._kp**(-2_kp)
+  gammamin=10._kp**(-2._kp)
   gammamax=1._kp/sqrt(3._kp)*0.05_kp
 
   w=0._kp

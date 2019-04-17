@@ -94,7 +94,7 @@ program cncimain
      endif
      if (alpha .eq. 0.2_kp) then
         xendmin=cnci_xendmin(65._kp,alpha)
-        xendmax=2_kp*xendmin
+        xendmax=2._kp*xendmin
         nxend=30
      endif
 
