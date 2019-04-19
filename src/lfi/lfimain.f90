@@ -44,7 +44,8 @@ program lfimain
 
   call delete_file('lfi_predic.dat')
   call delete_file('lfi_nsr.dat')
-
+ 
+  
   call aspicwrite_header('lfi',labeps12, labnsr, labbfoldreh,(/'p'/))
 
   p = 0._kp 
@@ -78,9 +79,9 @@ program lfimain
        r =16._kp*eps1
 
        call livewrite('lfi_predic.dat',p,eps1,eps2,eps3,r,ns,Treh)
-
        call livewrite('lfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
+       
+     
        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/p/))
        
     end do
@@ -89,52 +90,71 @@ program lfimain
 
   call aspicwrite_end()
   
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !! Write Data for the summarizing plots !!
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  call delete_file('lfi2_predic_summarized.dat')
-  p=2._kp
-  w = (p-2)/(p+2)
-  lnRhoReh = lnRhoNuc
-  xEnd = lfi_x_endinf(p)
-  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
-  eps1 = lfi_epsilon_one(xstar,p)
-  eps2 = lfi_epsilon_two(xstar,p)
-  eps3 = lfi_epsilon_three(xstar,p)
-  ns = 1._kp - 2._kp*eps1 - eps2
-  r =16._kp*eps1
-  call livewrite('lfi2_predic_summarized.dat',eps1,eps2,eps3,r,ns)
-  lnRhoReh = lfi_lnrhoreh_max(p,xend,Pstar)
-  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
-  eps1 = lfi_epsilon_one(xstar,p)
-  eps2 = lfi_epsilon_two(xstar,p)
-  eps3 = lfi_epsilon_three(xstar,p)
-  ns = 1._kp - 2._kp*eps1 - eps2
-  r =16._kp*eps1
-  call livewrite('lfi2_predic_summarized.dat',eps1,eps2,eps3,r,ns)
 
-  call delete_file('lfi4_predic_summarized.dat')
-  p=4._kp
-  w = (p-2)/(p+2)
-  lnRhoReh = lnRhoNuc
-  xEnd = lfi_x_endinf(p)
-  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
-  eps1 = lfi_epsilon_one(xstar,p)
-  eps2 = lfi_epsilon_two(xstar,p)
-  eps3 = lfi_epsilon_three(xstar,p)
-  ns = 1._kp - 2._kp*eps1 - eps2
-  r =16._kp*eps1
-  call livewrite('lfi4_predic_summarized.dat',eps1,eps2,eps3,r,ns)
-  lnRhoReh = lfi_lnrhoreh_max(p,xend,Pstar)
-  xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
-  eps1 = lfi_epsilon_one(xstar,p)
-  eps2 = lfi_epsilon_two(xstar,p)
-  eps3 = lfi_epsilon_three(xstar,p)
-  ns = 1._kp - 2._kp*eps1 - eps2
-  r =16._kp*eps1
-  call livewrite('lfi4_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+  call delete_file('lfi1_nsr.dat')
+  call delete_file('lfi2_nsr.dat')
+  call delete_file('lfi3_nsr.dat')
+  call delete_file('lfi4_nsr.dat')
+  call delete_file('lfi5_nsr.dat')
+  call delete_file('lfi6_nsr.dat')
 
+  npts = 10
+  
+  p = 0._kp 
+  do while (p<8._kp)
+    
+     p=p+1._kp
+     w = (p-2)/(p+2)
+ 
+    lnRhoRehMin = lnRhoNuc
+    xEnd = lfi_x_endinf(p)
+    lnRhoRehMax = lfi_lnrhoreh_max(p,xend,Pstar)
+
+    do i=1,npts
+
+       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+       xstar = lfi_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+
+       eps1 = lfi_epsilon_one(xstar,p)
+       eps2 = lfi_epsilon_two(xstar,p)
+       eps3 = lfi_epsilon_three(xstar,p)       
+
+       logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+       Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+       ns = 1._kp - 2._kp*eps1 - eps2
+       r =16._kp*eps1
+       
+       if (p.eq.1._kp) then
+          call livewrite('lfi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       elseif (p.eq.2._kp) then
+          call livewrite('lfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       elseif (p.eq.3._kp) then
+          call livewrite('lfi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       elseif (p.eq.4._kp) then
+          call livewrite('lfi4_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       elseif (p.eq.5._kp) then
+          call livewrite('lfi5_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       elseif (p.eq.6._kp) then
+          call livewrite('lfi6_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       endif
+
+      
+       
+    end do
+
+  enddo
+
+
+
+
+
+
+  
+  
 ! Test reheating with lnRrad and lnR
 
   write(*,*)

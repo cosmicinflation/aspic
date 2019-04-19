@@ -40,6 +40,8 @@ program sfimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: eps1approx, eps2approx, nsapprox, rapprox
+  
   w = 0._kp
 
   Pstar = powerAmpScalar
@@ -155,13 +157,13 @@ program sfimain
   end do
 
 !!!!!!!!!!!!!! 
-!!!! p=1  !!!!
+!!!! p=4  !!!!
 !!!!!!!!!!!!!!
 
   mumin=0.7
   mumax=10._kp**(3.)
-  p = 4._kp
-
+  p = 4._kp 
+  
   do j=0,nmu
 
 
@@ -198,7 +200,8 @@ program sfimain
         call livewrite('sfi_predic.dat',p,mu,eps1,eps2,eps3,r,ns,Treh)
 
         call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
+       
+        
         call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,p/))
 
      end do
@@ -206,6 +209,75 @@ program sfimain
   end do
 
   call aspicwrite_end()
+
+
+
+
+!!!!!!!!!!!!!! 
+!!!! p=4  !!!!
+!!!!!!!!!!!!!!
+
+  mumin=0.7
+  mumax=10._kp**(3.)
+  p = 4._kp
+
+  call delete_file('sfi4_nsr_exact.dat')
+  call delete_file('sfi4_nsr_approx.dat')
+
+  npts = 8
+  nmu=25
+  
+  do j=0,nmu
+
+
+     ! Ultralogarithmic step
+     mu=mumin/exp(1._kp)*exp(exp(real(j,kp)/real(nmu,kp)*log(1._kp+log(mumax/mumin))))
+
+
+     !xstar stands for phistar/mu
+
+     lnRhoRehMin = lnRhoNuc
+     xEnd = sfi_x_endinf(p,mu)
+     lnRhoRehMax = sfi_lnrhoreh_max(p,mu,xend,Pstar)
+
+     print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = sfi_x_star(p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+        eps1 = sfi_epsilon_one(xstar,p,mu)
+        eps2 = sfi_epsilon_two(xstar,p,mu)
+        eps3 = sfi_epsilon_three(xstar,p,mu)
+
+        if (display) print *,'lnRhoReh= N*= ',lnRhoReh,abs(bfoldstar),eps1
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1       
+
+        call livewrite('sfi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        call livewrite('sfi4_nsr_exact.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+        eps1approx=0.5*p*p/mu/mu*(abs(bfoldstar)*p*(p-2)/mu/mu)**(-2*(p-1)/(p-2))
+        eps2approx= 2*(p-1)/(p-2)/abs(bfoldstar)
+        nsapprox=1._kp - 2._kp*eps1approx - eps2approx
+        rapprox=16._kp*eps1approx
+         
+        call livewrite('sfi4_nsr_approx.dat',nsapprox,rapprox,abs(bfoldstar),lnRhoReh)
+        
+     end do
+
+  end do
+
+
+
+
   
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

@@ -238,7 +238,7 @@ program dimain
 !        if (r.lt.1e-10) cycle
 
 !        call livewrite('di_predic.dat',f,eps1,eps2,eps3,r,ns,Treh)
-!        call livewrite('di_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+        call livewrite('di_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
         
      enddo

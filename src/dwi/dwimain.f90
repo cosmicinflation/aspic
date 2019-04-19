@@ -45,10 +45,71 @@ program dwimain
 
   Pstar = powerAmpScalar
 
+  
+  call aspicwrite_header('dwi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
+
+  !  w = 1._kp/3._kp
+  w=0._kp
+
+  do j=0,Nphi0 
+
+     phi0=phi0min+(phi0max-phi0min)*(real(j,kp)/real(Nphi0,kp)) !arithmetic step
+     phi0=phi0min*(phi0max/phi0min)**(real(j,kp)/real(Nphi0,kp)) !logarithmic step
+     phi0=exp(log(phi0min)*(log(phi0max)/log(phi0min))**(real(j,kp)/real(Nphi0,kp))) !superlogarithmic step
+     phi0=exp(exp(log(log(phi0min))*(log(log(phi0max))/log(log(phi0min)))**(real(j,kp)/real(Nphi0,kp)))) !ultralogarithmic step
+
+
+
+     lnRhoRehMin = lnRhoNuc
+     xEnd = dwi_x_endinf(phi0)
+     lnRhoRehMax = dwi_lnrhoreh_max(phi0,xend,Pstar)
+
+     print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+
+
+	xstar = dwi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+
+        eps1 = dwi_epsilon_one(xstar,phi0)
+        eps2 = dwi_epsilon_two(xstar,phi0)
+        eps3 = dwi_epsilon_three(xstar,phi0)
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1       
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+        
+
+     end do
+
+  end do
+
+  call aspicwrite_end()
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !! Write Data for the summarizing plots !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   call delete_file('dwi_predic.dat')
   call delete_file('dwi_nsr.dat')
 
-  call aspicwrite_header('dwi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
+  npts = 8
 
   !  w = 1._kp/3._kp
   w=0._kp
@@ -99,19 +160,15 @@ program dwimain
 
         call livewrite('dwi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
-        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+
         
 
      end do
 
   end do
 
-  call aspicwrite_end()
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !! Write Data for the summarizing plots !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+  
   call delete_file('dwi_predic_summarized.dat') 
   nphi0=1000
   phi0min=7.6_kp

@@ -185,6 +185,58 @@ program cwimain
   end do
 
   call aspicwrite_end()
+
+
+
+
+
+  Qmin=1.
+  Qmax=400.
+
+  NQ=30
+  alpha=4._kp*exp(1._kp)
+
+  
+  call delete_file('cwi_nsr.dat')
+  
+  w=0._kp
+  npts = 10
+  
+  do j=0,NQ 
+     Q=Qmin*(Qmax/Qmin)**(real(j,kp)/NQ) !logarithmic step
+
+     lnRhoRehMin = lnRhoNuc
+     xend=cwi_x_endinf(alpha,Q)
+     lnRhoRehMax = cwi_lnrhoreh_max(alpha,Q,xend,Pstar)
+
+     print *,'Q=',Q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=npts,1,-1
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = cwi_x_star(alpha,Q,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar 
+
+        eps1 = cwi_epsilon_one(xstar,alpha,Q)
+        eps2 = cwi_epsilon_two(xstar,alpha,Q)
+        eps3 = cwi_epsilon_three(xstar,alpha,Q)
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('cwi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+        
+     end do
+
+  end do
+
+  
+
   
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!

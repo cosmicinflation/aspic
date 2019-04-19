@@ -135,8 +135,6 @@ program nckimain
 
            call livewrite('ncki_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
 
-           call livewrite('ncki_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
 
         end do
@@ -209,9 +207,7 @@ program nckimain
            ns = 1._kp - 2._kp*eps1 - eps2
            r =16._kp*eps1
 
-           call livewrite('ncki_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)
-
-           call livewrite('ncki_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           call livewrite('ncki_predic.dat',alpha,beta,eps1,eps2,eps3,r,ns,Treh)           
 
            call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,beta/))
 
@@ -223,7 +219,61 @@ program nckimain
 
   call aspicwrite_end()
 
- write(*,*)
+
+  
+  
+  
+  npts = 10
+  nalpha=15
+
+
+  beta=-10._kp**(-2.5_kp)
+  alphamax=10._kp**(1._kp)
+  alphamin=10._kp**(-3._kp)
+
+  do k=0,nalpha
+     alpha=alphamin*(alphamax/alphamin)**(real(k,kp)/real(nalpha,kp)) !log step
+
+
+     lnRhoRehMin = lnRhoNuc
+     xEnd = ncki_x_endinf(alpha,beta)
+     lnRhoRehMax = ncki_lnrhoreh_max(alpha,beta,xend,Pstar)
+
+     print *,'alpha=',alpha,'beta=',beta,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        print*,'lnRhoReh=',lnRhoReh
+
+        xstar = ncki_x_star(alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+
+
+        eps1 = ncki_epsilon_one(xstar,alpha,beta)
+        eps2 = ncki_epsilon_two(xstar,alpha,beta)
+        eps3 = ncki_epsilon_three(xstar,alpha,beta)
+
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+        call livewrite('ncki_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+     end do
+
+  end do
+
+
+
+  
+  write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42

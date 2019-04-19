@@ -52,7 +52,7 @@ program esimain
   Pstar = powerAmpScalar
 
   call delete_file('esi_predic.dat')
-  call delete_file('esi_nsr.dat')
+
 
   
   call aspicwrite_header('esi',labeps12,labnsr,labbfoldreh,(/'q'/))
@@ -91,6 +91,7 @@ program esimain
 
         call livewrite('esi_predic.dat',q,w,eps1,eps2,eps3,r,ns,Treh)
 
+        
         call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/q/))
 
      end do
@@ -143,11 +144,55 @@ program esimain
   end do
 
   call aspicwrite_end()
+
   
+ 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  call delete_file('esi_nsr.dat')
+  npts=8
+ 
+  do j=1,size(qvalues)
+
+     q=qvalues(j)
+
+     w=0._kp
+
+     lnRhoRehMin = lnRhoNuc
+     xEnd = esi_x_endinf(q)
+     lnRhoRehMax = esi_lnrhoreh_max(q,xend,Pstar)
+
+     print *,'q=',q,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = esi_x_star(q,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+        eps1 = esi_epsilon_one(xstar,q)
+        eps2 = esi_epsilon_two(xstar,q)
+        eps3 = esi_epsilon_three(xstar,q)
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+        call livewrite('esi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+
+     end do
+  end do
+
+
+
+  
   call delete_file('esi_predic_summarized.dat') 
   nalpha=1000
   alphamin=10._kp**(-3.)

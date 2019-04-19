@@ -1,6 +1,6 @@
 !test the reheating derivation from slow-roll
 program rchimain
-  use infprec, only : kp
+  use infprec, only : kp, pi
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use rchisr, only : rchi_epsilon_one, rchi_epsilon_two, rchi_epsilon_three
   use rchireheat, only : rchi_lnrhoreh_max, rchi_x_star
@@ -30,10 +30,12 @@ program rchimain
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
-  real(kp) ::AImin,AImax
+  real(kp) :: AImin,AImax
 
-  real(kp)  ::eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
+  real(kp) :: eps1A,eps2A,eps3A,nsA,rA,eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
 
+  real(kp) :: eps1approx, eps2approx, etapprox, nsapprox, rapprox, ystar
+  
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
@@ -98,6 +100,71 @@ program rchimain
   end do
 
   call aspicwrite_end()
+
+
+  call delete_file('rchi_nsr_exact.dat')
+  call delete_file('rchi_nsr_approx.dat')
+
+  npts = 7
+  nAI = 25
+
+  AImin = -10._kp
+  AImax = 50._kp
+  
+  do j=0,nAI
+
+     AI=AImin+(AImax-AImin)*(real(j,kp)/real(nAI,kp)) !arithmetic step
+
+     lnRhoRehMin = lnRhoNuc
+     xEnd = rchi_x_endinf(AI)
+     lnRhoRehMax = rchi_lnrhoreh_max(AI,xend,Pstar)
+
+     print *,'AI=',AI,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = rchi_x_star(AI,xend,w,lnRhoReh,Pstar,bfoldstar)
+        ystar = sqrt(2._kp/3._kp)*xstar
+
+        
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+        eps1 = rchi_epsilon_one(xstar,AI)
+        eps2 = rchi_epsilon_two(xstar,AI)
+        eps3 = rchi_epsilon_three(xstar,AI)
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r =16._kp*eps1
+
+
+
+        eps1approx= (4._kp/3._kp)*exp(-2._kp*ystar) &
+             * (1._kp + AI/(64._kp*pi*pi)*exp(ystar))**2
+
+        etapprox= -4._kp/3._kp * exp(-ystar)
+
+        eps2approx=4._kp*eps1approx - 2._kp*etapprox
+
+        nsapprox = 1._kp - 2._kp * eps1approx - eps2approx
+        rapprox = 16._kp * eps1approx
+        
+
+        call livewrite('rchi_nsr_approx.dat',nsapprox,rapprox,AI,lnRhoReh)
+        call livewrite('rchi_nsr_exact.dat',ns,r,AI,lnRhoReh)
+                
+        
+     end do
+
+  end do
+
+
+
+
   
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! Write Data for the summarizing plots !!
