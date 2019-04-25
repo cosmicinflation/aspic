@@ -3,7 +3,9 @@ program ccsi3main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use ccsi3sr, only : ccsi3_epsilon_one, ccsi3_epsilon_two, ccsi3_epsilon_three
+  use ccsi3sr, only : ccsi3_xinimax, ccsi3_efold_primitive
   use ccsi3reheat, only : ccsi3_lnrhoreh_max, ccsi3_x_star
+  
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
@@ -44,7 +46,7 @@ program ccsi3main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  real(kp) :: x, V3
+  real(kp) :: x, V3, xuv
   
   Pstar = powerAmpScalar
 
@@ -75,7 +77,21 @@ program ccsi3main
   enddo
 
   
+  call delete_file('ccsi3_ntot.dat')
+  print *,'alphamin of 60',ccsi3_alphamin(60._kp)
+  alphamin = ccsi3_alphamin(1000._kp)
+  alphamax=-0.1_kp
+  do i=1,n
+     alpha = alphamax + real(i-1,kp)*(alphamin-alphamax)/real(n-1,kp)
+     xend = ccsi3_x_endinf(alpha)
+     xuv = ccsi3_xinimax(alpha)
+     efold = ccsi3_efold_primitive(xuv,alpha) - ccsi3_efold_primitive(xend,alpha)
+     call livewrite('ccsi3_ntot.dat',alpha,efold)
+  enddo
 
+
+
+       
   
   call delete_file('ccsi3_predic.dat')
   call delete_file('ccsi3_nsr.dat')
@@ -85,7 +101,8 @@ program ccsi3main
   efold = 120._kp
 
   alphamin = ccsi3_alphamin(efold)
-
+  alphamax = 0.01*alphamin
+  
   print *,'alphamin',alphamin
 
   !  w = 1._kp/3._kp
@@ -105,7 +122,7 @@ program ccsi3main
 
      print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

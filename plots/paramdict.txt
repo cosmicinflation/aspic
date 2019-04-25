@@ -17,6 +17,7 @@ xendomin	x_\mathrm{end}/x_\mathrm{end}^{\min}
 xendnminmax	\hat{x}_\mathrm{end}
 yendnminmax	\hat{y}_\mathrm{end}
 logxendomax	\log\left(\frac{x_\mathrm{end}}{x_\mathrm{end}^{\max}}\right)
+yend		y_\mathrm{end}
 phi0		\phi_0/M_{\mathrm{Pl}}
 n		n
 alpha		\alpha

@@ -7,7 +7,7 @@ program ccsi2main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use ccsi2sr, only : ccsi2_norm_potential, ccsi2_numacc_xendmin
+  use ccsi2sr, only : ccsi2_norm_potential, ccsi2_numacc_xendmin,ccsi2_numacc_xinimin
   use ccsi2reheat, only : ccsi2_x_rreh, ccsi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -23,7 +23,7 @@ program ccsi2main
   integer :: i,j,k
   integer :: npts = 10
 
-  integer :: Np=3
+  integer :: Np=2
   real(kp) :: alphamin=1d-5
   real(kp) :: alphamax=1d-3
 
@@ -36,16 +36,42 @@ program ccsi2main
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
 
-  integer :: Ne = 10
+  integer :: Ne = 10,n
   real(kp) :: xendmin, xendmax
-  real(kp) :: VendOverVstar, eps1End, xend
+  real(kp) :: VendOverVstar, eps1End, xend, xmin, xmax,x,V2
 
   Pstar = powerAmpScalar
+
+  call delete_file('ccsi2_potential.dat')
+  call delete_file('ccsi2_slowroll.dat')
+
+
+  alpha = 1e-4
+  n=250
+
+  xmin = ccsi2_numacc_xinimin(alpha)
+  xmax = 20._kp
+  
+  do i=1,n
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+    
+
+     V2 = ccsi2_norm_potential(x,alpha)
+     call livewrite('ccsi2_potential.dat',x*sqrt(1.5_kp),V2)
+
+        
+     eps1 = ccsi2_epsilon_one(x,alpha)
+     eps2 = ccsi2_epsilon_two(x,alpha)
+     eps3 = ccsi2_epsilon_three(x,alpha)
+     call livewrite('ccsi2_slowroll.dat',x*sqrt(1.5_kp),eps1,eps2,eps3)
+
+  enddo
+
 
   call delete_file('ccsi2_predic.dat')
   call delete_file('ccsi2_nsr.dat')
 
-  call aspicwrite_header('ccsi2',labeps12,labnsr,labbfoldreh,(/'xend ','alpha'/))
+  call aspicwrite_header('ccsi2',labeps12,labnsr,labbfoldreh,(/'yend ','alpha'/))
 
   !  w = 1._kp/3._kp
   w=0._kp
