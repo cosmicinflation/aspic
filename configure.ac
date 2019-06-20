@@ -134,5 +134,6 @@ AC_CONFIG_FILES([Makefile
 		 src/rpqti/Makefile
 		 src/rcpi/Makefile
  		 src/gdwi/Makefile
+		 src/saii/Makefile
                 ])
 AC_OUTPUT
