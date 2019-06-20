@@ -168,8 +168,8 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0
             plotscat = True
 
 
-        elif par[4].getvalue() <> parval:
-            if count <> 0:
+        elif par[4].getvalue() != parval:
+            if count != 0:
                 labangles.append(labangle)
             parval = par[4].getvalue()
             count = 0
@@ -195,7 +195,7 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0
 #was elif (!?)                
         if par[4].getvalue() == parval and plotscat:
 
-#unnecessary?            if xysavlab <> (None,None):
+#unnecessary?            if xysavlab != (None,None):
             count += 1
             labangle = (labangle*(count-1)
                         + np.arctan2(yinch - xysavlab[1],xinch - xysavlab[0]))/count               
@@ -246,7 +246,8 @@ def not_overlap(xy1,xy2,thresh):
 
     
 def add_model_scatter(ax,xycdata,cmap,marker,alpha,depth=1):
-    scmodel = ax.scatter(xycdata[0],xycdata[1],c=xycdata[2],zorder=depth,marker=marker
+    scmodel = ax.scatter(xycdata[0],xycdata[1],c=xycdata[2],zorder=depth
+                         ,marker=marker,edgecolors='black',linewidths=0.5
                          ,cmap=cmap,alpha=alpha,clip_on=True)
     return scmodel
 
@@ -254,7 +255,7 @@ def add_model_scatter(ax,xycdata,cmap,marker,alpha,depth=1):
 
 def add_model_annotate(ax,s,xy,xytextpts=None,cstyle=None,depth=3):
 
-    if len(s) <> len(xy):
+    if len(s) != len(xy):
         raise Exception("string and (x,y) of unequal length!")
 
     mingap = 10
@@ -264,7 +265,7 @@ def add_model_annotate(ax,s,xy,xytextpts=None,cstyle=None,depth=3):
         ytext = mingap
 
         
-    elif len(xytextpts) <> len(xy):
+    elif len(xytextpts) != len(xy):
         print('arg',len(xytextpts),len(xy),len(s))
         raise Exception("(x,y) and (xtext,ytext) of unequal length!")
         
@@ -323,8 +324,12 @@ def add_model_fixparams(ax,pars):
 def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, xyhardbounds, xyzoomrange,
                   args, zoomplot=10, zoomrange=0, zoomsteps=10, dpi=150, threshscat=0.1,
                   threshlabel=1.0,modlabel=1,tiltlabel=0.0,movielabel=None):
+    import matplotlib as mpl
     import matplotlib.pyplot as plt
     from matplotlib.patches import Polygon
+
+
+    mpl.rcParams['mathtext.fontset'] = 'cm'
 
     filetype = args.type
     fillste = args.fillste
@@ -389,7 +394,7 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
         zoomcount += 1
 
     if countplot == 0 and countrange == 0:
-        print "create_figure: cannot find data within zoom limits!"
+        print("create_figure: cannot find data within zoom limits!")
         return
 
     ax.set_autoscale_on(False)
@@ -483,13 +488,12 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
     
     
     if wrehbar:
-        add_model_name(ax,model.getlabel()+r' $\mathrm{&}$ $\overline{w}_\mathrm{reh} =$'+ r''
+        add_model_name(ax,model.getlabel()+r' $&$ $\overline{w}_\mathrm{reh} =$'+ r''
                        +str(wrehbar))
     else:
-        add_model_name(ax,model.getlabel()+r' $\mathrm{&}$ $\overline{w}_\mathrm{reh} = 0$')
+        add_model_name(ax,model.getlabel()+r' $&$ $\overline{w}_\mathrm{reh} = 0$')
 
     add_model_fixparams(ax,allfixed)    
-    
     plt.savefig(figfile,bbox_inches='tight')
     plt.close()
 

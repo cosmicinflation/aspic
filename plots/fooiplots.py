@@ -172,14 +172,14 @@ for i in range(len(aspicfiles)):
     datafile = aspicfiles[i]
     figfile = figprefix + '_' + str(i) + '.eps'
 
-    print 'Reading data',datafile
+    print('Reading data',datafile)
     fixedParams, varParams = aio.read_aspicfile(datafile)
 
     if swapxy:
         for par in varParams:
             swap_in(par,0,1)
     
-    print 'Generating figure',figfile
+    print('Generating figure',figfile)
     asf.create_figure(model,fixedParams,varParams,contourfiles,figfile,xyinibounds,
                       xyhardbounds,xyzoomrange,pargs,threshscat=myThreshScat,
                       threshlabel=myThreshLabel, modlabel=myModLabel, tiltlabel=myTiltLabel,

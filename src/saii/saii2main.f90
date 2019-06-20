@@ -33,9 +33,9 @@ program saii2main
   real(kp), parameter :: alphamin=-1.2_kp
   real(kp), parameter :: alphamax=1.2_kp
 
-  integer, parameter :: Nmu=6
-  real(kp) :: mumin = 0.1
-  real(kp) :: mumax = 100.
+  integer, parameter :: Nmu=100
+  real(kp) :: mumin = 0.1_kp
+  real(kp) :: mumax = 100._kp
   
   real(kp) :: xmin = 0
   real(kp) :: xmax = 7
@@ -94,14 +94,9 @@ program saii2main
 
   do k=1,Na
      alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
-
-!     alpha=alphamin
-     
-     print *,'alpha',alpha
+    
      mumin = saii2_numacc_mumin(120._kp,alpha)
-
-     print *,'mumin=',mumin
-
+ 
      
      do j=0,Nmu 
         

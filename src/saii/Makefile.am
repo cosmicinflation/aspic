@@ -5,12 +5,10 @@ MOD = saiicommon.$(FC_MODEXT) saiicomreh.$(FC_MODEXT) \
 	saii1sr.$(FC_MODEXT) saii1reheat.$(FC_MODEXT) \
 	saii2sr.$(FC_MODEXT) saii2reheat.$(FC_MODEXT) 
 
-check_PROGRAMS = saii1main
+check_PROGRAMS = saii1main saii2main
 saii1main_SOURCES = $(SRC) saii1main.f90
 saii1main_FCFLAGS = -I../$(SRCOMMDIR)
 saii1main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
-
-check_PROGRAMS = saii2main
 saii2main_SOURCES = $(SRC) saii2main.f90
 saii2main_FCFLAGS = -I../$(SRCOMMDIR)
 saii2main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a

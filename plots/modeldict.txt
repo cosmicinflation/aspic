@@ -77,6 +77,8 @@ rpi2		\mathrm{R}p\mathrm{I}_2
 rpi3		\mathrm{R}p\mathrm{I}_3
 rpqdi		\mathrm{RPQDI}
 rpqti		\mathrm{RPQTI}
+saii1		\mathrm{SAII}_1
+saii2		\mathrm{SAII}_2
 saai		\mathrm{SAAI}
 sabi		\mathrm{SABI}
 saci		\mathrm{SACI}
