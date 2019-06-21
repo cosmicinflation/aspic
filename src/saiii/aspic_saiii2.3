@@ -1,0 +1,44 @@
+.TH libsaii 3 "June 20, 2019" "libaspic" "Module convention" 
+
+.SH NAME
+.I saii2
+- the string axion I inflation module at increasing field values
+
+.SH SYNOPSIS
+.TP
+Physical potential
+V(phi) = M^4 [ 1 - cos(x) + alpha x sin(x) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/mu
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha,
+.B mu
+
+.SH DESCRIPTION
+The
+.I saii2
+module is used for the string axion I inflation when inflation occurs
+at increasing field values, namely in the region for which
+'x > xVmax', the field value at which the potential is maximal. In this
+regime, inflation naturally ends at a field value 'xend' returned by
+the function
+.BR saii2_x_endinf (alpha,mu).
+
+This model shares a few peculiar functions with
+.I saii1
+in a module named
+.BR saiicommon .
+The value of 'xVmax' is returned by
+.BR saii_x_potmax (alpha).
+This function is imported by
+.IP
+.B use saiicommon, only : saii_x_potmax
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
