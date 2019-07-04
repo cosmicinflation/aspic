@@ -1,30 +1,33 @@
-!slow-roll function for string axion I inflation at increasing field
-!values x > xVmax
+!slow-roll function for string axion II inflation at increasing field
+!values x > xVmax and x < xVmin, when V(xVmin)<= 0, such that inflation
+!gracefully ends. The model exists only if both xVmax and xVmin exists
+!and if V(xVmin)<= 0.
 !
-!V(phi) = M^4 [1 - cos(x) + alpha x sin(x)]
+!!V(phi) = M^4 [1 - cos(x) + alpha x sin(x) + (1/2) alpha beta x^2]
 !
 !x=phi/mu
 !
 !
 !
-module saii2sr
+module saiii2sr
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
-  use saiicommon, only : saii_norm_potential, saii_norm_deriv_potential
-  use saiicommon, only : saii_norm_deriv_second_potential
-  use saiicommon, only : saii_epsilon_one, saii_epsilon_two, saii_epsilon_three
-  use saiicommon, only : saii_x_potzero, saii_x_potmax, saii_efold_primitive
-  use saiicommon, only : saii_x_epsoneunity, find_saii_x_trajectory
-
+  use saiiicommon, only : saiii_norm_potential, saiii_norm_deriv_potential
+  use saiiicommon, only : saiii_norm_deriv_second_potential
+  use saiiicommon, only : saiii_epsilon_one, saiii_epsilon_two, saiii_epsilon_three
+  use saiiicommon, only : saiii_x_potzero, saiii_x_potmax, saiii_efold_primitive
+  use saiiicommon, only : saiii_x_epsoneunity, find_saiii_x_trajectory
+  use saiiicommon, only : saiii_alpha_potneg, saiii_check_params, beta3, beta2
   
   implicit none
 
   
   private
-  public saii2_norm_potential, saii2_norm_deriv_potential, saii2_norm_deriv_second_potential
-  public saii2_epsilon_one, saii2_epsilon_two, saii2_epsilon_three
-  public saii2_x_endinf, saii2_x_trajectory, saii2_efold_primitive
-  public saii2_numacc_xinimin, saii2_numacc_efoldmax, saii2_numacc_mumin
+  public saiii2_norm_potential, saiii2_norm_deriv_potential, saiii2_norm_deriv_second_potential
+  public saiii2_epsilon_one, saiii2_epsilon_two, saiii2_epsilon_three
+  public saiii2_x_endinf, saiii2_x_trajectory, saiii2_efold_primitive
+  public saiii2_check_params
+  public saiii2_numacc_xinimin, saiii2_numacc_efoldmax, saiii2_numacc_mumin
 
 !numerical accuracy limitation
   real(kp), parameter :: epsnumacc = 10._kp*tolkp
@@ -33,153 +36,191 @@ module saii2sr
 contains
 
 
-  function saii2_norm_potential(x,alpha,mu)
+  function saiii2_check_params(alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_norm_potential
-    real(kp), intent(in) :: x,alpha,mu
+    logical :: saiii2_check_params
+    real(kp), intent(in) :: alpha,beta,mu
+    logical :: sane
 
-    saii2_norm_potential = saii_norm_potential(x,alpha,mu)
+    real(kp) :: alphabound
+
+    sane = saiii_check_params(alpha,beta,mu) &
+         .and. (beta.lt.beta2) &
+         .and. (beta.gt.beta3)
+
+    if (.not.sane) then
+
+       saiii2_check_params = .false.
+
+    else 
+
+       alphabound = saiii_alpha_potneg(beta)
+
+       saiii2_check_params = (abs(alpha).gt.abs(alphabound))
+
+    endif               
+
+  end function saiii2_check_params
+
+
+  
+
+  function saiii2_norm_potential(x,alpha,beta,mu)
+    implicit none
+    real(kp) :: saiii2_norm_potential
+    real(kp), intent(in) :: x,alpha,beta,mu
+
+    saiii2_norm_potential = saiii_norm_potential(x,alpha,beta,mu)
     
-  end function saii2_norm_potential
+  end function saiii2_norm_potential
 
 
   
 !derivative with respect to x (not phi!)  
-  function saii2_norm_deriv_potential(x,alpha,mu)
+  function saiii2_norm_deriv_potential(x,alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp) :: saiii2_norm_deriv_potential
+    real(kp), intent(in) :: x,alpha,beta,mu
 
 
-    saii2_norm_deriv_potential =  saii_norm_deriv_potential(x,alpha,mu)
+    saiii2_norm_deriv_potential =  saiii_norm_deriv_potential(x,alpha,beta,mu)
 
-  end function saii2_norm_deriv_potential
+  end function saiii2_norm_deriv_potential
 
   
 
 !second derivative with respect to x (not phi!)    
-  function saii2_norm_deriv_second_potential(x,alpha,mu)
+  function saiii2_norm_deriv_second_potential(x,alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp) :: saiii2_norm_deriv_second_potential
+    real(kp), intent(in) :: x,alpha,beta,mu
     
-    saii2_norm_deriv_second_potential = saii_norm_deriv_second_potential(x,alpha,mu)
+    saiii2_norm_deriv_second_potential = saiii_norm_deriv_second_potential(x,alpha,beta,mu)
 
-  end function saii2_norm_deriv_second_potential
+  end function saiii2_norm_deriv_second_potential
 
 
 
   
-  function saii2_epsilon_one(x,alpha,mu)
+  function saiii2_epsilon_one(x,alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_epsilon_one
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp) :: saiii2_epsilon_one
+    real(kp), intent(in) :: x,alpha,beta,mu
     
-    saii2_epsilon_one = saii_epsilon_one(x,alpha,mu)
+    saiii2_epsilon_one = saiii_epsilon_one(x,alpha,beta,mu)
     
-  end function saii2_epsilon_one
+  end function saiii2_epsilon_one
  
   
 
   
-  function saii2_epsilon_two(x,alpha,mu)
+  function saiii2_epsilon_two(x,alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_epsilon_two
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp) :: saiii2_epsilon_two
+    real(kp), intent(in) :: x,alpha,beta,mu
     
-    saii2_epsilon_two = saii_epsilon_two(x,alpha,mu)
+    saiii2_epsilon_two = saiii_epsilon_two(x,alpha,beta,mu)
     
-  end function saii2_epsilon_two
+  end function saiii2_epsilon_two
 
 
 
   
-  function saii2_epsilon_three(x,alpha,mu)
+  function saiii2_epsilon_three(x,alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_epsilon_three
-    real(kp), intent(in) :: x,alpha,mu
+    real(kp) :: saiii2_epsilon_three
+    real(kp), intent(in) :: x,alpha,beta,mu
     
-    saii2_epsilon_three = saii_epsilon_three(x,alpha,mu)
+    saiii2_epsilon_three = saiii_epsilon_three(x,alpha,beta,mu)
 
-  end function saii2_epsilon_three
+  end function saiii2_epsilon_three
 
 
 
   
-  function saii2_x_endinf(alpha,mu)
+  function saiii2_x_endinf(alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_x_endinf
-    real(kp), intent(in) :: alpha, mu
+    real(kp) :: saiii2_x_endinf
+    real(kp), intent(in) :: alpha,beta,mu
 
     real(kp), dimension(2) :: xepsone
     
-    xepsone = saii_x_epsoneunity(alpha,mu)
+    xepsone = saiii_x_epsoneunity(alpha,beta,mu)
     
-    saii2_x_endinf = xepsone(2)
+    saiii2_x_endinf = xepsone(2)
     
-  end function saii2_x_endinf
+  end function saiii2_x_endinf
 
 
 
 !the closest possible to the top of the potential
-  function saii2_numacc_xinimin(alpha,mu)
+  function saiii2_numacc_xinimin(alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_numacc_xinimin
-    real(kp), intent(in) :: alpha,mu
+    real(kp) :: saiii2_numacc_xinimin
+    real(kp), intent(in) :: alpha,beta,mu
 
     real(kp), parameter :: dx = 0.001_kp
     real(kp) :: dlnVodx
     
     real(kp), save :: xVmax = huge(1._kp)
     real(kp), save :: stoalpha = huge(1._kp)
-!$omp threadprivate(xVmax,stoalpha)
+    real(kp), save :: stobeta = huge(1._kp)
+!$omp threadprivate(xVmax,stoalpha,stobeta)
 
-    if (alpha.ne.stoalpha) then
-       xVmax = saii_x_potmax(alpha,mu)
+    if (.not.saiii2_check_params(alpha,beta,mu)) then
+       stop 'saiii2_numacc_xinimin: inflation at x > xVmax never ends!'
+    endif
+    
+    if ((alpha.ne.stoalpha).or.(beta.ne.stobeta)) then
+       xVmax = saiii_x_potmax(alpha,beta,mu)
        stoalpha = alpha
+       stobeta = beta
     endif
 
-    if (saii2_norm_potential(xVmax+dx,alpha,mu).lt.0._kp) then
-       stop 'saii2_numacc_xinimin: dx too large!'
+    if (saiii2_norm_potential(xVmax+dx,alpha,beta,mu).lt.0._kp) then
+       stop 'saiii2_numacc_xinimin: dx too large!'
     endif
     
-    dlnVodx = abs(saii2_norm_deriv_potential(xVmax+dx,alpha,mu) &
-         /saii2_norm_potential(xVmax,alpha,mu)/dx)
+    dlnVodx = abs(saiii2_norm_deriv_potential(xVmax+dx,alpha,beta,mu) &
+         /saiii2_norm_potential(xVmax,alpha,beta,mu)/dx)
 
-    saii2_numacc_xinimin = xVmax + epsnumacc/dlnVodx
+    saiii2_numacc_xinimin = xVmax + epsnumacc/dlnVodx
     
-  end function saii2_numacc_xinimin
+  end function saiii2_numacc_xinimin
     
 
 !maximal number of efolds computable at current numerical accuracy
-  function saii2_numacc_efoldmax(alpha,mu)
+  function saiii2_numacc_efoldmax(alpha,beta,mu)
     implicit none
-    real(kp) :: saii2_numacc_efoldmax
-    real(kp), intent(in) :: alpha,mu
+    real(kp) :: saiii2_numacc_efoldmax
+    real(kp), intent(in) :: alpha,beta,mu
 
     real(kp) :: xend,xinimin
     
+    if (.not.saiii2_check_params(alpha,beta,mu)) then
+       stop 'saiii2_numacc_efoldmax: inflation at x > xVmax never ends!'
+    endif
     
-    xend = saii2_x_endinf(alpha,mu)
-    xinimin = saii2_numacc_xinimin(alpha,mu)
+    xend = saiii2_x_endinf(alpha,beta,mu)
+    xinimin = saiii2_numacc_xinimin(alpha,beta,mu)
     
-    saii2_numacc_efoldmax = -saii2_efold_primitive(xend,alpha,mu) &
-         + saii2_efold_primitive(xinimin,alpha,mu)
+    saiii2_numacc_efoldmax = -saiii2_efold_primitive(xend,alpha,beta,mu) &
+         + saiii2_efold_primitive(xinimin,alpha,beta,mu)
 
     
-  end function saii2_numacc_efoldmax
+  end function saiii2_numacc_efoldmax
  
 
 
-!given alpha, what is the minimal value of mu to get efold inflation
+!given alpha and beta what is the minimal value of mu to get efold inflation
 !above numerical accuracy limit
-  function saii2_numacc_mumin(efold,alpha)
+  function saiii2_numacc_mumin(efold,alpha,beta)
     implicit none
-    real(kp) :: saii2_numacc_mumin
-    real(kp), intent(in) :: efold,alpha
+    real(kp) :: saiii2_numacc_mumin
+    real(kp), intent(in) :: efold,alpha,beta
 
     real(kp), parameter :: tolFind=tolkp
-    type(transfert) :: saii2Data
+    type(transfert) :: saiii2Data
 
     real(kp), parameter :: mubig = 10000._kp
     real(kp), parameter :: musmall = 0.0001_kp
@@ -189,69 +230,72 @@ contains
     mini = musmall
     maxi = mubig
     
-    saii2Data%real1 = alpha
-    saii2Data%real2 = efold
+    saiii2Data%real1 = alpha
+    saiii2Data%real2 = beta
+    saiii2Data%real3 = efold
 
-    saii2_numacc_mumin = zbrent(find_saii2_numacc_mumin,mini,maxi,tolFind,saii2Data)
+    saiii2_numacc_mumin = zbrent(find_saiii2_numacc_mumin,mini,maxi,tolFind,saiii2Data)
 
-  end function saii2_numacc_mumin
+  end function saiii2_numacc_mumin
 
 
 
-  function find_saii2_numacc_mumin(mu,saii2Data)
+  function find_saiii2_numacc_mumin(mu,saiii2Data)
     implicit none
-    real(kp) :: find_saii2_numacc_mumin
+    real(kp) :: find_saiii2_numacc_mumin
     real(kp), intent(in) :: mu
-    type(transfert), optional, intent(inout) :: saii2Data
+    type(transfert), optional, intent(inout) :: saiii2Data
 
-    real(kp) :: alpha, Nwanted
+    real(kp) :: alpha, beta, Nwanted
 
-    alpha = saii2Data%real1
-    Nwanted = saii2Data%real2
+    alpha = saiii2Data%real1
+    beta = saiii2Data%real2
+    Nwanted = saiii2Data%real3
 
-    find_saii2_numacc_mumin = saii2_numacc_efoldmax(alpha,mu) - Nwanted
+    find_saiii2_numacc_mumin = saiii2_numacc_efoldmax(alpha,beta,mu) - Nwanted
     
-  end function find_saii2_numacc_mumin
+  end function find_saiii2_numacc_mumin
 
   
   
-  function saii2_efold_primitive(x,alpha,mu)
+  function saiii2_efold_primitive(x,alpha,beta,mu)
     implicit none
-    real(kp), intent(in) :: x, alpha,mu
-    real(kp) :: saii2_efold_primitive
+    real(kp), intent(in) :: x, alpha,beta,mu
+    real(kp) :: saiii2_efold_primitive
 
-    if (x.lt.saii2_numacc_xinimin(alpha,mu)) then
-       write(*,*)'saii2_efold_primitive: x-xVmax too small!'
-       write(*,*)'x= alpha= mu= ',x,alpha,mu
+    if (x.lt.saiii2_numacc_xinimin(alpha,beta,mu)) then
+       write(*,*)'saiii2_efold_primitive: x-xVmax too small!'
+       write(*,*)'x= alpha= mu= ',x,alpha,beta,mu
        stop
     endif
     
-    saii2_efold_primitive = saii_efold_primitive(x,alpha,mu)
+    saiii2_efold_primitive = saiii_efold_primitive(x,alpha,beta,mu)
 
-  end function saii2_efold_primitive
+  end function saiii2_efold_primitive
 
 
   
 !  returns x at bfold=-efolds before the end of inflation
-  function saii2_x_trajectory(bfold,xend,alpha,mu)
+  function saiii2_x_trajectory(bfold,xend,alpha,beta,mu)
     implicit none
-    real(kp), intent(in) :: bfold,xend,alpha,mu
-    real(kp) :: saii2_x_trajectory
+    real(kp), intent(in) :: bfold,xend,alpha,beta,mu
+    real(kp) :: saiii2_x_trajectory
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
-    type(transfert) :: saiiData
+    type(transfert) :: saiiiData
 
     real(kp) :: xinimin
     
-    xinimin = saii2_numacc_xinimin(alpha,mu)
+    xinimin = saiii2_numacc_xinimin(alpha,beta,mu)
 
-    saiiData%real1 = alpha
-    saiiData%real2 = mu
-    saiiData%real3 = -bfold + saii2_efold_primitive(xend,alpha,mu)
+    saiiiData%real1 = alpha
+    saiiiData%real2 = beta
+    saiiiData%real3 = mu
+    saiiiData%real4 = -bfold + saiii2_efold_primitive(xend,alpha,beta,mu)
 
-    saii2_x_trajectory = zbrent(find_saii_x_trajectory,xend,xinimin,tolFind,saiiData)
+    saiii2_x_trajectory = zbrent(find_saiii_x_trajectory,xinimin,xend,tolFind,saiiiData)
 
-  end function saii2_x_trajectory
+  end function saiii2_x_trajectory
 
   
-end module saii2sr
+end module saiii2sr

@@ -1,0 +1,59 @@
+.TH libsaiii 3 "July 04, 2019" "libaspic" "Module convention" 
+
+.SH NAME
+.I saiii3
+- the string axion II inflation module at decreasing field values when
+  the potential does not have any extremum
+
+.SH SYNOPSIS
+.TP
+Physical potential
+V(phi) = M^4 [ 1 - cos(x) + alpha x sin(x) + (1/2) alpha beta x^2 ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/mu
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha
+.RS
+.I real(kp)
+::
+.B beta
+.RS
+.RE
+.I real(kp)
+::
+.B mu/Mp
+.RE
+
+.SH DESCRIPTION
+The
+.I saiii3
+module is used for the string axion II inflation when inflation occurs
+at decreasing field values when the potential does not have any
+extremum. This regime is mutually exclusive with the
+.I saiii1
+regime and the potential is essentially dominated by the 'x^2' term,
+plus small oscillatory modulations. We provide a convenience
+.I logical
+function
+.IP
+.BR saiii3_check_params (alpha,beta,mu)
+.P
+which can be used to check if the potential is monotonous, i.e., does not
+have any extremum, for
+.I saiii3
+to exist. Inflation gracefully ends at the field value 'xend' given by the
+.I real(kp)
+function
+.IP
+.BR saiii3_x_endinf (alpha,beta,mu).
+.RS
+.RE
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

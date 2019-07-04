@@ -1,13 +1,14 @@
-.TH libsaii 3 "June 18, 2019" "libaspic" "Module convention" 
+.TH libsaiii 3 "July 04, 2019" "libaspic" "Module convention" 
 
 .SH NAME
-.I saii1
-- the string axion I inflation module at decreasing field values
+.I saiii1
+- the string axion II inflation module at decreasing field values near
+  a maximum of the potential
 
 .SH SYNOPSIS
 .TP
 Physical potential
-V(phi) = M^4 [ 1 - cos(x) + alpha x sin(x) ]
+V(phi) = M^4 [ 1 - cos(x) + alpha x sin(x) + (1/2) alpha beta x^2 ]
 .TP
 Routine units
 .I real(kp)
@@ -18,27 +19,91 @@ Routine units
 Parameters
 .I real(kp)
 ::
-.B alpha,
-.B mu
+.B alpha
+.RS
+.I real(kp)
+::
+.B beta
+.RS
+.RE
+.I real(kp)
+::
+.B mu/Mp
+.RE
 
 .SH DESCRIPTION
 The
-.I saii1
-module is used for the string axion I inflation when inflation occurs
-at decreasing field values, namely in the region for which
-'x < xVmax', the field value at which the potential is maximal. In this
+.I saiii1
+module is used for the string axion II inflation when inflation occurs
+at decreasing field values, namely in the region for which 'x <
+xVmax', the field value at which the potential is maximal. In this
 regime, inflation naturally ends at a field value 'xend' returned by
-the function
-.BR saii1_x_endinf (alpha,mu).
+the
+.I real(kp)
+function
+.IP
+.BR saiii1_x_endinf (alpha,beta,mu).
+.RS
+.RE
 
-This model shares a few peculiar functions with
-.I saii2
+The potential does not exhibit a local maximum for all values
+of 'alpha' and 'beta'. The
+.I logical
+function
+.IP
+.BR saiii1_check_params (alpha,beta,mu)
+.P
+can be used to check if this is the case. It returns '.true.' when the
+potential has extrema and '.false.' otherwise. Moreover, finite
+numerical accuracy prevents us to explore inflationary domains
+infinitely close to the potential maximum (and for which the
+predictions are simply de-Sitter). This usually happens for small
+values of the vev 'mu'. The
+.I real(kp)
+function
+.IP
+.BR saiii1_numacc_mumin (efold,alpha,beta)
+.P
+can be used for this purpose. It returns the minimal value of 'mu'
+to compute the number of 'efold' of inflation without encountering
+finite numerical accuracy issues. Similarly, the
+.I real(kp)
+function
+.IP
+.BR saiii1_numacc_xinimax (alpha,beta,mu)
+.P
+returns the maximal field value, close to the potential's maximum,
+which is explorable with the current finite numerical accuracy.
+Finally, the
+.I real(kp)
+function
+.IP
+.BR saiii1_numacc_efoldmax (alpha,beta,mu)
+.P
+returns the maximal number of 'efolds' computable at the current
+numerical accuracy given 'alpha','beta' and 'mu'.
+
+
+This model shares a
+few peculiar functions with
+.I saiii2
+and
+.I saiii3
 in a module named
 .BR saiicommon .
-The value of 'xVmax' is returned by
-.BR saii_x_potmax (alpha).
+For instance, the value of 'xVmax', when it exists, is returned by the
+.I real(kp)
+function
+.BR saiii_x_potmax (alpha).
+.P
 This function is imported by
 .IP
-.B use saiicommon, only : saii_x_potmax
+.B use saiiicommon, only : saiii_x_potmax
+.P
+Many other functions to determine the location and existence of the
+potential's extrema, and zeros, are available in this module, please
+check the source code of
+.B saiiicommon
+for more details.
 .SH AUTHORS
 Jerome Martin, Christophe Ringeval, Vincent Vennin

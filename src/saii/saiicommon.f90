@@ -1,4 +1,4 @@
-!common slow-roll functions for string axion inflation I
+!common slow-roll functions for string axion I inflation
 !
 !V(phi) = M^4 [1 - cos(x) + alpha x sin(x)]
 !
@@ -105,8 +105,8 @@ contains
 
     cosx = cos(x)
     sinx = sin(x)
-    sin2x = sin(2._kp*x)
-    cos2x = cos(2._kp*x)
+    sin2x = 2._kp*sinx*cosx
+    cos2x = cosx*cosx - sinx*sinx
     
     saii_epsilon_three = -(((x*alpha*cosx + (1._kp + alpha)*sinx) &
          * (9._kp*x*alpha**2 - 2._kp*x*alpha*(1._kp + 6._kp*alpha + 2._kp*x**2*alpha**2)*cosx &

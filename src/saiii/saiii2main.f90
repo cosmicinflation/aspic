@@ -1,19 +1,20 @@
-program saii2main
+program saiii2main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use saii2sr, only : saii2_epsilon_one, saii2_epsilon_two, saii2_epsilon_three
-  use saii2reheat, only : saii2_lnrhoreh_max, saii2_x_star
+  use saiii2sr, only : saiii2_epsilon_one, saiii2_epsilon_two, saiii2_epsilon_three
+  use saiii2reheat, only : saiii2_lnrhoreh_max, saiii2_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use saii2sr, only : saii2_norm_potential, saii2_x_endinf
-  use saii2sr, only : saii2_norm_deriv_potential, saii2_norm_deriv_second_potential
-  use saii2sr, only : saii2_numacc_mumin, saii2_numacc_efoldmax
-  use saii2reheat, only : saii2_x_rreh, saii2_x_rrad
+  use saiii2sr, only : saiii2_norm_potential, saiii2_x_endinf
+  use saiii2sr, only : saiii2_norm_deriv_potential, saiii2_norm_deriv_second_potential
+  use saiii2sr, only : saiii2_numacc_mumin, saiii2_numacc_efoldmax
+  use saiii2reheat, only : saiii2_x_rreh, saiii2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use saiicommon, only : saii_x_potmax
+  use saiiicommon, only : saiii_x_potmax, beta2,beta3
+  use saiiicommon, only : saiii_alpha_potneg
   
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -25,22 +26,26 @@ program saii2main
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j,n,k
+  integer :: i,j,n,k,l
   integer :: npts = 15
 
 
-  integer, parameter :: Na = 4
-  real(kp), parameter :: alphamin=-1.2_kp
-  real(kp), parameter :: alphamax=1.2_kp
+  integer, parameter :: Na = 3
+  real(kp) :: alphamin
+  real(kp) :: alphamax
 
-  integer, parameter :: Nmu=100
+  integer, parameter :: Nb = 3
+  real(kp) :: betamin
+  real(kp) :: betamax
+  
+  integer, parameter :: Nmu=20
   real(kp) :: mumin = 0.1_kp
   real(kp) :: mumax = 100._kp
   
   real(kp) :: xmin = 0
   real(kp) :: xmax = 7
   
-  real(kp) :: alpha,mu,w,bfoldstar
+  real(kp) :: alpha,beta,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax, efoldmax
@@ -56,11 +61,12 @@ program saii2main
   Pstar = powerAmpScalar
 
 
-  call delete_file('saii2_potential.dat')
-  call delete_file('saii2_slowroll.dat')
+  call delete_file('saiii2_potential.dat')
+  call delete_file('saiii2_slowroll.dat')
 
   
-  alpha = 0.3_kp
+  alpha = 0.5_kp
+  beta = 0.05_kp
   mu=1._kp
 
   n=250
@@ -69,85 +75,183 @@ program saii2main
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
 
-     V = saii2_norm_potential(x,alpha=-1._kp,mu=1._kp)
-     V1 = saii2_norm_potential(x,alpha,mu)
+     V1 = saiii2_norm_potential(x,alpha,beta,mu)
         
 
-     call livewrite('saii2_potential.dat',x,V1,V)
+     call livewrite('saiii2_potential.dat',x,V1)
 
-     eps1 = saii2_epsilon_one(x,alpha,mu)
-     eps2 = saii2_epsilon_two(x,alpha,mu)
-     eps3 = saii2_epsilon_three(x,alpha,mu)
+     eps1 = saiii2_epsilon_one(x,alpha,beta,mu)
+     eps2 = saiii2_epsilon_two(x,alpha,beta,mu)
+     eps3 = saiii2_epsilon_three(x,alpha,beta,mu)
 
-     call livewrite('saii2_slowroll.dat',x,eps1,eps2,eps3)
+     call livewrite('saiii2_slowroll.dat',x,eps1,eps2,eps3)
 
   enddo
 
  
-  call delete_file('saii2_predic.dat')
-  call delete_file('saii2_nsr.dat')
+  call delete_file('saiii2_predic.dat')
+  call delete_file('saiii2_nsr.dat')
 
-
-  call aspicwrite_header('saii2',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha'/))
+  
+  call aspicwrite_header('saiii2p',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
   
   w=0._kp
 
-  do k=1,Na
-     alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
-    
-     mumin = saii2_numacc_mumin(120._kp,alpha)
- 
+
+  betamin = 0.02_kp
+  betamax = 0.9*beta2
+  
+  do l=1,Nb
+     beta = betamin +  real(l-1,kp)*(betamax - betamin)/real(Nb-1,kp)
+
+     alphamin = 1.01_kp*saiii_alpha_potneg(beta)
+     alphamax = 5._kp*alphamin
+
+     print *,'beta alphamin alphamax',beta, alphamin,alphamax
      
-     do j=0,Nmu 
+     do k=1,Na
+
+        alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
+
+        mumin = saiii2_numacc_mumin(120._kp,alpha,beta)
+
+        print *,'mumin= ',mumin
         
-        mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
+        do j=0,Nmu 
 
-        efoldmax = saii2_numacc_efoldmax(alpha,mu)
-        print *,'alpha, mu= efoldNumAccMax= ',alpha,mu,efoldmax
+           mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
 
-        lnRhoRehMin = lnRhoNuc
+           efoldmax = saiii2_numacc_efoldmax(alpha,beta,mu)
+           print *,'alpha,beta,mu,efoldNumAccMax= ',alpha,beta,mu,efoldmax
 
-        xend = saii2_x_endinf(alpha,mu)
-        
-        lnRhoRehMax = saii2_lnrhoreh_max(alpha,mu,xend,Pstar)
+           lnRhoRehMin = lnRhoNuc
 
-        print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+           xend = saiii2_x_endinf(alpha,beta,mu)
 
-        do i=1,npts
+           lnRhoRehMax = saiii2_lnrhoreh_max(alpha,beta,mu,xend,Pstar)
 
-           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+           print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-           xstar = saii2_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+           do i=1,npts
 
+              lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
-
-           eps1 = saii2_epsilon_one(xstar,alpha,mu)
-           eps2 = saii2_epsilon_two(xstar,alpha,mu)
-           eps3 = saii2_epsilon_three(xstar,alpha,mu)
+              xstar = saiii2_x_star(alpha,beta,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
-           logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+              print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+              eps1 = saiii2_epsilon_one(xstar,alpha,beta,mu)
+              eps2 = saiii2_epsilon_two(xstar,alpha,beta,mu)
+              eps3 = saiii2_epsilon_three(xstar,alpha,beta,mu)
 
 
-           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+              logErehGeV = log_energy_reheat_ingev(lnRhoReh)
 
 
-           ns = 1._kp - 2._kp*eps1 - eps2
-           r =16._kp*eps1
+              Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
 
-           call livewrite('saii2_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
 
-           call livewrite('saii2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+              ns = 1._kp - 2._kp*eps1 - eps2
+              r =16._kp*eps1
 
-           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu,alpha/))
+              call livewrite('saiii2_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+
+              call livewrite('saiii2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+              call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
+                   ,(/mu,alpha,beta/))
+
+           end do
 
         end do
+     enddo
+  enddo
+  call aspicwrite_end()
 
-     end do
+
+  
+  call aspicwrite_header('saiii2m',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
+  
+  w=0._kp
+
+
+  betamin = 0.9*beta3
+  betamax = -0.02_kp
+  
+  do l=1,Nb
+     beta = betamin +  real(l-1,kp)*(betamax - betamin)/real(Nb-1,kp)
+
+     alphamax = 1.01_kp*saiii_alpha_potneg(beta)
+     alphamin = 5._kp*alphamax
+     
+     print *,'beta alphamin alphamax',beta, alphamin,alphamax
+     
+     do k=1,Na
+
+        alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
+
+        mumin = saiii2_numacc_mumin(120._kp,alpha,beta)
+
+        print *,'mumin= ',mumin
+        
+        do j=0,Nmu 
+
+           mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
+
+           efoldmax = saiii2_numacc_efoldmax(alpha,beta,mu)
+           print *,'alpha,beta,mu,efoldNumAccMax= ',alpha,beta,mu,efoldmax
+
+           lnRhoRehMin = lnRhoNuc
+
+           xend = saiii2_x_endinf(alpha,beta,mu)
+
+           lnRhoRehMax = saiii2_lnrhoreh_max(alpha,beta,mu,xend,Pstar)
+
+           print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+           do i=1,npts
+
+              lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+              xstar = saiii2_x_star(alpha,beta,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+
+              print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
+
+              eps1 = saiii2_epsilon_one(xstar,alpha,beta,mu)
+              eps2 = saiii2_epsilon_two(xstar,alpha,beta,mu)
+              eps3 = saiii2_epsilon_three(xstar,alpha,beta,mu)
+
+
+              logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+
+
+              Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+
+              ns = 1._kp - 2._kp*eps1 - eps2
+              r =16._kp*eps1
+
+              call livewrite('saiii2_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
+
+              call livewrite('saiii2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+
+              call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
+                   ,(/mu,alpha,beta/))
+
+           end do
+
+        end do
+     enddo
   enddo
 
   call aspicwrite_end()
+
+
+
+
+
   
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
@@ -156,29 +260,33 @@ program saii2main
   
   lnRradmin=-42
   lnRradmax = 10
-  alpha = 0.7
-  mu = 10._kp*saii2_numacc_mumin(120._kp,alpha)
-  xend = saii2_x_endinf(alpha,mu)
+
+  beta = 0.01_kp
+  alpha = 1._kp
+  mu = 10._kp*saiii2_numacc_mumin(120._kp,alpha,beta)
+
+  xend = saiii2_x_endinf(alpha,beta,mu)
+
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = saii2_x_rrad(alpha,mu,xend,lnRrad,Pstar,bfoldstar)
+     xstar = saiii2_x_rrad(alpha,beta,mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = saii2_epsilon_one(xstar,alpha,mu)
+     eps1 = saiii2_epsilon_one(xstar,alpha,beta,mu)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  saii2_epsilon_one(xend,alpha,mu)
-     VendOverVstar = saii2_norm_potential(xend,alpha,mu) &
-          /saii2_norm_potential(xstar,alpha,mu)
+     eps1end =  saiii2_epsilon_one(xend,alpha,beta,mu)
+     VendOverVstar = saiii2_norm_potential(xend,alpha,beta,mu) &
+          /saiii2_norm_potential(xstar,alpha,beta,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = saii2_x_rreh(alpha,mu,xend,lnR,bfoldstar)
+     xstar = saiii2_x_rreh(alpha,beta,mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -186,10 +294,10 @@ program saii2main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = saii2_x_star(alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = saiii2_x_star(alpha,beta,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
   enddo
 
-end program saii2main
+end program saiii2main

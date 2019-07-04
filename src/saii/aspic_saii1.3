@@ -18,8 +18,12 @@ Routine units
 Parameters
 .I real(kp)
 ::
-.B alpha,
-.B mu
+.B alpha
+.RS
+.I real(kp)
+::
+.B mu/Mp
+.RE
 
 .SH DESCRIPTION
 The
@@ -28,16 +32,20 @@ module is used for the string axion I inflation when inflation occurs
 at decreasing field values, namely in the region for which
 'x < xVmax', the field value at which the potential is maximal. In this
 regime, inflation naturally ends at a field value 'xend' returned by
-the function
+the
+.I real(kp)
+function
 .BR saii1_x_endinf (alpha,mu).
 
 This model shares a few peculiar functions with
 .I saii2
 in a module named
 .BR saiicommon .
-The value of 'xVmax' is returned by
+The value of 'xVmax' is returned by the
+.I real(kp)
+function
 .BR saii_x_potmax (alpha).
-This function is imported by
+It can be imported by
 .IP
 .B use saiicommon, only : saii_x_potmax
 .SH AUTHORS

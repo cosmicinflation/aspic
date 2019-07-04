@@ -1,4 +1,4 @@
-!string axion inflation I common reheating functions in the slow-roll
+!string axion I inflation common reheating functions in the slow-roll
 !approximations
 
 module saiicomreh

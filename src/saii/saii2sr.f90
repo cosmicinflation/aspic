@@ -249,7 +249,7 @@ contains
     saiiData%real2 = mu
     saiiData%real3 = -bfold + saii2_efold_primitive(xend,alpha,mu)
 
-    saii2_x_trajectory = zbrent(find_saii_x_trajectory,xend,xinimin,tolFind,saiiData)
+    saii2_x_trajectory = zbrent(find_saii_x_trajectory,xinimin,xend,tolFind,saiiData)
 
   end function saii2_x_trajectory
 

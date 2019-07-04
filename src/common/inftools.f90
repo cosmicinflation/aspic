@@ -5,7 +5,7 @@ module inftools
   private
 
   public easydverk, tunedverk
-  public zbrent
+  public zbrent, newton
   public quarticroots, sort, selectsort
 
 
@@ -951,10 +951,85 @@ contains
 !  end abort action
 !
     end subroutine dverk
+    
 
 
     
+    function newton(func,dfunc,xguess,tol,extradata,success)
+      implicit none
+      real(kp) :: newton, xguess, tol
+      type(transfert) :: extradata
+      logical, optional :: success
+      
+!successive over-relaxation parameter      
+      real(kp), parameter :: omega = 1._kp
+      
+      real(kp) :: xp, x, df
 
+      integer :: count
+      integer, parameter :: maxcount = 1000000
+      
+      interface
+         function func(x,otherdata)
+           use infprec, only : kp,transfert         
+           implicit none                     
+           real(kp) :: func
+           real(kp), intent(in) :: x
+           type(transfert), optional, intent(inout) :: otherdata
+         end function func
+
+         function dfunc(x,otherdata)
+           use infprec, only : kp,transfert         
+           implicit none                     
+           real(kp) :: dfunc
+           real(kp), intent(in) :: x
+           type(transfert), optional, intent(inout) :: otherdata
+         end function dfunc                  
+      end interface
+
+      xp = xguess
+
+      count = 0
+      
+      do
+
+         df = dfunc(xp,extradata)
+         if (abs(df).lt.tol) df = sign(tol,df)
+         
+         x = xp - omega*func(xp,extradata)/df
+
+         if (abs(x-xp).lt.tol) then
+
+            if (present(success)) success = .true.
+            exit
+
+         else
+
+            xp = x
+            count = count + 1
+            
+            if (count.gt.maxcount) then
+               write(*,*)'newton: iteration count exceeded!'
+               write(*,*)'x= f(x)= ',x,func(x,extradata)
+               if (present(success)) then
+                  success = .false.
+               else
+                  stop
+               endif
+               exit
+            endif
+            
+         endif
+         
+      end do
+
+      newton = x
+      
+    end function newton
+
+
+
+    
 
 
     function zbrent(func,x1,x2,tol,extradata)
