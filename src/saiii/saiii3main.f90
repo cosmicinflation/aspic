@@ -26,10 +26,10 @@ program saiii3main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j,n,k,l
-  integer :: npts = 15
+  integer :: npts = 20
 
 
-  integer, parameter :: Na = 3
+  integer, parameter :: Na = 2
   real(kp) :: alphamin
   real(kp) :: alphamax
 
@@ -37,7 +37,7 @@ program saiii3main
   real(kp) :: betamin
   real(kp) :: betamax
   
-  integer, parameter :: Nmu=20
+  integer, parameter :: Nmu=60
   real(kp) :: mumin = 0.1_kp
   real(kp) :: mumax = 100._kp
   
@@ -91,7 +91,16 @@ program saiii3main
   call delete_file('saiii3_predic.dat')
   call delete_file('saiii3_nsr.dat')
 
+!$omp parallel sections &
+!$omp default(shared) &
+!$omp private(betamin,betamax,alphamin,alphamax) &  
+!$omp private(alpha,beta,l,k,i,j,mu) &  
+!$omp private(lnRhoRehMax,xend,lnRhoRehMin,lnRhoReh,bfoldstar) &
+!$omp private(xstar,w,eps1,eps2,eps3,logErehGeV,Treh,ns,r)
 
+
+!$omp section
+  
   call aspicwrite_header('saiii3p',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
   
   w=0._kp
@@ -116,10 +125,11 @@ program saiii3main
 
            mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
            
-           lnRhoRehMin = lnRhoNuc
-
+           lnRhoRehMin = lnRhoNuc          
+           
            xend = saiii3_x_endinf(alpha,beta,mu)
 
+           
            lnRhoRehMax = saiii3_lnrhoreh_max(alpha,beta,mu,xend,Pstar)
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -163,12 +173,12 @@ program saiii3main
 
   call aspicwrite_end()
 
-
+!$omp section
 
   call aspicwrite_header('saiii3m',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
 
   betamax = -1.005_kp 
-  betamin = -3._kp
+  betamin = -2._kp
 
 
   
@@ -237,7 +247,7 @@ program saiii3main
   enddo
   call aspicwrite_end()
 
-
+!$omp end parallel sections
 
 
   

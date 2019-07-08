@@ -30,7 +30,7 @@ program saiii1main
   integer :: npts = 15
 
 
-  integer, parameter :: Na = 3
+  integer, parameter :: Na = 2
   real(kp) :: alphamin
   real(kp) :: alphamax
 
@@ -38,7 +38,7 @@ program saiii1main
   real(kp) :: betamin
   real(kp) :: betamax
   
-  integer, parameter :: Nmu=20
+  integer, parameter :: Nmu=60
   real(kp) :: mumin = 0.1_kp
   real(kp) :: mumax = 100._kp
   
@@ -92,6 +92,16 @@ program saiii1main
   call delete_file('saiii1_predic.dat')
   call delete_file('saiii1_nsr.dat')
 
+
+!$omp parallel sections &
+!$omp default(shared) &
+!$omp private(betamin,betamax,alphamin,alphamax) &  
+!$omp private(alpha,beta,l,k,i,j,mu) &  
+!$omp private(lnRhoRehMax,xend,lnRhoRehMin,lnRhoReh,bfoldstar) &
+!$omp private(xstar,w,eps1,eps2,eps3,logErehGeV,Treh,ns,r)
+
+
+!$omp section
   
   call aspicwrite_header('saiii1p',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
   
@@ -99,7 +109,7 @@ program saiii1main
 
 
   betamin = 0.05_kp
-  betamax = 3._kp
+  betamax = 1.3_kp
   
   do l=1,Nb
      beta = betamin +  real(l-1,kp)*(betamax - betamin)/real(Nb-1,kp)
@@ -107,7 +117,7 @@ program saiii1main
      if (beta.gt.beta0) then
         alphamax = 0.95*saiii_alpha_two(beta)
      else
-        alphamax = 2._kp
+        alphamax = 1.2_kp
      endif
 
      alphamin = alphamax/5._kp
@@ -137,7 +147,7 @@ program saiii1main
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-           do i=1,npts
+           do i=npts,1,-1
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -174,13 +184,14 @@ program saiii1main
   enddo
   call aspicwrite_end()
 
-
+!$omp section
+  
   call aspicwrite_header('saiii1m',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
   
   w=0._kp
 
 
-  betamin = -3._kp
+  betamin = -1.3_kp
   betamax = -0.05_kp
   
   do l=1,Nb
@@ -190,8 +201,8 @@ program saiii1main
         alphamin = 0.95*saiii_alpha_one(beta)
         alphamax = alphamin/5._kp
      else
-        alphamin = -2._kp
-        alphamax = -0.1_kp
+        alphamin = -1.2_kp
+        alphamax = -0.05_kp
      endif
 
      print *,'beta alphamin alphamax',beta, alphamin,alphamax
@@ -219,7 +230,7 @@ program saiii1main
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-           do i=1,npts
+           do i=npts,1,-1
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -258,7 +269,7 @@ program saiii1main
   call aspicwrite_end()
 
 
-
+!$omp end parallel sections
 
 
   

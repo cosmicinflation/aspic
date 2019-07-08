@@ -79,6 +79,12 @@ rpqdi		\mathrm{RPQDI}
 rpqti		\mathrm{RPQTI}
 saii1		\mathrm{SAII}_1
 saii2		\mathrm{SAII}_2
+saiii1p		\mathrm{SAIII}_{1+}
+saiii1m		\mathrm{SAIII}_{1-}
+saiii2p		\mathrm{SAIII}_{2+}
+saiii2m		\mathrm{SAIII}_{2-}
+saiii3p		\mathrm{SAIII}_{3+}
+saiii3m		\mathrm{SAIII}_{3-}
 saai		\mathrm{SAAI}
 sabi		\mathrm{SABI}
 saci		\mathrm{SACI}

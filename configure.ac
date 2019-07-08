@@ -47,7 +47,8 @@ AM_COND_IF([USE_OPENMP],
 	FCFLAGS+=" -fopenmp"
 ],
 [
-	AC_MSG_WARN([disabling openmp parallel instructions!])	
+	AC_MSG_WARN([disabling openmp parallel instructions!])
+	FCFLAGS+=" -DNOOMP"
 ]
 )
 

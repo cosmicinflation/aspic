@@ -23,12 +23,17 @@ integer, parameter :: reclUnit = 4
 
 
 integer, parameter :: lenhead = 26
-character(len=lenhead), dimension(:), allocatable :: header
+character(len=lenhead), dimension(:), allocatable, save :: header
+!$omp threadprivate(header)
 
-integer, parameter :: srun = 300
-integer, parameter :: plun = 301
+integer, parameter :: srunbase = 300
+integer, save :: srun
+integer, parameter :: plunbase = 600
+integer, save :: plun
+
 integer, parameter :: lenmax = 80
-character(len=lenmax) :: srfileprefix, plfileprefix
+character(len=lenmax), save :: srfileprefix, plfileprefix
+!$omp threadprivate(srfileprefix,plfileprefix,srun,plun)
 
 character(len=*), dimension(2), parameter :: labeps12 = (/'eps1','eps2'/)
 character(len=*), dimension(3) , parameter :: labeps123 = (/'eps1','eps2','eps3'/)
@@ -37,7 +42,7 @@ character(len=*), dimension(2), parameter :: labbfoldreh = (/'Nstar','lnRho'/)
 
 
 logical, save :: reset = .true.
-
+!$omp threadprivate(reset)
 
 public delete_file
 public livewrite, allwrite, binallwrite
@@ -442,7 +447,8 @@ contains
     real(kp), save :: xold = tiny(1._kp)
     real(kp), save :: yold = tiny(1._kp)
     real(kp), save :: zold = tiny(1._kp)
-       
+!$omp threadprivate(xold,yold,zold)
+    
     real(kp) :: d2
 
     has_shifted = .true.
@@ -497,18 +503,31 @@ contains
 
   
   subroutine aspicwrite_header(asname,labeps,labpl,labreh,labpar)
+#ifndef NOOMP
+    use omp_lib
+#endif
     implicit none
     character(len=*), intent(in) :: asname
     character(len=*), dimension(:), intent(in) :: labeps, labpl, labreh
     character(len=*), dimension(:), intent(in), optional :: labpar
     
-    integer :: i, j, ncols
+    integer :: i, j, ncols, idthread
     
     if (allocated(header)) stop 'cleanwrite_header: already created!'
 
     srfileprefix = trim(asname)//'_slowroll_'
     plfileprefix = trim(asname)//'_powerlaw_'
-       
+
+#ifndef NOOMP    
+    idthread = omp_get_thread_num()
+    srun = srunbase + idthread
+    plun = plunbase + idthread
+    if (idthread.gt.300) stop 'aspicwrite_header: too much threads!'
+#else
+    srun = srunbase
+    plun = plunbase
+#endif
+    
     neps = size(labeps,1)
     npl = size(labpl,1)
     nreh = size(labreh,1)
@@ -567,7 +586,8 @@ contains
 
     integer, parameter :: clen = 2
     character(len=clen), save :: ccount
-
+!$omp threadprivate(stored, count, ccount)
+    
     integer :: i,j,ipar
     logical :: sane, isopened
     character(len=lenmax) :: filename
