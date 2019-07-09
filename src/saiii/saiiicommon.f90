@@ -7,7 +7,7 @@
 !with no assumptions on alpha, beta and mu, but one must have: alpha beta > 0
 !
 module saiiicommon
-  use infprec, only : kp, tolkp, transfert, pi
+  use infprec, only : kp, tolkp, toldp, transfert, pi
   use inftools, only : zbrent, easydverk
 
   implicit none
@@ -36,8 +36,8 @@ module saiiicommon
 !-2 sinc(x) at its first non-vanishing maximum
   real(kp), parameter :: beta3 = -0.256749107051798273386061556467739004321436872134_kp
 
-  real(kp), parameter :: saiiiXBig = log(epsilon(1._kp)*huge(1._kp))
-  real(kp), parameter :: saiiiAlphaBig = 1._kp/tolkp
+  real(kp), parameter :: saiiiXBig = log(toldp*huge(toldp))
+  real(kp), parameter :: saiiiAlphaBig = 1._kp/toldp
   
   public beta0, beta1, beta2, beta3, saiiiXBig
   
@@ -807,7 +807,7 @@ contains
 
     type(transfert) :: saiiiData
 !too long to integrate in QUADPREC
-    real(kp), parameter :: tolInt = max(tolkp,epsilon(1._8))
+    real(kp), parameter :: tolInt = max(tolkp,toldp)
     integer, parameter :: neq = 1
 
     real(kp), dimension(3) :: xpotzero

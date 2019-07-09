@@ -89,20 +89,16 @@ SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           bi kklti nfi ccsi di hni ncli vfmi fi ahi sbki sdi saai sabi saci hbi \
           shi rpqdi rpqti rcpi gdwi saii saiii
 
-
-# for make -j
-# does not work...
-#.PHONY: parasub $(SUBDIRS)
-
-#parasub: $(SUBDIRS)
-
-#$(SUBDIRS):
-#	@$(MAKE) -C $@
-
-#all: parasub
+#in parallel (bugged)
+#.PHONY: #(SUBDIRS)
+##(SUBDIRS):
+#	#(MAKE) -C #@ #(MAKECMDGOALS)
+#all install check test: #(SUBDIRS)
 
 #make clean does not remove modules by default
 clean-local: clean-modules
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
 
+
+.NOTPARALLEL:

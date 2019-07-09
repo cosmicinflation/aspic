@@ -8,7 +8,7 @@
 
 
 module ccsi2sr
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,tolkp,toldp,transfert
   use inftools, only : zbrent
   use ccsicommon, only : ccsi_norm_potential, ccsi_norm_deriv_potential
   use ccsicommon, only : ccsi_norm_deriv_second_potential
@@ -143,7 +143,7 @@ contains
     endif
 
     xinimin = ccsi2_numacc_xinimin(alpha)
-       
+
     ccsi2_numacc_xendmin = ccsi2_x_trajectory(efold,xinimin,alpha)
 
   end function ccsi2_numacc_xendmin
@@ -202,7 +202,7 @@ contains
        mini = xEnd
        maxi = ccsiBig
     endif
-       
+
 
     ccsi2Data%real1 = alpha
     ccsi2Data%real2 = -bfold + ccsi2_efold_primitive(xend,alpha)

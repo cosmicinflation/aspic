@@ -37,7 +37,7 @@ contains
 
     mini = ccsi2_numacc_xinimin(alpha)
     maxi = xend
-
+    
     ccsi2_x_star = ccsi_x_star(alpha,w,lnRhoReh,Pstar,xend,mini,maxi,bfoldstar)
 
   end function ccsi2_x_star
@@ -114,7 +114,7 @@ contains
     epsOneStar = ccsi2_epsilon_one(x,alpha)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi2_lnrhoreh_max: slow-roll violated!'
-    
+
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
     ccsi2_lnrhoreh_max = lnRhoEnd

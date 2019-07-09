@@ -7,7 +7,7 @@
 
 
 module ccsicommon
-  use infprec, only : kp,tolkp,transfert
+  use infprec, only : kp,tolkp,toldp,transfert
   use specialinf, only : lambert
 #ifdef NOF08
   use specialinf, only : atanh
@@ -26,7 +26,7 @@ module ccsicommon
   public ccsi_numacc_x_epsonenull
 
 !because we use exp(x) everywhere
-  real(kp), parameter :: ccsiBig = log(epsilon(1._kp)*huge(1._kp))
+  real(kp), parameter :: ccsiBig = log(epsilon(1._8)*huge(1._8))
   real(kp), parameter :: ccsiSmall = epsilon(1._kp)
 
   public ccsiBig, ccsiSmall
@@ -327,6 +327,7 @@ contains
   
     ccsi_efold_primitive = real(cprim,kp) * 3._kp/8._kp
 
+    
   end function ccsi_efold_primitive
 
   function find_ccsi_x_trajectory(x,ccsiData)    
@@ -364,7 +365,7 @@ contains
     real(kp) :: ccsih_x_trajectory
 
     if (alpha.ne.0._kp) stop 'ccsih_x_trajectory: alpha is not vanishing!'
-
+    
     ccsih_x_trajectory = (4._kp/3._kp*bfold+xend-exp(xend)- &
          lambert(-exp(4._kp/3._kp*bfold+xend-exp(xend)),-1))
       

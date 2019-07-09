@@ -8,7 +8,7 @@
 !
 !
 module saii1sr
-  use infprec, only : kp, tolkp, transfert
+  use infprec, only : kp, tolkp, toldp, transfert
   use inftools, only : zbrent
   use saiicommon, only : saii_norm_potential, saii_norm_deriv_potential
   use saiicommon, only : saii_norm_deriv_second_potential
@@ -27,7 +27,7 @@ module saii1sr
   public saii1_numacc_xinimax, saii1_numacc_efoldmax, saii1_numacc_mumin
 
 !numerical accuracy limitation
-  real(kp), parameter :: epsnumacc = 10._kp*tolkp
+  real(kp), parameter :: epsnumacc = 10._kp*toldp
   
   
 contains

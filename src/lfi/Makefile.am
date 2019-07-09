@@ -14,7 +14,6 @@ liblfi_la_include_HEADERS = $(MOD)
 
 man_MANS = aspic_lfi.3
 
-
 clean-local: clean-modules clean-outfiles
 clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)

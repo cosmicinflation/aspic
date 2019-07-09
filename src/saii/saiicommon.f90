@@ -7,7 +7,7 @@
 !with no assumptions on alpha and mu
 !
 module saiicommon
-  use infprec, only : kp, tolkp, transfert, pi
+  use infprec, only : kp, tolkp, toldp, transfert, pi
   use inftools, only : zbrent, easydverk
 
   implicit none
@@ -396,7 +396,7 @@ contains
     real(kp) :: alpha,cosx,sinx
 !the expansion is accurate up to order 3, and we take a factor of ten
 !margin
-    real(kp), parameter :: xtaylor = 10._kp*epsilon(1._kp)**(1._kp/3._kp)
+    real(kp), parameter :: xtaylor = 10._kp*epsilon(toldp)**(1._kp/3._kp)
 
     alpha = saiiData%real1
 

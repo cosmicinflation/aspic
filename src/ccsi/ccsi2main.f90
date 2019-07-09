@@ -87,8 +87,9 @@ program ccsi2main
 
      lnRhoRehMin = lnRhoNuc
      xendmin = ccsi2_numacc_xendmin(120._kp,alpha)
-     xendmax = 5*xendmin
+     xendmax = 5._kp*xendmin
 
+     
      do k=0,Ne
 
         xend = xendmin + (xendmax-xendmin)*real(k,kp)/Ne

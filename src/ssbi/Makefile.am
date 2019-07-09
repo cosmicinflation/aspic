@@ -5,6 +5,7 @@ SRC = ssbicommon.f90 ssbicomreh.f90 \
 	ssbi4sr.f90 ssbi4reheat.f90 \
 	ssbi5sr.f90 ssbi5reheat.f90 \
 	ssbi6sr.f90 ssbi6reheat.f90 
+
 MOD = ssbicommon.$(FC_MODEXT) ssbicomreh.$(FC_MODEXT) \
 	ssbi1sr.$(FC_MODEXT) ssbi1reheat.$(FC_MODEXT) \
 	ssbi2sr.$(FC_MODEXT) ssbi2reheat.$(FC_MODEXT) \
@@ -46,7 +47,5 @@ clean-modules:
 	test -z "$(FC_MODEXT)" || $(RM) *.$(FC_MODEXT)
 clean-outfiles:
 	test -z "$(DATEXT)" || $(RM) *.$(DATEXT)
-
-
 
 .NOTPARALLEL:
