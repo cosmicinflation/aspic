@@ -36,7 +36,7 @@ module saiiicommon
 !-2 sinc(x) at its first non-vanishing maximum
   real(kp), parameter :: beta3 = -0.256749107051798273386061556467739004321436872134_kp
 
-  real(kp), parameter :: saiiiXBig = log(toldp*huge(toldp))
+  real(kp), parameter :: saiiiXBig = log(epsilon(1._8)*huge(1._8))
   real(kp), parameter :: saiiiAlphaBig = 1._kp/toldp
   
   public beta0, beta1, beta2, beta3, saiiiXBig

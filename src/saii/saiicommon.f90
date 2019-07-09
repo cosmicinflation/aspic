@@ -396,7 +396,7 @@ contains
     real(kp) :: alpha,cosx,sinx
 !the expansion is accurate up to order 3, and we take a factor of ten
 !margin
-    real(kp), parameter :: xtaylor = 10._kp*epsilon(toldp)**(1._kp/3._kp)
+    real(kp), parameter :: xtaylor = 10._kp*epsilon(1._8)**(1._kp/3._kp)
 
     alpha = saiiData%real1
 
