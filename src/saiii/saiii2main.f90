@@ -13,14 +13,15 @@ program saiii2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use saiiicommon, only : saiii_x_potmax, beta2,beta3
-  use saiiicommon, only : saiii_alpha_potneg
+  use saiiicommon, only : saiii_x_potmax, beta1,beta2,beta3,beta0
+  use saiiicommon, only : saiii_alpha_potneg, saiii_alpha_one, saiii_alpha_two, saiii_alpha_three
+  use saiiicommon, only : saiii_x_epsoneunity, saiii_x_potzero
   
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
-  
 
-  
+
+
   implicit none
 
 
@@ -37,14 +38,14 @@ program saiii2main
   integer, parameter :: Nb = 3
   real(kp) :: betamin
   real(kp) :: betamax
-  
+
   integer, parameter :: Nmu=60
   real(kp) :: mumin = 0.1_kp
   real(kp) :: mumax = 100._kp
-  
+
   real(kp) :: xmin = 0
   real(kp) :: xmax = 7
-  
+
   real(kp) :: alpha,beta,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
@@ -54,41 +55,193 @@ program saiii2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  real(kp) :: V1,x,V
-
+  real(kp) :: V1,x,V,alpha1,alpha2,alpha3,alphan, alphav
+  real(kp), dimension(3) :: xvzero
+  real(kp), dimension(2) :: xeps
+  real(kp) :: xvmax
+  
+  logical, parameter :: dumpExtra = .true.
 
   
   Pstar = powerAmpScalar
 
 
-  call delete_file('saiii2_potential.dat')
-  call delete_file('saiii2_slowroll.dat')
+  if (dumpExtra) then
+  
+     call delete_file('saiii2_alpha1.dat')
+     call delete_file('saiii2_alpha2.dat')
+     call delete_file('saiii2_alpha3.dat')
+     call delete_file('saiii2_alphan.dat')
+     call delete_file('saiii2_alphav.dat')
+
+
+     betamin = -2
+     betamax = 4
+
+     n=500
+
+     do i=1,n
+        beta = betamin + real(i-1,kp)*(betamax-betamin)/real(n-1,kp)        
+
+        alpha2=0.
+        alphan=0.
+        alphav=0.
+
+        if (beta.gt.beta0) then
+           alpha2 = saiii_alpha_two(beta)
+
+           call livewrite('saiii2_alpha2.dat',beta,alpha2)
+
+        endif
+
+        if ((beta.gt.beta3).and.(beta.lt.beta2)) then
+           alphan = saiii_alpha_potneg(beta)
+
+           call livewrite('saiii2_alphan.dat',beta,alphan)
+
+        endif
+
+        if ((beta.gt.-2._kp).and.(beta.lt.0._kp)) then
+
+
+           alphav = -1._kp/(beta+2._kp)
+
+           call livewrite('saiii2_alphav.dat',beta,alphav)
+
+        endif
+
+     enddo
+
+     betamin = -4._kp
+     betamax = -1._kp
+     do i=1,n
+
+        beta = betamin + real(i-1,kp)*(betamax-betamin)/real(n-1,kp) 
+
+        alpha1 = saiii_alpha_one(beta)
+
+        call livewrite('saiii2_alpha1.dat',beta,alpha1)
+
+     enddo
+
+     betamin = beta1
+     betamax = -1._kp
+     do i=1,n
+
+        beta = betamin + real(i-1,kp)*(betamax-betamin)/real(n-1,kp) 
+
+        alpha3 = saiii_alpha_three(beta)
+
+        call livewrite('saiii2_alpha3.dat',beta,alpha3)
+
+     enddo
+
+
+     n=250
+     
+     call delete_file('saiii2_xV_1.dat')
+     call delete_file('saiii2_xeps_1.dat')
+
+     alphamin = -1.2_kp
+     alphamax = -0.01_kp
+     beta = -0.6
+
+     do i=1,n
+
+        alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp) 
+
+        xvmax = saiii_x_potmax(alpha,beta,mu)
+        xvzero = saiii_x_potzero(alpha,beta,mu)
+
+
+        call livewrite('saiii2_xV_1.dat',alpha,xvmax,xvzero(1),xvzero(2))
+
+        xeps = saiii_x_epsoneunity(alpha,beta,mu=10._kp)
+
+        call livewrite('saiii2_xeps_1.dat',alpha,xeps(1),xeps(2))
+
+     enddo
+
+
+     call delete_file('saiii2_xV_2.dat')
+     call delete_file('saiii2_xeps_2.dat')
+
+     alphamin = -1.2_kp
+     alphamax = -0.01_kp
+     beta = -0.1
+
+     do i=1,n
+
+        alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp) 
+
+        xvmax = saiii_x_potmax(alpha,beta,mu)
+        xvzero = saiii_x_potzero(alpha,beta,mu)
+
+        call livewrite('saiii2_xV_2.dat',alpha,xvmax,xvzero(1),xvzero(2))
+           
+        xeps = saiii_x_epsoneunity(alpha,beta,mu=10._kp)
+
+        call livewrite('saiii2_xeps_2.dat',alpha,xeps(1),xeps(2))
+
+     enddo
+
+
+     call delete_file('saiii2_xV_3.dat')
+     call delete_file('saiii2_xeps_3.dat')
+
+     alphamin = 0.01_kp
+     alphamax = 1.2_kp
+     beta = 0.1
+
+     do i=1,n
+
+        alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp) 
+
+        xvmax = saiii_x_potmax(alpha,beta,mu)
+        xvzero = saiii_x_potzero(alpha,beta,mu)
+
+
+        call livewrite('saiii2_xV_3.dat',alpha,xvmax,xvzero(1),xvzero(2))
+
+        xeps = saiii_x_epsoneunity(alpha,beta,mu=10._kp)
+
+        call livewrite('saiii2_xeps_3.dat',alpha,xeps(1),xeps(2))
+
+     enddo
+
+
+
+     call delete_file('saiii2_xV_4.dat')
+     call delete_file('saiii2_xeps_4.dat')
+
+     alphamin = 0.01_kp
+     alphamax = 1.2_kp
+     beta = 0.6
+
+     do i=1,n
+
+        alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp) 
+
+        xvmax = saiii_x_potmax(alpha,beta,mu)
+        xvzero = saiii_x_potzero(alpha,beta,mu)
+
+
+        call livewrite('saiii2_xV_4.dat',alpha,xvmax,xvzero(1),xvzero(2),xvzero(3))
+
+        xeps = saiii_x_epsoneunity(alpha,beta,mu=10._kp)
+
+        call livewrite('saiii2_xeps_4.dat',alpha,xeps(1),xeps(2))
+
+     enddo
+
+
+
+  endif
+
+
+
 
   
-  alpha = 0.5_kp
-  beta = 0.05_kp
-  mu=1._kp
-
-  n=250
-
-  
-  do i=1,n
-     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
-
-     V1 = saiii2_norm_potential(x,alpha,beta,mu)
-        
-
-     call livewrite('saiii2_potential.dat',x,V1)
-
-     eps1 = saiii2_epsilon_one(x,alpha,beta,mu)
-     eps2 = saiii2_epsilon_two(x,alpha,beta,mu)
-     eps3 = saiii2_epsilon_three(x,alpha,beta,mu)
-
-     call livewrite('saiii2_slowroll.dat',x,eps1,eps2,eps3)
-
-  enddo
-
- 
   call delete_file('saiii2_predic.dat')
   call delete_file('saiii2_nsr.dat')
 
@@ -102,16 +255,16 @@ program saiii2main
 
 
 !$omp section
-  
-  
+
+
   call aspicwrite_header('saiii2p',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
-  
+
   w=0._kp
 
 
   betamin = 0.02_kp
   betamax = 0.9*beta2
-  
+
   do l=1,Nb
      beta = betamin +  real(l-1,kp)*(betamax - betamin)/real(Nb-1,kp)
 
@@ -119,7 +272,7 @@ program saiii2main
      alphamax = 5._kp*alphamin
 
      print *,'beta alphamin alphamax',beta, alphamin,alphamax
-     
+
      do k=1,Na
 
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
@@ -127,7 +280,7 @@ program saiii2main
         mumin = saiii2_numacc_mumin(120._kp,alpha,beta)
 
         print *,'mumin= ',mumin
-        
+
         do j=0,Nmu 
 
            mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
@@ -181,23 +334,23 @@ program saiii2main
   call aspicwrite_end()
 
 !$omp section
-  
+
   call aspicwrite_header('saiii2m',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','beta '/))
-  
+
   w=0._kp
 
 
   betamin = 0.9*beta3
   betamax = -0.02_kp
-  
+
   do l=1,Nb
      beta = betamin +  real(l-1,kp)*(betamax - betamin)/real(Nb-1,kp)
 
      alphamax = 1.01_kp*saiii_alpha_potneg(beta)
      alphamin = 5._kp*alphamax
-     
+
      print *,'beta alphamin alphamax',beta, alphamin,alphamax
-     
+
      do k=1,Na
 
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
@@ -205,7 +358,7 @@ program saiii2main
         mumin = saiii2_numacc_mumin(120._kp,alpha,beta)
 
         print *,'mumin= ',mumin
-        
+
         do j=0,Nmu 
 
            mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
@@ -263,12 +416,12 @@ program saiii2main
 !$omp end parallel sections
 
 
-  
+
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
 
-  
+
   lnRradmin=-42
   lnRradmax = 10
 

@@ -43,7 +43,7 @@ program saiii1main
   real(kp) :: mumax = 100._kp
   
   real(kp) :: xmin = 0
-  real(kp) :: xmax = 7
+  real(kp) :: xmax = 8
   
   real(kp) :: alpha,beta,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -54,7 +54,7 @@ program saiii1main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  real(kp) :: V1,x,V
+  real(kp) :: V1,x,V,V2
 
 
   
@@ -64,25 +64,22 @@ program saiii1main
   call delete_file('saiii1_potential.dat')
   call delete_file('saiii1_slowroll.dat')
 
-  
-  alpha = 0.3_kp
-  beta = 0.9_kp
-  mu=1._kp
-
   n=250
 
   
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
 
-     V1 = saiii1_norm_potential(x,alpha,beta,mu)
-        
+     V = saiii1_norm_potential(x,alpha=0.8_kp,beta=0.1_kp,mu=1._kp)
+     
+     V1 = saiii1_norm_potential(x,alpha=-1.2_kp,beta=-0.5_kp,mu=1._kp)
 
-     call livewrite('saiii1_potential.dat',x,V1)
 
-     eps1 = saiii1_epsilon_one(x,alpha,beta,mu)
-     eps2 = saiii1_epsilon_two(x,alpha,beta,mu)
-     eps3 = saiii1_epsilon_three(x,alpha,beta,mu)
+     call livewrite('saiii1_potential.dat',x,V,V1)
+
+     eps1 = saiii1_epsilon_one(x,alpha=0.8_kp,beta=0.1_kp,mu=20._kp)
+     eps2 = saiii1_epsilon_two(x,alpha=0.8_kp,beta=0.1_kp,mu=20._kp)
+     eps3 = saiii1_epsilon_three(x,alpha=0.8_kp,beta=0.1_kp,mu=20._kp)
 
      call livewrite('saiii1_slowroll.dat',x,eps1,eps2,eps3)
 

@@ -14,6 +14,8 @@ program saiii3main
 
   use saiiicommon, only : beta0, beta1, beta2, beta3
   use saiiicommon, only : saiii_alpha_one, saiii_alpha_two, saiii_alpha_three
+  use saiiicommon, only : saiii_x_epsoneunity, saiii_x_potzero
+
   
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -37,12 +39,12 @@ program saiii3main
   real(kp) :: betamin
   real(kp) :: betamax
   
-  integer, parameter :: Nmu=60
+  integer, parameter :: Nmu=59
   real(kp) :: mumin = 0.1_kp
   real(kp) :: mumax = 100._kp
   
   real(kp) :: xmin = 0
-  real(kp) :: xmax = 7
+  real(kp) :: xmax = 10
   
   real(kp) :: alpha,beta,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -54,40 +56,99 @@ program saiii3main
   real(kp) :: VendOverVstar, eps1End, xend
 
   real(kp) :: V1,x,V
+  real(kp), dimension(3) :: xvzero
+  real(kp), dimension(2) :: xeps
 
-
+  
+  logical :: dumpExtra = .true.
   
   Pstar = powerAmpScalar
 
 
-  call delete_file('saiii3_potential.dat')
-  call delete_file('saiii3_slowroll.dat')
-
-  
-  alpha = 2.0_kp
-  beta = 2.5_kp
-  mu=1._kp
-
-  n=250
-
-  
-  do i=1,n
-     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
-
-     V1 = saiii3_norm_potential(x,alpha,beta,mu)
-        
-
-     call livewrite('saiii3_potential.dat',x,V1)
-
-     eps1 = saiii3_epsilon_one(x,alpha,beta,mu)
-     eps2 = saiii3_epsilon_two(x,alpha,beta,mu)
-     eps3 = saiii3_epsilon_three(x,alpha,beta,mu)
-
-     call livewrite('saiii3_slowroll.dat',x,eps1,eps2,eps3)
-
-  enddo
-
  
+
+  if (dumpExtra) then
+
+
+     call delete_file('saiii3_potential.dat')
+     call delete_file('saiii3_slowroll.dat')
+
+  
+     n=500
+
+
+     do i=1,n
+        x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+
+        V = saiii3_norm_potential(x,alpha=1._kp,beta=2._kp,mu=1._kp)
+        V1 = saiii3_norm_potential(x,alpha=-2._kp,beta=-1.2_kp,mu=1._kp)
+
+
+        call livewrite('saiii3_potential.dat',x,V,V1)
+
+        eps1 = saiii3_epsilon_one(x,alpha=1._kp,beta=2._kp,mu=40._kp)
+        eps2 = saiii3_epsilon_two(x,alpha=1._kp,beta=2._kp,mu=40._kp)
+        eps3 = saiii3_epsilon_three(x,alpha=1._kp,beta=2._kp,mu=40._kp)
+
+
+        call livewrite('saiii3_slowroll.dat',x,eps1,eps2,eps3)
+
+     enddo
+
+
+     n=250
+
+     call delete_file('saiii3_xV_1.dat')
+     call delete_file('saiii3_xeps_1.dat')
+
+     beta = -1.5
+     alphamin = -3_kp
+     alphamax = saiii_alpha_one(beta)
+
+     
+     do i=1,n
+
+        alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp) 
+
+        xvzero = saiii_x_potzero(alpha,beta,mu)
+        
+        call livewrite('saiii3_xV_1.dat',alpha,xvzero(1),xvzero(2))
+
+        xeps = saiii_x_epsoneunity(alpha,beta,mu=10._kp)
+
+        call livewrite('saiii3_xeps_1.dat',alpha,xeps(1),xeps(2))
+
+     enddo
+
+
+     call delete_file('saiii3_xV_2.dat')
+     call delete_file('saiii3_xeps_2.dat')
+
+
+     beta = 1.5_kp
+     alphamin = saiii_alpha_two(beta)
+     alphamax = 3._kp
+
+     do i=1,n
+
+        alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp) 
+
+        xvzero = saiii_x_potzero(alpha,beta,mu)
+
+        call livewrite('saiii3_xV_2.dat',alpha,xvzero(1),xvzero(2))
+
+        xeps = saiii_x_epsoneunity(alpha,beta,mu=10._kp)
+        print *,xeps,saiii3_epsilon_one(xeps(1),alpha,beta,mu=10._kp)
+        call livewrite('saiii3_xeps_2.dat',alpha,xeps(1),xeps(2))
+
+     enddo
+
+  endif
+
+
+
+
+  
   call delete_file('saiii3_predic.dat')
   call delete_file('saiii3_nsr.dat')
 

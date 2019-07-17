@@ -1,5 +1,5 @@
 program saii2main
-  use infprec, only : kp
+  use infprec, only : kp, pi
   use cosmopar, only : lnRhoNuc, powerAmpScalar
   use saii2sr, only : saii2_epsilon_one, saii2_epsilon_two, saii2_epsilon_three
   use saii2reheat, only : saii2_lnrhoreh_max, saii2_x_star
@@ -13,7 +13,7 @@ program saii2main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use saiicommon, only : saii_x_potmax
+  use saiicommon, only : saii_x_potmax, saii_x_potzero, saii_x_epsoneunity
   
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -29,9 +29,9 @@ program saii2main
   integer :: npts = 15
 
 
-  integer, parameter :: Na = 4
-  real(kp), parameter :: alphamin=-1.2_kp
-  real(kp), parameter :: alphamax=1.2_kp
+  integer, parameter :: Na = 3
+  real(kp) :: alphamin
+  real(kp) :: alphamax
 
   integer, parameter :: Nmu=100
   real(kp) :: mumin = 0.1_kp
@@ -49,41 +49,52 @@ program saii2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  real(kp) :: V1,x,V
+  real(kp) :: V1,x,V,xvmax,xvzerop, xvzero, xvzerom
 
-
+  real(kp), dimension(2) :: xeps
   
   Pstar = powerAmpScalar
 
-
-  call delete_file('saii2_potential.dat')
-  call delete_file('saii2_slowroll.dat')
+  call delete_file('saii2_xV.dat')
+  call delete_file('saii_xeps.dat')
 
   
-  alpha = 0.3_kp
   mu=1._kp
 
   n=250
 
+  alphamin = -1.2_kp
+  alphamax = 1.2_kp
   
   do i=1,n
-     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+     alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(n-1,kp)        
 
-     V = saii2_norm_potential(x,alpha=-1._kp,mu=1._kp)
-     V1 = saii2_norm_potential(x,alpha,mu)
-        
+     xvmax = saii_x_potmax(alpha,mu)
+     xvzero = saii_x_potzero(alpha,mu)
 
-     call livewrite('saii2_potential.dat',x,V1,V)
+     if (alpha.le.-0.5_kp) then
+        xvzerom = xvzero
+        xvzerop = 2._kp*pi
+     elseif (alpha.le.0._kp) then
+        xvzerom = 0._kp
+        xvzerop = 2._kp*pi
+     else
+        xvzerom = 0._kp
+        xvzerop = xvzero
+     endif
+     
+     call livewrite('saii2_xV.dat',alpha,xvmax,xvzerop,xvzerom)
 
-     eps1 = saii2_epsilon_one(x,alpha,mu)
-     eps2 = saii2_epsilon_two(x,alpha,mu)
-     eps3 = saii2_epsilon_three(x,alpha,mu)
-
-     call livewrite('saii2_slowroll.dat',x,eps1,eps2,eps3)
+     xeps = saii_x_epsoneunity(alpha,mu=10._kp)
+     
+     call livewrite('saii_xeps.dat',alpha,xeps(1),xeps(2))
 
   enddo
 
- 
+  alphamin = -0.8_kp
+  alphamax = 0.6_kp
+
+  
   call delete_file('saii2_predic.dat')
   call delete_file('saii2_nsr.dat')
 
@@ -113,7 +124,7 @@ program saii2main
 
         print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-        do i=1,npts
+        do i=npts,1,-1
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 

@@ -157,7 +157,7 @@ contains
          /((2._kp + x**2*alpha*beta - 2._kp*cosx + 2._kp*x*alpha*sinx)**2 &
          *(2._kp + alpha*(4._kp - 2._kp*beta + alpha*(1._kp + x**2*(2._kp + beta**2))) &
          +(-2._kp - 4._kp*alpha + alpha*(2._kp + x**2*(-1._kp + 2*alpha))*beta)*cosx &
-         - alpha**2*cos2x + x*alpha*(2._kp + (4._kp + (2._kp + x**2)*alpha)*beta)*sinx)))
+         - alpha**2*cos2x + x*alpha*(2._kp + (4._kp + (2._kp + x**2)*alpha)*beta)*sinx)))/mu/mu
    
 
   end function saiii_epsilon_three
