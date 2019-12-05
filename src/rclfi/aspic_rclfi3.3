@@ -1,0 +1,111 @@
+.TH librclfi 3 "December 5, 2019" "libaspic" "Module convention" 
+
+.SH NAME
+.I rclfi3
+- the radiatively corrected large field inflation 3 module, for
+  decreasing field values towards the negative minimum of the potential
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ x^p + alpha x^4 ln(x) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/mu
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha
+.RS
+.I real(kp)
+::
+.B p
+.RS
+.RE
+.I real(kp)
+::
+.B mu/Mp
+.RE
+
+.SH DESCRIPTION
+The
+.I rclfi3
+module is used for the radiatively corrected large field inflation
+when inflation occurs at decreasing field values towards the negative
+minimum of the potential, namely in the region for which 'x >
+xVzero', the value at which it is vanishing and becomes negative. In
+this regime, inflation naturally ends at a 'xend > xVzero', a
+value returned by the
+.I real(kp)
+function
+.IP
+.BR rclfi3_x_endinf (alpha,p,mu).
+.RS
+.RE
+
+The potential does not exhibit a negative minimum for all values
+of 'alpha' and 'p'. Therefore, the model exists only within various
+disconnected regions of the parameter space. One should have
+.IP
+p > 4 and alpha > 0
+.P
+or
+.IP
+p > 4 and alpha < alpha0(p)
+.P
+or
+.IP
+p < 4 and alpha > alpha0(p)
+.P
+where 'alpha0' is a function of 'p' coded in the
+.I real(kp)
+function
+.IP
+.BR rclfi_alpha_zero (p).
+.RS
+.RE
+
+available in a module named
+.BR rclficommon .
+Let us notice that the value of 'p=4' is singular, but in that case
+the model becomes
+.BR rcqi .
+.RS
+.RE
+The field value at which the potential is vanishing and becomes negative is given by the
+.I real(kp)
+function
+.IP
+.BR rclfi3_x_potzero(alpha,p,mu) ,
+.RS
+.RE
+
+For parameter values 'p' very close to '4' and 'alpha' very close to 'alpha0',
+numerical accuracy issues can appear. The
+module
+.BR rclfi3sr
+.RS
+.RE
+contains various numerical accuracy functions to determine the initial
+field values compatible with current machine accuracy, their name is of the
+form
+.BR *_numacc_*() .
+.RS
+.RE
+
+Moreover, this model shares a few peculiar functions with
+.I rclfi1
+.I rclfi2
+and
+.I rclfi4
+in a module named
+.BR rclficommon .
+Please check the source code of
+.B rclficommon
+for more details.
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

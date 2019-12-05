@@ -1,0 +1,86 @@
+.TH librclfi 3 "December 5, 2019" "libaspic" "Module convention" 
+
+.SH NAME
+.I rclfi4
+- the radiatively corrected large field inflation 4 module, for
+  decreasing field values when the potential is a monotonous
+  increasing function of the field values (no extrema)
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ x^p + alpha x^4 ln(x) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/mu
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha
+.RS
+.I real(kp)
+::
+.B p
+.RS
+.RE
+.I real(kp)
+::
+.B mu/Mp
+.RE
+
+.SH DESCRIPTION
+The
+.I rclfi4
+module is used for the radiatively corrected large field inflation
+when inflation occurs at decreasing field values towards the origin
+and when the potential does not have any extrema. In this regime,
+inflation naturally ends at a 'xend > 0', a value returned by the
+.I real(kp)
+function
+.IP
+.BR rclfi4_x_endinf (alpha,p,mu).
+.RS
+.RE
+
+The potential is not a monotonous growing function of 'x' for all
+values of 'alpha' and 'p'. Therefore, the model exists only within
+various disconnected regions of the parameter space. One should have
+.IP
+p > 4 and alpha1(p) < alpha < 0
+.P
+or
+.IP
+p < 4 and 0 < alpha < alpha1(p)
+.P
+where 'alpha1' is a function of 'p' coded in the
+.I real(kp)
+function
+.IP
+.BR rclfi_alpha_one (p).
+.RS
+.RE
+
+available in a module named
+.BR rclficommon .
+Let us notice that the value of 'p=4' is singular, but in that case
+the model becomes
+.BR rcqi .
+.RS
+.RE
+
+Moreover, this model shares a few peculiar functions with
+.I rclfi1
+.I rclfi2
+and
+.I rclfi3
+in a module named
+.BR rclficommon .
+Please check the source code of
+.B rclficommon
+for more details.
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
