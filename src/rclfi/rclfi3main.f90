@@ -29,7 +29,7 @@ program rclfi3main
   integer :: npts = 15
 
 
-  integer, parameter :: Na = 3
+  integer, parameter :: Na = 2
   real(kp) :: alphamin
   real(kp) :: alphamax
 
@@ -37,9 +37,9 @@ program rclfi3main
   real(kp) :: pmin
   real(kp) :: pmax
   
-  integer, parameter :: Nmu=10
-  real(kp) :: mumin = 0.1_kp
-  real(kp) :: mumax = 10000._kp
+  integer, parameter :: Nmu=60
+  real(kp) :: mumin = 0.01_kp
+  real(kp) :: mumax = 2000._kp
   
   real(kp) :: xmin = 0
   real(kp) :: xmax = 8
@@ -58,11 +58,19 @@ program rclfi3main
   
   Pstar = powerAmpScalar
  
-  call delete_file('rclfi3_predic.dat')
-  call delete_file('rclfi3_nsr.dat')
+
+!$omp parallel sections &
+!$omp default(shared) &
+!$omp private(alphamin,alphamax,pmin,pmax) &  
+!$omp private(alpha,p,l,k,i,j,mu,xmin,xmax) &  
+!$omp private(lnRhoRehMax,xend,lnRhoRehMin,lnRhoReh,bfoldstar) &
+!$omp private(xstar,w,eps1,eps2,eps3,logErehGeV,Treh,ns,r)
+
+
+!$omp section
 
   
-  call aspicwrite_header('rclfi3_pgt4_ap',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  call aspicwrite_header('rclfi3pp',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
   
   w=0._kp
 
@@ -72,8 +80,8 @@ program rclfi3main
   do l=1,Np
      p = pmin +  real(l-1,kp)*(pmax - pmin)/real(Np-1,kp)
      
-     alphamin = 0.1_kp
-     alphamax = 10._kp
+     alphamin = 0.5_kp
+     alphamax = 50._kp
 
      print *,'p alphamin alphamax',p, alphamin,alphamax
      
@@ -116,9 +124,6 @@ program rclfi3main
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
 
-              call livewrite('rclfi3_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))
@@ -130,8 +135,9 @@ program rclfi3main
   enddo
   call aspicwrite_end()
 
-  
-  call aspicwrite_header('rclfi3_pgt4_an',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+!$omp section
+
+  call aspicwrite_header('rclfi3pm',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
 
   w=0._kp
 
@@ -188,9 +194,6 @@ program rclfi3main
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
 
-              call livewrite('rclfi3_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))
@@ -202,20 +205,21 @@ program rclfi3main
   enddo
   call aspicwrite_end()
 
-  
-  call aspicwrite_header('rclfi3_plt4_ap',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+!$omp section
+
+  call aspicwrite_header('rclfi3mp',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
 
   w=0._kp
 
   
   pmin = 1.0_kp
-  pmax = 3.9_kp
+  pmax = 3.5_kp
 
   
   do l=1,Np
      p = pmin +  real(l-1,kp)*(pmax - pmin)/real(Np-1,kp)
 
-     alphamin = 1.01_kp*rclfi_alpha_zero(p)
+     alphamin = 1.1_kp*rclfi_alpha_zero(p)
      alphamax = 10._kp*alphamin
      
      print *,'p pmax alphamin alphamax',p, pmax, alphamin,alphamax
@@ -277,7 +281,7 @@ program rclfi3main
   enddo
   call aspicwrite_end()
  
-
+!$omp end parallel sections
   
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'

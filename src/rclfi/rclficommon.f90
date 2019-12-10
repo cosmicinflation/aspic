@@ -222,7 +222,7 @@ contains
        write(*,*)'alpha= p= ',alpha,p,arg
        stop 'rclfi_x_potzero: (p-4)/alpha < -1/e!'
     endif
-       
+    
   end function rclfi_x_potzero
   
 

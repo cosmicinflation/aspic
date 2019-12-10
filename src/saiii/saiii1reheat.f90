@@ -99,8 +99,11 @@ contains
     potStar = saiii1_norm_potential(x,alpha,beta,mu)
     epsOneStar = saiii1_epsilon_one(x,alpha,beta,mu)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'saiii1_lnrhoreh_max: slow-roll violated!'
-    
+    if (.not.slowroll_validity(epsOneStar)) then
+       write(*,*)'alpha= beta= mu= ',alpha,beta,mu
+       write(*,*) 'saiii1_lnrhoreh_max: slow-roll violated!'
+    endif
+       
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
     saiii1_lnrhoreh_max = lnRhoEnd

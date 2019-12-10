@@ -30,7 +30,7 @@ program rclfi2main
   integer :: npts = 15
 
 
-  integer, parameter :: Na = 3
+  integer, parameter :: Na = 2
   real(kp) :: alphamin
   real(kp) :: alphamax
 
@@ -38,9 +38,9 @@ program rclfi2main
   real(kp) :: pmin
   real(kp) :: pmax
   
-  integer, parameter :: Nmu=10
-  real(kp) :: mumin = 0.1_kp
-  real(kp) :: mumax = 10000._kp
+  integer, parameter :: Nmu=50
+  real(kp) :: mumin = 0.0001_kp
+  real(kp) :: mumax = 1000._kp
   
   real(kp) :: xmin = 0
   real(kp) :: xmax = 8
@@ -59,10 +59,7 @@ program rclfi2main
   
   Pstar = powerAmpScalar
  
-  call delete_file('rclfi2_predic.dat')
-  call delete_file('rclfi2_nsr.dat')
-  
-  call aspicwrite_header('rclfi2_pgt4_an',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  call aspicwrite_header('rclfi2pm',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
   
   w=0._kp
 
@@ -86,6 +83,7 @@ program rclfi2main
         mumin = rclfi2_numacc_mumin(120._kp,alpha,p)
 
         print *,'mumin= ',mumin
+        if (mumin.gt.mumax) cycle
         
         do j=0,Nmu 
 
@@ -125,10 +123,6 @@ program rclfi2main
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
 
-              call livewrite('rclfi2_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))
 
@@ -140,7 +134,7 @@ program rclfi2main
   call aspicwrite_end()
 
   
-  call aspicwrite_header('rclfi2_plt4_an',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  call aspicwrite_header('rclfi2mm',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
 
   w=0._kp
 
@@ -161,7 +155,8 @@ program rclfi2main
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
 
         mumin = rclfi2_numacc_mumin(120._kp,alpha,p)
-
+        if (mumin.gt.mumax) cycle
+        
         print *,'mumin= ',mumin
 
         do j=0,Nmu 
@@ -202,10 +197,6 @@ program rclfi2main
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
 
-              call livewrite('rclfi2_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))
 
@@ -217,7 +208,7 @@ program rclfi2main
   call aspicwrite_end()
 
   
-  call aspicwrite_header('rclfi2_plt4_ap',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  call aspicwrite_header('rclfi2mp',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
 
   w=0._kp
 
@@ -242,7 +233,8 @@ program rclfi2main
         print *,'p= alpha= ',p,alpha
         
         mumin = rclfi2_numacc_mumin(120._kp,alpha,p)
-
+        if (mumin.gt.mumax) cycle
+        
         print *,'mumin= ',mumin
 
         do j=0,Nmu 

@@ -77,6 +77,17 @@ rpi2		\mathrm{R}p\mathrm{I}_2
 rpi3		\mathrm{R}p\mathrm{I}_3
 rpqdi		\mathrm{RPQDI}
 rpqti		\mathrm{RPQTI}
+rclfi1pm	\mathrm{RCLFI}_{1+-}
+rclfi1mm	\mathrm{RCLFI}_{1--}
+rclfi1mp	\mathrm{RCLFI}_{1-+}
+rclfi2pm	\mathrm{RCLFI}_{2+-}
+rclfi2mm	\mathrm{RCLFI}_{2--}
+rclfi2mp	\mathrm{RCLFI}_{2-+}
+rclfi3pp	\mathrm{RCLFI}_{3++}
+rclfi3pm	\mathrm{RCLFI}_{3+-}
+rclfi3mp	\mathrm{RCLFI}_{3-+}
+rclfi4p		\mathrm{RCLFI}_{4+}
+rclfi4m		\mathrm{RCLFI}_{4-}
 saii1		\mathrm{SAII}_1
 saii2		\mathrm{SAII}_2
 saiii1p		\mathrm{SAIII}_{1+}

@@ -29,7 +29,7 @@ program rclfi1main
   integer :: npts = 15
 
 
-  integer, parameter :: Na = 3
+  integer, parameter :: Na = 2
   real(kp) :: alphamin
   real(kp) :: alphamax
 
@@ -37,9 +37,9 @@ program rclfi1main
   real(kp) :: pmin
   real(kp) :: pmax
   
-  integer, parameter :: Nmu=10
-  real(kp) :: mumin = 0.1_kp
-  real(kp) :: mumax = 10000._kp
+  integer, parameter :: Nmu=100
+  real(kp) :: mumin = 0.0001_kp
+  real(kp) :: mumax = 1000._kp
   
   real(kp) :: xmin = 0
   real(kp) :: xmax = 8
@@ -60,12 +60,8 @@ program rclfi1main
   Pstar = powerAmpScalar
 
 
-  call delete_file('rclfi1_potential.dat')
-  call delete_file('rclfi1_slowroll.dat')
-
   n=250
 
-  goto 10
   
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
@@ -85,13 +81,8 @@ program rclfi1main
 
   enddo
 
-10 continue
- 
-  call delete_file('rclfi1_predic.dat')
-  call delete_file('rclfi1_nsr.dat')
-
   
-  call aspicwrite_header('rclfi1_pgt4_an',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  call aspicwrite_header('rclfi1pm',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
   
   w=0._kp
 
@@ -114,6 +105,8 @@ program rclfi1main
 
         mumin = rclfi1_numacc_mumin(120._kp,alpha,p)
 
+        if (mumin.gt.mumax) cycle
+        
         print *,'mumin= ',mumin
         
         do j=0,Nmu 
@@ -154,10 +147,6 @@ program rclfi1main
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
 
-              call livewrite('rclfi1_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))
 
@@ -168,8 +157,8 @@ program rclfi1main
   enddo
   call aspicwrite_end()
 
-
-  call aspicwrite_header('rclfi1_plt4_an',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  
+  call aspicwrite_header('rclfi1mm',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
 
   w=0._kp
 
@@ -190,7 +179,7 @@ program rclfi1main
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
 
         mumin = rclfi1_numacc_mumin(120._kp,alpha,p)
-
+        if (mumin.gt.mumax) cycle
         print *,'mumin= ',mumin
 
         do j=0,Nmu 
@@ -230,10 +219,6 @@ program rclfi1main
 
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
-
-              call livewrite('rclfi1_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))
@@ -246,15 +231,13 @@ program rclfi1main
   call aspicwrite_end()
 
   
-  call aspicwrite_header('rclfi1_plt4_ap',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
+  call aspicwrite_header('rclfi1mp',labeps12,labnsr,labbfoldreh,(/'mu   ','alpha','p    '/))
 
   w=0._kp
 
 
-  pmin = 3.0_kp
-  pmax = 0.99_kp*rclfi1_numacc_pmax()
-
-  
+  pmin = 0.5_kp
+  pmax = 0.5_kp*rclfi1_numacc_pmax()
   
   do l=1,Np
      p = pmin +  real(l-1,kp)*(pmax - pmin)/real(Np-1,kp)
@@ -264,14 +247,14 @@ program rclfi1main
      
      print *,'p pmax alphamin alphamax',p, pmax, alphamin,alphamax
      alphamax = min(10._kp*alphamin,alphamax)
-     
+
      do k=1,Na
 
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
         
         mumin = rclfi1_numacc_mumin(120._kp,alpha,p)
-
-        print *,'mumin= ',mumin
+        if (mumin.gt.mumax) cycle
+        print *,'mumin= ',mumin,mumax
 
         do j=0,Nmu 
 
@@ -310,10 +293,6 @@ program rclfi1main
 
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
-
-              call livewrite('rclfi1_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('rclfi1_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,p/))

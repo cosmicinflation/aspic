@@ -147,11 +147,6 @@ program saiii3main
 
 
 
-
-  
-  call delete_file('saiii3_predic.dat')
-  call delete_file('saiii3_nsr.dat')
-
 !$omp parallel sections &
 !$omp default(shared) &
 !$omp private(betamin,betamax,alphamin,alphamax) &  
@@ -217,11 +212,7 @@ program saiii3main
 
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
-
-              call livewrite('saiii3_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('saiii3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
-
+         
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,beta/))
 
@@ -293,10 +284,7 @@ program saiii3main
 
               ns = 1._kp - 2._kp*eps1 - eps2
               r =16._kp*eps1
-
-              call livewrite('saiii3_predic.dat',alpha,eps1,eps2,eps3,r,ns,Treh)
-
-              call livewrite('saiii3_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+           
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
                    ,(/mu,alpha,beta/))

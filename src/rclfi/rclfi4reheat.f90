@@ -251,8 +251,11 @@ contains
     epsOneStar = rclfi4_epsilon_one(x,alpha,p,mu)
 
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'rclfi4_lnrhoreh_max: slow-roll violated!'
-    
+    if (.not.slowroll_validity(epsOneStar)) then
+       write(*,*)'WARNING:'
+       write(*,*)'rclfi4_lnrhoreh_max: slow-roll violated!'
+    endif
+       
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
     rclfi4_lnrhoreh_max = lnRhoEnd
