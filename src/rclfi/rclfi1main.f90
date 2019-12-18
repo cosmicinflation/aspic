@@ -13,7 +13,7 @@ program rclfi1main
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
-  use rclficommon, only : rclfi_alpha_one
+  use rclficommon, only : rclfi_alpha_one, rclfi_alpha_zero
   
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -41,8 +41,8 @@ program rclfi1main
   real(kp) :: mumin = 0.0001_kp
   real(kp) :: mumax = 1000._kp
   
-  real(kp) :: xmin = 0
-  real(kp) :: xmax = 8
+  real(kp) :: xmin = 1e-6
+  real(kp) :: xmax = 2
   
   real(kp) :: alpha,p,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -60,22 +60,41 @@ program rclfi1main
   Pstar = powerAmpScalar
 
 
-  n=250
+  n=1000
 
+  call delete_file('rclfi_alpha_zero.dat')
+  call delete_file('rclfi_alpha_one.dat')
+
+  pmin = -10
+  pmax = 28
+  
+  do i=1,n
+     p = pmin + + real(i-1,kp)*(pmax-pmin)/real(n-1,kp)        
+
+     call livewrite('rclfi_alpha_zero.dat',p,rclfi_alpha_zero(p))
+     call livewrite('rclfi_alpha_one.dat',p,rclfi_alpha_one(p))
+
+  end do
+
+  
+  p=1.5_kp
+  alpha = 8._kp
+  call delete_file('rclfi1_potential.dat')
+  call delete_file('rclfi1_slowroll.dat')
   
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
 
-     V = rclfi1_norm_potential(x,alpha=0.8_kp,p=0.1_kp,mu=1._kp)
+     V = rclfi1_norm_potential(x,alpha=alpha,p=p,mu=1._kp)
      
      V1 = rclfi1_norm_potential(x,alpha=-1.2_kp,p=-0.5_kp,mu=1._kp)
 
 
      call livewrite('rclfi1_potential.dat',x,V,V1)
 
-     eps1 = rclfi1_epsilon_one(x,alpha=0.8_kp,p=0.1_kp,mu=20._kp)
-     eps2 = rclfi1_epsilon_two(x,alpha=0.8_kp,p=0.1_kp,mu=20._kp)
-     eps3 = rclfi1_epsilon_three(x,alpha=0.8_kp,p=0.1_kp,mu=20._kp)
+     eps1 = rclfi1_epsilon_one(x,alpha=alpha,p=p,mu=100._kp)
+     eps2 = rclfi1_epsilon_two(x,alpha=alpha,p=p,mu=100._kp)
+     eps3 = rclfi1_epsilon_three(x,alpha=alpha,p=p,mu=100._kp)
 
      call livewrite('rclfi1_slowroll.dat',x,eps1,eps2,eps3)
 

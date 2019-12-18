@@ -8,6 +8,7 @@ program rclfi4main
 
   use rclfi4sr, only : rclfi4_norm_potential, rclfi4_x_endinf
   use rclfi4sr, only : rclfi4_norm_deriv_potential, rclfi4_norm_deriv_second_potential
+  use rclfi4sr, only : rclfi4_epsilon_one, rclfi4_epsilon_two, rclfi4_epsilon_three
   use rclfi4reheat, only : rclfi4_x_rreh, rclfi4_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -41,7 +42,7 @@ program rclfi4main
   real(kp) :: mumax = 10000._kp
   
   real(kp) :: xmin = 0
-  real(kp) :: xmax = 8
+  real(kp) :: xmax = 2
   
   real(kp) :: alpha,p,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
@@ -52,11 +53,44 @@ program rclfi4main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: x,V,V1
 
 
   
   Pstar = powerAmpScalar
- 
+
+
+  
+  n=500
+
+  p=2._kp
+  alpha = 4._kp
+  call delete_file('rclfi4_potential.dat')
+  call delete_file('rclfi4_slowroll.dat')
+  
+  do i=1,n
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+
+     V = rclfi4_norm_potential(x,alpha=alpha,p=p,mu=1._kp)
+     
+     V1 = rclfi4_norm_potential(x,alpha=-1.2_kp,p=-0.5_kp,mu=1._kp)
+
+
+     call livewrite('rclfi4_potential.dat',x,V,V1)
+
+     eps1 = rclfi4_epsilon_one(x,alpha=alpha,p=p,mu=100._kp)
+     eps2 = rclfi4_epsilon_two(x,alpha=alpha,p=p,mu=100._kp)
+     eps3 = rclfi4_epsilon_three(x,alpha=alpha,p=p,mu=100._kp)
+
+     call livewrite('rclfi4_slowroll.dat',x,eps1,eps2,eps3)
+
+  enddo
+
+
+
+
+
+  
 
 !$omp parallel sections &
 !$omp default(shared) &
