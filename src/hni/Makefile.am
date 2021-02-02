@@ -1,10 +1,12 @@
-SRC = hnisr.f90 hnireheat.f90
-MOD = hnisr.$(FC_MODEXT) hnireheat.$(FC_MODEXT)
+SRC = hnicommon.f90 hnicomreh.f90 hni1sr.f90 hni1reheat.f90
 
-check_PROGRAMS = hnimain
-hnimain_SOURCES = $(SRC) hnimain.f90
-hnimain_FCFLAGS = -I../$(SRCOMMDIR)
-hnimain_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
+MOD = hnicommon.$(FC_MODEXT) hnicomreh.$(FC_MODEXT) \
+	hni1sr.$(FC_MODEXT) hni1reheat.	$(FC_MODEXT)
+
+check_PROGRAMS = hni1main
+hni1main_SOURCES = $(SRC) hni1main.f90
+hni1main_FCFLAGS = -I../$(SRCOMMDIR)
+hni1main_LDADD = ../$(SRCOMMDIR)/libsrcommon.a
 
 noinst_LTLIBRARIES = libhni.la
 libhni_la_SOURCES = $(SRC)
@@ -12,7 +14,7 @@ libhni_la_FCFLAGS = -I../$(SRCOMMDIR) $(AM_FCFLAGS)
 libhni_la_includedir = $(includedir)/$(SRINCDIR)
 libhni_la_include_HEADERS = $(MOD)
 
-man_MANS = aspic_hni.3
+man_MANS = aspic_hni1.3
 
 clean-local: clean-modules clean-outfiles
 clean-modules:

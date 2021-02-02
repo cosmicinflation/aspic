@@ -1,0 +1,40 @@
+.TH libhni 3 "February 2, 2021" "libaspic" "Module convention"
+
+.SH NAME
+.I hni1
+- the hybrid natural inflation I module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ 1 + alpha cos(x) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/f
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha, f
+
+.SH DESCRIPTION
+Hybrid natural inflation I gracefully ends only for values of the
+parameter 'alpha' greater than a threshold. This one can be obtained
+by the
+.I real(kp)
+::
+function
+.IP
+.BR hni_alphamin (f)
+.P
+taking as an input the other parameter 'f'. Under the condition 'alpha > alphamin', the field value at which inflation ends is returned by the function
+.IP
+.BR hni1_x_endinf (alpha,f)
+.P
+
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
