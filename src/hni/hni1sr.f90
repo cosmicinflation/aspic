@@ -8,11 +8,12 @@ module hni1sr
   use infprec, only : kp, tolkp,transfert
   use inftools, only : zbrent
 
-  use hnicommon, only : hni1_check_params, hni1_norm_potential
+  use hnicommon, only : hni_check_params, hni_norm_potential
   use hnicommon, only : hni_norm_deriv_potential, hni_norm_deriv_second_potential
   use hnicommon, only : hni_epsilon_one, hni_epsilon_two, hni_epsilon_three
-  use hnicommon, only : hni_x_epsoneunity, hni_alphamin, hni_fmax
+  use hnicommon, only : hni_x_epsoneunity, hni_alpha, hni_f
   use hnicommon, only : find_hni_x_trajectory, hni_efold_primitive
+  use hnicommon, only : hni_numacc_xinimin
   
   implicit none
 
@@ -20,20 +21,39 @@ module hni1sr
 
   public hni1_norm_potential, hni1_norm_deriv_potential, hni1_norm_deriv_second_potential
   public hni1_epsilon_one, hni1_epsilon_two, hni1_epsilon_three
-  public hni1_x_trajectory, hni1_x_endinf
+  public hni1_x_trajectory, hni1_x_endinf, hni1_check_params
+  public hni1_alphamin, hni1_fmax, hni1_numacc_efoldmax
 
 
 
 contains
       
 
+  function hni1_alphamin(f)
+    implicit none
+    real(kp) :: hni1_alphamin
+    real(kp), intent(in) :: f
+    
+    hni1_alphamin = hni_alpha(f)
+    
+  end function hni1_alphamin
+
+  function hni1_fmax(alpha)
+    implicit none
+    real(kp) :: hni1_fmax
+    real(kp), intent(in) :: alpha
+    
+    hni1_fmax = hni_f(alpha)
+    
+  end function hni1_fmax
+  
   
   function hni1_check_params(alpha,f)
     implicit none
     logical :: hni1_check_params
     real(kp), intent(in) :: alpha,f
 
-    hni1_check_params = hni_check_params(alpha,f) .and. (alpha.gt.hni_alphamin(f))
+    hni1_check_params = hni_check_params(alpha,f) .and. (alpha.ge.hni1_alphamin(f))
 
   end function hni1_check_params
 
@@ -121,6 +141,24 @@ contains
 
 
 
+  function hni1_numacc_efoldmax(alpha,f)
+    implicit none
+    real(kp) :: hni1_numacc_efoldmax
+    real(kp), intent(in) :: alpha,f
+
+    real(kp) :: xinimin, xend
+
+    xend = hni1_x_endinf(alpha,f)
+    xinimin = hni_numacc_xinimin(alpha,f)
+
+
+    hni1_numacc_efoldmax = -hni_efold_primitive(xend,alpha,f) &
+         + hni_efold_primitive(xinimin,alpha,f)
+
+
+  end function hni1_numacc_efoldmax
+  
+
 !returns x at bfold=-efolds before the end of inflation
   function hni1_x_trajectory(bfold,xend,alpha,f)
     implicit none
@@ -131,7 +169,7 @@ contains
     type(transfert) :: hni1Data
 
     mini = epsilon(1._kp) !potential maximum
-    maxi = xend*(1._kp-epsilon(1._kp))
+    maxi = xend
 
     hni1Data%real1 = alpha
     hni1Data%real2 = f

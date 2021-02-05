@@ -1,0 +1,46 @@
+.TH libhni 3 "February 2, 2021" "libaspic" "Module convention"
+
+.SH NAME
+.I hni2
+- the hybrid natural inflation module at small couplings
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 [ 1 + alpha cos(x) ]
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/f
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha, f, xend
+
+.SH DESCRIPTION
+The
+.I hni2
+module is used for Hybrid Natural Inflation at small values of 'alpha'
+for which inflation does not end by itself. Compared to
+.I hni1
+there is one additional parameter, 'xend', the field value at which an
+unspecified mechanism (as a waterfall field) ends inflation. The
+maximal value of 'alpha' is obtained by the
+.I real(kp)
+::
+function
+.IP
+.BR hni2_alphamax (f)
+.P
+taking as an input the other parameter 'f'. This model shares a few
+functions with
+.I hni1
+in a module named
+.BR hnicommon .
+
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

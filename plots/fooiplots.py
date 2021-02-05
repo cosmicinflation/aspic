@@ -80,7 +80,7 @@ if pargs.type == 'powerlaw':
         xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
                          (pargs.xyhardbounds[2],pargs.xyhardbounds[3]),
                          (pargs.xyhardbounds[4],pargs.xyhardbounds[5]),
-                         (pargs.xyhardbounds[5],pargs.xyhardbounds[6])]
+                         (pargs.xyhardbounds[6],pargs.xyhardbounds[7])]
     else:
         xyhardbounds  = [(0.88,0.945),(0.98,1.2),(1e-30,1e-3),(2e-3,0.8)]
 
@@ -108,7 +108,7 @@ elif pargs.type == 'slowroll':
         xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
                          (pargs.xyhardbounds[2],pargs.xyhardbounds[3]),
                          (pargs.xyhardbounds[4],pargs.xyhardbounds[5]),
-                         (pargs.xyhardbounds[5],pargs.xyhardbounds[6])]
+                         (pargs.xyhardbounds[6],pargs.xyhardbounds[7])]
     else:
         xyhardbounds  = [(-0.1,0.02),(0.05,0.15),(1e-40,1e-3),(2e-3,0.8)]
 

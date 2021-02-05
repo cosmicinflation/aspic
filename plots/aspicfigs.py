@@ -143,7 +143,7 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0
     parval = None
     xysavscat = (None,None)
     xysavlab = (None,None)
-    labangle = 0.0
+    labdir = np.array([None,None])
     countlabel = 0
     
     count = 0
@@ -170,10 +170,11 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0
 
         elif par[4].getvalue() != parval:
             if count != 0:
-                labangles.append(labangle)
+                labangles.append(np.arctan2(labdir[1],labdir[0]))
+                
             parval = par[4].getvalue()
             count = 0
-            labangle = 0.0
+            labdir = np.array([0.0,0.0])
             if not_overlap(xysavlab,(xinch,yinch),threshlabel):
                 xysavlab = (xinch,yinch)
                 xyannotate.append((par[0].getvalue(),par[1].getvalue()))
@@ -191,15 +192,21 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0
                 
             else:
                 plotscat = False
-
-#was elif (!?)                
-        if par[4].getvalue() == parval and plotscat:
+                
+        if len(par) >= 5:
+            if par[4].getvalue() == parval and plotscat:
 
 #unnecessary?            if xysavlab != (None,None):
-            count += 1
-            labangle = (labangle*(count-1)
-                        + np.arctan2(yinch - xysavlab[1],xinch - xysavlab[0]))/count               
+
+                count += 1
                 
+                if (xinch != xysavlab[0] and yinch != xysavlab[1]):
+                    curlabdir = np.array([xinch - xysavlab[0],yinch - xysavlab[1]])
+                    curlabdir = curlabdir/np.linalg.norm(curlabdir)
+                    
+                    labdir = ( labdir*(count-1) + curlabdir ) /count
+
+
 
         if plotscat and not_overlap(xysavscat,(xinch,yinch),threshscat):
             xysavscat = (xinch,yinch)
@@ -221,9 +228,7 @@ def filter_model_data(inches,xybounds,xyrange,allpars,semilog=False,threshscat=0
                 
 #by construction the for loop may miss appending the very last label            
     if len(xyannotate) == len(labangles)+1:
-        labangles.append(labangle)
-
-
+        labangles.append(np.arctan2(labdir[1],labdir[0]))
 
         
     return (xscat,yscat,cscat), sannotate, xyannotate, \
@@ -405,10 +410,14 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
 
     if semilog:
         ax.semilogy()
-        
 
-    xyptoffset = []
     rptoffset = 40
+    
+    if (len(labangles)) !=0:
+        xyptoffset = []
+    else:
+        xyptoffset = None
+
     
     addangle = np.pi + tiltlabel
     

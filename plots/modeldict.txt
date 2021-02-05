@@ -39,7 +39,8 @@ ripi		\mathrm{RIPI}
 gripi		\mathrm{GRIPI}
 hf1i		\mathrm{HF1I}
 hf2i		\mathrm{HF2I}
-hni		\mathrm{HNI}
+hni1		\mathrm{HNI1}
+hni2		\mathrm{HNI2}
 ii		\mathrm{II}
 imi		\mathrm{IMI}
 kklti		\mathrm{KKLTI}

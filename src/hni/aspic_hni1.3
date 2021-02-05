@@ -2,7 +2,7 @@
 
 .SH NAME
 .I hni1
-- the hybrid natural inflation I module
+- the hybrid natural inflation module at large couplings
 
 .SH SYNOPSIS
 .TP 20
@@ -21,19 +21,27 @@ Parameters
 .B alpha, f
 
 .SH DESCRIPTION
-Hybrid natural inflation I gracefully ends only for values of the
-parameter 'alpha' greater than a threshold. This one can be obtained
-by the
+The
+.I hni1
+module is used for Hybrid Natural Inflation when it gracefully ends,
+i.e., only for values of the parameter 'alpha' greater than a
+threshold. This one can be obtained by the
 .I real(kp)
 ::
 function
 .IP
-.BR hni_alphamin (f)
+.BR hni1_alphamin (f)
 .P
-taking as an input the other parameter 'f'. Under the condition 'alpha > alphamin', the field value at which inflation ends is returned by the function
+taking as an input the other parameter 'f'. Under the condition 'alpha
+> alphamin', the field value at which inflation ends is returned by
+the function
 .IP
 .BR hni1_x_endinf (alpha,f)
 .P
+This model shares a few functions with
+.I hni2
+in a module named
+.BR hnicommon .
 
 
 .SH AUTHORS
