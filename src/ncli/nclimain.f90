@@ -39,15 +39,52 @@ program nclimain
   real(kp) :: xzero, xinf, buf1, buf2
   real(kp), dimension(2) :: xeps2
   real(kp), dimension(3) :: xeps1
-  
 
+  real(kp), dimension(100) :: alphaval
+  real(kp) :: xmin,xmax, V1,x
+
+  integer :: npt
+  
   Pstar = powerAmpScalar
 
+
+
+
+  npt=250
+
+  xmin = 0._kp
+  xmax = 30._kp
+
+  call delete_file('ncli_potential.dat')
+  call delete_file('ncli_slowroll.dat')
+  
+  do i=1,npt
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(npt-1,kp)        
+
+     V1 = ncli_norm_potential(x,alpha=0.001_kp,phi0=10._kp,n=3.0_kp)
+
+     call livewrite('ncli_potential.dat',x,V1)
+
+     eps1 = ncli_epsilon_one(x,alpha=0.001_kp,phi0=10._kp,n=3.0_kp)
+     eps2 = ncli_epsilon_two(x,alpha=0.001_kp,phi0=10._kp,n=3.0_kp)
+     eps3 = ncli_epsilon_three(x,alpha=0.001_kp,phi0=10._kp,n=3.0_kp)
+
+     call livewrite('ncli_slowroll.dat',x,eps1,eps2,eps3)
+
+  enddo
+
+
+
+
+  
 
   n=2._kp
   alpha = 0.0001_kp
   phi0 = 0.18_kp
 
+
+
+  
   phi0min = ncli_phizeromin(alpha,n)
 
   print *,'phi0= phi0min= ',phi0,phi0min
@@ -92,19 +129,24 @@ program nclimain
 
   n=2._kp
 
-  alphamin = 0.00000001_kp
-  alphamax = 0.01_kp
+
   phi0min = 0.001_kp
   phi0max = 1._kp
 
-  nalpha=4
+  nalpha=2
+  alphaval(1)=0.0001_kp
+  alphaval(2)=0.000001_kp
+
+
+
   nphi0=100
 
   efoldMin = 70._kp
   epsMin = 0.1_kp
 
   do j=1,nalpha
-     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+     alpha=alphaval(j)
+
 
      do k=0,nphi0
         phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/real(nphi0,kp)) !log step
@@ -117,7 +159,7 @@ program nclimain
 
           print *,'alpha=',alpha,'phi0=',phi0,'n=',n,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-          do i=1,npts
+          do i=npts,1,-1
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
            xstar = ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
@@ -157,14 +199,19 @@ program nclimain
   phi0min = 0.001_kp
   phi0max = 1._kp
 
-  nalpha=4
+  nalpha=2
   nphi0=100
 
+  nalpha=2
+  alphaval(1)=0.0001_kp
+  alphaval(2)=0.000001_kp
+  
   efoldMin = 70._kp
   epsMin = 0.1_kp
 
   do j=1,nalpha
-     alpha=alphamin*(alphamax/alphamin)**(real(j,kp)/real(nalpha,kp))
+
+     alpha = alphaval(j)
 
      do k=0,nphi0
         phi0=phi0min*(phi0max/phi0min)**(real(k,kp)/real(nphi0,kp)) !log step
@@ -177,7 +224,7 @@ program nclimain
 
           print *,'alpha=',alpha,'phi0=',phi0,'n=',n,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
-          do i=1,npts
+          do i=npts,1,-1
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
            xstar = ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 

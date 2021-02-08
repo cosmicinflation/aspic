@@ -4,8 +4,9 @@
 !
 !x = phi/f
 !
-!For alpha < alphamin, inflation does not gracefully ends, extra parameter xend
-!
+!For alpha < alphamax, inflation does not gracefully end and it stops
+!at the extra parameter xend. If alpha > alphamax, then, xend has
+!potential observable effects only for xend < xepsone
 
 module hni2sr
   use infprec, only : kp, tolkp,transfert
@@ -25,7 +26,7 @@ module hni2sr
   public hni2_norm_potential, hni2_norm_deriv_potential, hni2_norm_deriv_second_potential
   public hni2_epsilon_one, hni2_epsilon_two, hni2_epsilon_three
   public hni2_x_trajectory, hni2_check_params
-  public hni2_numacc_xendmin, hni2_numacc_xendmax
+  public hni2_xendmax, hni2_numacc_xendmin, hni2_numacc_xendmax
   public hni2_alphamax, hni2_fmin, hni2_numacc_efoldmax
 
 
@@ -131,7 +132,29 @@ contains
 
   end function hni2_epsilon_three
 
-  
+
+!return the maximal allowed valued for xend. If eps>1, this is the
+!smallest root of eps1=1, oterwise this is the value at which the
+!potential is minimal
+  function hni2_xendmax(alpha,f)
+    implicit none
+    real(kp) :: hni2_xendmax
+    real(kp), intent(in) :: alpha,f
+    real(kp), dimension(2) :: xepsone
+
+    if (alpha.lt.hni2_alphamax(f)) then
+
+       hni2_xendmax = hni_x_potmin(alpha,f)
+
+    else
+
+       xepsone = hni_x_epsoneunity(alpha,f)
+       
+       hni2_xendmax = xepsone(1)
+
+    endif
+                  
+  end function hni2_xendmax
 
 
 
@@ -144,11 +167,11 @@ contains
 
     xnumacc = hni_numacc_x_epsonenull(alpha,f)
 
-!keep the largest one (close to the bottom of the potential)
-    hni2_numacc_xendmax = min(hni_x_potmin(alpha,f) - epsilon(1._kp) , xnumacc(2))
+    hni2_numacc_xendmax = min(hni2_xendmax(alpha,f) - epsilon(1._kp) , xnumacc(2))
 
   end function hni2_numacc_xendmax
 
+  
 
   function hni2_numacc_efoldmax(alpha,f)
     implicit none
@@ -160,7 +183,6 @@ contains
     xendmax = hni2_numacc_xendmax(alpha,f)
     xinimin = hni_numacc_xinimin(alpha,f)
 
-    
     hni2_numacc_efoldmax = -hni_efold_primitive(xendmax,alpha,f) &
          + hni_efold_primitive(xinimin,alpha,f)
 

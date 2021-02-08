@@ -1,6 +1,6 @@
 !test the reheating derivation from slow-roll
 program hni1main
-  use infprec, only : kp
+  use infprec, only : kp, pi
   use cosmopar, only : lnRhoNuc, powerAmpScalar
 
 
@@ -25,7 +25,7 @@ program hni1main
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j,k
+  integer :: i,j,k,n
   integer :: npts,nalpha,nf
 
   real(kp) :: alpha,f,w,bfoldstar,alphamin,alphamax
@@ -42,10 +42,39 @@ program hni1main
   real(kp) :: VendOverVstar, eps1End, xend
 
   real(kp) :: efold, efoldmax
+  real(kp) :: x,V1,V2, xmin,xmax
   
   Pstar = powerAmpScalar
 
 
+  call delete_file('hni1_potential.dat')
+  call delete_file('hni1_slowroll.dat')
+
+
+
+  n=250
+
+  xmin = 0._kp
+  xmax = pi
+  
+  do i=1,n
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+
+     V1 = hni1_norm_potential(x,alpha=0.5_kp,f=1._kp)
+
+
+     call livewrite('hni1_potential.dat',x,V1)
+     
+     eps1 = hni1_epsilon_one(x,alpha=0.5_kp,f=1._kp)
+     eps2 = hni1_epsilon_two(x,alpha=0.5_kp,f=1._kp)
+     eps3 = hni1_epsilon_three(x,alpha=0.5_kp,f=1._kp)
+          
+     call livewrite('hni1_slowroll.dat',x,eps1,eps2,eps3)
+
+     
+  enddo
+
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!        Calculates the reheating predictions           !!

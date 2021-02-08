@@ -169,8 +169,9 @@ do k=0,ndelta
    
    print *, 'xepsone', xepsone, fi_epsilon_one(xepsone(1),delta,n),fi_epsilon_one(xepsone(2),delta,n)
 
+    ! Here I have relaxed efoldNum a bit (subtracted 50) in order to produce figures with more spread points, since w=0 does not probe such large DeltaNstar
    if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
-   if (fi_efoldmax(delta,n).lt.efoldNum) cycle
+   if (fi_efoldmax(delta,n).lt.(efoldNum-50.)) cycle
 
    print*, 'hardprior condition passed'
 
@@ -234,7 +235,7 @@ call delete_file('fi_nsr_neq1.dat')
 
 
   deltamin=10._kp**(-10.)
-  deltamax=10._kp**(-9.)
+  deltamax=5*10._kp**(-7.)
 
   do k=0,ndelta
     delta=deltamin*(deltamax/deltamin)**(real(k,kp)/real(ndelta,kp))
@@ -249,8 +250,10 @@ call delete_file('fi_nsr_neq1.dat')
 
     xend = xepsone(1)
     
-    if (fi_epsilon_one_min(delta,n).gt.epsmax) cycle
-    if (fi_efoldmax(delta,n).lt.efoldNum) cycle
+
+    ! Here I have relaxed efoldNum a bit (subtracted 50) in order to produce figures with more spread points, since w=0 does not probe such large DeltaNstar
+    if (fi_epsilon_one_min(delta,n).gt.(epsmax*1.)) cycle
+    if (fi_efoldmax(delta,n).lt.(efoldNum-50.)) cycle
 
     print*, 'hardprior condition passed'
 

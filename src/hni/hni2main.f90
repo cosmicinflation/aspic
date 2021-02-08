@@ -57,12 +57,12 @@ program hni2main
   
   npts = 15
   nalpha= 3
-  nf = 3
+  nf = 5
   
   ne = 100
   
-  fcutmin = 0.1_kp
-  fcutmax = 10._kp
+  fcutmin = 0.2_kp
+  fcutmax = 12._kp
   
   w=0._kp
   !  w = 1._kp/3._kp
@@ -79,13 +79,15 @@ program hni2main
 
 
   fmax= fcutmax
+  fmin = fcutmin
+
   
   do k=1,nalpha
      alpha= alphamin + (alphamax - alphamin)*real(k-1,kp)/real(nalpha-1,kp)
 
      do j=1,nf
 
-        fmin = max(1.01*hni2_fmin(alpha),fcutmin)
+!        fmin = max(1.01*hni2_fmin(alpha),fcutmin)!
         
         f=fmin*(fmax/fmin)**(real(j-1,kp)/real(nf-1,kp))
 
