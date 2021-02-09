@@ -46,10 +46,68 @@ program fimain
 
   real(kp) :: Nmax0,Nmax1,Nmax2,Nmax3,Nmax4,Nmax5,Nmax6,Nmax7,Nmax8,Nmax9,Nmax10
 
+  real(kp) :: xmin, xmax, V1, x
+  real(kp) :: efold1,efold2,efold3,efold4,efold5,efold6
+
+  integer :: npt
+
+  
   Pstar = powerAmpScalar
 
 
 
+  call delete_file('fi_potential.dat')
+  call delete_file('fi_slowroll.dat')
+
+
+
+  npt=500
+
+  xmin = 0.001_kp
+  xmax = 20._kp
+
+  do i=1,npt
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(npt-1,kp)        
+
+     V1 = fi_norm_potential(x,delta=1d-5,n=0._kp)
+
+
+     call livewrite('fi_potential.dat',x,V1)
+
+     eps1 = fi_epsilon_one(x,delta=1d-5,n=0._kp)
+     eps2 = fi_epsilon_two(x,delta=1d-5,n=0._kp)
+     eps3 = fi_epsilon_three(x,delta=1d-5,n=0._kp)
+
+     call livewrite('fi_slowroll.dat',x,eps1,eps2,eps3)
+
+
+  enddo
+
+
+
+  
+ call delete_file('fi_efoldmax.dat')
+  
+  npt=150
+
+  deltamin = 1e-10
+  deltamax = 0.1
+  
+  do i=1,npt
+     delta = exp(log(deltamin) + real(i-1,kp)*(log(deltamax)-log(deltamin))/real(npt-1,kp))
+
+     efold1 = fi_efoldmax(delta,n=1._kp)
+     efold2 = fi_efoldmax(delta,n=2._kp)
+     efold3 = fi_efoldmax(delta,n=4._kp)
+     efold4 = fi_efoldmax(delta,n=6._kp)
+     efold5 = fi_efoldmax(delta,n=8._kp)
+     efold6 = fi_efoldmax(delta,n=10._kp)
+     
+     call livewrite('fi_efoldmax.dat',delta,efold1,efold2,efold3,efold4,efold5,efold6)
+     
+  end do
+
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!               Prints Data for Nmax                    !!
