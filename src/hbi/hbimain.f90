@@ -40,23 +40,26 @@ program hbimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: epsOneEnd,potEnd ! Used for bebugging
+
   w = 0._kp
 
   Pstar = powerAmpScalar
+
 
   call delete_file('hbi_predic.dat')
   call delete_file('hbi_nsr.dat')
 
   call aspicwrite_header('hbi',labeps12,labnsr,labbfoldreh,(/'phi0','n   '/))
   
-!!!!!!!!!!!!!! 
-!!!! n=1  !!!!
-!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!! 
+!!!! n=0.5  !!!!
+!!!!!!!!!!!!!!!!
 
-  n = 1._kp
+  n = 0.5_kp
 
   phi0min=n/sqrt(2.)*10._kp
-  phi0max=10._kp**(3.)
+  phi0max=10._kp**(2.)
 
   do j=0,nphi0
 
@@ -72,7 +75,7 @@ program hbimain
 
      print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -101,13 +104,13 @@ program hbimain
   end do
 
 !!!!!!!!!!!!!! 
-!!!! n=2  !!!!
+!!!! n=1  !!!!
 !!!!!!!!!!!!!!
 
-  n = 2._kp
+  n = 1._kp
 
   phi0min=n/sqrt(2.)*10._kp
-  phi0max=10._kp**(3.)
+  phi0max=10._kp**(2.)
 
   do j=0,nphi0
 
@@ -123,7 +126,7 @@ program hbimain
 
      print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -151,14 +154,14 @@ program hbimain
 
   end do
 
-!!!!!!!!!!!!!! 
-!!!! n=3  !!!!
-!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!! 
+!!!! n=1.5  !!!!
+!!!!!!!!!!!!!!!!
 
-  n = 3._kp
+  n = 1.5_kp
 
   phi0min=n/sqrt(2.)*10._kp
-  phi0max=10._kp**(3.)
+  phi0max=10._kp**(2.)
 
   do j=0,nphi0
 
@@ -174,7 +177,7 @@ program hbimain
 
      print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
-     do i=1,npts
+     do i=npts,1,-1
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
@@ -239,7 +242,7 @@ program hbimain
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      xstar = hbi_x_rreh(n,phi0,xend,lnR,bfoldstar)
-     print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
+     !print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
      !get rhoreh for chosen w and check that xstar gotten this way is the same

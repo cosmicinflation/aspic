@@ -20,6 +20,16 @@ module hbireheat
 
 contains
 
+!returns x given potential parameters and bfold
+  function hbi_x_star_from_bfold(n,phi0,bfold)
+    implicit none
+    real(kp):: hbi_x_star_from_bfold
+    real(kp), intent(in) :: n,phi0,bfold
+
+    hbi_x_star_from_bfold = acosh(exp(-n*bfold/phi0**2)/sqrt(1.-n**2/(2.*phi0**2)))
+
+  end function hbi_x_star_from_bfold
+
 !returns x given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the correspoding bfoldstar
   function hbi_x_star(n,phi0,xend,w,lnRhoReh,Pstar,bfold)
@@ -52,7 +62,7 @@ contains
     hbiData%real4 = calF + primEnd
 
     mini = xEnd + epsilon(1._kp)
-    maxi = hbi_numacc_x_potbig(n)
+    maxi = min(hbi_numacc_x_potbig(n),hbi_x_star_from_bfold(n,phi0,-200._kp))
 
     x = zbrent(find_hbi_x_star,mini,maxi,tolFind,hbiData)
     hbi_x_star = x
