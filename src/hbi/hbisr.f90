@@ -2,8 +2,8 @@
 !
 !V(phi) = M^4 [sinh(x)^n]
 !
-!x = phi/phi0
-!phi0 = phi0/Mp
+!x = phi/mu
+!mu = mu/Mp
 
 module hbisr
   use infprec, only : kp
@@ -26,22 +26,22 @@ contains
 
 
 !returns V/M^4
-  function hbi_norm_potential(x,n,phi0)
+  function hbi_norm_potential(x,n,mu)
     implicit none
     real(kp) :: hbi_norm_potential
     real(kp), intent(in) :: x,n
-    real(kp), intent(in) :: phi0
+    real(kp), intent(in) :: mu
 
     hbi_norm_potential = sinh(x)**n
   end function hbi_norm_potential
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function hbi_norm_deriv_potential(x,n,phi0)
+  function hbi_norm_deriv_potential(x,n,mu)
     implicit none
     real(kp) :: hbi_norm_deriv_potential
     real(kp), intent(in) :: x,n
-    real(kp), intent(in) :: phi0
+    real(kp), intent(in) :: mu
 
    hbi_norm_deriv_potential = n*cosh(x)*sinh(x)**(n-1._kp)
 
@@ -50,18 +50,18 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function hbi_norm_deriv_second_potential(x,n,phi0)
+  function hbi_norm_deriv_second_potential(x,n,mu)
     implicit none
     real(kp) :: hbi_norm_deriv_second_potential
     real(kp), intent(in) :: x,n
-    real(kp), intent(in) :: phi0
+    real(kp), intent(in) :: mu
 
     hbi_norm_deriv_second_potential = 0.5_kp*n*(n*cosh(2._kp*x)+n-2._kp)*sinh(x)**(n-2._kp)
 
   end function hbi_norm_deriv_second_potential
 
 
-!minimal value of phi0 to get eps1<1
+!minimal value of mu to get eps1<1
   function hbi_phizeromin(n)
     implicit none
     real(kp) :: hbi_phizeromin
@@ -79,85 +79,86 @@ contains
     real(kp) :: hbi_numacc_x_potbig
     real(kp) :: n
 
-    hbi_numacc_x_potbig = log(hbiBig)/n
+    hbi_numacc_x_potbig = log(hbiBig)/max(1._kp,n)
+
     
   end function hbi_numacc_x_potbig
   
   
 !epsilon1(x)
-  function hbi_epsilon_one(x,n,phi0)    
+  function hbi_epsilon_one(x,n,mu)    
     implicit none
     real(kp) :: hbi_epsilon_one
-    real(kp), intent(in) :: x,n,phi0
+    real(kp), intent(in) :: x,n,mu
     
-    hbi_epsilon_one = 0.5_kp*n**2/(phi0**2*tanh(x)**2)
+    hbi_epsilon_one = 0.5_kp*n**2/(mu**2*tanh(x)**2)
     
   end function hbi_epsilon_one
 
 
 !epsilon2(x)
-  function hbi_epsilon_two(x,n,phi0)    
+  function hbi_epsilon_two(x,n,mu)    
     implicit none
     real(kp) :: hbi_epsilon_two
-    real(kp), intent(in) :: x,n,phi0
+    real(kp), intent(in) :: x,n,mu
     
-    hbi_epsilon_two = 2._kp*n/(phi0**2*sinh(x)**2)
+    hbi_epsilon_two = 2._kp*n/(mu**2*sinh(x)**2)
     
   end function hbi_epsilon_two
 
   
 !epsilon3(x)
-  function hbi_epsilon_three(x,n,phi0)    
+  function hbi_epsilon_three(x,n,mu)    
     implicit none
     real(kp) :: hbi_epsilon_three
-    real(kp), intent(in) :: x,n,phi0
+    real(kp), intent(in) :: x,n,mu
     
-    hbi_epsilon_three = 2._kp*n/(phi0**2*tanh(x)**2)
+    hbi_epsilon_three = 2._kp*n/(mu**2*tanh(x)**2)
     
   end function hbi_epsilon_three
 
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function hbi_efold_primitive(x,n,phi0)
+  function hbi_efold_primitive(x,n,mu)
     implicit none
-    real(kp), intent(in) :: x,n,phi0
+    real(kp), intent(in) :: x,n,mu
     real(kp) :: hbi_efold_primitive
 
-    hbi_efold_primitive = phi0**2/n*log(cosh(x))
+    hbi_efold_primitive = mu**2/n*log(cosh(x))
 
   end function hbi_efold_primitive
 
 
 !returns x at the end of inflation defined as epsilon1=1
-  function hbi_x_endinf(n,phi0)
+  function hbi_x_endinf(n,mu)
     implicit none
-    real(kp), intent(in) :: n,phi0
+    real(kp), intent(in) :: n,mu
     real(kp) :: hbi_x_endinf
 
-    hbi_x_endinf = atanh(n/(sqrt(2._kp)*phi0))
+    hbi_x_endinf = atanh(n/(sqrt(2._kp)*mu))
    
   end function hbi_x_endinf
 
 
 !returns x at bfold=-efolds before the end of inflation
-  function hbi_x_trajectory(bfold,xend,n,phi0)
+  function hbi_x_trajectory(bfold,xend,n,mu)
     implicit none
-    real(kp), intent(in) :: bfold, n, phi0, xend
+    real(kp), intent(in) :: bfold, n, mu, xend
     real(kp) :: hbi_x_trajectory
 
-    hbi_x_trajectory = acosh(exp(-n*bfold/phi0**2)/sqrt(1._kp-n**2/(2._kp*phi0**2)))
+    hbi_x_trajectory = acosh(exp(-n*bfold/mu**2)/sqrt(1._kp-n**2/(2._kp*mu**2)))
     
   end function hbi_x_trajectory
 
 
   
 !returns x given epsilon2  
-  function hbi_x_fromepstwo(eps2,n,phi0)   
+  function hbi_x_fromepstwo(eps2,n,mu)   
     implicit none
-    real(kp), intent(in) :: n,phi0,eps2
+    real(kp), intent(in) :: n,mu,eps2
     real(kp) :: hbi_x_fromepstwo
 
-    hbi_x_fromepstwo = asinh(sqrt(2._kp*n/eps2)/phi0)
+    hbi_x_fromepstwo = asinh(sqrt(2._kp*n/eps2)/mu)
 
  end function hbi_x_fromepstwo
 
