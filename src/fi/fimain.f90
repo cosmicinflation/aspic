@@ -69,14 +69,14 @@ program fimain
   do i=1,npt
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(npt-1,kp)        
 
-     V1 = fi_norm_potential(x,delta=1d-5,n=0._kp)
+     V1 = fi_norm_potential(x,delta=0.00001_kp,n=0._kp)
 
 
      call livewrite('fi_potential.dat',x,V1)
 
-     eps1 = fi_epsilon_one(x,delta=1d-5,n=0._kp)
-     eps2 = fi_epsilon_two(x,delta=1d-5,n=0._kp)
-     eps3 = fi_epsilon_three(x,delta=1d-5,n=0._kp)
+     eps1 = fi_epsilon_one(x,delta=0.00001_kp,n=0._kp)
+     eps2 = fi_epsilon_two(x,delta=0.00001_kp,n=0._kp)
+     eps3 = fi_epsilon_three(x,delta=0.00001_kp,n=0._kp)
 
      call livewrite('fi_slowroll.dat',x,eps1,eps2,eps3)
 
