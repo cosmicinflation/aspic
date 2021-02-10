@@ -77,7 +77,7 @@ program ccsi3main
   enddo
 
   
-  call delete_file('ccsi3_ntot.dat')
+  call delete_file('ccsi3_efoldmax.dat')
   print *,'alphamin of 60',ccsi3_alphamin(60._kp)
   alphamin = ccsi3_alphamin(1000._kp)
   alphamax=-0.1_kp
@@ -86,7 +86,7 @@ program ccsi3main
      xend = ccsi3_x_endinf(alpha)
      xuv = ccsi3_xinimax(alpha)
      efold = ccsi3_efold_primitive(xuv,alpha) - ccsi3_efold_primitive(xend,alpha)
-     call livewrite('ccsi3_ntot.dat',alpha,efold)
+     call livewrite('ccsi3_efoldmax.dat',alpha,efold)
   enddo
 
 

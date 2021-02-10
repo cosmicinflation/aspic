@@ -25,7 +25,7 @@ program sbkimain
   integer :: i,j
   integer :: npts = 20
 
-  real(kp) :: w,bfoldstar
+  real(kp) :: w,bfoldstar,efold
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -45,6 +45,68 @@ program sbkimain
 
   complex(kp) :: a, b, c, d
 
+
+
+
+  real(kp) :: xmin, xmax, V1,V2,x
+  integer :: npt
+
+  
+  Pstar = powerAmpScalar
+
+
+
+  call delete_file('sbki_potentials.dat')
+  call delete_file('sbki_slowrolls.dat')
+  
+
+
+  npt=400
+
+  xmin = 0._kp
+  xmax = 30._kp
+
+  do i=1,npt
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(npt-1,kp)        
+
+     V1 = sbki_norm_potential(x,alpha=0.01_kp)
+     V2 = sbki_norm_potential(x,alpha=-0.01_kp)
+
+     call livewrite('sbki_potentials.dat',x,V1,V2)
+
+     eps1A = sbki_epsilon_one(x,alpha=0.01_kp)
+     eps2A = sbki_epsilon_two(x,alpha=0.01_kp)
+     eps3A = sbki_epsilon_three(x,alpha=0.01_kp)
+
+     eps1B = sbki_epsilon_one(x,alpha=-0.01_kp)
+     eps2B = sbki_epsilon_two(x,alpha=-0.01_kp)
+     eps3B = sbki_epsilon_three(x,alpha=-0.01_kp)
+     
+     call livewrite('sbki_slowrolls.dat',x,eps1A,eps2A,eps3A,eps1B,eps2B,eps3B)
+     
+
+  enddo
+
+
+  call delete_file('sbki_efoldmax.dat')
+  
+  npt=300
+
+  alphamin=-0.2
+  alphamax=0.1
+  
+  do i=1,npt
+     alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(npt-1,kp) 
+
+     efold = sbki_efoldmax(alpha)
+
+     call livewrite('sbki_efoldmax.dat',alpha,efold)
+     
+  end do
+
+
+
+  
   alphavalues(1)=-0.01
   alphavalues(2)=-0.001
   alphavalues(3)=0.001

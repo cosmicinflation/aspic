@@ -137,54 +137,88 @@ contains
   end function sbki_epsilon_one_min
 
 
+
+!returns the 2 solutions of eps1=1
+  function sbki_x_epsoneunity(alpha)
+    implicit none
+    real(kp), dimension(2) :: sbki_x_epsoneunity
+    real(kp), intent(in) :: alpha
+
+    if (alpha.ge.sbki_alphamax()) then
+       stop 'sbki_x_epsoneunity: alpha >= alphamax!'
+    elseif (alpha.lt.sbki_alphamin()) then
+       stop 'sbki_x_epsoneunity: alpha < alphamin!'
+    endif
+    
+    sbki_x_epsoneunity(1) = sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
+         (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
+         alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
+         alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+ &
+         64._kp*alpha**2)))**(1._kp/3._kp))/alpha**4)/(2._kp*sqrt(2._kp))- &
+         1._kp/2._kp*sqrt(-(4._kp/alpha)-(5._kp*2**(2._kp/3._kp)*alpha**2)/ &
+         (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
+         alpha+64._kp*alpha**2)))**(1._kp/3._kp)-(9._kp*alpha**8-44._kp* &
+         alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp*alpha**2)))** &
+         (1._kp/3._kp)/(2._kp**(2._kp/3._kp)*alpha**4)+6._kp/(alpha**2* &
+         sqrt((-4._kp*alpha**3+(10._kp*2._kp**(2._kp/3._kp)*alpha**6)/(9._kp* &
+         alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
+         alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
+         alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
+         alpha**2)))**(1._kp/3._kp))/alpha**4)))
+
+
+
+    
+    sbki_x_epsoneunity(2) = sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
+         (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
+         alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
+         alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+ &
+         64._kp*alpha**2)))**(1._kp/3._kp))/alpha**4)/(2._kp*sqrt(2._kp))+ &
+         1._kp/2._kp*sqrt(-(4._kp/alpha)-(5._kp*2._kp**(2._kp/3._kp)*alpha**2)/ &
+         (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
+         alpha+64._kp*alpha**2)))**(1._kp/3._kp)-(9._kp*alpha**8-44._kp* &
+         alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp*alpha**2)))** &
+         (1._kp/3._kp)/(2._kp**(2._kp/3._kp)*alpha**4)+6._kp/(alpha**2* &
+         sqrt((-4._kp*alpha**3+(10._kp*2._kp**(2._kp/3._kp)*alpha**6)/(9._kp* &
+         alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
+         alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
+         alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
+         alpha**2)))**(1._kp/3._kp))/alpha**4)))
+
+
+  end function sbki_x_epsoneunity
+
+  
+
 !returns x at the end of inflation defined as epsilon1=1
   function sbki_x_endinf(alpha)
     implicit none
     real(kp), intent(in) :: alpha
     real(kp) :: sbki_x_endinf
 
+    real(kp), dimension(2) :: xepsoneone
 
-    sbki_x_endinf = sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
-                    (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
-                    alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
-                    alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+ &
-                    64._kp*alpha**2)))**(1._kp/3._kp))/alpha**4)/(2._kp*sqrt(2._kp))- &
-                    1._kp/2._kp*sqrt(-(4._kp/alpha)-(5._kp*2**(2._kp/3._kp)*alpha**2)/ &
-                    (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
-                    alpha+64._kp*alpha**2)))**(1._kp/3._kp)-(9._kp*alpha**8-44._kp* &
-                    alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp*alpha**2)))** &
-                    (1._kp/3._kp)/(2._kp**(2._kp/3._kp)*alpha**4)+6._kp/(alpha**2* &
-                    sqrt((-4._kp*alpha**3+(10._kp*2._kp**(2._kp/3._kp)*alpha**6)/(9._kp* &
-                    alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
-                    alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
-                    alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
-                    alpha**2)))**(1._kp/3._kp))/alpha**4)))
+    xepsoneone = sbki_x_epsoneunity(alpha)
+
+    sbki_x_endinf = xepsoneone(1)
    
   end function sbki_x_endinf
 
+
+  
 !returns the other value x at which epsilon1=1 which places an upper bound on xstar
   function sbki_xinimax(alpha)
     implicit none
     real(kp), intent(in) :: alpha
     real(kp) :: sbki_xinimax
 
+    real(kp), dimension(2) :: xepsoneone
 
-    sbki_xinimax =sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
-                (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
-                alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
-                alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+ &
-                64._kp*alpha**2)))**(1._kp/3._kp))/alpha**4)/(2._kp*sqrt(2._kp))+ &
-                1._kp/2._kp*sqrt(-(4._kp/alpha)-(5._kp*2._kp**(2._kp/3._kp)*alpha**2)/ &
-                (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
-                alpha+64._kp*alpha**2)))**(1._kp/3._kp)-(9._kp*alpha**8-44._kp* &
-                alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp*alpha**2)))** &
-                (1._kp/3._kp)/(2._kp**(2._kp/3._kp)*alpha**4)+6._kp/(alpha**2* &
-                sqrt((-4._kp*alpha**3+(10._kp*2._kp**(2._kp/3._kp)*alpha**6)/(9._kp* &
-                alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
-                alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
-                alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp*alpha+64._kp* &
-                alpha**2)))**(1._kp/3._kp))/alpha**4)))
+    xepsoneone = sbki_x_epsoneunity(alpha)
+    
+    sbki_xinimax = xepsoneone(2)
 
+    
   end function sbki_xinimax
 
 
@@ -199,8 +233,8 @@ contains
     a = (-3._kp+sqrt(3._kp)*cmplx(0._kp,1._kp,kp))/(2._kp*alpha)
     astar = conjg(a)
 
-    sbki_efold_primitive = -sqrt(3._kp)/(4._kp*alpha)*real(real(cmplx(0._kp,1._kp,kp)* &
-                           log_otherbranchcut((x**2-a)/(x**2-astar))),kp)
+    sbki_efold_primitive = -sqrt(3._kp)/(4._kp*alpha)*real(cmplx(0._kp,1._kp,kp)* &
+                           log_otherbranchcut((x**2-a)/(x**2-astar)),kp)
 
   end function sbki_efold_primitive
 
@@ -219,7 +253,7 @@ contains
     a = (-3._kp+sqrt(3._kp)*cmplx(0._kp,1._kp,kp))/(2._kp*alpha)
     astar = conjg(a)
     c = (xend**2-astar)/(xend**2-a)*exp(4._kp*cmplx(0._kp,1._kp,kp)*alpha/sqrt(3._kp)*bfold)
-    sbki_x_trajectory = real(real(sqrt((astar-c*a)/(1._kp-c))),kp)
+    sbki_x_trajectory = real(sqrt((astar-c*a)/(1._kp-c)),kp)
 
   end function sbki_x_trajectory
 
@@ -233,8 +267,11 @@ contains
     xend = sbki_x_endinf(alpha)
     xplus = sbki_xinimax(alpha)
 
-    sbki_efoldmax = abs(sbki_efold_primitive(xend,alpha)-sbki_efold_primitive(xplus,alpha))
+    print *,'test',alpha,xend,xplus
+    
+    sbki_efoldmax = -sbki_efold_primitive(xend,alpha) + sbki_efold_primitive(xplus,alpha)
 
+    
   end function sbki_efoldmax
 
 
