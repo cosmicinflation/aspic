@@ -64,9 +64,9 @@ program shimain
 
 
 
-  alphamin = 0.1
-  alphamax = 20.
-  Nalpha = 500
+  alphamin = 0.01
+  alphamax = 100.
+  Nalpha = 100
   
   phivec = (/10.0, 15.0, 20.0, 25.0/)
   
