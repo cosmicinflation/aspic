@@ -24,6 +24,7 @@ cndi		\mathrm{CNDI}
 csi		\mathrm{CSI}
 cwi		\mathrm{CWI}
 cwil		\mathrm{CWI}
+dei		\mathrm{DEI}_1
 di		\mathrm{DI}
 dsi		\mathrm{DSI}
 dwi		\mathrm{DWI}

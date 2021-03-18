@@ -81,14 +81,15 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
 	gdwi/libgdwi.la \
 	saii/libsaii.la \
 	saiii/libsaiii.la \
-	rclfi/librclfi.la
+	rclfi/librclfi.la \
+    dei/libdei.la
 
 #to be build from there
 SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi \
           ai cnai cnbi oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi \
           bi kklti nfi ccsi di hni ncli vfmi fi ahi sbki sdi saai sabi saci hbi \
-          shi rpqdi rpqti rcpi gdwi saii saiii rclfi
+          shi rpqdi rpqti rcpi gdwi saii saiii rclfi dei
 
 #in parallel (bugged)
 #.PHONY: #(SUBDIRS)

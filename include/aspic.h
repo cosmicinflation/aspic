@@ -140,6 +140,8 @@ use hbisr
 use hbireheat
 use shisr
 use shireheat
+use deisr
+use deireheat
 
 !three parameter models
 use lmi2sr

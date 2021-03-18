@@ -138,5 +138,6 @@ AC_CONFIG_FILES([Makefile
 		 src/saii/Makefile
 		 src/saiii/Makefile
 		 src/rclfi/Makefile
+         src/dei/Makefile
                 ])
 AC_OUTPUT
