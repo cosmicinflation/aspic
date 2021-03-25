@@ -21,15 +21,15 @@ program ahimain
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 20,n
 
-  real(kp) :: phi0,w,bfoldstar
+  real(kp) :: f,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
   real(kp), dimension(2) :: vecbuffer
 
-  real(kp), dimension(1:4) ::phi0values
+  real(kp), dimension(1:4) ::fvalues
 
   real(kp)  :: alpha,alphamin,alphamax,eps1A,eps2A,eps3A,nsA,rA
   real(kp)  :: eps1B,eps2B,eps3B,nsB,rB,xstarA,xstarB
@@ -39,43 +39,88 @@ program ahimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  phi0values(1)=2*10._kp**(0._kp)
-  phi0values(2)=3._kp*10._kp**(0._kp)
-  phi0values(3)=5._kp**(1._kp)
-  phi0values(4)=10._kp**(1._kp)
+  
+  real(kp) :: x,xmin,xmax,V1
+  real(kp) :: fmin,fmax
+  
 
   Pstar = powerAmpScalar
 
+  
+  call delete_file('ahi_potential.dat')
+  call delete_file('ahi_slowroll.dat')
 
+  n=250
+
+  xmin = -2._kp
+  xmax = 8.3_kp
+  
+  do i=1,n
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+
+     V1 = ahi_norm_potential(x,f=1._kp)
+
+
+     call livewrite('ahi_potential.dat',x,V1)
+     
+     eps1 = ahi_epsilon_one(x,f=1._kp)
+     eps2 = ahi_epsilon_two(x,f=1._kp)
+     eps3 = ahi_epsilon_three(x,f=1._kp)
+          
+     call livewrite('ahi_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+
+  call delete_file('ahi_xend.dat')
+
+  n=250
+  fmin = 1d-6
+  fmax = 1e3
+  
+  do i=1,n
+     f=exp(log(fmin) + real(i-1,kp)*(log(fmax)-log(fmin))/real(n-1,kp))
+
+     xend = ahi_x_endinf(f)
+
+     call livewrite('ahi_xend.dat',f,xend)
+     
+  enddo
+  
+  
   call delete_file('ahi_predic.dat')
   call delete_file('ahi_nsr.dat')
 
-  call aspicwrite_header('ahi',labeps12,labnsr,labbfoldreh,(/'phi0'/))
-  
-  do j=1,size(phi0values)
+  call aspicwrite_header('ahi',labeps12,labnsr,labbfoldreh,(/'f'/))
 
-     phi0=phi0values(j)
+  fmin = 0.1
+  fmax = 10.
+
+  n = 20
+  
+  do j=1,n
+
+     f=fmin + (fmax-fmin)*real(j-1,kp)/real(n-1,kp)
 
      w=0._kp
 
      lnRhoRehMin = lnRhoNuc
 
-     xend = ahi_x_endinf(phi0)
-     lnRhoRehMax = ahi_lnrhoreh_max(phi0,xend,Pstar)
+     xend = ahi_x_endinf(f)
+     lnRhoRehMax = ahi_lnrhoreh_max(f,xend,Pstar)
 
-     print *,'phi0=',phi0,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+     print *,'f=',f,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
      do i=1,npts
 
         lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-        xstar = ahi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
+        xstar = ahi_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)
 
         print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-        eps1 = ahi_epsilon_one(xstar,phi0)
-        eps2 = ahi_epsilon_two(xstar,phi0)
-        eps3 = ahi_epsilon_three(xstar,phi0)
+        eps1 = ahi_epsilon_one(xstar,f)
+        eps2 = ahi_epsilon_two(xstar,f)
+        eps3 = ahi_epsilon_three(xstar,f)
 
 
         logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -84,9 +129,9 @@ program ahimain
         ns = 1._kp - 2._kp*eps1 - eps2
         r =16._kp*eps1
 
-        call livewrite('ahi_predic.dat',phi0,eps1,eps2,eps3,r,ns,Treh)
+        call livewrite('ahi_predic.dat',f,eps1,eps2,eps3,r,ns,Treh)
 
-        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/phi0/))
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/f/))
         
      end do
   end do
@@ -98,29 +143,29 @@ program ahimain
 
   lnRradmin=-42
   lnRradmax = 10
-  phi0 = 1.
+  f = 1.
 
-  xend = ahi_x_endinf(phi0)
+  xend = ahi_x_endinf(f)
   
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = ahi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)
+     xstar = ahi_x_rrad(f,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = ahi_epsilon_one(xstar,phi0)
+     eps1 = ahi_epsilon_one(xstar,f)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  ahi_epsilon_one(xend,phi0)
-     VendOverVstar = ahi_norm_potential(xend,phi0)/ahi_norm_potential(xstar,phi0)
+     eps1end =  ahi_epsilon_one(xend,f)
+     VendOverVstar = ahi_norm_potential(xend,f)/ahi_norm_potential(xstar,f)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = ahi_x_rreh(phi0,xend,lnR,bfoldstar)
+     xstar = ahi_x_rreh(f,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -128,7 +173,7 @@ program ahimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = ahi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = ahi_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

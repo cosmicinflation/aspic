@@ -22,10 +22,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ahi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)    
+  function ahi_x_star(f,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ahi_x_star
-    real(kp), intent(in) :: phi0,xend,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: f,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -39,13 +39,13 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = ahi_epsilon_one(xEnd,phi0)
-    potEnd = ahi_norm_potential(xEnd,phi0)
-    primEnd = ahi_efold_primitive(xEnd,phi0)
+    epsOneEnd = ahi_epsilon_one(xEnd,f)
+    potEnd = ahi_norm_potential(xEnd,f)
+    primEnd = ahi_efold_primitive(xEnd,f)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
-    ahiData%real1 = phi0    
+    ahiData%real1 = f    
     ahiData%real2 = w
     ahiData%real3 = calF + primEnd
 
@@ -56,7 +56,7 @@ contains
     ahi_x_star = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (ahi_efold_primitive(x,phi0) - primEnd)
+       bfoldstar = - (ahi_efold_primitive(x,f) - primEnd)
     endif
 
   end function ahi_x_star
@@ -67,15 +67,15 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: ahiData
 
-    real(kp) :: primStar,phi0,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,f,w,CalFplusprimEnd,potStar,epsOneStar
 
-    phi0=ahiData%real1
+    f=ahiData%real1
     w = ahiData%real2
     CalFplusprimEnd = ahiData%real3
 
-    primStar = ahi_efold_primitive(x,phi0)
-    epsOneStar = ahi_epsilon_one(x,phi0)
-    potStar = ahi_norm_potential(x,phi0)
+    primStar = ahi_efold_primitive(x,f)
+    epsOneStar = ahi_epsilon_one(x,f)
+    potStar = ahi_norm_potential(x,f)
 
     find_ahi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -84,10 +84,10 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ahi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)    
+  function ahi_x_rrad(f,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: ahi_x_rrad
-    real(kp), intent(in) :: phi0,xend,lnRrad,Pstar
+    real(kp), intent(in) :: f,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -101,13 +101,13 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = ahi_epsilon_one(xEnd,phi0)
-    potEnd = ahi_norm_potential(xEnd,phi0)
-    primEnd = ahi_efold_primitive(xEnd,phi0)
+    epsOneEnd = ahi_epsilon_one(xEnd,f)
+    potEnd = ahi_norm_potential(xEnd,f)
+    primEnd = ahi_efold_primitive(xEnd,f)
    
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
 
-    ahiData%real1 = phi0
+    ahiData%real1 = f
     ahiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+tolkp)
@@ -117,7 +117,7 @@ contains
     ahi_x_rrad = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (ahi_efold_primitive(x,phi0) - primEnd)
+       bfoldstar = - (ahi_efold_primitive(x,f) - primEnd)
     endif
 
   end function ahi_x_rrad
@@ -128,14 +128,14 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: ahiData
 
-    real(kp) :: primStar,phi0,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,f,CalFplusprimEnd,potStar,epsOneStar
 
-    phi0=ahiData%real1
+    f=ahiData%real1
     CalFplusprimEnd = ahiData%real2
 
-    primStar = ahi_efold_primitive(x,phi0)
-    epsOneStar = ahi_epsilon_one(x,phi0)
-    potStar = ahi_norm_potential(x,phi0)
+    primStar = ahi_efold_primitive(x,f)
+    epsOneStar = ahi_epsilon_one(x,f)
+    potStar = ahi_norm_potential(x,f)
 
     find_ahi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -145,10 +145,10 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function ahi_x_rreh(phi0,xend,lnRreh,bfoldstar)    
+  function ahi_x_rreh(f,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: ahi_x_rreh
-    real(kp), intent(in) :: phi0,xend,lnRreh
+    real(kp), intent(in) :: f,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -162,13 +162,13 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = ahi_epsilon_one(xEnd,phi0)
-    potEnd = ahi_norm_potential(xEnd,phi0)
-    primEnd = ahi_efold_primitive(xEnd,phi0)
+    epsOneEnd = ahi_epsilon_one(xEnd,f)
+    potEnd = ahi_norm_potential(xEnd,f)
+    primEnd = ahi_efold_primitive(xEnd,f)
    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
 
-    ahiData%real1 = phi0
+    ahiData%real1 = f
     ahiData%real2 = calF + primEnd
 
     mini = xEnd*(1._kp+tolkp)
@@ -178,7 +178,7 @@ contains
     ahi_x_rreh = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (ahi_efold_primitive(x,phi0) - primEnd)
+       bfoldstar = - (ahi_efold_primitive(x,f) - primEnd)
     endif
 
   end function ahi_x_rreh
@@ -189,13 +189,13 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: ahiData
 
-    real(kp) :: primStar,phi0,CalFplusprimEnd,potStar
+    real(kp) :: primStar,f,CalFplusprimEnd,potStar
 
-    phi0=ahiData%real1
+    f=ahiData%real1
     CalFplusprimEnd = ahiData%real2
 
-    primStar = ahi_efold_primitive(x,phi0)
-    potStar = ahi_norm_potential(x,phi0)
+    primStar = ahi_efold_primitive(x,f)
+    potStar = ahi_norm_potential(x,f)
 
     find_ahi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -204,10 +204,10 @@ contains
 
 
 
-  function ahi_lnrhoreh_max(phi0,xend,Pstar) 
+  function ahi_lnrhoreh_max(f,xend,Pstar) 
     implicit none
     real(kp) :: ahi_lnrhoreh_max
-    real(kp), intent(in) :: phi0,xend,Pstar
+    real(kp), intent(in) :: f,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
@@ -217,12 +217,12 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    potEnd  = ahi_norm_potential(xEnd,phi0)
-    epsOneEnd = ahi_epsilon_one(xEnd,phi0)
+    potEnd  = ahi_norm_potential(xEnd,f)
+    epsOneEnd = ahi_epsilon_one(xEnd,f)
 
-    x = ahi_x_star(phi0,xend,wrad,junk,Pstar)    
-    potStar = ahi_norm_potential(x,phi0)
-    epsOneStar = ahi_epsilon_one(x,phi0)
+    x = ahi_x_star(f,xend,wrad,junk,Pstar)    
+    potStar = ahi_norm_potential(x,f)
+    epsOneStar = ahi_epsilon_one(x,f)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ahi_lnrhoreh_max: slow-roll violated!'
     
