@@ -1,174 +1,196 @@
-!slow-roll functions for the S-dual inflation potential
+!slow-roll functions for the pure arctan inflation potential
 !
-!V(phi) = M^4 sech(x)
+!V(phi) = M^4 arctan(x)
 !
 !x = phi/mu
 
-module sdisr
+module paisr
   use infprec, only : kp
   implicit none
 
   private
 
-  public sdi_norm_potential, sdi_epsilon_one, sdi_epsilon_two, sdi_epsilon_three
-  public sdi_efold_primitive, sdi_x_trajectory
-  public sdi_norm_deriv_potential, sdi_norm_deriv_second_potential
-  public sdi_phizeromin, sdi_numacc_xendmin, sdi_numacc_xendmax, sdi_numacc_xinimin
-
+  public pai_norm_potential, pai_epsilon_one, pai_epsilon_two, pai_epsilon_three
+  public pai_efold_primitive, pai_x_trajectory
+  public pai_norm_deriv_potential, pai_norm_deriv_second_potential
+  public pai_numacc_xinimax
+  
 contains
-
-
-!to ensure eps1 < 1 over the whole domain, otherwise ruled out by eps2
-!too big
-  function sdi_phizeromin()
-    implicit none
-    real(kp) :: sdi_phizeromin
-
-    sdi_phizeromin = sqrt(2._kp)/2._kp
-
-  end function sdi_phizeromin
-
-
-  function sdi_numacc_xinimin(mu)
-    implicit none
-    real(kp) :: sdi_numacc_xinimin
-    real(kp), intent(in) :: mu
-
-    sdi_numacc_xinimin = epsilon(1._kp)
-
-  end function sdi_numacc_xinimin
-    
-
-!the minimal value of xend ensuring efoldNum at the top of the
-!potential, numerical limitation only
-  function sdi_numacc_xendmin(efoldNum,mu)
-    implicit none
-    real(kp) :: sdi_numacc_xendmin
-    real(kp), intent(in) :: efoldNum, mu
-    real(kp) :: xinimin
-
-    xinimin = sdi_numacc_xinimin(mu)
-
-    sdi_numacc_xendmin = sdi_x_trajectory(efoldNum,xinimin,mu)
-    
-  end function sdi_numacc_xendmin
-
-
-
-!otherwise the potential overflows
-  function sdi_numacc_xendmax(mu)
-    implicit none
-    real(kp) :: sdi_numacc_xendmax
-    real(kp), intent(in) :: mu
-
-    sdi_numacc_xendmax = -log(epsilon(1._kp)) 
-
-  end function sdi_numacc_xendmax
 
 
 
 !returns V/M^4 as a function of x=phi/mu
-  function sdi_norm_potential(x,mu)
+  function pai_norm_potential(x,mu)
     implicit none
-    real(kp) :: sdi_norm_potential
+    real(kp) :: pai_norm_potential
     real(kp), intent(in) :: x,mu
 
-    sdi_norm_potential = 1._kp/cosh(x)
+    pai_norm_potential = atan(x)
 
-  end function sdi_norm_potential
+  end function pai_norm_potential
 
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function sdi_norm_deriv_potential(x,mu)
+  function pai_norm_deriv_potential(x,mu)
     implicit none
-    real(kp) :: sdi_norm_deriv_potential
+    real(kp) :: pai_norm_deriv_potential
     real(kp), intent(in) :: x,mu
 
-   sdi_norm_deriv_potential = -tanh(x)/cosh(x)
+   pai_norm_deriv_potential = 1._kp/(1._kp + x*x)
 
-  end function sdi_norm_deriv_potential
+  end function pai_norm_deriv_potential
 
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function sdi_norm_deriv_second_potential(x,mu)
+  function pai_norm_deriv_second_potential(x,mu)
     implicit none
-    real(kp) :: sdi_norm_deriv_second_potential
+    real(kp) :: pai_norm_deriv_second_potential
     real(kp), intent(in) :: x,mu
 
-    sdi_norm_deriv_second_potential = 1._kp/cosh(x)-2._kp/cosh(x)**3
+    pai_norm_deriv_second_potential = -2._kp*x/(1._kp + x*x)**2
 
-  end function sdi_norm_deriv_second_potential
+  end function pai_norm_deriv_second_potential
 
+
+!how far we can start inflation and having epsilon1 > machine precision  
+  function pai_numacc_xinimax(mu)
+    implicit none
+    real(kp) :: pai_numacc_xinimax
+    real(kp), intent(in) :: mu
+
+    real(kp), parameter :: sqrepsmin = sqrt(epsilon(1._kp))
+    
+    pai_numacc_xinimax = 1._kp/(pi*mu*sqrepsmin)
+    
+  end function pai_numacc_xinimax
+  
 
 
 !epsilon_one(x)
-  function sdi_epsilon_one(x,mu)    
+  function pai_epsilon_one(x,mu)    
     implicit none
-    real(kp) :: sdi_epsilon_one
+    real(kp) :: pai_epsilon_one
     real(kp), intent(in) :: x,mu
     
-    sdi_epsilon_one = tanh(x)**2/(2._kp*mu**2)
+    pai_epsilon_one = 0.5_kp/(atan(x)**2*(1._kp+x*x)**2)/mu/mu
     
-  end function sdi_epsilon_one
+  end function pai_epsilon_one
 
 
 !epsilon_two(x)
-  function sdi_epsilon_two(x,mu)    
+  function pai_epsilon_two(x,mu)    
     implicit none
-    real(kp) :: sdi_epsilon_two
+    real(kp) :: pai_epsilon_two
     real(kp), intent(in) :: x,mu
     
-    sdi_epsilon_two = (2._kp/cosh(x)**2)/mu**2
+    pai_epsilon_two = (2._kp + 4._kp*x*atan(x)) &
+         /(mu**2 * (1 + x*x)**2 * atan(x)**2)
 
-  end function sdi_epsilon_two
+  end function pai_epsilon_two
 
 
 !epsilon_three(x)
-  function sdi_epsilon_three(x,mu)    
+  function pai_epsilon_three(x,mu)    
     implicit none
-    real(kp) :: sdi_epsilon_three
+    real(kp) :: pai_epsilon_three
     real(kp), intent(in) :: x,mu
     
-    sdi_epsilon_three = (-2._kp*tanh(x)**2)/mu**2
+    pai_epsilon_three = (2._kp + 6._kp*x*atan(x) &
+         + (-2._kp + 6._kp*x**2)*atan(x)**2) &
+         /(mu**2 * (1._kp + x*x)**2*atan(x)**2 &
+         * (1._kp + 2._kp*x*atan(x)))
     
-  end function sdi_epsilon_three
+  end function pai_epsilon_three
 
-!returns x at the end of inflation
-  function sdi_x_endinf(mu,xend)
+ 
+
+
+!returns x at the end of inflation defined as epsilon1=1
+  function pai_x_endinf(mu)
     implicit none
-    real(kp), intent(in) :: mu,xend
-    real(kp) :: sdi_x_endinf
-   
-    sdi_x_endinf = xend
-   
-  end function sdi_x_endinf
+    real(kp), intent(in) :: mu
+    real(kp) :: pai_x_endinf
+    real(kp) :: mini, maxi
+    real(kp), parameter :: tolFind=tolkp
+    type(transfert) :: paiData
 
+    mini = epsilon(1._kp)
+    maxi = pai_numacc_xinimax(mu)
+
+    paiData%real1 = mu
+
+    pai_x_endinf = zbrent(find_pai_x_endinf,mini,maxi,tolFind,paiData)
+    
+  end function pai_x_endinf
+
+  function find_pai_x_endinf(x,ahiData)
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: paiData
+    real(kp) :: find_pai_x_endinf
+    real(kp) :: mu
+
+    mu = paiData%real1
+
+    find_pai_x_endinf = mu*sqrt(2._kp+2._kp*x*x)*atan(x) - 1._kp
+    
+  end function find_pai_x_endinf
+
+  
+  
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function sdi_efold_primitive(x,mu)
+  function pai_efold_primitive(x,mu)
     implicit none
     real(kp), intent(in) :: x,mu
-    real(kp) :: sdi_efold_primitive
+    real(kp) :: pai_efold_primitive
 
-    if (mu.eq.0._kp) stop 'sdi_efold_primitive: mu=0!'
+!    if (mu.eq.0._kp) stop 'pai_efold_primitive: mu=0!'
 
-    sdi_efold_primitive = -mu**2*log(sinh(x))
-
-  end function sdi_efold_primitive
-
-
-!returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function sdi_x_trajectory(bfold,xend,mu)
-    implicit none
-    real(kp), intent(in) :: bfold, mu, xend
-    real(kp) :: sdi_x_trajectory
+    pai_efold_primitive = (mu**2 * (-x**2 + 2._kp*x*(3._kp + x**2)*atan(x) &
+         - 2._kp*log(1._kp + x**2)))/6._kp
     
-    sdi_x_trajectory = asinh(sinh(xend)*exp(bfold/mu**2))
-       
-  end function sdi_x_trajectory
+  end function pai_efold_primitive
+
+
+
+
+!returns x at bfold=-efolds before the end of inflation
+  function pai_x_trajectory(bfold,xend,mu)
+    implicit none
+    real(kp), intent(in) :: bfold,xend,mu
+    real(kp) :: pai_x_trajectory
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: paiData
+
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi = pai_numacc_xinimax(mu)
+
+    paiData%real1 = mu
+    paiData%real2 = -bfold + pai_efold_primitive(xend,mu)
+
+    pai_x_trajectory = zbrent(find_pai_x_trajectory,mini,maxi,tolFind,paiData)
+
+  end function pai_x_trajectory
+
+  function find_pai_x_trajectory(x,paiData)
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: paiData
+    real(kp) :: find_pai_x_trajectory
+    real(kp) :: mu,NplusPrimEnd
+
+    mu = paiData%real1
+    NplusPrimEnd = paiData%real2
+
+    find_pai_x_trajectory = pai_efold_primitive(x,mu) - NplusPrimEnd
+
+  end function find_pai_x_trajectory
+
 
 
   
-end module sdisr
+end module paisr

@@ -127,7 +127,7 @@ contains
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: ahiData
     real(kp) :: find_ahi_x_endinf
-    real(kp) :: fsq2,f, test, test2
+    real(kp) :: f
 
     f = ahiData%real1
 
