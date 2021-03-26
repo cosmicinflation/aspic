@@ -50,7 +50,7 @@ program paimain
 
   n=150
 
-  xmin = 0.1_kp
+  xmin = 0._kp
   xmax = 10._kp
   
   do i=1,n
@@ -60,6 +60,8 @@ program paimain
 
 
      call livewrite('pai_potential.dat',x,V1)
+
+     if (x.eq.0._kp) cycle
      
      eps1 = pai_epsilon_one(x,mu=1._kp)
      eps2 = pai_epsilon_two(x,mu=1._kp)
@@ -83,11 +85,11 @@ program paimain
 
   n = 20
 
-  mumin = 0.1
+  mumin = 0.01
   mumax = 10.
 
   do j=1,n
-     mu = mumin + (mumax-mumin)*real(j-1,kp)/real(n-1,kp)
+     mu = exp(log(mumin) + (log(mumax)-log(mumin))*real(j-1,kp)/real(n-1,kp))
 
      lnRhoRehMin = lnRhoNuc
 

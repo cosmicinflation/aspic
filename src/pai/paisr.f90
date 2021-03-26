@@ -60,9 +60,9 @@ contains
     real(kp) :: pai_numacc_xinimax
     real(kp), intent(in) :: mu
 
-    real(kp), parameter :: sqrepsmin = sqrt(epsilon(1._kp))
+    real(kp), parameter :: sqrsqrepsmin = epsilon(1._kp)**(0.25_kp)
     
-    pai_numacc_xinimax = 1._kp/(pi*mu*sqrepsmin)
+    pai_numacc_xinimax = 1._kp/(sqrt(pi*mu)*sqrsqrepsmin)
     
   end function pai_numacc_xinimax
   

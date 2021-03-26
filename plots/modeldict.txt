@@ -66,6 +66,7 @@ ni		\mathrm{NI}
 oi		\mathrm{OI}
 oripi		\mathrm{ORIPI}
 osti		\mathrm{OSTI}
+pai		\mathrm{PAI}
 pli		\mathrm{PLI}
 psni		\mathrm{PSNI}
 rchi		\mathrm{RCHI}
