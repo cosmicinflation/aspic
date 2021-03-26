@@ -21,11 +21,11 @@ program sdimain
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j,k
-  integer :: npts, Nphi0, Nxend
+  integer :: i,j,k,n
+  integer :: npts, Nmu, Nxend
 
-  real(kp) :: phi0,xendinf,w,bfoldstar
-  real(kp) :: xinimin,xendmin,xendmax,phi0min,phi0max
+  real(kp) :: mu,xendinf,w,bfoldstar
+  real(kp) :: xinimin,xendmin,xendmax,mumin,mumax
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax
@@ -40,15 +40,45 @@ program sdimain
   integer, parameter :: nvec = 3
   real(kp), dimension(nvec) :: phivec
 
+  real(kp) :: xmin,xmax,x,V1
+  
   Pstar = powerAmpScalar
 
+
+  call delete_file('sdi_potential.dat')
+  call delete_file('sdi_slowroll.dat')
+
+  n=150
+
+  xmin = 0._kp
+  xmax = 7_kp
+  
+  do i=1,n
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
+
+     V1 = sdi_norm_potential(x,mu=1._kp)
+
+
+     call livewrite('sdi_potential.dat',x,V1)
+     
+     eps1 = sdi_epsilon_one(x,mu=1._kp)
+     eps2 = sdi_epsilon_two(x,mu=1._kp)
+     eps3 = sdi_epsilon_three(x,mu=1._kp)
+          
+     call livewrite('sdi_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+
+
+
+  
 
   npts = 15
 
   w=0._kp
   !  w = 1._kp/3._kp
 
-  call aspicwrite_header('sdi',labeps12,labnsr,labbfoldreh,(/'xend','phi0'/))
+  call aspicwrite_header('sdi',labeps12,labnsr,labbfoldreh,(/'xend','mu  '/))
   
   call delete_file('sdi_predic.dat')
   call delete_file('sdi_nsr.dat')
@@ -61,18 +91,18 @@ program sdimain
 
 
   do j=1,nvec
-     phi0 = phivec(j)
+     mu = phivec(j)
 
 
-     xendmin = sdi_numacc_xendmin(efoldNum,phi0)
-     xendmax = sdi_numacc_xendmax(phi0)
-     xinimin = sdi_numacc_xinimin(phi0)
+     xendmin = sdi_numacc_xendmin(efoldNum,mu)
+     xendmax = sdi_numacc_xendmax(mu)
+     xinimin = sdi_numacc_xinimin(mu)
 
-     if (phi0.lt.sdi_phizeromin()) cycle
+     if (mu.lt.sdi_phizeromin()) cycle
 
 !debug/test
      print *,'xinimin= xendmin xendmax= ',xinimin,xendmin,xendmax
-     print *,'efoldMax= ',sdi_efold_primitive(xinimin,phi0) - sdi_efold_primitive(xendmin,phi0)
+     print *,'efoldMax= ',sdi_efold_primitive(xinimin,mu) - sdi_efold_primitive(xendmin,mu)
 
 
      xendmin=10._kp**(-3.)
@@ -82,25 +112,25 @@ program sdimain
      do k=1,Nxend
         xendinf=xendmin*(xendmax/xendmin)**(real(k,kp)/real(Nxend,kp))
 
-        if (xendinf.lt.sdi_numacc_xendmin(efoldNum,phi0)) cycle
-        if (xendinf.gt.sdi_numacc_xendmax(phi0)) cycle
+        if (xendinf.lt.sdi_numacc_xendmin(efoldNum,mu)) cycle
+        if (xendinf.gt.sdi_numacc_xendmax(mu)) cycle
 
         lnRhoRehMin = lnRhoNuc
-        lnRhoRehMax = sdi_lnrhoreh_max(phi0,xendinf,Pstar)
+        lnRhoRehMax = sdi_lnrhoreh_max(mu,xendinf,Pstar)
 
-        print *,'phi0=',phi0,'xendinf=',xendinf,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+        print *,'mu=',mu,'xendinf=',xendinf,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
         do i=1,npts
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           xstar = sdi_x_star(phi0,xendinf,w,lnRhoReh,Pstar,bfoldstar)
+           xstar = sdi_x_star(mu,xendinf,w,lnRhoReh,Pstar,bfoldstar)
 
            !print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-           eps1 = sdi_epsilon_one(xstar,phi0)
-           eps2 = sdi_epsilon_two(xstar,phi0)
-           eps3 = sdi_epsilon_three(xstar,phi0)
+           eps1 = sdi_epsilon_one(xstar,mu)
+           eps2 = sdi_epsilon_two(xstar,mu)
+           eps3 = sdi_epsilon_three(xstar,mu)
 
            logErehGeV = log_energy_reheat_ingev(lnRhoReh)
            Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
@@ -110,9 +140,9 @@ program sdimain
 
            print*, 'ns=',ns,'r=',r,'bfoldstar=',bfoldstar
 
-           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xendinf,phi0/))
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xendinf,mu/))
            
-           call livewrite('sdi_predic.dat',phi0,xendinf,eps1,eps2,eps3,r,ns,Treh)
+           call livewrite('sdi_predic.dat',mu,xendinf,eps1,eps2,eps3,r,ns,Treh)
 
            call livewrite('sdi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
@@ -129,27 +159,27 @@ program sdimain
 
   lnRradmin=-42
   lnRradmax = 10
-  phi0 = 100._kp
+  mu = 100._kp
   xend = 20._kp
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = sdi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)
+     xstar = sdi_x_rrad(mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = sdi_epsilon_one(xstar,phi0)
+     eps1 = sdi_epsilon_one(xstar,mu)
 
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  sdi_epsilon_one(xend,phi0)
-     VendOverVstar = sdi_norm_potential(xend)/sdi_norm_potential(xstar)
+     eps1end =  sdi_epsilon_one(xend,mu)
+     VendOverVstar = sdi_norm_potential(xend,mu)/sdi_norm_potential(xstar,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = sdi_x_rreh(phi0,xend,lnR,bfoldstar)
+     xstar = sdi_x_rreh(mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
 !second consistency check
@@ -157,7 +187,7 @@ program sdimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = sdi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = sdi_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

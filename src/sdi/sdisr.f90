@@ -2,7 +2,7 @@
 !
 !V(phi) = M^4 sech(x)
 !
-!x = phi/phi0
+!x = phi/mu
 
 module sdisr
   use infprec, only : kp
@@ -29,10 +29,10 @@ contains
   end function sdi_phizeromin
 
 
-  function sdi_numacc_xinimin(phi0)
+  function sdi_numacc_xinimin(mu)
     implicit none
     real(kp) :: sdi_numacc_xinimin
-    real(kp), intent(in) :: phi0
+    real(kp), intent(in) :: mu
 
     sdi_numacc_xinimin = epsilon(1._kp)
 
@@ -41,25 +41,25 @@ contains
 
 !the minimal value of xend ensuring efoldNum at the top of the
 !potential, numerical limitation only
-  function sdi_numacc_xendmin(efoldNum,phi0)
+  function sdi_numacc_xendmin(efoldNum,mu)
     implicit none
     real(kp) :: sdi_numacc_xendmin
-    real(kp), intent(in) :: efoldNum, phi0
+    real(kp), intent(in) :: efoldNum, mu
     real(kp) :: xinimin
 
-    xinimin = sdi_numacc_xinimin(phi0)
+    xinimin = sdi_numacc_xinimin(mu)
 
-    sdi_numacc_xendmin = sdi_x_trajectory(efoldNum,xinimin,phi0)
+    sdi_numacc_xendmin = sdi_x_trajectory(efoldNum,xinimin,mu)
     
   end function sdi_numacc_xendmin
 
 
 
 !otherwise the potential overflows
-  function sdi_numacc_xendmax(phi0)
+  function sdi_numacc_xendmax(mu)
     implicit none
     real(kp) :: sdi_numacc_xendmax
-    real(kp), intent(in) :: phi0
+    real(kp), intent(in) :: mu
 
     sdi_numacc_xendmax = -log(epsilon(1._kp)) 
 
@@ -67,11 +67,11 @@ contains
 
 
 
-!returns V/M^4 as a function of x=phi/phi0
-  function sdi_norm_potential(x)
+!returns V/M^4 as a function of x=phi/mu
+  function sdi_norm_potential(x,mu)
     implicit none
     real(kp) :: sdi_norm_potential
-    real(kp), intent(in) :: x
+    real(kp), intent(in) :: x,mu
 
     sdi_norm_potential = 1._kp/cosh(x)
 
@@ -80,10 +80,10 @@ contains
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function sdi_norm_deriv_potential(x)
+  function sdi_norm_deriv_potential(x,mu)
     implicit none
     real(kp) :: sdi_norm_deriv_potential
-    real(kp), intent(in) :: x
+    real(kp), intent(in) :: x,mu
 
    sdi_norm_deriv_potential = -tanh(x)/cosh(x)
 
@@ -92,10 +92,10 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function sdi_norm_deriv_second_potential(x)
+  function sdi_norm_deriv_second_potential(x,mu)
     implicit none
     real(kp) :: sdi_norm_deriv_second_potential
-    real(kp), intent(in) :: x
+    real(kp), intent(in) :: x,mu
 
     sdi_norm_deriv_second_potential = 1._kp/cosh(x)-2._kp/cosh(x)**3
 
@@ -104,41 +104,41 @@ contains
 
 
 !epsilon_one(x)
-  function sdi_epsilon_one(x,phi0)    
+  function sdi_epsilon_one(x,mu)    
     implicit none
     real(kp) :: sdi_epsilon_one
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x,mu
     
-    sdi_epsilon_one = tanh(x)**2/(2._kp*phi0**2)
+    sdi_epsilon_one = tanh(x)**2/(2._kp*mu**2)
     
   end function sdi_epsilon_one
 
 
 !epsilon_two(x)
-  function sdi_epsilon_two(x,phi0)    
+  function sdi_epsilon_two(x,mu)    
     implicit none
     real(kp) :: sdi_epsilon_two
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x,mu
     
-    sdi_epsilon_two = (2._kp/cosh(x)**2)/phi0**2
+    sdi_epsilon_two = (2._kp/cosh(x)**2)/mu**2
 
   end function sdi_epsilon_two
 
 
 !epsilon_three(x)
-  function sdi_epsilon_three(x,phi0)    
+  function sdi_epsilon_three(x,mu)    
     implicit none
     real(kp) :: sdi_epsilon_three
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x,mu
     
-    sdi_epsilon_three = (-2._kp*tanh(x)**2)/phi0**2
+    sdi_epsilon_three = (-2._kp*tanh(x)**2)/mu**2
     
   end function sdi_epsilon_three
 
 !returns x at the end of inflation
-  function sdi_x_endinf(phi0,xend)
+  function sdi_x_endinf(mu,xend)
     implicit none
-    real(kp), intent(in) :: phi0,xend
+    real(kp), intent(in) :: mu,xend
     real(kp) :: sdi_x_endinf
    
     sdi_x_endinf = xend
@@ -147,25 +147,25 @@ contains
 
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function sdi_efold_primitive(x,phi0)
+  function sdi_efold_primitive(x,mu)
     implicit none
-    real(kp), intent(in) :: x,phi0
+    real(kp), intent(in) :: x,mu
     real(kp) :: sdi_efold_primitive
 
-    if (phi0.eq.0._kp) stop 'sdi_efold_primitive: phi0=0!'
+    if (mu.eq.0._kp) stop 'sdi_efold_primitive: mu=0!'
 
-    sdi_efold_primitive = -phi0**2*log(sinh(x))
+    sdi_efold_primitive = -mu**2*log(sinh(x))
 
   end function sdi_efold_primitive
 
 
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function sdi_x_trajectory(bfold,xend,phi0)
+  function sdi_x_trajectory(bfold,xend,mu)
     implicit none
-    real(kp), intent(in) :: bfold, phi0, xend
+    real(kp), intent(in) :: bfold, mu, xend
     real(kp) :: sdi_x_trajectory
     
-    sdi_x_trajectory = asinh(sinh(xend)*exp(bfold/phi0**2))
+    sdi_x_trajectory = asinh(sinh(xend)*exp(bfold/mu**2))
        
   end function sdi_x_trajectory
 

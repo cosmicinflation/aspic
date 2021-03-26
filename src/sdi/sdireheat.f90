@@ -22,10 +22,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function sdi_x_star(phi0,xend,w,lnRhoReh,Pstar,bfoldstar)    
+  function sdi_x_star(mu,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: sdi_x_star
-    real(kp), intent(in) :: phi0,xend,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: mu,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -39,13 +39,13 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = sdi_epsilon_one(xEnd,phi0)
-    potEnd = sdi_norm_potential(xEnd)
-    primEnd = sdi_efold_primitive(xEnd,phi0)
+    epsOneEnd = sdi_epsilon_one(xEnd,mu)
+    potEnd = sdi_norm_potential(xEnd,mu)
+    primEnd = sdi_efold_primitive(xEnd,mu)
    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
-    sdiData%real1 = phi0 
+    sdiData%real1 = mu 
     sdiData%real2 = xEnd
     sdiData%real3 = w
     sdiData%real4 = calF + primEnd
@@ -58,7 +58,7 @@ contains
     sdi_x_star = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (sdi_efold_primitive(x,phi0) - primEnd)
+       bfoldstar = - (sdi_efold_primitive(x,mu) - primEnd)
     endif
 
   end function sdi_x_star
@@ -69,16 +69,16 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: sdiData
 
-    real(kp) :: primStar,phi0,xEnd,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,mu,xEnd,w,CalFplusprimEnd,potStar,epsOneStar
 
-    phi0=sdiData%real1
+    mu=sdiData%real1
     xEnd=sdiData%real2
     w = sdiData%real3
     CalFplusprimEnd = sdiData%real4
 
-    primStar = sdi_efold_primitive(x,phi0)
-    epsOneStar = sdi_epsilon_one(x,phi0)
-    potStar = sdi_norm_potential(x)
+    primStar = sdi_efold_primitive(x,mu)
+    epsOneStar = sdi_epsilon_one(x,mu)
+    potStar = sdi_norm_potential(x,mu)
 
     find_sdi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -87,10 +87,10 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function sdi_x_rrad(phi0,xend,lnRrad,Pstar,bfoldstar)    
+  function sdi_x_rrad(mu,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: sdi_x_rrad
-    real(kp), intent(in) :: phi0,xend,lnRrad,Pstar
+    real(kp), intent(in) :: mu,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -104,13 +104,13 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = sdi_epsilon_one(xEnd,phi0)
-    potEnd = sdi_norm_potential(xEnd)
-    primEnd = sdi_efold_primitive(xEnd,phi0)
+    epsOneEnd = sdi_epsilon_one(xEnd,mu)
+    potEnd = sdi_norm_potential(xEnd,mu)
+    primEnd = sdi_efold_primitive(xEnd,mu)
    
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
 
-    sdiData%real1 = phi0 
+    sdiData%real1 = mu 
     sdiData%real2 = xEnd
     sdiData%real3 = calF + primEnd
 
@@ -122,7 +122,7 @@ contains
     sdi_x_rrad = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (sdi_efold_primitive(x,phi0) - primEnd)
+       bfoldstar = - (sdi_efold_primitive(x,mu) - primEnd)
     endif
 
   end function sdi_x_rrad
@@ -133,15 +133,15 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: sdiData
 
-    real(kp) :: primStar,phi0,xEnd,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,mu,xEnd,CalFplusprimEnd,potStar,epsOneStar
 
-    phi0=sdiData%real1
+    mu=sdiData%real1
     xEnd=sdiData%real2
     CalFplusprimEnd = sdiData%real3
 
-    primStar = sdi_efold_primitive(x,phi0)
-    epsOneStar = sdi_epsilon_one(x,phi0)
-    potStar = sdi_norm_potential(x)
+    primStar = sdi_efold_primitive(x,mu)
+    epsOneStar = sdi_epsilon_one(x,mu)
+    potStar = sdi_norm_potential(x,mu)
 
     find_sdi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -151,10 +151,10 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function sdi_x_rreh(phi0,xend,lnRreh,bfoldstar)    
+  function sdi_x_rreh(mu,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: sdi_x_rreh
-    real(kp), intent(in) :: phi0,xend,lnRreh
+    real(kp), intent(in) :: mu,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -168,13 +168,13 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = sdi_epsilon_one(xEnd,phi0)
-    potEnd = sdi_norm_potential(xEnd)
-    primEnd = sdi_efold_primitive(xEnd,phi0)
+    epsOneEnd = sdi_epsilon_one(xEnd,mu)
+    potEnd = sdi_norm_potential(xEnd,mu)
+    primEnd = sdi_efold_primitive(xEnd,mu)
    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
 
-    sdiData%real1 = phi0 
+    sdiData%real1 = mu 
     sdiData%real2 = xEnd
     sdiData%real3 = calF + primEnd
 
@@ -186,7 +186,7 @@ contains
     sdi_x_rreh = x
 
     if (present(bfoldstar)) then
-       bfoldstar = - (sdi_efold_primitive(x,phi0) - primEnd)
+       bfoldstar = - (sdi_efold_primitive(x,mu) - primEnd)
     endif
 
   end function sdi_x_rreh
@@ -197,14 +197,14 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: sdiData
 
-    real(kp) :: primStar,phi0,xEnd,CalFplusprimEnd,potStar
+    real(kp) :: primStar,mu,xEnd,CalFplusprimEnd,potStar
 
-    phi0=sdiData%real1
+    mu=sdiData%real1
     xEnd=sdiData%real2
     CalFplusprimEnd = sdiData%real3
 
-    primStar = sdi_efold_primitive(x,phi0)    
-    potStar = sdi_norm_potential(x)
+    primStar = sdi_efold_primitive(x,mu)    
+    potStar = sdi_norm_potential(x,mu)
 
     find_sdi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -213,10 +213,10 @@ contains
 
 
 
-  function sdi_lnrhoreh_max(phi0,xend,Pstar) 
+  function sdi_lnrhoreh_max(mu,xend,Pstar) 
     implicit none
     real(kp) :: sdi_lnrhoreh_max
-    real(kp), intent(in) :: phi0,xend,Pstar
+    real(kp), intent(in) :: mu,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
@@ -226,15 +226,15 @@ contains
 
     real(kp) :: lnRhoEnd
        
-    potEnd  = sdi_norm_potential(xEnd)
-    epsOneEnd = sdi_epsilon_one(xEnd,phi0)
+    potEnd  = sdi_norm_potential(xEnd,mu)
+    epsOneEnd = sdi_epsilon_one(xEnd,mu)
 
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = sdi_x_star(phi0,xEnd,wrad,junk,Pstar)    
-    potStar = sdi_norm_potential(x)
-    epsOneStar = sdi_epsilon_one(x,phi0)
+    x = sdi_x_star(mu,xEnd,wrad,junk,Pstar)    
+    potStar = sdi_norm_potential(x,mu)
+    epsOneStar = sdi_epsilon_one(x,mu)
 
 
     
