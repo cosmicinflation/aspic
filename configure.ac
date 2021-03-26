@@ -7,7 +7,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_FC
 AC_PROG_CPP
 AC_PROG_RANLIB
-AC_PROG_LIBTOOL
+LT_INIT
 
 
 version_info="4:0:0"
@@ -20,8 +20,7 @@ SRCOMMDIR="common"
 AC_SUBST([SRCOMMDIR])
 
 AC_ARG_ENABLE(quad-precision,
-	[AC_HELP_STRING([--enable-quad-precision],
-	[compile aspic in quadruple precision])],
+	[AS_HELP_STRING([--enable-quad-precision],[compile aspic in quadruple precision])],
 	ok=$enableval, ok=no)
 AM_CONDITIONAL([USE_QUAD],[test "$ok" = "yes"])
 AM_COND_IF([USE_QUAD],
@@ -38,8 +37,7 @@ AM_COND_IF([USE_QUAD],
 
 
 AC_ARG_ENABLE(openmp,
-	[AC_HELP_STRING([--enable-openmp],
-	[enable openmp parallel instructions in aspic])],
+	[AS_HELP_STRING([--enable-openmp],[enable openmp parallel instructions in aspic])],
 	ok=$enableval, ok=yes)
 AM_CONDITIONAL([USE_OPENMP],[test "$ok" = "yes"])
 AM_COND_IF([USE_OPENMP],
