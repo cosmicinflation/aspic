@@ -1,0 +1,41 @@
+.TH libpai 3 "March 26, 2021" "libaspic" "Module convention" 
+
+.SH NAME
+.I pai
+- the pure arctan inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 arctan(x)
+
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/mu
+.TP
+Parameters
+.I real(kp)
+::
+.B mu
+(in Mp units)
+.RS
+.I real(kp)
+::
+
+.SH DESCRIPTION
+The
+.I paii
+module is used for pure actan inflation, which naturally end at the
+field value 'xend' given by a
+.I real(kp)
+function
+.IP
+.BR pai_x_endinf(mu)
+.P
+.
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
