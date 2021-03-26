@@ -9,8 +9,7 @@ module paireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use paisr, only : pai_epsilon_one, pai_epsilon_two, pai_epsilon_three
-  use paisr, only : pai_norm_potential
-  use paisr, only : pai_efold_primitive
+  use paisr, only : pai_norm_potential, pai_efold_primitive, pai_numacc_xinimax
   implicit none
 
   private
@@ -50,8 +49,8 @@ contains
     paiData%real3 = w
     paiData%real4 = calF + primEnd
 
-    mini = epsilon(1._kp)
-    maxi = xEnd
+    mini = xend
+    maxi = pai_numacc_xinimax(mu)
 
 
     x = zbrent(find_pai_x_star,mini,maxi,tolzbrent,paiData)
@@ -114,8 +113,8 @@ contains
     paiData%real2 = xEnd
     paiData%real3 = calF + primEnd
 
-    mini = epsilon(1._kp)
-    maxi = xEnd
+    mini = xEnd
+    maxi = pai_numacc_xinimax(mu)
 
 
     x = zbrent(find_pai_x_rrad,mini,maxi,tolzbrent,paiData)
@@ -178,8 +177,8 @@ contains
     paiData%real2 = xEnd
     paiData%real3 = calF + primEnd
 
-    mini = epsilon(1._kp)
-    maxi = xEnd
+    mini = xEnd
+    maxi = pai_numacc_xinimax(mu)
 
 
     x = zbrent(find_pai_x_rreh,mini,maxi,tolzbrent,paiData)

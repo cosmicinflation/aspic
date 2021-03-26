@@ -7,8 +7,8 @@ program paimain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use paisr, only : pai_norm_potential, pai_phizeromin, pai_efold_primitive
-  use paisr, only : pai_numacc_xinimax
+  use paisr, only : pai_norm_potential, pai_efold_primitive
+  use paisr, only : pai_numacc_xinimax, pai_x_endinf
   use paireheat, only : pai_x_rreh, pai_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -50,8 +50,8 @@ program paimain
 
   n=150
 
-  xmin = 0._kp
-  xmax = 7_kp
+  xmin = 0.1_kp
+  xmax = 10._kp
   
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
@@ -82,12 +82,17 @@ program paimain
 
 
   n = 20
-  
+
+  mumin = 0.1
+  mumax = 10.
 
   do j=1,n
      mu = mumin + (mumax-mumin)*real(j-1,kp)/real(n-1,kp)
 
      lnRhoRehMin = lnRhoNuc
+
+     xendinf = pai_x_endinf(mu)
+     
      lnRhoRehMax = pai_lnrhoreh_max(mu,xendinf,Pstar)
 
      print *,'mu=',mu,'xendinf=',xendinf,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
@@ -112,7 +117,7 @@ program paimain
 
         print*, 'ns=',ns,'r=',r,'bfoldstar=',bfoldstar
 
-        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xendinf,mu/))
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/mu/))
 
         call livewrite('pai_predic.dat',mu,xendinf,eps1,eps2,eps3,r,ns,Treh)
 
@@ -129,8 +134,10 @@ program paimain
 
   lnRradmin=-42
   lnRradmax = 10
-  mu = 100._kp
-  xend = 20._kp
+
+  mu = 1._kp
+  xend = pai_x_endinf(mu)
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)

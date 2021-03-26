@@ -5,7 +5,8 @@
 !x = phi/mu
 
 module paisr
-  use infprec, only : kp
+  use infprec, only : pi, kp, tolkp, transfert
+  use inftools, only : zbrent
   implicit none
 
   private
@@ -13,10 +14,9 @@ module paisr
   public pai_norm_potential, pai_epsilon_one, pai_epsilon_two, pai_epsilon_three
   public pai_efold_primitive, pai_x_trajectory
   public pai_norm_deriv_potential, pai_norm_deriv_second_potential
-  public pai_numacc_xinimax
+  public pai_numacc_xinimax, pai_x_endinf
   
 contains
-
 
 
 !returns V/M^4 as a function of x=phi/mu
@@ -116,7 +116,7 @@ contains
     real(kp), parameter :: tolFind=tolkp
     type(transfert) :: paiData
 
-    mini = epsilon(1._kp)
+    mini = 0._kp
     maxi = pai_numacc_xinimax(mu)
 
     paiData%real1 = mu
@@ -125,7 +125,7 @@ contains
     
   end function pai_x_endinf
 
-  function find_pai_x_endinf(x,ahiData)
+  function find_pai_x_endinf(x,paiData)
     implicit none
     real(kp), intent(in) :: x   
     type(transfert), optional, intent(inout) :: paiData
@@ -138,8 +138,7 @@ contains
     
   end function find_pai_x_endinf
 
-  
-  
+    
 
 !this is integral[V(phi)/V'(phi) dphi]
   function pai_efold_primitive(x,mu)
@@ -147,7 +146,6 @@ contains
     real(kp), intent(in) :: x,mu
     real(kp) :: pai_efold_primitive
 
-!    if (mu.eq.0._kp) stop 'pai_efold_primitive: mu=0!'
 
     pai_efold_primitive = (mu**2 * (-x**2 + 2._kp*x*(3._kp + x**2)*atan(x) &
          - 2._kp*log(1._kp + x**2)))/6._kp
@@ -155,8 +153,7 @@ contains
   end function pai_efold_primitive
 
 
-
-
+  
 !returns x at bfold=-efolds before the end of inflation
   function pai_x_trajectory(bfold,xend,mu)
     implicit none
