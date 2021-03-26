@@ -87,11 +87,12 @@ program hni2main
 
      do j=1,nf
 
-!        fmin = max(1.01*hni2_fmin(alpha),fcutmin)!
+        fmin = max(2.0*hni2_fmin(alpha),fcutmin)
         
         f=fmin*(fmax/fmin)**(real(j-1,kp)/real(nf-1,kp))
 
-
+        
+        
         lnRhoRehMin = lnRhoNuc
         xendmax = 0.999*hni2_numacc_xendmax(alpha,f)
 
@@ -144,6 +145,7 @@ program hni2main
 
   end do
 
+  
   call aspicwrite_end()
 
   write(*,*)

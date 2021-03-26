@@ -28,7 +28,7 @@ contains
     real(kp) :: mini,maxi
     
     if (.not.hni2_check_params(alpha,f)) then
-       stop 'hni2_x_star: hni2 requires alpha < alphamin!'
+       stop 'hni2_x_star: hni2 requires alpha < alphamax!'
     endif
    
     mini = epsilon(1._kp)
@@ -51,7 +51,7 @@ contains
     real(kp) :: mini,maxi
     
     if (.not.hni2_check_params(alpha,f)) then
-       stop 'hni2_x_rrad: hni2 requires alpha < alphamin!'
+       stop 'hni2_x_rrad: hni2 requires alpha < alphamax!'
     endif
 
     mini = epsilon(1._kp)
