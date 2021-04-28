@@ -5,7 +5,7 @@ bi		\mathrm{BI}
 bistg		\mathrm{BI}_{\mathrm{stg}}
 bsusybi 	\mathrm{BSUSYBI}
 lfi		\mathrm{LFI}
-hi		\mathrm{HI}
+hi		\mathrm{SI/HI}
 sfi		\mathrm{SFI}
 rmi1		\mathrm{RMI}_1
 rmi2		\mathrm{RMI}_2

@@ -25,7 +25,7 @@ program nfi2main
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j
+  integer :: i,j,n
   integer :: npts = 20
 
   real(kp) :: a,b,w,bfoldstar,y
@@ -42,9 +42,12 @@ program nfi2main
 
   integer, parameter :: nvec = 4
   real(kp), dimension(nvec) :: avec, bvec
+
+  real(kp) :: x,xmin,xmax,V1
   
   Pstar = powerAmpScalar
 
+ 
   call delete_file('nfi2_predic.dat')
   call delete_file('nfi2_nsr.dat')
 
@@ -56,7 +59,7 @@ program nfi2main
   ystep = 0.05
 
   bvec = (/2.5,2.5,3.5,3.5/)
-  avec = (/-0.4,-0.01,-0.4,-0.01/)
+  avec = (/-0.2,-0.0101,-0.2,-0.0101/)
   
 
   do j=1,nvec

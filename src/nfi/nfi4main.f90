@@ -24,7 +24,7 @@ program nfi4main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 4
 
   real(kp) :: a,b,w,bfoldstar,y
   real(kp) :: astep, bstep, ystep
@@ -38,7 +38,7 @@ program nfi4main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  integer, parameter :: nvec = 4
+  integer, parameter :: nvec = 3
   real(kp), dimension(nvec) :: avec, bvec
 
   Pstar = powerAmpScalar
@@ -53,11 +53,11 @@ program nfi4main
 
 !region a>0 and 0<b<1
 
-  ystep = 0.01
+  ystep = 0.001
 
 
-  bvec = (/0.7,0.7,0.8,0.8/)
-  avec = (/0.8,2.0,0.2,0.8/)
+  bvec = (/0.6,0.6,0.8/)
+  avec = (/0.1,0.2,0.1/)
 
   do j=1,nvec
 
@@ -71,9 +71,9 @@ program nfi4main
      if (xendmax.le.xendmin) then
         print *,'a= b=',a,b,xendmin,xendmax
         cycle
-
      endif
-     y=1e-2
+
+     y=1e-3
 
      do while (y<1)
 
@@ -124,15 +124,13 @@ program nfi4main
   enddo
 
 
-
-
 !region a<0 and b<0
 
   ystep = 0.01
 
 
-  bvec = (/-5.0, -5.0, -0.05,-0.05/)
-  avec = (/-1.0, -0.001,-1.0,-0.0000001/)
+  bvec = (/-1.5,-1.5,-5.0/)
+  avec = (/-1.0,-0.1,-1.0/)
   
   do j=1,nvec
      

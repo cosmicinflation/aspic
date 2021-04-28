@@ -9,6 +9,7 @@ program nfi1main
   use srflow, only : scalar_spectral_index, tensor_to_scalar_ratio
 
   use nfi1sr, only : nfi1_norm_potential, nfi1_x_endinf
+  use nfi2sr, only : nfi2_norm_potential
   use nfi1sr, only : nfi1_numacc_amin, nfi1_amax
   use nfi1reheat, only : nfi1_x_rreh, nfi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
@@ -26,7 +27,7 @@ program nfi1main
   real(kp) :: Pstar, logErehGeV, Treh
 
   integer :: i,j
-  integer :: npts = 20
+  integer :: npts = 20,n
 
   real(kp) :: a,b,w,bfoldstar
   real(kp) :: astep, bstep
@@ -42,9 +43,53 @@ program nfi1main
 
   integer, parameter :: nvec = 3
   real(kp), dimension(nvec) :: bvec
+
+  real(kp) :: x,xmin,xmax,V1,V2
+
   
   Pstar = powerAmpScalar
 
+  call delete_file('nfi12_potential.dat')
+  call delete_file('nfi12_slowroll.dat')
+
+  
+  n=250
+
+  xmin = 0.0001_kp
+  xmax = 5._kp
+  
+  do i=1,n
+     
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(n-1,kp))
+
+     V1 = nfi1_norm_potential(x,a=1._kp,b=1.2_kp)
+     V2 = nfi2_norm_potential(x,a=-1._kp,b=1.2_kp)
+
+     call livewrite('nfi12_potential.dat',x,V1,V2)
+     
+     eps1 = nfi1_epsilon_one(x,a=1._kp,b=1.2_kp)
+     eps2 = nfi1_epsilon_two(x,a=1._kp,b=1.2_kp)
+     eps3 = nfi1_epsilon_three(x,a=1._kp,b=1.2_kp)
+
+          
+     call livewrite('nfi12_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+
+  call delete_file('nfi_ab.dat')
+
+  amin = -2._kp
+  amax = 2._kp
+  
+  do i=1,npts
+     a = amin+(amax-amin)*real(i-1,kp)/real(npts-1)
+
+     call livewrite('nfi_ab.dat',0.5_kp,1._kp,2._kp,a)
+
+  enddo
+     
+     
+  
   call delete_file('nfi1_predic.dat')
   call delete_file('nfi1_nsr.dat')
 
@@ -54,11 +99,11 @@ program nfi1main
   efoldMax=120
 
 
-  astep = 0.001
+  astep = 0.0001
 
 
 
-  bvec=(/2.7,3.4,4.0/)
+  bvec=(/3.0,3.5,4.5/)
   
   do j=1,nvec
 
@@ -71,7 +116,7 @@ program nfi1main
         amax=huge(1._kp)
      endif
 
-     a=max(amin,1e-4)-astep
+     a=max(amin,9e-5)-astep
 
      print *,'a= b= amin= amax= ',a,b,amin,amax
 

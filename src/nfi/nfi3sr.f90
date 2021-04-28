@@ -1,7 +1,7 @@
 !slow-roll functions for the N-formalism inflation potential 3
 !
 !
-!V(phi)) = M^4 exp (a x^b)
+!V(phi)) = M^4 exp (-a x^b)
 !
 !3: a<0, 0<b<1 and a>0, b<0
 !
@@ -178,7 +178,7 @@ contains
     real(kp) :: efoldMax, xinimax
 
     if (.not.nfi3_check_params(a,b)) then
-       stop 'nfi3_x_trajectory: nfi3 requires a>0, b>1'
+       stop 'nfi3_x_trajectory: nfi3 requires a>0, b<0 or a<0 and 0<b<1'
     endif
 
     xinimax = nfi3_numacc_xinimax(a,b)

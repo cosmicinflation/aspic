@@ -10,6 +10,7 @@ program nfi3main
 
   use nfi3sr, only : nfi3_norm_potential, nfi3_x_endinf, nfi3_numacc_xinimax
   use nfi3sr, only : nfi3_numacc_absamax
+  use nfi4sr, only : nfi4_norm_potential
   use nfi3reheat, only : nfi3_x_rreh, nfi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -24,7 +25,7 @@ program nfi3main
   
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j
+  integer :: i,j,n
   integer :: npts = 15
 
   real(kp) :: a,b,w,bfoldstar
@@ -41,10 +42,47 @@ program nfi3main
 
   integer, parameter :: nvec = 3
   real(kp), dimension(nvec) :: bvec
+  real(kp) :: x,xmin,xmax,V1,V2
+  
+  Pstar = powerAmpScalar
+
+
+  
 
   
   Pstar = powerAmpScalar
 
+  call delete_file('nfi34_potential.dat')
+  call delete_file('nfi34_slowroll.dat')
+
+  n=250
+
+  xmin = 0.0001_kp
+  xmax = 5._kp
+  
+  do i=1,n
+     
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(n-1,kp))
+
+     V1 = nfi3_norm_potential(x,a=-1._kp,b=0.4_kp)
+     V2 = nfi4_norm_potential(x,a=1._kp,b=0.4_kp)
+
+     call livewrite('nfi34_potential.dat',x,V1,V2)
+     
+     eps1 = nfi3_epsilon_one(x,a=-1._kp,b=0.4_kp)
+     eps2 = nfi3_epsilon_two(x,a=-1._kp,b=0.4_kp)
+     eps3 = nfi3_epsilon_three(x,a=-1._kp,b=0.4_kp)
+
+          
+     call livewrite('nfi34_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+
+
+
+
+
+  
   call delete_file('nfi3_predic.dat')
   call delete_file('nfi3_nsr.dat')
 

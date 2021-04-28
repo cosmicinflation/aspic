@@ -1,7 +1,7 @@
 !slow-roll functions for the N-formalism inflation potential 2
 !
 !
-!V(phi)) = M^4 exp (a x^b)
+!V(phi)) = M^4 exp (-a x^b)
 !
 !2: a<0, b>1
 !
