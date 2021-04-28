@@ -1,16 +1,16 @@
 !test the reheating derivation from slow-roll
-program himain
+program simain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use hisr, only : hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
-  use hireheat, only : hi_lnrhoreh_max, hi_x_star
+  use sisr, only : si_epsilon_one, si_epsilon_two, si_epsilon_three
+  use sireheat, only : si_lnrhoreh_max, si_x_star
   use infinout, only : delete_file, livewrite
   use infinout, only : labeps12, labnsr, labbfoldreh
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
-  use hisr, only : hi_norm_potential, hi_x_endinf
-  use hireheat, only : hi_x_rreh, hi_x_rrad
+  use sisr, only : si_norm_potential, si_x_endinf
+  use sireheat, only : si_x_rreh, si_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
@@ -19,7 +19,7 @@ program himain
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i
+  integer :: i,n
   integer :: npts = 20
 
   real(kp) :: w,bfoldstar
@@ -32,20 +32,50 @@ program himain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: xmin, xmax, V1,x
+
+  n = 100
+
+  call delete_file('si_potential.dat')
+  call delete_file('si_slowroll.dat')
+
+  
+  n=250
+
+  xmin = 0.0_kp
+  xmax = 10._kp
+  
+  do i=1,n
+     
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
+
+     V1 = si_norm_potential(x)
+
+     call livewrite('si_potential.dat',x,V1)
+     
+     eps1 = si_epsilon_one(x)
+     eps2 = si_epsilon_two(x)
+     eps3 = si_epsilon_three(x)
+
+          
+     call livewrite('si_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+  
   Pstar = powerAmpScalar
 
-  call delete_file('hi_predic.dat')
-  call delete_file('hi_nsr.dat')
+  call delete_file('si_predic.dat')
+  call delete_file('si_nsr.dat')
 
 
   !  w = 1._kp/3._kp
   w=0._kp
 
-  call aspicwrite_header('hi',labeps12,labnsr,labbfoldreh)
+  call aspicwrite_header('si',labeps12,labnsr,labbfoldreh)
   
   lnRhoRehMin = lnRhoNuc
-  xEnd = hi_x_endinf()
-  lnRhoRehMax = hi_lnrhoreh_max(xend,Pstar)
+  xEnd = si_x_endinf()
+  lnRhoRehMax = si_lnrhoreh_max(xend,Pstar)
 
   print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -55,16 +85,16 @@ program himain
 
 
 
-     xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = si_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
 
      print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
 
-     eps1 = hi_epsilon_one(xstar)
-     eps2 = hi_epsilon_two(xstar)
-     eps3 = hi_epsilon_three(xstar)
+     eps1 = si_epsilon_one(xstar)
+     eps2 = si_epsilon_two(xstar)
+     eps3 = si_epsilon_three(xstar)
 
 
      logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -76,9 +106,9 @@ program himain
      ns = 1._kp - 2._kp*eps1 - eps2
      r =16._kp*eps1
 
-     call livewrite('hi_predic.dat',eps1,eps2,eps3,r,ns,Treh)
+     call livewrite('si_predic.dat',eps1,eps2,eps3,r,ns,Treh)
 
-     call livewrite('hi_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
+     call livewrite('si_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
      call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/))
      
@@ -91,50 +121,50 @@ program himain
   !! Write Data for the summarizing plots !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  call delete_file('hi_predic_summarized.dat')
+  call delete_file('si_predic_summarized.dat')
   lnRhoReh = lnRhoRehMin
-  xEnd = hi_x_endinf()
-  xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
-  eps1 = hi_epsilon_one(xstar)
-  eps2 = hi_epsilon_two(xstar)
-  eps3 = hi_epsilon_three(xstar)
+  xEnd = si_x_endinf()
+  xstar = si_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
+  eps1 = si_epsilon_one(xstar)
+  eps2 = si_epsilon_two(xstar)
+  eps3 = si_epsilon_three(xstar)
   ns = 1._kp - 2._kp*eps1 - eps2
   r =16._kp*eps1
-  call livewrite('hi_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+  call livewrite('si_predic_summarized.dat',eps1,eps2,eps3,r,ns)
   lnRhoReh = lnRhoRehMax
-  xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
-  eps1 = hi_epsilon_one(xstar)
-  eps2 = hi_epsilon_two(xstar)
-  eps3 = hi_epsilon_three(xstar)
+  xstar = si_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
+  eps1 = si_epsilon_one(xstar)
+  eps2 = si_epsilon_two(xstar)
+  eps3 = si_epsilon_three(xstar)
   ns = 1._kp - 2._kp*eps1 - eps2
   r =16._kp*eps1
-  call livewrite('hi_predic_summarized.dat',eps1,eps2,eps3,r,ns)
+  call livewrite('si_predic_summarized.dat',eps1,eps2,eps3,r,ns)
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
   lnRradmin=-42
   lnRradmax = 10
-  xEnd = hi_x_endinf()
+  xEnd = si_x_endinf()
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = hi_x_rrad(xend,lnRrad,Pstar,bfoldstar)
+     xstar = si_x_rrad(xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = hi_epsilon_one(xstar)
+     eps1 = si_epsilon_one(xstar)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  hi_epsilon_one(xend)
-     VendOverVstar = hi_norm_potential(xend)/hi_norm_potential(xstar)
+     eps1end =  si_epsilon_one(xend)
+     VendOverVstar = si_norm_potential(xend)/si_norm_potential(xstar)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = hi_x_rreh(xend,lnR,bfoldstar)
+     xstar = si_x_rreh(xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -142,10 +172,10 @@ program himain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = hi_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = si_x_star(xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
   enddo
 
-end program himain
+end program simain
