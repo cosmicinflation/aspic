@@ -36,7 +36,7 @@ contains
     real(kp), intent(in) :: x,alpha,beta,p
     real(kp) :: lnx
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
     
     rcpi_norm_potential = x**p*(1._kp + alpha*lnx + beta *lnx**2)
     
@@ -50,7 +50,7 @@ contains
     real(kp), intent(in) :: x,alpha,beta,p
     real(kp) :: lnx
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
     
     rcpi_norm_deriv_potential = x**(p-1._kp)* &
          (p + alpha + (alpha*p + 2*beta)*lnx + p*beta*lnx**2)
@@ -65,7 +65,7 @@ contains
     real(kp), intent(in) :: x,p,alpha,beta
     real(kp) :: lnx
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
     
     rcpi_norm_deriv_second_potential = x**(p-2._kp) &
          * (p*p - alpha + p*(2*alpha - 1._kp) + 2*beta &
@@ -82,7 +82,7 @@ contains
     real(kp), intent(in) :: x,p,alpha,beta
     real(kp) :: lnx, denom
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
 
     denom = 1 + lnx*(alpha + beta*lnx)
 
@@ -102,7 +102,7 @@ contains
     real(kp), intent(in) :: x,p,alpha,beta
     real(kp) :: lnx
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
 
     rcpi_epsilon_two = (2*(p + (alpha**2 - 4*beta) &
          /(1._kp + lnx*(alpha + beta*lnx))**2 &
@@ -119,7 +119,7 @@ contains
     real(kp), intent(in) :: x,p,alpha,beta
     real(kp) :: lnx
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
     
     rcpi_epsilon_three = -(((p + (alpha + 2*beta*lnx) &
          /(1._kp + lnx*(alpha + beta*lnx)))*(-2*p &
@@ -497,7 +497,7 @@ contains
     complex(kp) :: expinta, expintb,primitive
     real(kp) :: lnx, sqrt4bma2
 
-    lnx = log(x)
+    lnx = 0.5_kp*log(x*x)
 
 !the bloody special cases
     if ((p.eq.0._kp).and.(alpha.eq.0._kp).and.(beta.eq.0._kp)) then
