@@ -130,7 +130,7 @@ AC_CONFIG_FILES([Makefile
 		 src/shi/Makefile
 		 src/rpqdi/Makefile
 		 src/rpqti/Makefile
-		 src/rcpi/Makefile
+		 src/rcipi/Makefile
  		 src/gdwi/Makefile
 		 src/saii/Makefile
 		 src/saiii/Makefile

@@ -26,7 +26,7 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
 	ii/libii.la \
 	cwi/libcwi.la \
 	kmiii/libkmiii.la \
-	hi/libsi.la \
+	si/libsi.la \
         twi/libtwi.la \
         mhi/libmhi.la \
         rpi/librpi.la \
@@ -77,7 +77,7 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
 	shi/libshi.la \
 	rpqdi/librpqdi.la \
 	rpqti/librpqti.la \
-	rcpi/librcpi.la \
+	rcipi/librcipi.la \
 	gdwi/libgdwi.la \
 	saii/libsaii.la \
 	saiii/libsaiii.la \
@@ -90,7 +90,7 @@ SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii si twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi \
           ai cnai cnbi oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi \
           bi kklti nfi ccsi di hni ncli vfmi fi ahi sbki sdi saai sabi saci hbi \
-          shi rpqdi rpqti rcpi gdwi saii saiii rclfi dei pai
+          shi rpqdi rpqti rcipi gdwi saii saiii rclfi dei pai
 
 #in parallel (bugged)
 #.PHONY: #(SUBDIRS)

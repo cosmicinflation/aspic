@@ -1,4 +1,4 @@
-program rcpimain
+program rcipimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
 
@@ -6,18 +6,20 @@ program rcpimain
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat 
   
-  use rcpisr, only : rcpi_epsilon_one, rcpi_epsilon_two, rcpi_epsilon_three
-  use rcpisr, only : rcpi_norm_potential, rcpi_x_endinf, rcpi_efoldmax
-  use rcpisr, only : rcpi_numacc_alphamin, rcpi_numacc_alphamax, rcpi_numacc_betamin
+  use rcipisr, only : rcipi_epsilon_one, rcipi_epsilon_two, rcipi_epsilon_three
+  use rcipisr, only : rcipi_norm_potential, rcipi_x_endinf, rcipi_efoldmax
+  use rcipisr, only : rcipi_numacc_alphamin, rcipi_numacc_alphamax, rcipi_numacc_betamin
+  use rcipisr, only : rcipi_alpha_zero
   
-  use rcpireheat, only : rcpi_lnrhoreh_max, rcpi_x_star
-  use rcpireheat, only : rcpi_x_rreh, rcpi_x_rrad
+  use rcipireheat, only : rcipi_lnrhoreh_max, rcipi_x_star
+  use rcipireheat, only : rcipi_x_rreh, rcipi_x_rrad
 
   use srflow, only : scalar_spectral_index, tensor_to_scalar_ratio
 
   
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
+  use infinout, only : livewrite, delete_file
 
   
   implicit none
@@ -31,7 +33,7 @@ program rcpimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  integer :: i,j,k
+  integer :: i,j,k,n
   integer :: nalp,nbet,npts
   real(kp) :: betamin, betamax
   real(kp) :: alphamin, alphamax
@@ -42,33 +44,120 @@ program rcpimain
   logical, parameter :: display = .true.
   real(kp), parameter :: efoldNum = 60._kp
 
-  real(kp) :: a,b,mu
+  real(kp) :: x,xmin,xmax,V1,V2
+  real(kp) :: eps1b, eps2b, eps3b
   
   w = 0._kp
   Pstar = powerAmpScalar 
+   
+  
+  call delete_file('rcipi_alphazero.dat')
+  call delete_file('rcipi_stability.dat')
+  
+  n=400
+  xmin = 0._kp
+  xmax = 6._kp
+
+  p=2._kp
+  
+  do i=1,n
+
+     beta = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
+
+     if (beta.le.p*p) then
+        alpha = rcipi_alpha_zero(p,beta)     
+        call livewrite('rcipi_alphazero.dat',beta,alpha,-alpha)
+     endif
+
+     alpha = 2._kp*sqrt(beta)
+     
+     call livewrite('rcipi_stability.dat',beta,alpha,-alpha)
+        
+
+  enddo
+
+  
+  call delete_file('rcipi1_potential.dat')
+  call delete_file('rcipi1_slowroll.dat')
+
+  
+  n=1000
+
+  xmin = 0.01_kp
+  xmax = 3._kp
+  
+  do i=1,n
+     
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
+     V1 = rcipi_norm_potential(x,p=2._kp,alpha=-2._kp,beta=2._kp)
+     V2 = rcipi_norm_potential(x,p=2._kp,alpha=-2.5_kp,beta=2._kp)
+
+     call livewrite('rcipi1_potential.dat',x,V1,V2)
+     
+     eps1 = rcipi_epsilon_one(x,p=2._kp,alpha=-2._kp,beta=2._kp)
+     eps2 = rcipi_epsilon_two(x,p=2._kp,alpha=-2._kp,beta=2._kp)
+     eps3 = rcipi_epsilon_three(x,p=2._kp,alpha=-2._kp,beta=2._kp)
+
+     eps1b = rcipi_epsilon_one(x,p=2._kp,alpha=-2.5_kp,beta=2._kp)
+     eps2b = rcipi_epsilon_two(x,p=2._kp,alpha=-2.5_kp,beta=2._kp)
+     eps3b = rcipi_epsilon_three(x,p=2._kp,alpha=-2.5_kp,beta=2._kp)
+     
+     call livewrite('rcipi1_slowroll.dat',x,eps1,eps2,eps3,eps1b,eps2b,eps3b)
+     
+  enddo
+
+
+  call delete_file('rcipi2_potential.dat')
+  call delete_file('rcipi2_slowroll.dat')
+
+  
+  n=1000
+
+  xmin = 0.01_kp
+  xmax = 10._kp
+  
+  do i=1,n
+     
+     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
+     V1 = rcipi_norm_potential(x,p=2._kp,alpha=0.5_kp,beta=2._kp)
+
+     call livewrite('rcipi2_potential.dat',x,V1)
+     
+     eps1 = rcipi_epsilon_one(x,p=2._kp,alpha=0.5_kp,beta=2._kp)
+     eps2 = rcipi_epsilon_two(x,p=2._kp,alpha=0.5_kp,beta=2._kp)
+     eps3 = rcipi_epsilon_three(x,p=2._kp,alpha=0.5_kp,beta=2._kp)
+     
+     call livewrite('rcipi2_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+  
   
 
+  stop
+
+
+  
   nalp = 500
   npts = 15
 
   
   
-  call aspicwrite_header('rcpi',labeps12,labnsr,labbfoldreh,(/'alpha','beta ','p    '/))
+  call aspicwrite_header('rcipi',labeps12,labnsr,labbfoldreh,(/'alpha','beta ','p    '/))
 
  
   p=2._kp
 
   lnRhoRehMin = lnRhoNuc
 
-  betamin = rcpi_numacc_betamin(p)
+  betamin = rcipi_numacc_betamin(p)
 
   betavec = (/betamin,betamin+0.05, betamin+0.1/)
   
   do j=1,nvec
      beta = betavec(j)
 
-     alphamin = rcpi_numacc_alphamin(p,beta)
-     alphamax = rcpi_numacc_alphamax(p,beta)
+     alphamin = rcipi_numacc_alphamin(p,beta)
+     alphamax = rcipi_numacc_alphamax(p,beta)
 
 
      print *,'alphamin, alphamax= ',beta, alphamin, alphamax
@@ -76,7 +165,7 @@ program rcpimain
      do i=1,nalp
         alpha = alphamin + (i-1)*(alphamax-alphamin)/real(nalp-1,kp)
 
-        efoldmax = rcpi_efoldmax(p,alpha,beta)
+        efoldmax = rcipi_efoldmax(p,alpha,beta)
         
 
         if (efoldmax.lt.efoldNum) then
@@ -88,16 +177,16 @@ program rcpimain
 
         print *,' p alpha beta= ',p,alpha,beta
 
-        xEnd = rcpi_x_endinf(p,alpha,beta)
-        lnRhoRehMax = rcpi_lnrhoreh_max(p,alpha,beta,xend,Pstar)
+        xEnd = rcipi_x_endinf(p,alpha,beta)
+        lnRhoRehMax = rcipi_lnrhoreh_max(p,alpha,beta,xend,Pstar)
 
         do k=1,npts
            lnRhoReh = lnRhoRehMin + (k-1)*(lnRhoRehMax-lnRhoRehMin)/real(npts-1,kp)
 
-           xstar = rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
-           eps1 = rcpi_epsilon_one(xstar,p,alpha,beta)
-           eps2 = rcpi_epsilon_two(xstar,p,alpha,beta)
-           eps3 = rcpi_epsilon_three(xstar,p,alpha,beta)                     
+           xstar = rcipi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
+           eps1 = rcipi_epsilon_one(xstar,p,alpha,beta)
+           eps2 = rcipi_epsilon_two(xstar,p,alpha,beta)
+           eps3 = rcipi_epsilon_three(xstar,p,alpha,beta)                     
 
            ns = scalar_spectral_index((/eps1,eps2/))
            r = tensor_to_scalar_ratio((/eps1/))
@@ -119,7 +208,7 @@ program rcpimain
 
   p=4._kp
 
-  betamin = rcpi_numacc_betamin(p)
+  betamin = rcipi_numacc_betamin(p)
   betavec = (/betamin,betamin+0.1, betamin+0.2/)
 
   lnRhoRehMin = lnRhoNuc
@@ -127,15 +216,15 @@ program rcpimain
   do j=1,nvec
      beta = betavec(j)
 
-     alphamin = rcpi_numacc_alphamin(p,beta)
-     alphamax = rcpi_numacc_alphamax(p,beta)
+     alphamin = rcipi_numacc_alphamin(p,beta)
+     alphamax = rcipi_numacc_alphamax(p,beta)
 
      print *,'beta, alphamin, alphamax= ',beta, alphamin, alphamax
 
      do i=1,nalp
         alpha = alphamin + (i-1)*(alphamax-alphamin)/real(nalp-1,kp)
         
-        efoldmax = rcpi_efoldmax(p,alpha,beta)
+        efoldmax = rcipi_efoldmax(p,alpha,beta)
 
         if (efoldmax.lt.efoldNum) then
            write(*,*)'efoldmax too small!'
@@ -147,16 +236,16 @@ program rcpimain
 
         print *,' p alpha beta= ',p,alpha,beta
 
-        xEnd = rcpi_x_endinf(p,alpha,beta)
-        lnRhoRehMax = rcpi_lnrhoreh_max(p,alpha,beta,xend,Pstar)
+        xEnd = rcipi_x_endinf(p,alpha,beta)
+        lnRhoRehMax = rcipi_lnrhoreh_max(p,alpha,beta,xend,Pstar)
 
         do k=1,npts
            lnRhoReh = lnRhoRehMin + (k-1)*(lnRhoRehMax-lnRhoRehMin)/real(npts-1,kp)
 
-           xstar = rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
-           eps1 = rcpi_epsilon_one(xstar,p,alpha,beta)
-           eps2 = rcpi_epsilon_two(xstar,p,alpha,beta)
-           eps3 = rcpi_epsilon_three(xstar,p,alpha,beta)
+           xstar = rcipi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
+           eps1 = rcipi_epsilon_one(xstar,p,alpha,beta)
+           eps2 = rcipi_epsilon_two(xstar,p,alpha,beta)
+           eps3 = rcipi_epsilon_three(xstar,p,alpha,beta)
           
            if (display) print *,'lnRhoReh= N*= ns= r= ',lnRhoReh,abs(bfoldstar),ns,r
 
@@ -185,9 +274,9 @@ program rcpimain
   alpha = -0.1_kp
   beta = 0.5_kp
 
-  xEnd = rcpi_x_endinf(p,alpha,beta)
+  xEnd = rcipi_x_endinf(p,alpha,beta)
 
-  if (rcpi_efoldmax(p,alpha,beta).lt.efoldNum) then
+  if (rcipi_efoldmax(p,alpha,beta).lt.efoldNum) then
      stop 'efoldmax too small!'
   endif
   
@@ -195,21 +284,21 @@ program rcpimain
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rcpi_x_rrad(p,alpha,beta,xend,lnRrad,Pstar,bfoldstar)
+     xstar = rcipi_x_rrad(p,alpha,beta,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = rcpi_epsilon_one(xstar,p,alpha,beta)
+     eps1 = rcipi_epsilon_one(xstar,p,alpha,beta)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  rcpi_epsilon_one(xend,p,alpha,beta)
-     VendOverVstar = rcpi_norm_potential(xend,p,alpha,beta)/rcpi_norm_potential(xstar,p,alpha,beta)
+     eps1end =  rcipi_epsilon_one(xend,p,alpha,beta)
+     VendOverVstar = rcipi_norm_potential(xend,p,alpha,beta)/rcipi_norm_potential(xstar,p,alpha,beta)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rcpi_x_rreh(p,alpha,beta,xend,lnR,bfoldstar)
+     xstar = rcipi_x_rreh(p,alpha,beta,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -217,11 +306,11 @@ program rcpimain
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rcpi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rcipi_x_star(p,alpha,beta,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
   enddo
 
   
-end program rcpimain
+end program rcipimain
