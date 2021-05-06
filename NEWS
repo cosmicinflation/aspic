@@ -1,4 +1,4 @@
-* version 1.0.0 (GW release)
+* version 1.1.0 (COVID release)
 
 - Change of API in essentially all reheating routines:
   By default, all reheating routines take "xend" as an argument, to be

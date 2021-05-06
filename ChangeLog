@@ -1,3 +1,627 @@
+commit 527c52810e6cea48d86f2610f2c40be02e13e806
+Date:   Thu May 6 12:06:45 2021 +0200
+
+    Increase version and tune rcipimain
+
+ configure.ac            |  2 +-
+ src/rcipi/rcipimain.f90 | 14 +++++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+commit 492ef87775ff98d6d885b5d2b89d1f649c1b4aed
+Date:   Thu May 6 11:49:39 2021 +0200
+
+    Exclude rpqdi and rpqti which are included in rcipi
+
+ configure.ac    | 2 --
+ src/Makefile.am | 4 +---
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+commit b088a7fce2f4f72cf4aa18082ff72abddee10c51
+Date:   Thu May 6 11:46:47 2021 +0200
+
+    Tuning rcipi for figures and more
+
+ plots/aspicfigs.py        |   6 +-
+ plots/fooiplots.py        |   1 +
+ plots/modeldict.txt       |  12 +-
+ plots/paramdict.txt       |   6 +
+ src/common/specialinf.F90 |   7 +-
+ src/rcipi/rcipicommon.f90 |   2 +-
+ src/rcipi/rcipimain.f90   | 641 +++++++++++++++++++++++++++++++++++++++++++---
+ src/rcipi/rcipisr.f90     |  10 +-
+ 8 files changed, 640 insertions(+), 45 deletions(-)
+
+commit 3d45f8dc6770dae447974a105246116db6a6cc28
+Date:   Tue May 4 15:57:27 2021 +0200
+
+    Rename and tune rcpi into rcipi (this model has no plateau)
+
+ configure.ac                                       |   2 +-
+ src/Makefile.am                                    |   6 +-
+ src/rcipi/Makefile.am                              |  25 ++
+ src/{rcpi/aspic_rcpi.3 => rcipi/aspic_rcipi.3}     |  26 +-
+ src/{rcpi/rcpicommon.f90 => rcipi/rcipicommon.f90} | 327 +++++++++++----------
+ src/{rcpi/rcpimain.f90 => rcipi/rcipimain.f90}     | 165 ++++++++---
+ src/rcipi/rcipireheat.f90                          | 258 ++++++++++++++++
+ src/rcipi/rcipisr.f90                              | 243 +++++++++++++++
+ src/rcpi/Makefile.am                               |  25 --
+ src/rcpi/rcpireheat.f90                            | 257 ----------------
+ src/rcpi/rcpisr.f90                                | 242 ---------------
+ 11 files changed, 842 insertions(+), 734 deletions(-)
+
+commit dd3dd818a90393e90cbab3366cfd31113d0bb5f2
+Date:   Thu Apr 29 15:53:33 2021 +0200
+
+    Sanitize lnx into 1/2 ln(x^2)
+
+ src/rcpi/rcpicommon.f90 | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 4f1ed8b3dfa10c2d30c04dda8f6e869c87f23dda
+Date:   Wed Apr 28 15:10:26 2021 +0200
+
+    Rename old HI into SI
+
+ configure.ac                         |   2 +-
+ src/Makefile.am                      |   4 +-
+ src/hi/Makefile.am                   |  25 ----
+ src/hi/hireheat.f90                  | 237 -----------------------------------
+ src/hi/hisr.f90                      | 130 -------------------
+ src/si/Makefile.am                   |  25 ++++
+ src/{hi/aspic_hi.3 => si/aspic_si.3} |   6 +-
+ src/si/libhi.la                      |  41 ++++++
+ src/{hi/himain.f90 => si/simain.f90} | 104 +++++++++------
+ src/si/sireheat.f90                  | 237 +++++++++++++++++++++++++++++++++++
+ src/si/sisr.f90                      | 130 +++++++++++++++++++
+ 11 files changed, 506 insertions(+), 435 deletions(-)
+
+commit 4fc5be2c08fac7c5087e61e2e5879b55d9341ed4
+Date:   Wed Apr 28 11:57:56 2021 +0200
+
+    Tuning NFI for figure generation
+
+ plots/modeldict.txt  |  2 +-
+ src/nfi/aspic_nfi1.3 |  2 +-
+ src/nfi/aspic_nfi2.3 |  2 +-
+ src/nfi/aspic_nfi3.3 |  2 +-
+ src/nfi/aspic_nfi4.3 |  2 +-
+ src/nfi/nfi1main.f90 | 53 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ src/nfi/nfi1sr.f90   |  2 +-
+ src/nfi/nfi2main.f90 |  7 +++++--
+ src/nfi/nfi2sr.f90   |  2 +-
+ src/nfi/nfi3main.f90 | 40 ++++++++++++++++++++++++++++++++++++++-
+ src/nfi/nfi3sr.f90   |  4 ++--
+ src/nfi/nfi4main.f90 | 20 +++++++++-----------
+ src/nfi/nfi4sr.f90   |  2 +-
+ 13 files changed, 112 insertions(+), 28 deletions(-)
+
+commit 8d553615b776e530557db0f75348195559f86155
+Date:   Fri Mar 26 17:18:15 2021 +0100
+
+    Remove RANLIB obsolete command
+
+ configure.ac | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 079c18ccdc1e89e5c066fa9aa51b5af315a0df72
+Date:   Fri Mar 26 17:13:10 2021 +0100
+
+    Fix testing suite and typo
+
+ src/hni/hni2main.f90   | 6 ++++--
+ src/hni/hni2reheat.f90 | 4 ++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+commit 1dd0c1147bce494a5a9f775289fb85f78f3d4dc1
+Date:   Fri Mar 26 16:42:00 2021 +0100
+
+    Polishing PAI for plots
+
+ plots/modeldict.txt | 1 +
+ src/pai/aspic_pai.3 | 6 ++----
+ src/pai/paimain.f90 | 8 +++++---
+ src/pai/paisr.f90   | 4 ++--
+ 4 files changed, 10 insertions(+), 9 deletions(-)
+
+commit 3ca8f7e8306d3dbc8b26ddd9fcf7a83d76f0eeea
+Date:   Fri Mar 26 13:16:31 2021 +0100
+
+    finishing pai
+
+ src/pai/paimain.f90   | 23 +++++++++++++++--------
+ src/pai/paireheat.f90 | 15 +++++++--------
+ src/pai/paisr.f90     | 17 +++++++----------
+ 3 files changed, 29 insertions(+), 26 deletions(-)
+
+commit af12252e0385a6ad532a8504ec328f7a21aa880a
+Date:   Fri Mar 26 12:50:24 2021 +0100
+
+    Update obsoleted commend in configure.ac
+
+ configure.ac | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+commit 49c93f8802ed94d887aa90884b5abbc9782a7d9a
+Date:   Fri Mar 26 12:47:53 2021 +0100
+
+    coding pai
+
+ src/ahi/ahisr.f90     |   2 +-
+ src/pai/paimain.f90   | 122 ++++++++++-----------------
+ src/pai/paireheat.f90 | 184 ++++++++++++++++++++--------------------
+ src/pai/paisr.f90     | 226 +++++++++++++++++++++++++++-----------------------
+ 4 files changed, 262 insertions(+), 272 deletions(-)
+
+commit 90ec86d7c55a05792106992ee035ceef60bcfc3c
+Date:   Fri Mar 26 10:52:34 2021 +0100
+
+    Remove junks
+
+ src/pai/.libs/libsdi.a              | Bin 39340 -> 0 bytes
+ src/pai/.libs/libsdi.la             |   1 -
+ src/pai/.libs/libsdi_la-sdireheat.o | Bin 23600 -> 0 bytes
+ src/pai/.libs/libsdi_la-sdisr.o     | Bin 14888 -> 0 bytes
+ 4 files changed, 1 deletion(-)
+
+commit 1268bf89ced82dfbfbd7d7cfc162eede8708ad3b
+Date:   Fri Mar 26 10:52:18 2021 +0100
+
+    Adding pai skeleton
+
+ configure.ac                        |   3 +-
+ src/Makefile.am                     |   5 +-
+ src/pai/.libs/libsdi.a              | Bin 0 -> 39340 bytes
+ src/pai/.libs/libsdi.la             |   1 +
+ src/pai/.libs/libsdi_la-sdireheat.o | Bin 0 -> 23600 bytes
+ src/pai/.libs/libsdi_la-sdisr.o     | Bin 0 -> 14888 bytes
+ src/pai/Makefile.am                 |  25 ++++
+ src/pai/aspic_pai.3                 |  41 ++++++
+ src/pai/paimain.f90                 | 196 ++++++++++++++++++++++++++++
+ src/pai/paireheat.f90               | 250 ++++++++++++++++++++++++++++++++++++
+ src/pai/paisr.f90                   | 174 +++++++++++++++++++++++++
+ 11 files changed, 692 insertions(+), 3 deletions(-)
+
+commit df0584cbad6dbf70080100fa05c131741103e9aa
+Date:   Fri Mar 26 10:38:49 2021 +0100
+
+    Adjusting sdimain for plots and encyclopedia
+
+ src/sdi/sdimain.f90   | 86 ++++++++++++++++++++++++++++++++++-----------------
+ src/sdi/sdireheat.f90 | 84 ++++++++++++++++++++++++-------------------------
+ src/sdi/sdisr.f90     | 68 ++++++++++++++++++++--------------------
+ 3 files changed, 134 insertions(+), 104 deletions(-)
+
+commit 7791cdcc8bf475dc7bf39ae9949b9fafb6edeb1b
+Date:   Thu Mar 25 14:24:28 2021 +0100
+
+    Tuning ahimain for figure output
+
+ src/ahi/ahimain.f90   | 99 +++++++++++++++++++++++++++++++++++++--------------
+ src/ahi/ahireheat.f90 | 84 +++++++++++++++++++++----------------------
+ src/ahi/ahisr.f90     | 81 +++++++++++++++++++++--------------------
+ src/ahi/aspic_ahi.3   |  6 ++--
+ 4 files changed, 159 insertions(+), 111 deletions(-)
+
+commit 8af7380bbfa7edc2fab4978daabd7c4d882f5ac3
+Date:   Thu Mar 18 18:04:06 2021 +0100
+
+    dei coding from vincent
+
+ configure.ac          |   1 +
+ include/aspic.h       |   2 +
+ plots/modeldict.txt   |   1 +
+ src/Makefile.am       |   5 +-
+ src/dei/Makefile.am   |  25 +++++
+ src/dei/aspic_dei.3   |  30 ++++++
+ src/dei/deimain.f90   | 159 ++++++++++++++++++++++++++++++++
+ src/dei/deireheat.f90 | 248 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/dei/deisr.f90     | 172 ++++++++++++++++++++++++++++++++++
+ 9 files changed, 641 insertions(+), 2 deletions(-)
+
+commit 00e779f4bdecdef00d4b7d879ff5725b3d52d6d1
+Date:   Mon Mar 15 15:39:36 2021 +0100
+
+    Tuning shimain for figures
+
+ src/shi/shimain.f90 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit ff7fb26de4a4a577c27037fa9469bac54112b6ab
+Date:   Wed Feb 10 18:31:59 2021 +0100
+
+    Fix hbi man
+
+ src/hbi/aspic_hbi.3 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 5866d151814b89c10bd1557da6a0ee6685a9148c
+Date:   Wed Feb 10 18:30:05 2021 +0100
+
+    Fix fimain for quadprec compilation
+
+ src/fi/fimain.f90 | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit d4265a34652d9464bf83357a0fbed3bdb192f53a
+Date:   Wed Feb 10 16:31:45 2021 +0100
+
+    Add potential and slowroll outputs to sbki, fix ccsi figures
+
+ src/ccsi/ccsi3main.f90 |   4 +-
+ src/sbki/sbkimain.f90  |  64 +++++++++++++++++++++++++++++-
+ src/sbki/sbkisr.f90    | 105 +++++++++++++++++++++++++++++++++----------------
+ 3 files changed, 136 insertions(+), 37 deletions(-)
+
+commit f81c844668528ad5bc95987dbb1cd5daf47c607c
+Date:   Wed Feb 10 16:30:43 2021 +0100
+
+    Polishing hbi, fix x_potbig routine for n<1
+
+ src/hbi/hbimain.f90   | 137 ++++++++++++++++++++++++++++-----------------
+ src/hbi/hbireheat.f90 | 152 +++++++++++++++++++++++---------------------------
+ src/hbi/hbisr.f90     |  63 +++++++++++----------
+ 3 files changed, 188 insertions(+), 164 deletions(-)
+
+commit 073090bdaf2fc5992a819cea52dc35bc0cca2ae9
+Date:   Tue Feb 9 16:25:23 2021 +0100
+
+    Add efoldmax output to fimain
+
+ src/fi/fimain.f90 | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+
+commit 8de7809b39cdc05de66fcd43ccaa7c455858a61b
+Date:   Tue Feb 9 09:21:49 2021 +0100
+
+    Hbi tuning by Vincent
+
+ src/hbi/hbimain.f90   | 37 ++++++++++++++++++++-----------------
+ src/hbi/hbireheat.f90 | 12 +++++++++++-
+ 2 files changed, 31 insertions(+), 18 deletions(-)
+
+commit ba31a64195b3d6a0699d7227d77dda6e4e2683cd
+Date:   Mon Feb 8 16:28:26 2021 +0100
+
+    Figures for hni, fi, ncli and sbki
+
+ plots/paramdict.txt   |  2 +-
+ src/fi/fimain.f90     | 11 +++++----
+ src/hni/hni1main.f90  | 33 ++++++++++++++++++++++++--
+ src/hni/hni2main.f90  | 10 ++++----
+ src/hni/hni2sr.f90    | 36 ++++++++++++++++++++++------
+ src/ncli/nclimain.f90 | 65 ++++++++++++++++++++++++++++++++++++++++++++-------
+ 6 files changed, 130 insertions(+), 27 deletions(-)
+
+commit 0ff8746a7c9b056ed77e3ac4a06c8b2fc2f9d81c
+Date:   Fri Feb 5 13:34:11 2021 +0100
+
+    Finishing hni1 and hni2, fixing figure generators
+
+ plots/aspicfigs.py     |  37 ++++----
+ plots/fooiplots.py     |   4 +-
+ plots/modeldict.txt    |   3 +-
+ src/hni/Makefile.am    |  13 ++-
+ src/hni/aspic_hni1.3   |  20 +++--
+ src/hni/aspic_hni2.3   |  46 ++++++++++
+ src/hni/hni1main.f90   |  90 ++++++++++----------
+ src/hni/hni1reheat.f90 |  17 ++--
+ src/hni/hni1sr.f90     |  48 +++++++++--
+ src/hni/hni2main.f90   | 191 +++++++++++++++++++++++++++++++++++++++++
+ src/hni/hni2reheat.f90 | 120 ++++++++++++++++++++++++++
+ src/hni/hni2sr.f90     | 224 +++++++++++++++++++++++++++++++++++++++++++++++++
+ src/hni/hnicommon.f90  | 109 ++++++++++++++++++------
+ 13 files changed, 810 insertions(+), 112 deletions(-)
+
+commit 94293fb24d5344a1346b61c1d41a0db00a67c5b7
+Date:   Tue Feb 2 18:25:35 2021 +0100
+
+    Separate hni into hni1 and hni2
+
+ src/hni/Makefile.am                      |  16 +--
+ src/hni/aspic_hni.3                      |  38 -------
+ src/hni/aspic_hni1.3                     |  40 +++++++
+ src/hni/{hnimain.f90 => hni1main.f90}    |  84 +++++++-------
+ src/hni/hni1reheat.f90                   | 125 +++++++++++++++++++++
+ src/hni/hni1sr.f90                       | 146 ++++++++++++++++++++++++
+ src/hni/hnicommon.f90                    | 175 +++++++++++++++++++++++++++++
+ src/hni/{hnireheat.f90 => hnicomreh.f90} | 137 +++++++++--------------
+ src/hni/hnisr.f90                        | 184 -------------------------------
+ 9 files changed, 587 insertions(+), 358 deletions(-)
+
+commit 26e163dee524b487313776b07ffe5183238c2691
+Date:   Wed Dec 18 17:16:41 2019 +0100
+
+    tunning main program for rclfi figures
+
+ src/rclfi/rclfi1main.f90 | 35 +++++++++++++++++++++++++++--------
+ src/rclfi/rclfi4main.f90 | 38 ++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 63 insertions(+), 10 deletions(-)
+
+commit 11bd5c57ecaea7c953238d20d55620e735ce1ba1
+Date:   Tue Dec 10 14:44:27 2019 +0100
+
+    Removing call to non-threadsafe livewrite function
+
+ plots/modeldict.txt        | 11 ++++++++++
+ src/rclfi/rclfi1main.f90   | 53 ++++++++++++++--------------------------------
+ src/rclfi/rclfi2main.f90   | 32 +++++++++++-----------------
+ src/rclfi/rclfi3main.f90   | 48 ++++++++++++++++++++++-------------------
+ src/rclfi/rclfi4main.f90   | 41 ++++++++++++++++++-----------------
+ src/rclfi/rclfi4reheat.f90 |  7 ++++--
+ src/rclfi/rclficommon.f90  |  2 +-
+ src/saiii/saiii1main.f90   | 11 ----------
+ src/saiii/saiii1reheat.f90 |  7 ++++--
+ src/saiii/saiii2main.f90   | 10 +--------
+ src/saiii/saiii3main.f90   | 16 ++------------
+ 11 files changed, 101 insertions(+), 137 deletions(-)
+
+commit 991ee54294ae2a229ed4974c87140c4011daa0b6
+Date:   Thu Dec 5 15:34:42 2019 +0100
+
+    Coding rclfi1234
+
+ configure.ac               |   1 +
+ src/Makefile.am            |   5 +-
+ src/rclfi/Makefile.am      |  40 ++++
+ src/rclfi/aspic_rclfi1.3   | 110 ++++++++++
+ src/rclfi/aspic_rclfi2.3   | 122 +++++++++++
+ src/rclfi/aspic_rclfi3.3   | 111 ++++++++++
+ src/rclfi/aspic_rclfi4.3   |  86 ++++++++
+ src/rclfi/rclfi1main.f90   | 376 ++++++++++++++++++++++++++++++++
+ src/rclfi/rclfi1reheat.f90 | 260 +++++++++++++++++++++++
+ src/rclfi/rclfi1sr.f90     | 428 +++++++++++++++++++++++++++++++++++++
+ src/rclfi/rclfi2main.f90   | 348 ++++++++++++++++++++++++++++++
+ src/rclfi/rclfi2reheat.f90 | 260 +++++++++++++++++++++++
+ src/rclfi/rclfi2sr.f90     | 519 +++++++++++++++++++++++++++++++++++++++++++++
+ src/rclfi/rclfi3main.f90   | 328 ++++++++++++++++++++++++++++
+ src/rclfi/rclfi3reheat.f90 | 261 +++++++++++++++++++++++
+ src/rclfi/rclfi3sr.f90     | 317 +++++++++++++++++++++++++++
+ src/rclfi/rclfi4main.f90   | 256 ++++++++++++++++++++++
+ src/rclfi/rclfi4reheat.f90 | 263 +++++++++++++++++++++++
+ src/rclfi/rclfi4sr.f90     | 231 ++++++++++++++++++++
+ src/rclfi/rclficommon.f90  | 283 ++++++++++++++++++++++++
+ 20 files changed, 4603 insertions(+), 2 deletions(-)
+
+commit 5c52bdb3d68921911582efa743cc810ff6eb989f
+Date:   Wed Jul 17 13:49:38 2019 +0200
+
+    figure output for saii and saiii
+
+ src/saii/saii1main.f90    |  30 +++---
+ src/saii/saii2main.f90    |  61 +++++++-----
+ src/saiii/saiii1main.f90  |  23 ++---
+ src/saiii/saiii2main.f90  | 237 ++++++++++++++++++++++++++++++++++++++--------
+ src/saiii/saiii3main.f90  | 101 ++++++++++++++++----
+ src/saiii/saiiicommon.f90 |   2 +-
+ 6 files changed, 338 insertions(+), 116 deletions(-)
+
+commit 6250fa265bc03677a7a3bd88292086e965274b1b
+Date:   Tue Jul 9 15:17:19 2019 +0200
+
+    quadprec issues
+
+ src/saii/saiicommon.f90   | 2 +-
+ src/saiii/saiiicommon.f90 | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 060f8d4e5d04b70418a5080effc054ad0d159ad2
+Date:   Tue Jul 9 15:14:49 2019 +0200
+
+    Fix quadprec locks in main program
+
+ Makefile.am               |  2 ++
+ src/Makefile.am           | 18 +++++++-----------
+ src/ccsi/ccsi2main.f90    |  3 ++-
+ src/ccsi/ccsi2reheat.f90  |  4 ++--
+ src/ccsi/ccsi2sr.f90      |  6 +++---
+ src/ccsi/ccsicommon.F90   |  7 ++++---
+ src/common/infprec.F90    |  2 +-
+ src/gmssmi/Makefile.am    |  2 ++
+ src/lfi/Makefile.am       |  1 -
+ src/saii/saii1sr.f90      |  4 ++--
+ src/saii/saii2sr.f90      |  4 ++--
+ src/saii/saiicommon.f90   |  4 ++--
+ src/saiii/saiiicommon.f90 |  8 ++++----
+ src/ssbi/Makefile.am      |  3 +--
+ 14 files changed, 34 insertions(+), 34 deletions(-)
+
+commit 80286c714cdc8536f73e74f5e16574dd49ccd792
+Date:   Mon Jul 8 18:43:25 2019 +0200
+
+    Threadsafety on plotting routines + finishing saiii
+
+ configure.ac                              |  3 ++-
+ plots/modeldict.txt                       |  6 +++++
+ src/common/Makefile.am                    |  2 +-
+ src/common/{infinout.f90 => infinout.F90} | 38 +++++++++++++++++++++++--------
+ src/saiii/saiii1main.f90                  | 33 ++++++++++++++++++---------
+ src/saiii/saiii2main.f90                  | 23 ++++++++++++++-----
+ src/saiii/saiii3main.f90                  | 26 ++++++++++++++-------
+ 7 files changed, 95 insertions(+), 36 deletions(-)
+
+commit 1d86293d63b77bff0ec16de6d95adae046945d5a
+Date:   Thu Jul 4 19:11:34 2019 +0200
+
+    improving and debugging saii and coding the monstruous saiii module
+
+ configure.ac               |   1 +
+ src/Makefile.am            |   6 +-
+ src/common/inftools.f90    |  77 +++-
+ src/saii/aspic_saii1.3     |  18 +-
+ src/saii/aspic_saii2.3     |  18 +-
+ src/saii/saii2sr.f90       |   2 +-
+ src/saii/saiicommon.f90    |   6 +-
+ src/saii/saiicomreh.f90    |   2 +-
+ src/saiii/Makefile.am      |  47 +--
+ src/saiii/aspic_saiii1.3   |  99 ++++-
+ src/saiii/aspic_saiii2.3   | 122 +++++-
+ src/saiii/aspic_saiii3.3   |  59 +++
+ src/saiii/saiii1main.f90   | 246 ++++++++----
+ src/saiii/saiii1reheat.f90 |  74 ++--
+ src/saiii/saiii1sr.f90     | 243 ++++++------
+ src/saiii/saiii2main.f90   | 244 ++++++++----
+ src/saiii/saiii2reheat.f90 |  77 ++--
+ src/saiii/saiii2sr.f90     | 256 +++++++------
+ src/saiii/saiii3main.f90   | 291 ++++++++++++++
+ src/saiii/saiii3reheat.f90 | 112 ++++++
+ src/saiii/saiii3sr.f90     | 163 ++++++++
+ src/saiii/saiiicommon.f90  | 915 ++++++++++++++++++++++++++++++++++-----------
+ src/saiii/saiiicomreh.f90  | 179 ++++-----
+ 23 files changed, 2452 insertions(+), 805 deletions(-)
+
+commit b909eb892c8d74704d01b79bd8560f09102e5754
+Date:   Fri Jun 21 11:45:39 2019 +0200
+
+    starting saiii
+
+ src/saii/saiireheat.f90    | 257 --------------------------
+ src/saiii/Makefile.am      |  32 ++++
+ src/saiii/aspic_saiii1.3   |  44 +++++
+ src/saiii/aspic_saiii2.3   |  44 +++++
+ src/saiii/saiii1main.f90   | 195 ++++++++++++++++++++
+ src/saiii/saiii1reheat.f90 | 111 ++++++++++++
+ src/saiii/saiii1sr.f90     | 257 ++++++++++++++++++++++++++
+ src/saiii/saiii2main.f90   | 195 ++++++++++++++++++++
+ src/saiii/saiii2reheat.f90 | 111 ++++++++++++
+ src/saiii/saiii2sr.f90     | 257 ++++++++++++++++++++++++++
+ src/saiii/saiiicommon.f90  | 438 +++++++++++++++++++++++++++++++++++++++++++++
+ src/saiii/saiiicomreh.f90  | 204 +++++++++++++++++++++
+ 12 files changed, 1888 insertions(+), 257 deletions(-)
+
+commit b4dafba55880acba83c858deb5163c06869a9fe9
+Date:   Thu Jun 20 18:31:49 2019 +0200
+
+    Python3 bindings for figures, polishing SAII
+
+ plots/aspicfigs.py     | 24 ++++++++++++++----------
+ plots/fooiplots.py     |  4 ++--
+ plots/modeldict.txt    |  2 ++
+ src/saii/Makefile.am   |  4 +---
+ src/saii/saii1main.f90 | 17 ++++++-----------
+ src/saii/saii2main.f90 | 15 +++++----------
+ 6 files changed, 30 insertions(+), 36 deletions(-)
+
+commit 9a359357f1270faffe3a547ead5028d15b922ea1
+Date:   Thu Jun 20 16:22:49 2019 +0200
+
+    Adding SAII
+
+ configure.ac             |   1 +
+ src/Makefile.am          |   5 +-
+ src/saii/Makefile.am     |  34 ++++
+ src/saii/aspic_saii1.3   |  44 +++++
+ src/saii/aspic_saii2.3   |  44 +++++
+ src/saii/saii1main.f90   | 200 ++++++++++++++++++++++
+ src/saii/saii1reheat.f90 | 111 ++++++++++++
+ src/saii/saii1sr.f90     | 257 +++++++++++++++++++++++++++
+ src/saii/saii2main.f90   | 200 ++++++++++++++++++++++
+ src/saii/saii2reheat.f90 | 111 ++++++++++++
+ src/saii/saii2sr.f90     | 257 +++++++++++++++++++++++++++
+ src/saii/saiicommon.f90  | 438 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/saii/saiicomreh.f90  | 204 ++++++++++++++++++++++
+ src/saii/saiireheat.f90  | 257 +++++++++++++++++++++++++++
+ 14 files changed, 2161 insertions(+), 2 deletions(-)
+
+commit 8a7c5b6ad226d580da2e55c5babdd675c4eda23f
+Date:   Thu Apr 25 16:47:10 2019 +0200
+
+    Tune ccsimain for figure generation
+
+ plots/paramdict.txt    |  1 +
+ src/ccsi/ccsi1main.f90 |  2 +-
+ src/ccsi/ccsi2main.f90 | 36 +++++++++++++++++++++++++++++++-----
+ src/ccsi/ccsi3main.f90 | 23 ++++++++++++++++++++---
+ 4 files changed, 53 insertions(+), 9 deletions(-)
+
+commit 7e65f6d3c0abe9799544e9126f38ce6fa0afff61
+Date:   Fri Apr 19 15:16:24 2019 +0200
+
+    Tuning some mains for encyclopedia summary figures
+
+ plots/aspictools.py   |  57 ++++++++++++++++++++++---
+ src/cwi/cwimain.f90   |  52 ++++++++++++++++++++++
+ src/di/dimain.f90     |   2 +-
+ src/dwi/dwimain.f90   |  71 +++++++++++++++++++++++++++---
+ src/esi/esimain.f90   |  47 +++++++++++++++++++-
+ src/lfi/lfimain.f90   | 116 +++++++++++++++++++++++++++++---------------------
+ src/ncki/nckimain.f90 |  62 ++++++++++++++++++++++++---
+ src/psni/psnimain.f90 |  14 +++---
+ src/rchi/rchimain.f90 |  73 +++++++++++++++++++++++++++++--
+ src/sfi/sfimain.f90   |  80 ++++++++++++++++++++++++++++++++--
+ 10 files changed, 491 insertions(+), 83 deletions(-)
+
+commit da44132dcc133064cb2e5aa6ff9aa822938d83fb
+Date:   Wed Apr 17 20:30:25 2019 +0200
+
+    Fix quadprecs
+
+ src/bsusybi/bsusybimain.f90 | 2 +-
+ src/cnci/cncimain.f90       | 2 +-
+ src/sfbi/sfbimain.f90       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 1f927a9e673042147cb4ed65985238d20f2b7058
+Date:   Wed Apr 17 20:07:14 2019 +0200
+
+    quad prec issue on i586
+
+ src/ni/nimain.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f2318a5c2761f0e19e04fe78847de538aeea9061
+Date:   Tue Apr 16 18:43:55 2019 +0200
+
+    Improving plotting scripts, minor adjust to main
+
+ plots/aspicfigs.py      | 86 +++++++++++++++++++++++++++++++++----------------
+ plots/fooiplots.py      | 46 ++++++++++++++++++++------
+ plots/modeldict.txt     |  5 +++
+ src/cnci/cncimain.f90   | 20 ++++++------
+ src/cndi/cndimain.f90   |  6 ++--
+ src/dsi/dsimain.f90     |  2 +-
+ src/gmlfi/gmlfimain.f90 |  2 +-
+ src/imi/imimain.f90     |  4 +--
+ src/rmi/rmi1main.f90    |  4 +--
+ src/rmi/rmi2main.f90    |  2 +-
+ src/rmi/rmi3main.f90    |  2 +-
+ src/rmi/rmi4main.f90    |  6 ++--
+ src/sbi/sbimain.f90     |  4 +--
+ src/vfmi/vfmimain.f90   |  2 +-
+ src/vhi/vhimain.f90     | 47 ++++++++++++++++++---------
+ 15 files changed, 160 insertions(+), 78 deletions(-)
+
+commit 010c1b5ed873514167a7503f9bdc4c7657d92f47
+Date:   Fri Apr 12 19:07:40 2019 +0200
+
+    Improving plotting scripts
+
+ configure.ac                |  2 +-
+ plots/aspicfigs.py          | 35 ++++++++++++--------
+ plots/fooiplots.py          | 81 +++++++++++++++++++++++++++------------------
+ plots/modeldict.txt         |  6 +++-
+ plots/paramdict.txt         |  2 +-
+ src/bei/beimain.f90         |  4 +--
+ src/bsusybi/bsusybimain.f90 |  6 ++--
+ src/cwi/cwimain.f90         | 10 ++++--
+ src/esi/esimain.f90         |  4 ++-
+ src/gmssmi/gmssmimain.f90   |  2 +-
+ src/gmssmi/mssmimain.f90    |  2 +-
+ src/gripi/gripimain.f90     |  2 +-
+ src/gripi/ripimain.f90      |  3 +-
+ src/ii/iimain.f90           |  4 +--
+ src/li/limain.f90           |  9 +++--
+ src/lmi/lmi2main.f90        |  6 ++--
+ src/ncki/nckimain.f90       | 44 ++++++++++++------------
+ src/pli/plimain.f90         |  2 +-
+ src/psni/psnimain.f90       |  2 +-
+ src/rchi/rchimain.f90       |  2 +-
+ src/rcqi/rcqimain.f90       |  4 +--
+ src/rpi/rpi1main.f90        |  4 +--
+ src/rpi/rpi2main.f90        |  2 +-
+ src/ti/timain.f90           | 69 ++++++++++++++++++++++++++++++++++----
+ 24 files changed, 202 insertions(+), 105 deletions(-)
+
+
 commit 89f4fa19c5f0ae10882d5427f97c6a81b8e15f85
 Date:   Fri Jul 20 16:23:01 2018 +0200
 
@@ -573,7 +1197,7 @@ Date:   Thu Apr 28 17:58:09 2016 +0200
 
 commit ec3f08d57b7dce3217e7cf879ba8e6d304e672f3
 Merge: 14ce08b eda2f00
-Author: chris <chris@ringeval.com>
+
 Date:   Thu Apr 28 14:47:23 2016 +0200
 
     Merge branch for saai, sabi, saci
@@ -1041,7 +1665,7 @@ Date:   Thu Aug 13 17:58:49 2015 +0200
  1 file changed, 3 insertions(+)
 
 commit 482ea610d683f7a9ad5df829b484c52ce5ab840f
-Author: chris <chris@ringeval.com>
+
 Date:   Thu Aug 13 17:54:04 2015 +0200
 
     Fix atanh(complex) for ifort
@@ -1381,7 +2005,6 @@ Date:   Wed Oct 2 19:04:47 2013 +0200
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 commit 323edc7aeef20e80bec7aa8466a4b166e90f029e
-Author: chris <chris@ringeval.com>
 Date:   Wed Oct 2 19:03:17 2013 +0200
 
     adding new numacc function for csi
