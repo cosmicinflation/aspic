@@ -360,6 +360,10 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
     if args.zoomrange is not None:
         zoomrange = args.zoomrange
 
+    if args.arrowlength is not None:
+        rptoffset = args.arrowlength
+    else:
+        rptoffset = 40
 
     scmap = aspic_cmap()
     scalpha = 1
@@ -411,7 +415,7 @@ def create_figure(model, allfixed, allpars, contourfile, figfile, xyinibounds, x
     if semilog:
         ax.semilogy()
 
-    rptoffset = 40
+#    rptoffset = 40
     
     if (len(labangles)) !=0:
         xyptoffset = []

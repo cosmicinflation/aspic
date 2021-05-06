@@ -213,7 +213,7 @@ contains
        return
     endif
     
-    rcipi_check_derivpotzero = (((alpha + 2._kp*beta/p)**2 - 4*beta*(1._kp+alpha/p)).ge.0._kp)
+    rcipi_check_derivpotzero = (4._kp*beta*beta + p*p*(alpha*alpha-4._kp*beta)).ge.0._kp
     
   end function rcipi_check_derivpotzero
   

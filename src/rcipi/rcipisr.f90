@@ -107,6 +107,7 @@ contains
     integer :: neps, i,j
 
     if (.not.rcipi_check_params(p,alpha,beta)) then
+       write(*,*)'p= alpha= beta= ',p,alpha,beta
        stop 'rcipi_xinimax: params out of range'
     endif
 
@@ -117,6 +118,7 @@ contains
 !therefore remain confined to x < xdpotzero(1)
        xdpotzero = rcipi_x_derivpotzero(p,alpha,beta)
        rcipi_xinimax = xdpotzero(1)*(1._kp - epsilon(1._kp))
+!       rcipi_xinimax = xdpotzero(1)- epsilon(1._kp)
        return
     endif
 
@@ -140,10 +142,9 @@ contains
     case(1)
        rcipi_xinimax = rcipi_numacc_x_potbig(p)
 
-!large field inflation from x>>1 would be interrupted, small field
-!inflation possible between xeps(1) and xeps(2)
+!large field inflation from x>>1 is interrupted, but towards the end
     case(2,3)
-       rcipi_xinimax = xeps(2)
+       rcipi_xinimax = rcipi_numacc_x_potbig(p)
        
     case default
 !for no potential local extremas, this should not happen
@@ -182,7 +183,8 @@ contains
        j=j+1
        xeps(j) = xepsone(i)
     end do
-       
+
+!we return the smallest root (ordered done in rcipi_x_epsoneunity)
     rcipi_x_endinf = xeps(1)
 
     deallocate(xeps)

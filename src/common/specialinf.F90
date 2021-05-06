@@ -460,15 +460,16 @@ contains
     complex(kp) :: resultcei
     complex(kp) :: Gamma0
     integer :: i,imax
-
+    
     if (z.eq.cmplx(0._kp)) stop 'cei: z= 0 + i 0'
 
     imax = 1000
 
     ! This computes Gamma[0,-z] by means of a continued fraction
-    Gamma0=1._kp/(-z+(2._kp*(imax+1)-1._kp))
+    Gamma0=1._kp/(-z+(2._kp*real(imax+1,kp)-1._kp))
+
     do i=imax,1,-1
-       Gamma0 = -z+2._kp*i-1._kp-i**2/Gamma0
+       Gamma0 = -z+2._kp*real(i,kp)-1._kp-real(i,kp)**2/Gamma0
     end do
     Gamma0 = exp(z)/Gamma0
 

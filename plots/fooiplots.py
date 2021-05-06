@@ -48,6 +48,7 @@ parser.add_argument("--modulolabel", type=int, help="skip labels using this modu
 parser.add_argument("--tiltlabel", type=float, help="add an additional tilt angle to labels, in degrees")
 parser.add_argument("--threshlabel", type=float, help="minimal separation between labels (in inches)")
 parser.add_argument("--movielabel", type=float, help="add a tilt angle beetween two consecutive labels, in degrees")
+parser.add_argument("--arrowlength", type=float, help="set the size of the labels'arrow, in pts")
 parser.add_argument("--xyinibounds", type=float, nargs="+", help="initial values of the window boundary: xmin xmax ymin ymax")
 parser.add_argument("--nozoomout", action="store_true", help="forbids zooming out")
 parser.add_argument("--zoomplot", type=int, help="zoom out till the number of points visible in the plot \
