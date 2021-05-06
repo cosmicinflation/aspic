@@ -43,6 +43,8 @@ program rcipimain
   real(kp), dimension(nvec) :: betavec
   
   logical, parameter :: display = .true.
+  logical, parameter :: generateAllData = .true.
+  
   real(kp), parameter :: efoldNum = 60._kp
 
   real(kp) :: x,xmin,xmax,V1,V2
@@ -131,7 +133,11 @@ program rcipimain
      call livewrite('rcipi2_slowroll.dat',x,eps1,eps2,eps3)
      
   enddo
-    
+
+
+
+  if (generateAllData) then
+  
 
 !$omp parallel sections &
 !$omp default(shared) &
@@ -833,10 +839,10 @@ program rcipimain
   call aspicwrite_end()
   
 !$omp end parallel sections
-
-
    
 
+  endif
+  
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
 
@@ -847,6 +853,8 @@ program rcipimain
   alpha = -0.1_kp
   beta = 0.5_kp
 
+  npts = 20
+  
   xEnd = rcipi_x_endinf(p,alpha,beta)
 
   if (rcipi_efoldmax(p,alpha,beta).lt.efoldNum) then
