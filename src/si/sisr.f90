@@ -83,7 +83,7 @@ contains
     real(kp) :: si_epsilon_three
     real(kp), intent(in) :: x
     
-    si_epsilon_three = 2._kp/3._kp*(-1+1._kp/tanh(x/sqrt(6._kp)))/tanh(x/sqrt(6._kp))
+    si_epsilon_three = 2._kp/3._kp*(-1._kp+1._kp/tanh(x/sqrt(6._kp)))/tanh(x/sqrt(6._kp))
     
   end function si_epsilon_three
 
