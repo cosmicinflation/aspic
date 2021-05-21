@@ -1,0 +1,272 @@
+.TH libdi 3 "December 1, 2015" "libaspic" "Module convention" 
+
+.SH NAME
+.I di
+- the dual inflation module
+
+.SH SYNOPSIS
+.TP 20
+Physical potential (only known as a parametric function):
+
+V(k2)  = M^4 { 1 + Vo(f) - 2(K-E)/(k2 K) - pi/(k2 K K') [nu(k2)]^2 Heaviside[nu(k2)] }
+
+with:
+
+.RS
+nu(k2) = 1 - 8 sqrt(2)/(pi^2 f) K/sqrt(k2)(E'-K')^2
+.RE
+.RS
+M^4 = f^2 lambda^4 / pi^2
+.RE
+.TP
+In these expressions E = E(k2), K = K(k2), E' = E(1-k2) and K' = K(1-k2) are the Complete Elliptic functions of modulus 'k2'. The constant term 'Vo(f)' is an uplifting constant ensuring that the minimum of the potential is exactly vanishing. The field values 'x = phi/lambda', are defined from a Kahler potential and verify:
+
+dx/dk2 =  [4 sqrt(2)/pi] sqrt(K K')/k2^(3/2)
+
+
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/lambda
+.RS
+or
+.RE
+.RS
+.I
+real(kp)
+::
+.B k2
+.RE
+.TP
+Parameters
+.I real(kp)
+::
+.B f
+(in unit of lambda)
+.RS
+.I real(kp)
+::
+.B lambda
+(in Mp units, and only when required, see below)
+.RE
+
+.SH DESCRIPTION
+The
+.I di
+module is used for Dual Inflation, a model discussed in
+.UR http://arxiv.org/abs/hep-th/9707059
+arXiv:hep-th/9707059
+.UE
+and based on the exact effective potential associated with a Softly
+Broken N=2 Supersymmetric Yang-Mills theory proposed in
+.UR http://arxiv.org/abs/hep-th/9604004
+arXiv:hep-th/9604004
+.UE
+by L. Alvarez-Gaume et al. The functional form of the effective
+potential is reported above and is a parametric function of a
+dimensionless number '0 < k2 < 1' within the inflationary valley.
+Because the absolute scale 'M' of the potential is completely
+determined by 'f' and 'lambda', these two parameters are already
+strongly constrained by the amplitude of the CMB anisotropies. As a
+result, given the CMB amplitude, and ignoring the fine-tuning question
+between these two parameters to match it, Dual Inflation can be
+considered as a one-parameter model parameterized by 'f'
+only. Indeed, 'lambda' ends up being a fixed function of the CMB
+amplitude, the reheating parameters and 'f'. Notice that the
+fine-tuning question to match the CMB amplitude is largely ignored by
+essentially all inflationary models proposed so far as the
+parameter 'M^4' is usually never specified within any theoretical
+setup (see however Higgs/Starobinksi Inflation).
+
+Due to the parametric representation of the potential, various
+functions such as the potential, its derivatives, the Hubble flow
+functions have been duplicated. When the function name contains the
+wording "_parametric_" then the function argument should be the
+modulus 'k2'. Otherwise, standard convention is assumed and the
+functions take as argument the field value 'x'. Internally, all the
+slow-roll calculations are performed in terms of the modulus 'k2' and
+the "_parametric_" routines should be preferred for production
+runs. Standard routines are merely wrappers which first compute 'k2'
+given 'x' and then call the "_parametric_" routines to return the
+result.
+
+.SS DISR MODULE
+
+Dual Inflation gracefully ends at field value 'xend' returned by the
+.I real(kp)
+function
+.IP
+.BR di_x_endinf (f,lambda)
+.P
+Notice the requirement to input 'lambda' to get this value (see below). The
+underlying calculations use the function
+.IP
+.BR di_k2_epsoneunity (f,lambda)
+.P
+giving as an output the value of 'k2end' at which the first Hubble flow
+function equals unity. The conversion between field values 'x' and
+modulus values 'k2' are implemented by two
+.I real(kp)
+functions
+.IP
+.BR di_x(k2)
+.RS
+.BR di_k2(x)
+.RE
+.P
+which rely on precomputed spline data. A direct integration
+of the Kahler potential can be switched on within the source file
+"disr.f90" by setting
+.IP
+.I logical, parameter
+::
+.BR useKahlerSpline = .false.
+.P
+but would slow-down a lot all conversions. All the other functions
+within the 'disr' module are standard but requires as an input both
+parameters 'f' and 'lambda'. As such, nothing is enforced to ensure
+that these two parameters are consistent with the amplitude of the CMB
+anisotropies. We however provide two others functions
+.IP
+.BR di_potential_normalization (f,lambda)
+.RS
+.BR di_lambda (f,M)
+.RE
+.P
+which return, respectively, the potential normalization 'M' given 'f'
+and 'lambda'; and the value of 'lambda' given 'f' and 'M'.
+
+.SS DIREHEAT MODULE
+
+Because the end of inflation, the potential normalization 'M', and the
+reheating history depend on 'lambda', the functions provided in the
+module "direheat.f90" are unlike the standard ones. The module
+provides three low level
+.I real(kp)
+functions
+.IP
+.BR di_k2_star (f,w,lnRhoReh,Pstar,deltaNstar)
+.RS
+.BR di_k2_rrad (f,lnRrad,Pstar,deltaNstar)
+.RE
+.RS
+.BR di_k2_rreh (f,lnR,Pstar,deltaNstar)
+.RE
+.P
+which all return 'k2star', the modulus 'k2' at which the pivot mode
+crossed the Hubble radius during inflation, from various
+inputs. Notice that these functions require only the model
+parameter 'f' to be specified, 'lambda' being transparently determined
+during the calculation to match the CMB amplitude (specified by the
+parameter 'Pstar'). As for the standard case, these three functions
+solve the reheating equation from the input of either the
+couple 'w,lnRhoReh', 'lnRrad' or 'lnR'. Mind however that
+.B di_k2_rreh()
+requires the input of 'Pstar' as opposed to the standard situation.
+
+.P
+From the value of 'k2star', the value of 'lambda' matching the CMB
+amplitude can be recovered using the function
+.IP
+.BR di_lambda_star (k2star,f,Pstar)
+.P
+given the same 'f' and 'Pstar' as before. Notice that changing the reheating
+history, namely modifying the value of any reheating parameter, will
+change 'lambda'. The 'direheat' module also provides some wrappers
+.IP
+.BR di_x_star (f,w,lnRhoReh,Pstar,deltaNstar)
+.RS
+.BR di_x_rrad (f,lnRrad,Pstar,deltaNstar)
+.RE
+.RS
+.BR di_x_rreh (f,lnR,Pstar,deltaNstar)
+.RE
+.P
+which first call the "_k2_" reheating functions and then converts the
+result to a field value using calls to the
+.B di_x()
+function. These wrappers should not be used for production runs.
+
+.SS DICOMMON MODULE
+
+This module contains all the "_parametric_" and other low level
+functions used to compute the potential, its derivatives as well as
+the Hubble flow functions and more. Concerning the potential, they are
+.IP
+.BR di_norm_uplifting (f)
+.RS
+.BR di_norm_parametric_potential (k2,f)
+.RE
+.RS
+.BR di_norm_deriv_parametric_potential (k2,f)
+.RE
+.RS
+.BR di_norm_deriv_second_parametric_potential (k2,f)
+.RE
+.RS
+.BR di_norm_deriv_third_parametric_potential (k2,f)
+.RE
+.P
+and take as argument the modulus 'k2' and the parameter 'f'. The first
+one returns the uplifting constant 'Vo(f)' rendering the potential
+positive. The others return the normalized potential and its
+successive derivatives with respect to the modulus 'k2'. The two
+functions
+.IP
+.BR di_k2_potmin (f)
+.RS
+.BR di_k2_nunull (f)
+.RE
+.P
+give, respectively, the value of 'k2' at which the potential is
+minimal and at which the so-called monopole term ['nu(k2)' in the
+potential] switches on. In order to compute the derivative of the
+potential with respect to the field value 'x', we also provide the
+functions
+.IP
+.BR di_deriv_x (k2)
+.RS
+.BR di_deriv_second_x (k2)
+.RE
+.RS
+.BR di_deriv_third_x (k2)
+.RE
+.P
+giving the successive derivatives of 'x' with respect to 'k2'. The
+parametric Hubble flow functions are given by
+.IP
+.BR di_parametric_epsilon_one (k2,f)
+.RS
+.BR di_parametric_epsilon_two (k2,f)
+.RE
+.RS
+.BR di_parametric_epsilon_three (k2,f)
+.RE
+.P
+and return the three Hubble flow functions multiplied by 'lambda^2'
+(which end up being independent of 'lambda'). As a result, the observable Hubble flow
+functions can be directly computed by calling these functions knowing
+the modulus 'k2star', 'f' and by dividing the result by 'lambda^2',
+this one being obtained from the
+.BR di_lambda_star()
+function.
+.P
+A normalized number of 'efolds' with respect to 'lambda' can be
+obtained from modulus values 'k2' using the function
+.IP
+.BR di_parametric_efold_primitive (k2,f)
+.P
+which returns the integral of 'dN/dk2' divided by 'lambda^2' (also
+independent of 'lambda').
+
+.P
+Finally, other numerically convenient functions can be found in
+"dicommon.f90" while the source file "displine.f90" contains
+various functions to implement the spline data conversion between
+field values 'x' and modulus values 'k2'.
+
+
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin
