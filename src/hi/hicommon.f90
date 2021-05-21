@@ -18,7 +18,7 @@
 !
 ! with the Higgs potential taken as
 !
-! V(H) = - lambda/4 ( H^2 - v^2 )^2
+! V(H) = lambda/4 ( H^2 - v^2 )^2
 !
 !
 
@@ -33,8 +33,7 @@ module hicommon
   real(kp), parameter :: sqr6 = sqrt(6._kp)
 
 !for the record, this guy is 10^(-34), it starts being significant when
-!multiplied by xi larger than 10^(34). Arf!
-  
+!multiplied by xi larger than 10^(34). Arf!  
   real(kp), parameter :: vev2 = higgsVeV*higgsVeV
   
   private
@@ -240,7 +239,7 @@ contains
 
 
 !the solution of eps1=1 in terms of hbar (third order polynomial in hbar^2
-!solution irreducible). This is the real root defined for all xi > 0
+!solution irreducible). This is the only real root defined for all xi > 0
   function hi_parametric_hbar_endinf(xi)
     implicit none
     real(kp) :: hi_parametric_hbar_endinf

@@ -17,24 +17,21 @@
 module hisr
   use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent, easydverk
+  use hicommon, only : hi_x, hi_hbar
   use hicommon, only : hi_norm_parametric_potential, hi_norm_deriv_parametric_potential
   use hicommon, only : hi_norm_deriv_second_parametric_potential
   use hicommon, only : hi_norm_deriv_ln_parametric_potential
   use hicommon, only : hi_parametric_epsilon_one, hi_parametric_epsilon_two
   use hicommon, only : hi_parametric_epsilon_three, hi_parametric_efold_primitive
+  use hicommon, only : hi_parametric_hbar_trajectory
   implicit none
 
   private
 
-  logical, parameter :: useKahlerSpline = .true.
-  logical, save :: splineSet = .false.
-
   
-  public hi_x, hi_k2
   public hi_norm_potential, hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
   public hi_x_enhinf, hi_efold_primitive, hi_x_trajectory
   public hi_norm_deriv_potential, hi_norm_deriv_second_potential 
-  public hi_k2_epsoneunity, hi_k2_trajectory
 
 
 contains

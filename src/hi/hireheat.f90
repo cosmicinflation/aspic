@@ -17,7 +17,13 @@
 !plugged in are in the Jordan Frame (see Encyclopedia
 !Inflationaris). As such, expressed in terms of rhoend (Einstein
 !Frame), there is an extra conformal factor in (1+hbarend^2)^2.
-
+!
+! Mind the definition:
+!
+! lnRreh = lnRrad + (1/4) ln(rhoendJF)
+!
+! to be consistent with lnRrad defined with JF energy densities.
+!
 module hireheat
   use infprec, only :  kp, tolkp, toldp, pidp, transfert
   use cosmopar, only : HiggsCoupling
