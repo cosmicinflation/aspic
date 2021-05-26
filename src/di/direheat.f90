@@ -390,7 +390,8 @@ contains
     real(kp) :: di_lnrhoreh_max
     real(kp), intent(in) :: f, Pstar
 
-    real(kp), parameter :: lnRreh=0._kp
+!trick to get rhoreh=rhoend    
+    real(kp), parameter :: lnRrad=0._kp
 
     real(kp) :: pi4Pstar24
     real(kp) :: k2star, k2end, lambdaStar
@@ -399,7 +400,7 @@ contains
 
     pi4Pstar24 = 24._kp*pi**4*Pstar
 
-    k2star = di_k2_rreh(f,lnRreh,Pstar)
+    k2star = di_k2_rrad(f,lnRrad,Pstar)
 
     pepsOneStar = di_parametric_epsilon_one(k2star,f)
     ppotStar = di_norm_parametric_potential(k2star,f)
