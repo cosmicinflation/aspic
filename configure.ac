@@ -80,6 +80,7 @@ AC_CONFIG_FILES([Makefile
                  src/cwi/Makefile
                  src/kmiii/Makefile
                  src/si/Makefile
+		 src/hi/Makefile
                  src/twi/Makefile
                  src/mhi/Makefile
                  src/rpi/Makefile

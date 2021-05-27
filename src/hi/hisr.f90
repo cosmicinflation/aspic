@@ -17,22 +17,20 @@
 module hisr
   use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent, easydverk
-  use hicommon, only : hi_x, hi_hbar
+  use hicommon, only : hi_x, hi_hbar, hi_deriv_x, hi_deriv_second_x
   use hicommon, only : hi_norm_parametric_potential, hi_norm_deriv_parametric_potential
   use hicommon, only : hi_norm_deriv_second_parametric_potential
-  use hicommon, only : hi_norm_deriv_ln_parametric_potential
   use hicommon, only : hi_parametric_epsilon_one, hi_parametric_epsilon_two
   use hicommon, only : hi_parametric_epsilon_three, hi_parametric_efold_primitive
-  use hicommon, only : hi_parametric_hbar_trajectory
+  use hicommon, only : hi_parametric_hbar_trajectory, hi_parametric_hbar_endinf
   implicit none
 
   private
 
-  
   public hi_norm_potential, hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
-  public hi_x_enhinf, hi_efold_primitive, hi_x_trajectory
+  public hi_x_endinf, hi_efold_primitive, hi_x_trajectory
   public hi_norm_deriv_potential, hi_norm_deriv_second_potential 
-
+  public hi_x, hi_hbar
 
 contains
   
@@ -46,7 +44,7 @@ contains
     real(kp) :: hbar    
 
     hbar = hi_hbar(x,xi)
-   
+    
     hi_norm_potential = hi_norm_parametric_potential(hbar,xi)
 
   end function hi_norm_potential
@@ -140,9 +138,9 @@ contains
 
     real(kp) :: hbarend
     
-    hbarend = hi_hbar_endinf(xi)
+    hbarend = hi_parametric_hbar_endinf(xi)
 
-    hi_x_endinf = hi_x(hbarend)
+    hi_x_endinf = hi_x(hbarend,xi)
   
   end function hi_x_endinf
 
@@ -171,11 +169,11 @@ contains
     real(kp) :: hi_x_trajectory
     real(kp) :: hbar,hbarend
 
-    hbarend = hi_hbar_endinf(xi)
+    hbarend = hi_parametric_hbar_endinf(xi)
 
     hbar = hi_parametric_hbar_trajectory(bfold,hbarend,xi)
 
-    hi_x_trajectory = hi_x(hbar)
+    hi_x_trajectory = hi_x(hbar,xi)
 
   end function hi_x_trajectory
 

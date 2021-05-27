@@ -12,13 +12,13 @@
 !
 ! with hbar(x),  vbar^2 = xi*v^2/Mg^2 and  M^4 = lambda Mg^4/(4 xi^2)
 !
-! H is the Higgs field in the Jordan frame and hbar is defined as
+! h is the Higgs field in the Jordan frame and hbar is defined as
 !
-! hbar = sqrt(xi) * H/Mg
+! hbar = sqrt(xi) * h/Mg
 !
 ! with the Higgs potential taken as
 !
-! V(H) = lambda/4 ( H^2 - v^2 )^2
+! V(h) = lambda/4 ( h^2 - v^2 )^2
 !
 !
 
@@ -31,19 +31,25 @@ module hicommon
   implicit none
 
   real(kp), parameter :: sqr6 = sqrt(6._kp)
-
+!makes eps1 machine precision for xi > 1
+  real(kp), parameter :: hbarBig = epsilon(1._kp)**(-0.25_kp)
+  real(kp), parameter :: hbarSmall = epsilon(1._kp)**(0.5_kp)
+  
+  
 !for the record, this guy is 10^(-34), it starts being significant when
-!multiplied by xi larger than 10^(34). Arf!  
+!multiplied by xi larger than 10^(34).
   real(kp), parameter :: vev2 = higgsVeV*higgsVeV
+
   
   private
 
-  public vev2
+  public vev2, hbarBig, hbarSmall
   public hi_x, hi_hbar, hi_deriv_x, hi_deriv_second_x
   public hi_norm_parametric_potential, hi_norm_deriv_second_parametric_potential
   public hi_norm_deriv_parametric_potential, hi_parametric_hbar_endinf
   public hi_parametric_epsilon_one, hi_parametric_epsilon_two
   public hi_parametric_epsilon_three, hi_parametric_efold_primitive
+  public hi_parametric_hbar_trajectory
 
 
 contains
@@ -55,7 +61,7 @@ contains
     real(kp) :: hi_x
     real(kp), intent(in) :: hbar, xi
 
-    hi_x = log(hi_expx(hbar*hbar,xi))
+    hi_x = sign(log(hi_expx(hbar*hbar,xi)), hbar)
    
   end function hi_x
 
@@ -76,9 +82,9 @@ contains
   
 
 !returns hbar from the field value x by inverting hi_expx
-  function hi_hbar(x,xi)
+  recursive function hi_hbar(x,xi) result(hbar)
     implicit none
-    real(kp) :: hi_hbar
+    real(kp) :: hbar
     real(kp), intent(in) :: x,xi
     type(transfert) :: hiData
     real(kp), parameter :: tolFind = tolkp
@@ -88,16 +94,19 @@ contains
     real(kp) :: mini, maxi
 
     
-    if (x.lt.0._kp) stop 'hi_hbar: x < 0!'
+    if (x.lt.0._kp) then
+       hbar = - hi_hbar(-x,xi)
+       return
+    endif
 
     mini = 0._kp
-    maxi = huge(1._kp)
+    maxi = hbarBig
 
     hiData%real1 = exp(x)
     hiData%real2 = xi
     hbar2 = zbrent(find_hi_hbar2,mini,maxi,tolFind,hiData)
 
-    hi_hbar = sqrt(hbar2)
+    hbar = sqrt(hbar2)
 
   end function hi_hbar
 
@@ -107,7 +116,7 @@ contains
     real(kp) :: find_hi_hbar2
     real(kp), intent(in) :: hbar2
     type(transfert), optional, intent(inout) :: hiData
-    real(kp) :: expx
+    real(kp) :: expx,xi
 
     expx = hiData%real1
     xi = hiData%real2
@@ -247,38 +256,38 @@ contains
 
     real(kp), parameter :: onethird = 1._kp/3._kp
 
-    real(kp) :: xivev2
-    complex(kp) :: zend2
+    complex(kp) :: xiz,xizvev2, zend2
 
 
-    xivev2 = xi*vev2
+    xizvev2 = cmplx(xi*vev2,0._kp,kp)
+    xiz = cmplx(xi,0._kp,kp)
     
-    zend2 = (4._kp - 8._kp*(1._kp + 6._kp*xi)*xivev2 - (cmplx(0._kp,2._kp) &
-         *( cmplx(0._kp,-1._kp) + sqrt(3._kp)) * ((1._kp + 12._kp*xi)**2._kp &
-         + 2._kp*(1._kp + 6._kp*xi)*(1._kp + 24._kp*xi)*xivev2 &
-         + (1._kp + 6._kp*xi)*(1._kp + 30._kp*xi)*xivev2**2._kp)) &
-         / (1._kp + 36._kp*xi + 216._kp*xi**2._kp + 3._kp*xivev2 + 18._kp*xi*xivev2 &
-         - 432._kp*xi**2._kp*xivev2 - 2592._kp*xi**3._kp*xivev2 + 3._kp*xivev2**2._kp &
-         - 72._kp*xi*xivev2**2._kp - 1404._kp*xi**2._kp*xivev2**2._kp &
-         - 5184._kp*xi**3._kp*xivev2**2._kp + xivev2**3._kp - 54._kp*xi*xivev2**3._kp &
-         - 756._kp*xi**2._kp*xivev2**3._kp - 2376._kp*xi**3._kp*xivev2**3._kp &
-         + 6._kp*sqrt(6._kp)*(1._kp + 6._kp*xi)*(1._kp + xivev2) &
-         * sqrt(xi*(-(xivev2*(1._kp + xivev2)**3._kp) - 24._kp*xi**3._kp*(4._kp &
-         + 8._kp*xivev2 + xivev2**2._kp)**2._kp - 2._kp*xi*(1._kp + xivev2)**2._kp &
-         * (1._kp + 20._kp*xivev2 + xivev2**2._kp) + 4._kp*xi**2._kp*(1._kp + xivev2) &
-         * (-16._kp - 108._kp*xivev2 - 60._kp*xivev2**2._kp + 5._kp*xivev2**3._kp))))**onethird &
-         + cmplx(0._kp,2._kp)*(cmplx(0._kp,1._kp) + sqrt(3._kp)) &
-         * (1._kp + 36._kp*xi + 216._kp*xi**2._kp + 3._kp*xivev2 + 18._kp*xi*xivev2 &
-         - 432._kp*xi**2._kp*xivev2 - 2592._kp*xi**3._kp*xivev2 + 3._kp*xivev2**2._kp &
-         - 72._kp*xi*xivev2**2._kp - 1404._kp*xi**2._kp*xivev2**2._kp &
-         - 5184._kp*xi**3._kp*xivev2**2._kp + xivev2**3._kp - 54._kp*xi*xivev2**3._kp &
-         - 756._kp*xi**2._kp*xivev2**3._kp - 2376._kp*xi**3._kp*xivev2**3._kp &
-         + 6._kp*sqrt(6._kp)*(1._kp + 6._kp*xi)*(1._kp + xivev2) &
-         * sqrt(xi*(-(xivev2*(1._kp + xivev2)**3) - 24._kp*xi**3._kp &
-         * (4._kp + 8._kp*xivev2 + xivev2**2._kp)**2._kp - 2._kp*xi*(1._kp + xivev2)**2._kp &
-         * (1._kp + 20._kp*xivev2 + xivev2**2._kp) + 4._kp*xi**2._kp*(1._kp + xivev2) &
-         * (-16._kp - 108._kp*xivev2 - 60._kp*xivev2**2._kp + 5._kp*xivev2**3._kp))))**onethird) &
-         / (12._kp*(-1._kp - 6._kp*xi))
+    zend2 = (4._kp - 8._kp*(1._kp + 6._kp*xiz)*xizvev2 - (cmplx(0._kp,2._kp,kp) &
+         *( cmplx(0._kp,-1._kp,kp) + sqrt(3._kp)) * ((1._kp + 12._kp*xiz)**2._kp &
+         + 2._kp*(1._kp + 6._kp*xiz)*(1._kp + 24._kp*xiz)*xizvev2 &
+         + (1._kp + 6._kp*xiz)*(1._kp + 30._kp*xiz)*xizvev2**2._kp)) &
+         / (1._kp + 36._kp*xiz + 216._kp*xiz**2._kp + 3._kp*xizvev2 + 18._kp*xiz*xizvev2 &
+         - 432._kp*xiz**2._kp*xizvev2 - 2592._kp*xiz**3._kp*xizvev2 + 3._kp*xizvev2**2._kp &
+         - 72._kp*xiz*xizvev2**2._kp - 1404._kp*xiz**2._kp*xizvev2**2._kp &
+         - 5184._kp*xiz**3._kp*xizvev2**2._kp + xizvev2**3._kp - 54._kp*xiz*xizvev2**3._kp &
+         - 756._kp*xiz**2._kp*xizvev2**3._kp - 2376._kp*xiz**3._kp*xizvev2**3._kp &
+         + 6._kp*sqrt(6._kp)*(1._kp + 6._kp*xiz)*(1._kp + xizvev2) &
+         * sqrt(xiz*(-(xizvev2*(1._kp + xizvev2)**3._kp) - 24._kp*xiz**3._kp*(4._kp &
+         + 8._kp*xizvev2 + xizvev2**2._kp)**2._kp - 2._kp*xiz*(1._kp + xizvev2)**2._kp &
+         * (1._kp + 20._kp*xizvev2 + xizvev2**2._kp) + 4._kp*xiz**2._kp*(1._kp + xizvev2) &
+         * (-16._kp - 108._kp*xizvev2 - 60._kp*xizvev2**2._kp + 5._kp*xizvev2**3._kp))))**onethird &
+         + cmplx(0._kp,2._kp,kp)*(cmplx(0._kp,1._kp,kp) + sqrt(3._kp)) &
+         * (1._kp + 36._kp*xiz + 216._kp*xiz**2._kp + 3._kp*xizvev2 + 18._kp*xiz*xizvev2 &
+         - 432._kp*xiz**2._kp*xizvev2 - 2592._kp*xiz**3._kp*xizvev2 + 3._kp*xizvev2**2._kp &
+         - 72._kp*xiz*xizvev2**2._kp - 1404._kp*xiz**2._kp*xizvev2**2._kp &
+         - 5184._kp*xiz**3._kp*xizvev2**2._kp + xizvev2**3._kp - 54._kp*xiz*xizvev2**3._kp &
+         - 756._kp*xiz**2._kp*xizvev2**3._kp - 2376._kp*xiz**3._kp*xizvev2**3._kp &
+         + 6._kp*sqrt(6._kp)*(1._kp + 6._kp*xiz)*(1._kp + xizvev2) &
+         * sqrt(xiz*(-(xizvev2*(1._kp + xizvev2)**3) - 24._kp*xiz**3._kp &
+         * (4._kp + 8._kp*xizvev2 + xizvev2**2._kp)**2._kp - 2._kp*xiz*(1._kp + xizvev2)**2._kp &
+         * (1._kp + 20._kp*xizvev2 + xizvev2**2._kp) + 4._kp*xiz**2._kp*(1._kp + xizvev2) &
+         * (-16._kp - 108._kp*xizvev2 - 60._kp*xizvev2**2._kp + 5._kp*xizvev2**3._kp))))**onethird) &
+         / (12._kp*(-1._kp - 6._kp*xiz))
 
     hi_parametric_hbar_endinf = sqrt(real(zend2,kp))
     
@@ -312,7 +321,7 @@ contains
     real(kp), intent(in) :: bfold, hbarend,xi
     real(kp) :: hi_parametric_hbar_trajectory
     real(kp), parameter :: tolFind = tolkp
-    type(transfert) :: rcipiData
+    type(transfert) :: hiData
     real(kp) :: mini, maxi, xivev2, hbar2
     
 !there is an analytical solution (inverting
@@ -326,17 +335,17 @@ contains
        return
     endif
 
-    mini = hbarend2
-    maxi = huge(1._kp)
+    mini = hbarend
+    maxi = hbarBig
 
     hiData%real1 = xi
     hiData%real2 = -bfold + hi_parametric_efold_primitive(hbarend,xi)
 
-    hbar = zbrent(find_hi_parametric_hbar_trajectory,mini,maxi,tolFind,hiData)
+    hi_parametric_hbar_trajectory = zbrent(find_hi_parametric_hbar_trajectory,mini,maxi,tolFind,hiData)
 
   end function hi_parametric_hbar_trajectory
   
-  function find_hi_parametric_hbar_trajectory(hbar,rcipiData)
+  function find_hi_parametric_hbar_trajectory(hbar,hiData)
     implicit none
     real(kp) :: find_hi_parametric_hbar_trajectory
     real(kp), intent(in) :: hbar
@@ -344,8 +353,8 @@ contains
 
     real(kp) :: xi,NplusNuend
 
-    xi = rcipiData%real1
-    NplusNuend = rcipiData%real2
+    xi = hiData%real1
+    NplusNuend = hiData%real2
 
     find_hi_parametric_hbar_trajectory = hi_parametric_efold_primitive(hbar,xi) - NplusNuend
 
@@ -360,7 +369,7 @@ contains
     real(kp), intent(in) :: bfold, hbarend,xi
     real(kp) :: hi_approx_parametric_hbar_trajectory
 
-    real(kp) :: xibfold, hbar2
+    real(kp) :: xibfold, hbar2, hbarend2
 
     xibfold = xi*bfold
     hbarend2 = hbarend*hbarend
