@@ -40,6 +40,7 @@ program rpi2main
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End
+  real(kp) :: lnOmega4End
 
   integer, parameter :: nvec = 3
   real(kp), dimension(nvec) :: pvecm1
@@ -145,8 +146,8 @@ program rpi2main
      !get lnR from lnRrad and check that it gives the same ystar
      eps1end =  rpi2_epsilon_one(yend,p)
      VendOverVstar = rpi2_norm_potential(yend,p)/rpi2_norm_potential(ystar,p)
-
-     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+     lnOmega4End = 2._kp*yEnd
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      ystar = rpi2_x_rreh(p,yend,lnR,bfoldstar)
@@ -155,7 +156,7 @@ program rpi2main
      !second consistency check
      !get rhoreh for chosen w and check that ystar gotten this way is the same
      w = 0._kp
-     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar,lnOmega4End)
 
      ystar = rpi2_x_star(p,yend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &

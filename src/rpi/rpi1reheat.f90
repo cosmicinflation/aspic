@@ -32,7 +32,7 @@ contains
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd,lnOmega4End
 
     type(transfert) :: rpi1Data
     
@@ -45,15 +45,17 @@ contains
     potEnd = rpi1_norm_potential(yEnd,p)
 
     primEnd = rpi1_efold_primitive(yEnd,p)
-   
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+
+    lnOmega4End = 2._kp*yEnd
+    
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     rpi1Data%real1 = p
     rpi1Data%real2 = w
     rpi1Data%real3 = calF + primEnd
     
 
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+    if (p.eq.1._kp) then !Starobinsky Inflation Model (SI)
 
        mini = yEnd
        maxi=rpiBig !to avoid numerical explosion
@@ -191,7 +193,7 @@ contains
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y,yVmax
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd,lnOmega4End
 
     type(transfert) :: rpi1Data
     
@@ -204,13 +206,15 @@ contains
     potEnd = rpi1_norm_potential(yEnd,p)
 
     primEnd = rpi1_efold_primitive(yEnd,p)
-   
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    lnOmega4End = 2._kp*yEnd
+    
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     rpi1Data%real1 = p
     rpi1Data%real2 = calF + primEnd
     
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+    if (p.eq.1._kp) then !SI
 
        mini = yEnd
        maxi=rpiBig !to avoid numerical explosion
@@ -269,7 +273,7 @@ contains
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd    
+    real(kp) :: lnRhoEnd, lnOmega4End
 
     potEnd  = rpi1_norm_potential(yEnd,p)
 
@@ -282,10 +286,11 @@ contains
     potStar = rpi1_norm_potential(y,p)
     epsOneStar = rpi1_epsilon_one(y,p)
 
+    lnOmega4End = 2._kp*yEnd
        
     if (.not.slowroll_validity(epsOneStar)) stop 'rpi1_lnrhoreh_max: slow-roll violated!'
     
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
 
     rpi1_lnrhoreh_max = lnRhoEnd
 

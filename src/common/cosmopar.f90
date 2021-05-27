@@ -42,4 +42,31 @@ module cosmopar
 !Effective COBE normalisation given the same amplitude as Pstar
   real(kp), parameter :: QrmsOverT = sqrt(powerAmpScalar/60._kp)
 
+!Higgs vacuum expectation value in reduced Planck Mass. The Higgs doublet Lagrangian is
+!
+!     L(S) = -(DS^+)(DS) - V(S)
+!
+!with
+!
+!     V(S)  = -mu^2 S^+S + lambda (S^+S)^2
+!
+!and
+!     S = 1/sqrt(2) (H + v) [0,1]
+!
+!Higgs inflation scalar (canonically normalized) is h = H + v from which one gets
+!
+!     V(h) = lambda/4 (h^2 -v^2)^2 + Cte
+!
+!     v = mu/sqrt(lambda) = 246GeV
+!     mH = sqrt(2 lambda) v = 125GeV
+!
+!
+!v  
+  real(kp), parameter :: HiggsVeV = 246._kp/exp(lnMpinGeV)
+!mH
+  real(kp), parameter :: HiggsMass = 125.1_kp/exp(lnMpinGeV)
+!lambda = mH^2/(2 v^2)
+  real(kp), parameter :: HiggsCoupling = 0.5_kp*(HiggsMass/HiggsVeV)**2
+  
+  
 end module cosmopar

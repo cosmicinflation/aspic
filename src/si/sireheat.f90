@@ -30,7 +30,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd, lnOmega4End
 
     type(transfert) :: siData
     
@@ -43,10 +43,10 @@ contains
     potEnd = si_norm_potential(xEnd)
 
     primEnd = si_efold_primitive(xEnd)
-
-    
+!ln(Omega^4) = ln(F^2)
+    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
    
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     siData%real1 = w
     siData%real2 = calF + primEnd
@@ -152,7 +152,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: mini,maxi,calF,x
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd, lnOmega4End
 
     type(transfert) :: siData
     
@@ -165,7 +165,10 @@ contains
 
     primEnd = si_efold_primitive(xEnd)
 
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+!ln(Omega^4) = ln(F^2)
+    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
+
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     siData%real1 = calF + primEnd
 
@@ -211,7 +214,7 @@ contains
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd    
+    real(kp) :: lnOmega4End, lnRhoEndJF
 
     potEnd  = si_norm_potential(xEnd)
 
@@ -224,12 +227,14 @@ contains
     potStar = si_norm_potential(x)
     epsOneStar = si_epsilon_one(x)
 
+    !ln(Omega^4) = ln(F^2)
+    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
     
     if (.not.slowroll_validity(epsOneStar)) stop 'si_lnrhoreh_max: slow-roll violated!'
-    
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+       
+    lnRhoEndJF = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
 
-    si_lnrhoreh_max = lnRhoEnd
+    si_lnrhoreh_max = lnRhoEndJF
 
   end function si_lnrhoreh_max
 

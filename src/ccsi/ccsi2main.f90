@@ -37,7 +37,7 @@ program ccsi2main
   real(kp) :: lnRradMin, lnRradMax, lnRrad
 
   integer :: Ne = 10,n
-  real(kp) :: xendmin, xendmax
+  real(kp) :: xendmin, xendmax,lnOmega4End
   real(kp) :: VendOverVstar, eps1End, xend, xmin, xmax,x,V2
 
   Pstar = powerAmpScalar
@@ -155,8 +155,8 @@ program ccsi2main
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  ccsi2_epsilon_one(xend,alpha)
      VendOverVstar = ccsi2_norm_potential(xend,alpha)/ccsi2_norm_potential(xstar,alpha)
-
-     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+     lnOmega4End = 2._kp*xend
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      xstar = ccsi2_x_rreh(alpha,xend,lnR,bfoldstar)
@@ -165,7 +165,7 @@ program ccsi2main
      !second consistency check
      !get rhoreh for chosen w and check that xstar gotten this way is the same
      w = 0._kp
-     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar,lnOmega4End)
 
      xstar = ccsi2_x_star(alpha,xend, w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &

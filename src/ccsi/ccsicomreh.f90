@@ -31,7 +31,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: calF,x
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd, lnOmega4End
     type(transfert) :: ccsiData
 
   
@@ -43,8 +43,10 @@ contains
     potEnd = ccsi_norm_potential(xEnd,alpha)
 
     primEnd = ccsi_efold_primitive(xEnd,alpha)
+
+    lnOmega4End = 2._kp*xend
     
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     ccsiData%real1 = alpha
     ccsiData%real2 = w
@@ -148,7 +150,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: calF,x
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd,lnOmega4End
     type(transfert) :: ccsiData
 
   
@@ -160,8 +162,10 @@ contains
     potEnd = ccsi_norm_potential(xEnd,alpha)
 
     primEnd = ccsi_efold_primitive(xEnd,alpha)
-   
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+
+    lnOmega4End = 2._kp*xend
+    
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     ccsiData%real1 = alpha
     ccsiData%real2 = calF + primEnd

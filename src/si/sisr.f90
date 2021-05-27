@@ -1,4 +1,4 @@
-!slow-roll functions for the Starobinsky inflation potential
+!slow-roll functions for the Starobinsky inflation potential in the Einstein frame
 !
 !V(phi) = M^4 * [1 - exp(-sqrt(2/3) x)]^2
 !
@@ -118,8 +118,8 @@ contains
     real(kp) :: si_x_trajectory
     
     si_x_trajectory = sqrt(1.5_kp)*(4._kp/3._kp*bfold+sqrt(2._kp/3._kp)*xend &
-                      -exp(sqrt(2._kp/3._kp)*xend)-lambert(-exp(4._kp/3._kp*bfold &
-                      +sqrt(2._kp/3._kp)*xend-exp(sqrt(2._kp/3._kp)*xend)),-1))
+         -exp(sqrt(2._kp/3._kp)*xend)-lambert(-exp(4._kp/3._kp*bfold &
+         +sqrt(2._kp/3._kp)*xend-exp(sqrt(2._kp/3._kp)*xend)),-1))
        
   end function si_x_trajectory
 

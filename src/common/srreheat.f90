@@ -141,10 +141,11 @@ contains
 
 
 
-  function get_calfconst_rhow(lnRhoReh,Pstar,w,epsEnd,potEnd)
+  function get_calfconst_rhow(lnRhoReh,Pstar,w,epsEnd,potEnd,lnOmega4End)
     implicit none
     real(kp) :: get_calfconst_rhow
     real(kp), intent(in) :: lnRhoReh,Pstar,w,epsEnd,potEnd
+    real(kp), intent(in), optional :: lnOmega4End
 
     real(kp) :: cmbMeasuredHalf
 
@@ -153,6 +154,11 @@ contains
     get_calfconst_rhow = -Nzero + (1._kp+3._kp*w)/(3._kp+3._kp*w)*cmbMeasuredHalf &
          - 1._kp/(3._kp+3._kp*w)*log(potEnd/(3._kp-epsEnd)) &
          + (1._kp-3._kp*w)/(12._kp+12._kp*w)*lnRhoReh
+
+    if (present(lnOmega4End)) then
+       get_calfconst_rhow = get_calfconst_rhow - (1._kp-3._kp*w)/(12._kp+12._kp*w)*lnOmega4End
+    endif
+    
         
   end function get_calfconst_rhow
 
@@ -224,24 +230,33 @@ contains
 
 
 
-  function get_calfconst_rreh(lnR,epsEnd,potEnd)
+  function get_calfconst_rreh(lnR,epsEnd,potEnd,lnOmega4End)
     implicit none
     real(kp) :: get_calfconst_rreh
     real(kp), intent(in) :: lnR,epsEnd,potEnd
-
+!for scalar-tensor theories, conformal factor ln(Omega^4)
+    real(kp), intent(in), optional :: lnOmega4End
+    
     get_calfconst_rreh = -Nzero - 0.5_kp*log(potEnd/(3._kp-epsEnd)) + lnR
+
+    if (present(lnOmega4End)) then
+       get_calfconst_rreh = get_calfconst_rreh - 0.25_kp*lnOmega4End
+    endif
             
   end function get_calfconst_rreh
   
   
   
 
-
-  function ln_rho_endinf_leadorder(Pstar,epsOneStar,epsOneEnd,VendOverVstar)
+!if lnOmega4End is provided, this function assumes that slow-roll
+!calculations are done in the Einstein Frame and return rhoEndInfBar,
+!in the Jordan Frame!
+  function ln_rho_endinf_leadorder(Pstar,epsOneStar,epsOneEnd,VendOverVstar,lnOmega4End)
     implicit none
     real(kp) :: ln_rho_endinf_leadorder
     real(kp), intent(in) :: Pstar, epsOneStar, epsOneEnd
     real(kp), intent(in) :: VendOverVstar
+    real(kp), intent(in), optional :: lnOmega4End
 
     real(kp) :: lnH2OverEps
 
@@ -250,16 +265,23 @@ contains
     ln_rho_endinf_leadorder = lnH2OverEps + log(9._kp*epsOneStar &
          /(3._kp - epsOneEnd)) + log(VendOverVstar)
 
+    if (present(lnOmega4End)) then
+       ln_rho_endinf_leadorder = ln_rho_endinf_leadorder + lnOmega4End
+    endif
+    
   end function ln_rho_endinf_leadorder
 
 
- 
-  function ln_rho_endinf_anyorder(Pstar,epsStarVec,epsOneEnd,VendOverVstar)
+!if lnOmega4End is provided, this function assumes that slow-roll
+!calculations are done in the Einstein Frame and return rhoEndInfBar,
+!in the Jordan Frame!
+  function ln_rho_endinf_anyorder(Pstar,epsStarVec,epsOneEnd,VendOverVstar,lnOmega4End)
     implicit none
     real(kp) :: ln_rho_endinf_anyorder
     real(kp), intent(in) :: Pstar, epsOneEnd, VendOverVstar
     real(kp), dimension(neps), intent(in) :: epsStarVec
-
+    real(kp), intent(in), optional :: lnOmega4End
+    
     real(kp) :: lnH2OverEps
 
     lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsStarVec))
@@ -268,17 +290,25 @@ contains
          + log(3._kp*epsStarVec(1)*(3._kp - epsStarVec(1))/(3._kp - epsOneEnd)) &
          + log(VendOverVstar)
 
+    if (present(lnOmega4End)) then
+       ln_rho_endinf_anyorder = ln_rho_endinf_anyorder + lnOmega4End
+    endif
+    
   end function ln_rho_endinf_anyorder
 
 
 
-
-  function ln_rho_reheat_leadorder(w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar)
+!if lnOmega4End is provided, this function assumes that slow-roll
+!calculations are done in the Einstein Frame and return rhoEndInfBar,
+!in the Jordan Frame!
+  function ln_rho_reheat_leadorder(w,Pstar,epsOneStar,epsOneEnd,deltaNstar,VendOverVstar &
+       ,lnOmega4End)
     implicit none
     real(kp) :: ln_rho_reheat_leadorder
     real(kp), intent(in) :: w, Pstar, epsOneStar, epsOneEnd, deltaNstar
     real(kp), intent(in) :: VendOverVstar
-
+    real(kp), intent(in), optional :: lnOmega4End
+    
     real(kp) :: lnH2OverEps, oneMinusThreeWlnEreh
 
      if (w.eq.1._kp/3._kp) then
@@ -297,18 +327,25 @@ contains
 
      ln_rho_reheat_leadorder = oneMinusThreeWlnEreh*4._kp/(1._kp - 3._kp*w)
 
+     if (present(lnOmega4End)) then
+        ln_rho_reheat_leadorder = ln_rho_reheat_leadorder + lnOmega4End
+     endif
+     
    end function ln_rho_reheat_leadorder
 
 
-   
-   function ln_rho_reheat_anyorder(w,Pstar,epsStarVec,epsOneEnd &
-        ,deltaNstar,VendOverVstar)
+!if lnOmega4End is provided, this function assumes that slow-roll
+!calculations are done in the Einstein Frame and return rhoEndInfBar,
+!in the Jordan Frame!
+   function ln_rho_reheat_anyorder(w,Pstar,epsStarVec,epsOneEnd,deltaNstar,VendOverVstar &
+        , lnOmega4End)
     implicit none
     real(kp) :: ln_rho_reheat_anyorder
     real(kp), intent(in) :: w, Pstar, epsOneEnd, deltaNstar
     real(kp), intent(in) :: VendOverVstar
     real(kp), dimension(neps), intent(in) :: epsStarVec
-
+    real(kp), intent(in), optional :: lnOmega4End
+    
     real(kp) :: lnH2OverEps, oneMinusThreeWlnEreh
 
      if (w.eq.1._kp/3._kp) then
@@ -326,6 +363,10 @@ contains
 
      ln_rho_reheat_anyorder = oneMinusThreeWlnEreh*4._kp/(1._kp - 3._kp*w)
 
+     if (present(lnOmega4End)) then
+        ln_rho_reheat_anyorder = ln_rho_reheat_anyorder + lnOmega4End
+     endif
+     
    end function ln_rho_reheat_anyorder
 
 
@@ -559,7 +600,7 @@ contains
     real(kp), intent(in) :: Pstar
     real(kp) :: QoverT
 
-    QoverT = sqrt(60._kp*Pstar)
+    QoverT = sqrt(Pstar/60._kp)
 
     primscalar_to_quadrupole = QoverT
 

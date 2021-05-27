@@ -100,7 +100,7 @@ contains
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd
+    real(kp) :: lnRhoEnd,lnOmega4End
     
     potEnd  = ccsi2_norm_potential(xEnd,alpha)
 
@@ -112,10 +112,11 @@ contains
 
     potStar = ccsi2_norm_potential(x,alpha)
     epsOneStar = ccsi2_epsilon_one(x,alpha)
+    lnOmega4End = 2._kp*xend
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi2_lnrhoreh_max: slow-roll violated!'
 
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar, lnOmega4End)
 
     ccsi2_lnrhoreh_max = lnRhoEnd
 

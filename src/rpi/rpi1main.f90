@@ -36,6 +36,7 @@ program rpi1main
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
+  real(kp) :: lnOmega4End
 
   Pstar = powerAmpScalar
 
@@ -119,7 +120,9 @@ program rpi1main
      eps1end =  rpi1_epsilon_one(xend,p)
      VendOverVstar = rpi1_norm_potential(xend,p)/rpi1_norm_potential(ystar,p)
 
-     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+     lnOmega4End = 2._kp*xend
+
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      ystar = rpi1_x_rreh(p,xend,lnR,bfoldstar)
@@ -128,7 +131,7 @@ program rpi1main
      !second consistency check
      !get rhoreh for chosen w and check that ystar gotten this way is the same
      w = 0._kp
-     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
+     lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar,lnOmega4End)
 
      ystar = rpi1_x_star(p,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &

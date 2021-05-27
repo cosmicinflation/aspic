@@ -31,7 +31,7 @@ contains
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd,lnOmega4End
 
     type(transfert) :: rpi3Data
     
@@ -44,8 +44,10 @@ contains
     potEnd = rpi3_norm_potential(yEnd,p)
 
     primEnd = rpi3_efold_primitive(yEnd,p)
-   
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+
+    lnOmega4End = 2._kp*yEnd
+    
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     rpi3Data%real1 = p
     rpi3Data%real2 = w
@@ -189,7 +191,7 @@ contains
 
     real(kp), parameter :: tolzbrent=epsilon(1._kp)
     real(kp) :: mini,maxi,calF,y
-    real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: primEnd,epsOneEnd,potEnd,lnOmega4End
 
     type(transfert) :: rpi3Data
     
@@ -202,8 +204,9 @@ contains
     potEnd = rpi3_norm_potential(yEnd,p)
 
     primEnd = rpi3_efold_primitive(yEnd,p)
-   
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+    lnOmega4End = 2._kp*yEnd
+    
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     rpi3Data%real1 = p
     rpi3Data%real2 = calF + primEnd
@@ -265,7 +268,7 @@ contains
     real(kp),parameter :: wrad=1._kp/3._kp
     real(kp),parameter :: junk=0._kp
 
-    real(kp) :: lnRhoEnd
+    real(kp) :: lnRhoEnd, lnOmega4End
     
 
     potEnd  = rpi3_norm_potential(yEnd,p)
@@ -279,10 +282,11 @@ contains
     potStar = rpi3_norm_potential(y,p)
     epsOneStar = rpi3_epsilon_one(y,p)
 
-       
+    lnOmega4End = 2._kp*yEnd
+    
     if (.not.slowroll_validity(epsOneStar)) stop 'rpi3_lnrhoreh_max: slow-roll violated!'
     
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
 
     rpi3_lnrhoreh_max = lnRhoEnd
 
