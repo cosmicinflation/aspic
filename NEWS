@@ -22,4 +22,8 @@
 - Plotting python routines added in the directory "plots". Check the
   readme file for usage.
 
+- Reheating routines in srreheat module now support an optional
+  argument giving exact reheating calculations for all scalar-tensor
+  theories.
+
 - A bunch of new models added!

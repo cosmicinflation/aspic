@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "July 17, 2018" "version 1.0.0" "Aspic usage"
+.TH libaspic 3 "May 27, 2021" "version 1.1.0" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -348,7 +348,8 @@ usage should be necessary only if you decide to add a new model:
 .BR find_reheat (nuStar,calFplusNuEnd,w,epsStar,Vstar)
 .RE
 .RS
-.BR get_calfconst (lnRhoReh,Pstar,w,epsEnd,potEnd)
+.BR get_calfconst (lnRhoReh,Pstar,w,epsEnd,potEnd,
+.B lnOmega4End )
 .RE
 .RS
 .BR find_reheat_rrad (nuStar,calFplusNuEnd,epsStar,Vstar)
@@ -360,7 +361,8 @@ usage should be necessary only if you decide to add a new model:
 .BR find_reheat_rreh (nuStar,calFplusNuEnd,Vstar)
 .RE
 .RS
-.BR get_calfconst_rreh (lnR,epsEnd,potEnd)
+.BR get_calfconst_rreh (lnR,epsEnd,potEnd,
+.B lnOmega4End )
 .RE
 .RS
 .BR get_lnrrad_rhow (lnRhoReh,w,lnRhoEnd)
@@ -411,12 +413,14 @@ while
 and
 .BR get_calfconst ()
 solve algebraic equations necessary to get the reheating parameter
-assuming slow-roll. For more details on what are these quantities, see
-the references at the end of this section. The next four functions
-equally solve the reheating equations but take as input either the
-reheating parameter 'lnRrad', or the rescaled one 'lnR'. Finally, the
-last four functions allow to pass from one reheating variable to the
-others. For instance,
+assuming slow-roll. Some function takes an optional
+argument, 'lnOmega4End', which is the logarithm of the power fourth of
+the conformal factor for scalar-tensor theories of gravity. For more
+details on what are these quantities, see the references at the end of
+this section. The next four functions equally solve the reheating
+equations but take as input either the reheating parameter 'lnRrad',
+or the rescaled one 'lnR'. Finally, the last four functions allow to
+pass from one reheating variable to the others. For instance,
 .BR get_lnrrad_rhow ()
 gives the reheating parameter 'lnRrad' from the value of 'lnRhoReh'
 and 'w'. Notice that the energy scale at which inflation
@@ -527,8 +531,9 @@ module encapsulates some
 .I public parameters
 of the kind
 .I real(kp)
-which encodes some measured cosmological parameters today, or
-observational choices such as the pivot scale. More explicitly, they are
+which encodes some measured cosmological parameters today,
+observational choices such as the pivot scale, and some particle
+physics constant. More explicitly, they are
 .IP
 .B HubbleSquareRootOf3OmegaRad
 .RE
@@ -556,6 +561,15 @@ observational choices such as the pivot scale. More explicitly, they are
 .RS
 .B PowerAmpScalar
 .RE
+.RS
+.B HiggsVeV
+.RE
+.RS
+.B HiggsMass
+.RE
+.RS
+.B HiggsCoupling
+.RE
 
 .P
 The first two are the Hubble parameter today times the square root of
@@ -582,6 +596,13 @@ as 'Pstar' in some functional arguments above. The effective
 quadrupole moment 'QrmsOverT' is such that the amplitude of the power
 spectrum matches 'Pstar'. As such it may not correspond to the real
 quadrupole moment, which is still slightly lower :-).
+.B HiggsVeV
+is the vacuum expectation value of the Higgs field, in reduced Planck
+units.
+.B HiggsMass
+is the mass of the Higgs boson, again in reduced Planck mass. Finally
+.B HiggsCoupling
+is the quartic coupling constant of the Higgs field.
 .P
 Notice that changing any of these constants requires edition of the source
 file 'src/common/cosmopar.f90' and a recompilation of the whole
@@ -630,6 +651,9 @@ described in their man pages
 Acronym
 .B
 Model name
+.TQ
+.I si
+Starobinsky Inflation
 .TQ
 .I hi
 Higgs inflation
@@ -719,11 +743,14 @@ cublicly corrected Starobinski inflation III
 .I di
 dual inflation
 .TQ
+.I sbki
+symmetry breaking Kahler inflation
+.TQ
 .I ahi
 axion hilltop inflation
 .TQ
-.I sbki
-symmetry breaking Kahler inflation
+.I pai
+pure arctangent inflation
 .TQ
 .I saai
 superconformal alpha attractor A inflation
@@ -746,11 +773,8 @@ Kahler moduli inflation II
 .I lmi1
 logamediate inflation I
 .TQ
-.I rpi2
-R + R^2p inflation II
-.TQ
-.I rpi3
-R + R^2p inflation III
+.I rpi
+R + R^2p inflation
 .TQ
 .I twi
 twisted inflation
@@ -791,23 +815,8 @@ constant spectral index inflation C
 .I sbi
 supergravity brane inflation
 .TQ
-.I ssbi1 
-spontaneous symmetry breaking inflation I
-.TQ
-.I ssbi2
-spontaneous symmetry breaking inflation II
-.TQ
-.I ssbi3
-spontaneous symmetry breaking inflation III
-.TQ
-.I ssbi4
-spontaneous symmetry breaking inflation IV
-.TQ
-.I ssbi5
-spontaneous symmetry breaking inflation V
-.TQ
-.I ssbi6
-spontaneous symmetry breaking inflation VI
+.I ssbi
+spontaneous symmetry breaking inflation
 .TQ
 .I imi
 inverse monomial inflation
@@ -833,9 +842,6 @@ hybrid natural inflation
 .I vfmi
 Viatcheslav Fyodorovich Mukhanov inflation
 .TQ
-.I sdi
-s-dual inflation
-.TQ
 .I fi
 fibre inflation
 .TQ
@@ -850,7 +856,12 @@ hyberbolic inflation
 .TQ
 .I shi
 smeared Higgs inflation
-
+.TQ
+.I dei
+double exponential inflation
+.TQ
+.I sdi
+s-dual inflation
 
 .SS THREE PARAMETERS MODELS
 .TP 20
@@ -860,17 +871,8 @@ smeared Higgs inflation
 .I lmi2
 logamediate inflation II
 .TQ
-.I rmi1
-running mass inflation I
-.TQ
-.I rmi2
-running mass inflation II
-.TQ
-.I rmi3
-running mass inflation III
-.TQ
-.I rmi4
-running mass inflation IV
+.I rmi
+running mass inflation
 .TQ
 .I vhi
 valley hybrid inflation
@@ -881,29 +883,30 @@ dynamical supersymmetric inflation
 .I gmlfi
 generalized mixed large field inflation
 .TQ
-.I lpi1
-logarithmic potential inflation I
-.TQ
-.I lpi2
-logarithmic potential inflation II
-.TQ
-.I lpi3
-logarithmic potential inflation III
+.I lpi
+logarithmic potential inflation
 .TQ
 .I cndi
 constant spectral index inflation D
 .TQ
-.I nfi2
-N-formalism inflation II
+.I saii3
+string axion inflation II
 .TQ
-.I nfi4
-N-formalism inflation IV
+.I rclfi
+radiatively corrected large field inflation
 .TQ
 .I ncli
 non-renormalizable corrected loop inflation
 .TQ
-.I rcpi
-radiatively corrected plateau inflation
+.I hni
+hybrid natural inflation
+.TQ
+.I nfi
+N-formalism inflation
+.TQ
+.I rcipi
+radiatively corrected inflection point inflation
+
 
 .SH ADDING A MODEL
 Before deciding to add a model, you should first check that its
@@ -1061,6 +1064,7 @@ Please contact us in case of bugs.
 GNU GENERAL PUBLIC LICENSE Version 3
 
 .SH SEE ALSO
+.BR aspic_si (3),
 .BR aspic_hi (3),
 .BR aspic_lfi (3),
 .BR aspic_rcmi (3),
@@ -1086,8 +1090,9 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_ccsi1 (3),
 .BR aspic_ccsi3 (3),
 .BR aspic_di (3),
-.BR aspic_ahi (3),
 .BR aspic_sbki (3),
+.BR aspic_ahi (3),
+.BR aspic_pai (3),
 .BR aspic_saai (3).
 .P
 .BR aspic_sfi (3),
@@ -1123,7 +1128,9 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_sabi (3),
 .BR aspic_saci (3),
 .BR aspic_hbi (3),
-.BR aspic_shi (3).
+.BR aspic_shi (3),
+.BR aspic_dei (3),
+.BR aspic_sdi (3).
 .P
 .BR aspic_lmi2 (3),
 .BR aspic_rmi (3),
@@ -1132,10 +1139,12 @@ GNU GENERAL PUBLIC LICENSE Version 3
 .BR aspic_gmlfi (3),
 .BR aspic_lpi(3),
 .BR aspic_cndi (3),
-.BR aspic_nfi2 (3),
-.BR aspic_nfi4 (3),
+.BR aspic_saii3 (3),
+.BR aspic_rclfi (3),
 .BR aspic_ncli (3),
-.BR aspic_rcpi (3).
+.BR aspic_hni (3),
+.BR aspic_nfi (3),
+.BR aspic_rcipi (3).
 
 
 

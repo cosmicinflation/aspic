@@ -5,6 +5,8 @@
 use srreheat
 use srflow
 
+use sisr
+use sireheat
 use hisr
 use hireheat
 !one parameter models
@@ -62,6 +64,8 @@ use ahisr
 use ahireheat
 use sbkisr
 use sbkireheat
+use paisr
+use paireheat
 use saaisr
 use saaireheat
 
@@ -142,6 +146,9 @@ use shisr
 use shireheat
 use deisr
 use deireheat
+use sdisr
+use sdireheat
+
 
 !three parameter models
 use lmi2sr
@@ -176,8 +183,17 @@ use nfi2sr
 use nfi2reheat
 use nfi4sr
 use nfi4reheat
+use rclfi1sr
+use rclfi1reheat
+use rclfi2sr
+use rclfi2reheat
+use rclfi3sr
+use rclfi3reheat
+use rclfi4sr
+use rclfi4reheat
 use nclisr
 use nclireheat
-use rcpisr
-use rcpireheat
-
+use hnisr
+use hnireheat
+use rcipisr
+use rcipireheat
