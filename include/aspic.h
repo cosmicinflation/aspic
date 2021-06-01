@@ -128,8 +128,8 @@ use nfi3sr
 use nfi3reheat
 use ccsi2sr
 use ccsi2reheat
-use hnisr
-use hnireheat
+use hni1sr
+use hni1reheat
 use vfmisr
 use vfmireheat
 use sdisr
@@ -193,7 +193,7 @@ use rclfi4sr
 use rclfi4reheat
 use nclisr
 use nclireheat
-use hnisr
-use hnireheat
+use hni2sr
+use hni2reheat
 use rcipisr
 use rcipireheat
