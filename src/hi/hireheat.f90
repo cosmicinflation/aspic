@@ -53,7 +53,7 @@ module hireheat
 
   private
   
-  public hi_lnrhoreh_max
+  public hi_lnrhoreh_max, HiggsCoupling
   public hi_hbar_star, hi_hbar_rrad, hi_hbar_rreh
   public hi_x_star, hi_x_rrad, hi_x_rreh
 
