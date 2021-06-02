@@ -45,9 +45,9 @@ contains
 
 
   
-  function rclfi4_check_params(alpha,p,mu)
+  function rclfi4_check_params(p,alpha,mu)
     logical :: rclfi4_check_params
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp) :: alphadVo
 
@@ -56,76 +56,76 @@ contains
     rclfi4_check_params = ((p.gt.4._kp).and.(alpha.le.0._kp).and.(alpha.ge.alphadVo)) &
          .or.((p.lt.4._kp).and.(alpha.ge.0._kp).and.(alpha.le.alphadVo))
     
-    rclfi4_check_params = rclfi4_check_params.and.rclfi_check_params(alpha,p,mu)
+    rclfi4_check_params = rclfi4_check_params.and.rclfi_check_params(p,alpha,mu)
     
   end function rclfi4_check_params
   
 
   
-  function rclfi4_norm_potential(x,alpha,p,mu)
+  function rclfi4_norm_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi4_norm_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi4_norm_potential = rclfi_norm_potential(x,alpha,p,mu)
+    rclfi4_norm_potential = rclfi_norm_potential(x,p,alpha,mu)
 
   end function rclfi4_norm_potential
 
 
 
 
-  function rclfi4_norm_deriv_potential(x,alpha,p,mu)
+  function rclfi4_norm_deriv_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi4_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-   rclfi4_norm_deriv_potential = rclfi_norm_deriv_potential(x,alpha,p,mu)
+   rclfi4_norm_deriv_potential = rclfi_norm_deriv_potential(x,p,alpha,mu)
 
   end function rclfi4_norm_deriv_potential
 
 
 
 
-  function rclfi4_norm_deriv_second_potential(x,alpha,p,mu)
+  function rclfi4_norm_deriv_second_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi4_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi4_norm_deriv_second_potential = rclfi_norm_deriv_second_potential(x,alpha,p,mu)
+    rclfi4_norm_deriv_second_potential = rclfi_norm_deriv_second_potential(x,p,alpha,mu)
 
   end function rclfi4_norm_deriv_second_potential
 
 
 
 
-  function rclfi4_epsilon_one(x,alpha,p,mu)    
+  function rclfi4_epsilon_one(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi4_epsilon_one
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi4_epsilon_one = rclfi_epsilon_one(x,alpha,p,mu)
+    rclfi4_epsilon_one = rclfi_epsilon_one(x,p,alpha,mu)
     
   end function rclfi4_epsilon_one
 
 
 
-  function rclfi4_epsilon_two(x,alpha,p,mu)    
+  function rclfi4_epsilon_two(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi4_epsilon_two
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi4_epsilon_two = rclfi_epsilon_two(x,alpha,p,mu)
+    rclfi4_epsilon_two = rclfi_epsilon_two(x,p,alpha,mu)
     
   end function rclfi4_epsilon_two
 
 
 
-  function rclfi4_epsilon_three(x,alpha,p,mu)    
+  function rclfi4_epsilon_three(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi4_epsilon_three
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi4_epsilon_three = rclfi_epsilon_three(x,alpha,p,mu)
+    rclfi4_epsilon_three = rclfi_epsilon_three(x,p,alpha,mu)
     
   end function rclfi4_epsilon_three
 
@@ -134,9 +134,9 @@ contains
   
 
 !returns x at the end of inflation defined as epsilon1=1
-  function rclfi4_x_endinf(alpha,p,mu)
+  function rclfi4_x_endinf(p,alpha,mu)
     implicit none
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
     real(kp) :: rclfi4_x_endinf
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
@@ -156,9 +156,9 @@ contains
 
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function rclfi4_efold_primitive(x,alpha,p,mu)
+  function rclfi4_efold_primitive(x,p,alpha,mu)
     implicit none
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
     real(kp) :: rclfi4_efold_primitive
 
     type(transfert) :: rclfiData
@@ -186,7 +186,7 @@ contains
   
   
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function rclfi4_x_trajectory(bfold,xend,alpha,p,mu)
+  function rclfi4_x_trajectory(bfold,xend,p,alpha,mu)
     implicit none
     real(kp), intent(in) :: bfold, alpha, p, mu, xend
     real(kp) :: rclfi4_x_trajectory
@@ -202,7 +202,7 @@ contains
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = mu
-    rclfiData%real4 = -bfold + rclfi4_efold_primitive(xend,alpha,p,mu)
+    rclfiData%real4 = -bfold + rclfi4_efold_primitive(xend,p,alpha,mu)
 
     rclfi4_x_trajectory = zbrent(find_rclfi4_x_trajectory,mini,maxi,tolFind,rclfiData)
     
@@ -223,7 +223,7 @@ contains
     mu = rclfiData%real3    
     NplusNuend = rclfiData%real4
 
-    find_rclfi4_x_trajectory = rclfi4_efold_primitive(x,alpha,p,mu) - NplusNuend
+    find_rclfi4_x_trajectory = rclfi4_efold_primitive(x,p,alpha,mu) - NplusNuend
 
   end function find_rclfi4_x_trajectory
 

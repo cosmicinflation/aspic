@@ -46,9 +46,9 @@ contains
 
 
   
-  function rclfi1_check_params(alpha,p,mu)
+  function rclfi1_check_params(p,alpha,mu)
     logical :: rclfi1_check_params
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp) :: alphadV
 
@@ -58,94 +58,94 @@ contains
          .or. ((p.lt.4._kp).and.(alpha.lt.0._kp)) &
          .or. ((p.lt.4._kp).and.(alpha.ge.alphadV))
     
-    rclfi1_check_params = rclfi1_check_params.and.rclfi_check_params(alpha,p,mu)
+    rclfi1_check_params = rclfi1_check_params.and.rclfi_check_params(p,alpha,mu)
     
   end function rclfi1_check_params
   
 
   
-  function rclfi1_norm_potential(x,alpha,p,mu)
+  function rclfi1_norm_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi1_norm_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi1_norm_potential = rclfi_norm_potential(x,alpha,p,mu)
+    rclfi1_norm_potential = rclfi_norm_potential(x,p,alpha,mu)
 
   end function rclfi1_norm_potential
 
 
 
 
-  function rclfi1_norm_deriv_potential(x,alpha,p,mu)
+  function rclfi1_norm_deriv_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi1_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-   rclfi1_norm_deriv_potential = rclfi_norm_deriv_potential(x,alpha,p,mu)
+   rclfi1_norm_deriv_potential = rclfi_norm_deriv_potential(x,p,alpha,mu)
 
   end function rclfi1_norm_deriv_potential
 
 
 
 
-  function rclfi1_norm_deriv_second_potential(x,alpha,p,mu)
+  function rclfi1_norm_deriv_second_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi1_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi1_norm_deriv_second_potential = rclfi_norm_deriv_second_potential(x,alpha,p,mu)
+    rclfi1_norm_deriv_second_potential = rclfi_norm_deriv_second_potential(x,p,alpha,mu)
 
   end function rclfi1_norm_deriv_second_potential
 
 
 
 
-  function rclfi1_epsilon_one(x,alpha,p,mu)    
+  function rclfi1_epsilon_one(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi1_epsilon_one
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi1_epsilon_one = rclfi_epsilon_one(x,alpha,p,mu)
+    rclfi1_epsilon_one = rclfi_epsilon_one(x,p,alpha,mu)
     
   end function rclfi1_epsilon_one
 
 
 
-  function rclfi1_epsilon_two(x,alpha,p,mu)    
+  function rclfi1_epsilon_two(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi1_epsilon_two
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi1_epsilon_two = rclfi_epsilon_two(x,alpha,p,mu)
+    rclfi1_epsilon_two = rclfi_epsilon_two(x,p,alpha,mu)
     
   end function rclfi1_epsilon_two
 
 
 
-  function rclfi1_epsilon_three(x,alpha,p,mu)    
+  function rclfi1_epsilon_three(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi1_epsilon_three
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi1_epsilon_three = rclfi_epsilon_three(x,alpha,p,mu)
+    rclfi1_epsilon_three = rclfi_epsilon_three(x,p,alpha,mu)
     
   end function rclfi1_epsilon_three
 
 
   
 !non vanishing x at which the potential is extremal
-  function rclfi1_x_potmax(alpha,p,mu)
+  function rclfi1_x_potmax(p,alpha,mu)
     implicit none
     real(kp) :: rclfi1_x_potmax
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp), dimension(2) :: xdVzero
 
-    if (.not.rclfi1_check_params(alpha,p,mu)) then
+    if (.not.rclfi1_check_params(p,alpha,mu)) then
        stop 'rclfi1_x_potmax: no maximum!'
     endif
 
-    xdVzero = rclfi_x_derivpotzero(alpha,p,mu)
+    xdVzero = rclfi_x_derivpotzero(p,alpha,mu)
 
     rclfi1_x_potmax = xdVzero(1)
     
@@ -213,16 +213,16 @@ contains
 
 
 !returns x at the end of inflation defined as epsilon1=1
-  function rclfi1_x_endinf(alpha,p,mu)
+  function rclfi1_x_endinf(p,alpha,mu)
     implicit none
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
     real(kp) :: rclfi1_x_endinf
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: rclfiData
 
     mini = epsilon(1._kp)
-    maxi = rclfi1_x_potmax(alpha,p,mu)- epsilon(1._kp)
+    maxi = rclfi1_x_potmax(p,alpha,mu)- epsilon(1._kp)
 
     rclfiData%real1 = alpha
     rclfiData%real2 = p
@@ -237,27 +237,27 @@ contains
 
   
 !the closest possible to the top of the potential ensuring (dlnVodx)^2 > epsnumacc
-  function rclfi1_numacc_xinimax(alpha,p,mu)
+  function rclfi1_numacc_xinimax(p,alpha,mu)
     implicit none
     real(kp) :: rclfi1_numacc_xinimax
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp), parameter :: dx = 100._kp*epsnumacc
     real(kp) :: xpotmax, dlnVodx
     
-    if (.not.rclfi1_check_params(alpha,p,mu)) then
+    if (.not.rclfi1_check_params(p,alpha,mu)) then
        stop 'rclfi1_numacc_xinimax: no maximum!'
     endif
 
-    xpotmax = rclfi1_x_potmax(alpha,p,mu)
+    xpotmax = rclfi1_x_potmax(p,alpha,mu)
     
-    if (rclfi1_norm_potential(xpotmax-dx,alpha,p,mu).lt.0._kp) then
-       write(*,*)'alpha= p= ',alpha,p
+    if (rclfi1_norm_potential(xpotmax-dx,p,alpha,mu).lt.0._kp) then
+       write(*,*)'alpha= p= ',p,alpha
        stop 'rclfi1_numacc_xinimax: dx too large!'
     endif
 
-    dlnVodx = abs(rclfi1_norm_deriv_potential(xpotmax-dx,alpha,p,mu) &
-         /rclfi1_norm_potential(xpotmax,alpha,p,mu)/dx)
+    dlnVodx = abs(rclfi1_norm_deriv_potential(xpotmax-dx,p,alpha,mu) &
+         /rclfi1_norm_potential(xpotmax,p,alpha,mu)/dx)
     
     rclfi1_numacc_xinimax = xpotmax - sqrt(epsnumacc)/dlnVodx
 
@@ -267,24 +267,24 @@ contains
 
 
 !maximal number of efolds computable at current numerical accuracy
-  function rclfi1_numacc_efoldmax(alpha,p,mu)
+  function rclfi1_numacc_efoldmax(p,alpha,mu)
     implicit none
     real(kp) :: rclfi1_numacc_efoldmax
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp) :: xend,xinimax
 
-    if (.not.rclfi1_check_params(alpha,p,mu)) then
-       write(*,*)'alpha= p= ',alpha,p
+    if (.not.rclfi1_check_params(p,alpha,mu)) then
+       write(*,*)'alpha= p= ',p,alpha
        stop 'rclfi1_numacc_efoldmax: potential has no maximum!'
     endif
 
-    xend = rclfi1_x_endinf(alpha,p,mu)
+    xend = rclfi1_x_endinf(p,alpha,mu)
 
-    xinimax = rclfi1_numacc_xinimax(alpha,p,mu)
+    xinimax = rclfi1_numacc_xinimax(p,alpha,mu)
     
-    rclfi1_numacc_efoldmax = -rclfi1_efold_primitive(xend,alpha,p,mu) &
-         + rclfi1_efold_primitive(xinimax,alpha,p,mu)
+    rclfi1_numacc_efoldmax = -rclfi1_efold_primitive(xend,p,alpha,mu) &
+         + rclfi1_efold_primitive(xinimax,p,alpha,mu)
     
   end function rclfi1_numacc_efoldmax
 
@@ -292,10 +292,10 @@ contains
 
 !given alpha, p what is the minimal value of mu to get efold inflation
 !above numerical accuracy limit
-  function rclfi1_numacc_mumin(efold,alpha,p)
+  function rclfi1_numacc_mumin(efold,p,alpha)
     implicit none
     real(kp) :: rclfi1_numacc_mumin
-    real(kp), intent(in) :: efold,alpha,p
+    real(kp), intent(in) :: efold,p,alpha
 
     real(kp), parameter :: tolFind=tolkp
     type(transfert) :: rclfiData
@@ -312,7 +312,7 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = efold
 
-    if (rclfi1_numacc_efoldmax(alpha,p,mubig).lt.efold) then
+    if (rclfi1_numacc_efoldmax(p,alpha,mubig).lt.efold) then
        stop 'rclfi1_numacc_mumin: mubig too small!'
     endif
     
@@ -334,16 +334,16 @@ contains
     p = rclfiData%real2
     Nwanted = rclfiData%real3
         
-    find_rclfi1_numacc_mumin = rclfi1_numacc_efoldmax(alpha,p,mu) - Nwanted
+    find_rclfi1_numacc_mumin = rclfi1_numacc_efoldmax(p,alpha,mu) - Nwanted
     
   end function find_rclfi1_numacc_mumin
 
   
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function rclfi1_efold_primitive(x,alpha,p,mu)
+  function rclfi1_efold_primitive(x,p,alpha,mu)
     implicit none
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
     real(kp) :: rclfi1_efold_primitive
 
     type(transfert) :: rclfiData
@@ -356,13 +356,13 @@ contains
     real(kp), dimension(neq) :: yvar
 
 
-    if (x.gt.rclfi1_numacc_xinimax(alpha,p,mu)) then
+    if (x.gt.rclfi1_numacc_xinimax(p,alpha,mu)) then
        write(*,*)'rclfi1_efold_primitive: xVmax-x too small!'
-       write(*,*)'x= alpha= p= mu= ',x,alpha,p,mu
+       write(*,*)'x= alpha= p= mu= ',x,p,alpha,mu
        stop
     endif
     
-    xpotmax = rclfi1_x_potmax(alpha,p,mu)
+    xpotmax = rclfi1_x_potmax(p,alpha,mu)
 
     if ((x.ge.xpotmax).or.(x.lt.0._kp)) then
        stop 'rclfi1_efold_primitive: x not in [0,xpotmax[!'
@@ -384,7 +384,7 @@ contains
   
   
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function rclfi1_x_trajectory(bfold,xend,alpha,p,mu)
+  function rclfi1_x_trajectory(bfold,xend,p,alpha,mu)
     implicit none
     real(kp), intent(in) :: bfold, alpha, p, mu, xend
     real(kp) :: rclfi1_x_trajectory
@@ -394,12 +394,12 @@ contains
 
   
     mini = xend
-    maxi = rclfi1_numacc_xinimax(alpha,p,mu)
+    maxi = rclfi1_numacc_xinimax(p,alpha,mu)
   
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = mu
-    rclfiData%real4 = -bfold + rclfi1_efold_primitive(xend,alpha,p,mu)
+    rclfiData%real4 = -bfold + rclfi1_efold_primitive(xend,p,alpha,mu)
 
     rclfi1_x_trajectory = zbrent(find_rclfi1_x_trajectory,mini,maxi,tolFind,rclfiData)
     
@@ -420,7 +420,7 @@ contains
     mu = rclfiData%real3    
     NplusNuend = rclfiData%real4
 
-    find_rclfi1_x_trajectory = rclfi1_efold_primitive(x,alpha,p,mu) - NplusNuend
+    find_rclfi1_x_trajectory = rclfi1_efold_primitive(x,p,alpha,mu) - NplusNuend
 
   end function find_rclfi1_x_trajectory
 

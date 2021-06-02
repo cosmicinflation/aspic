@@ -24,10 +24,10 @@ contains
 
 
   
-  function rclfi_check_params(alpha,p,mu)
+  function rclfi_check_params(p,alpha,mu)
     implicit none
     logical :: rclfi_check_params
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     rclfi_check_params = (p.gt.0._kp).and.(p.ne.4._kp)
 
@@ -59,10 +59,10 @@ contains
 
   
   !returns V/M^4
-  function rclfi_norm_potential(x,alpha,p,mu)
+  function rclfi_norm_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi_norm_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
     rclfi_norm_potential = x**p + alpha*x**4*log(x)
 
@@ -71,10 +71,10 @@ contains
 
 
 !returns the first derivative of the potential with respect to x, divided by M^4
-  function rclfi_norm_deriv_potential(x,alpha,p,mu)
+  function rclfi_norm_deriv_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
    rclfi_norm_deriv_potential = p*x**(p-1._kp) + alpha*x**3*(1._kp + 4._kp*log(x))
 
@@ -83,10 +83,10 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M^4
-  function rclfi_norm_deriv_second_potential(x,alpha,p,mu)
+  function rclfi_norm_deriv_second_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
     rclfi_norm_deriv_second_potential = p*(p-1._kp)*x**(p-2._kp) &
          + alpha*x*x*(7._kp + 12._kp*log(x))
@@ -96,10 +96,10 @@ contains
 
 
 !epsilon_one(x)
-  function rclfi_epsilon_one(x,alpha,p,mu)    
+  function rclfi_epsilon_one(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi_epsilon_one
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
     real(kp) :: lnx
 
@@ -112,10 +112,10 @@ contains
 
 
 !epsilon_two(x)
-  function rclfi_epsilon_two(x,alpha,p,mu)    
+  function rclfi_epsilon_two(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi_epsilon_two
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
     real(kp) :: lnx
 
@@ -130,10 +130,10 @@ contains
 
 
 !epsilon_three(x)
-  function rclfi_epsilon_three(x,alpha,p,mu)    
+  function rclfi_epsilon_three(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi_epsilon_three
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
     real(kp) :: lnx
 
@@ -157,10 +157,10 @@ contains
 
 
 !non vanishing x at which the potential is extremal
-  function rclfi_x_derivpotzero(alpha,p,mu)
+  function rclfi_x_derivpotzero(p,alpha,mu)
     implicit none
     real(kp), dimension(2) :: rclfi_x_derivpotzero
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp) :: arg, ppm4oa,e1mpo4, xb0, xb1
 
@@ -193,10 +193,10 @@ contains
 
 
 !non vanishing x at which the potential vanishes
-  function rclfi_x_potzero(alpha,p,mu)
+  function rclfi_x_potzero(p,alpha,mu)
     implicit none
     real(kp), dimension(2) :: rclfi_x_potzero
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
     real(kp) :: arg
 
     real(kp) :: xb0,xb1
@@ -219,7 +219,7 @@ contains
        rclfi_x_potzero = exp(1._kp/(p-4._kp))
        
     else
-       write(*,*)'alpha= p= ',alpha,p,arg
+       write(*,*)'alpha= p= ',p,alpha,arg
        stop 'rclfi_x_potzero: (p-4)/alpha < -1/e!'
     endif
     
@@ -233,13 +233,13 @@ contains
     real(kp), intent(in) :: x    
     type(transfert), optional, intent(inout) :: rclfiData
     real(kp) :: find_rclfi_x_endinf
-    real(kp) :: alpha,p,mu
+    real(kp) :: p,alpha,mu
     
     alpha = rclfiData%real1
     p=rclfiData%real2
     mu=rclfiData%real3
     
-    find_rclfi_x_endinf = rclfi_epsilon_one(x,alpha,p,mu) - 1._kp
+    find_rclfi_x_endinf = rclfi_epsilon_one(x,p,alpha,mu) - 1._kp
 
   end function find_rclfi_x_endinf
 
@@ -256,7 +256,7 @@ contains
 !at order 3
     real(kp), parameter :: xtaylor = 10._kp*epsilon(1._kp)**(1._kp/3._kp)
     
-    real(kp) :: xp,x4,lnx,alpha,p
+    real(kp) :: xp,x4,lnx,p,alpha
     
     alpha = rclfiData%real1
     p = rclfiData%real2

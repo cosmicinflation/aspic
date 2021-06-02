@@ -51,9 +51,9 @@ contains
 
 
   
-  function rclfi3_check_params(alpha,p,mu)
+  function rclfi3_check_params(p,alpha,mu)
     logical :: rclfi3_check_params
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp) :: alphaVo
 
@@ -63,94 +63,94 @@ contains
          .or. ((p.gt.4._kp).and.(alpha.le.alphaVo)) &
          .or. ((p.lt.4._kp).and.(alpha.ge.alphaVo))
     
-    rclfi3_check_params = rclfi3_check_params.and.rclfi_check_params(alpha,p,mu)
+    rclfi3_check_params = rclfi3_check_params.and.rclfi_check_params(p,alpha,mu)
     
   end function rclfi3_check_params
   
 
   
-  function rclfi3_norm_potential(x,alpha,p,mu)
+  function rclfi3_norm_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi3_norm_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi3_norm_potential = rclfi_norm_potential(x,alpha,p,mu)
+    rclfi3_norm_potential = rclfi_norm_potential(x,p,alpha,mu)
 
   end function rclfi3_norm_potential
 
 
 
 
-  function rclfi3_norm_deriv_potential(x,alpha,p,mu)
+  function rclfi3_norm_deriv_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi3_norm_deriv_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-   rclfi3_norm_deriv_potential = rclfi_norm_deriv_potential(x,alpha,p,mu)
+   rclfi3_norm_deriv_potential = rclfi_norm_deriv_potential(x,p,alpha,mu)
 
   end function rclfi3_norm_deriv_potential
 
 
 
 
-  function rclfi3_norm_deriv_second_potential(x,alpha,p,mu)
+  function rclfi3_norm_deriv_second_potential(x,p,alpha,mu)
     implicit none
     real(kp) :: rclfi3_norm_deriv_second_potential
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi3_norm_deriv_second_potential = rclfi_norm_deriv_second_potential(x,alpha,p,mu)
+    rclfi3_norm_deriv_second_potential = rclfi_norm_deriv_second_potential(x,p,alpha,mu)
 
   end function rclfi3_norm_deriv_second_potential
 
 
 
 
-  function rclfi3_epsilon_one(x,alpha,p,mu)    
+  function rclfi3_epsilon_one(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi3_epsilon_one
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi3_epsilon_one = rclfi_epsilon_one(x,alpha,p,mu)
+    rclfi3_epsilon_one = rclfi_epsilon_one(x,p,alpha,mu)
     
   end function rclfi3_epsilon_one
 
 
 
-  function rclfi3_epsilon_two(x,alpha,p,mu)    
+  function rclfi3_epsilon_two(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi3_epsilon_two
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi3_epsilon_two = rclfi_epsilon_two(x,alpha,p,mu)
+    rclfi3_epsilon_two = rclfi_epsilon_two(x,p,alpha,mu)
     
   end function rclfi3_epsilon_two
 
 
 
-  function rclfi3_epsilon_three(x,alpha,p,mu)    
+  function rclfi3_epsilon_three(x,p,alpha,mu)    
     implicit none
     real(kp) :: rclfi3_epsilon_three
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
 
-    rclfi3_epsilon_three = rclfi_epsilon_three(x,alpha,p,mu)
+    rclfi3_epsilon_three = rclfi_epsilon_three(x,p,alpha,mu)
     
   end function rclfi3_epsilon_three
 
 
  
 !non vanishing x at which the potential becomes negative or null
-  function rclfi3_x_potzero(alpha,p,mu)
+  function rclfi3_x_potzero(p,alpha,mu)
     implicit none
     real(kp) :: rclfi3_x_potzero
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
 
     real(kp), dimension(2) :: xVzero
 
-    if (.not.rclfi3_check_params(alpha,p,mu)) then
+    if (.not.rclfi3_check_params(p,alpha,mu)) then
        stop 'rclfi3_x_potzero: no zeros!'
     endif
     
-    xVzero = rclfi_x_potzero(alpha,p,mu)
+    xVzero = rclfi_x_potzero(p,alpha,mu)
 
     rclfi3_x_potzero = xVzero(2)
     
@@ -160,15 +160,15 @@ contains
   
 
 !returns x at the end of inflation defined as epsilon1=1
-  function rclfi3_x_endinf(alpha,p,mu)
+  function rclfi3_x_endinf(p,alpha,mu)
     implicit none
-    real(kp), intent(in) :: alpha,p,mu
+    real(kp), intent(in) :: p,alpha,mu
     real(kp) :: rclfi3_x_endinf
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
     type(transfert) :: rclfiData
 
-    mini = rclfi3_x_potzero(alpha,p,mu)+ epsilon(1._kp)
+    mini = rclfi3_x_potzero(p,alpha,mu)+ epsilon(1._kp)
     maxi = rclfixBig
 
     rclfiData%real1 = alpha
@@ -235,9 +235,9 @@ contains
   
 
 !this is integral[V(phi)/V'(phi) dphi]
-  function rclfi3_efold_primitive(x,alpha,p,mu)
+  function rclfi3_efold_primitive(x,p,alpha,mu)
     implicit none
-    real(kp), intent(in) :: x,alpha,p,mu
+    real(kp), intent(in) :: x,p,alpha,mu
     real(kp) :: rclfi3_efold_primitive
 
     type(transfert) :: rclfiData
@@ -250,7 +250,7 @@ contains
     real(kp), dimension(neq) :: yvar
 
     
-    xpotzero = rclfi3_x_potzero(alpha,p,mu)
+    xpotzero = rclfi3_x_potzero(p,alpha,mu)
     
     if (x.le.xpotzero) then
        stop 'rclfi3_efold_primitive: x not in ]xpotzero,+oo[!'
@@ -272,7 +272,7 @@ contains
   
   
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function rclfi3_x_trajectory(bfold,xend,alpha,p,mu)
+  function rclfi3_x_trajectory(bfold,xend,p,alpha,mu)
     implicit none
     real(kp), intent(in) :: bfold, alpha, p, mu, xend
     real(kp) :: rclfi3_x_trajectory
@@ -288,7 +288,7 @@ contains
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = mu
-    rclfiData%real4 = -bfold + rclfi3_efold_primitive(xend,alpha,p,mu)
+    rclfiData%real4 = -bfold + rclfi3_efold_primitive(xend,p,alpha,mu)
 
     rclfi3_x_trajectory = zbrent(find_rclfi3_x_trajectory,mini,maxi,tolFind,rclfiData)
     
@@ -309,7 +309,7 @@ contains
     mu = rclfiData%real3    
     NplusNuend = rclfiData%real4
 
-    find_rclfi3_x_trajectory = rclfi3_efold_primitive(x,alpha,p,mu) - NplusNuend
+    find_rclfi3_x_trajectory = rclfi3_efold_primitive(x,p,alpha,mu) - NplusNuend
 
   end function find_rclfi3_x_trajectory
 

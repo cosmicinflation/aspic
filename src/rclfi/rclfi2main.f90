@@ -45,7 +45,7 @@ program rclfi2main
   real(kp) :: xmin = 0
   real(kp) :: xmax = 8
   
-  real(kp) :: alpha,p,mu,w,bfoldstar
+  real(kp) :: p,alpha,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax, efoldmax
@@ -80,7 +80,7 @@ program rclfi2main
 
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
 
-        mumin = rclfi2_numacc_mumin(120._kp,alpha,p)
+        mumin = rclfi2_numacc_mumin(120._kp,p,alpha)
 
         print *,'mumin= ',mumin
         if (mumin.gt.mumax) cycle
@@ -89,14 +89,14 @@ program rclfi2main
 
            mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
 
-           efoldmax = rclfi2_numacc_efoldmax(alpha,p,mu)
-           print *,'alpha,p,mu,efoldNumAccMax= ',alpha,p,mu,efoldmax
+           efoldmax = rclfi2_numacc_efoldmax(p,alpha,mu)
+           print *,'p,alpha,mu,efoldNumAccMax= ',p,alpha,mu,efoldmax
 
            lnRhoRehMin = lnRhoNuc
 
-           xend = rclfi2_x_endinf(alpha,p,mu)
+           xend = rclfi2_x_endinf(p,alpha,mu)
 
-           lnRhoRehMax = rclfi2_lnrhoreh_max(alpha,p,mu,xend,Pstar)
+           lnRhoRehMax = rclfi2_lnrhoreh_max(p,alpha,mu,xend,Pstar)
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -104,14 +104,14 @@ program rclfi2main
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-              xstar = rclfi2_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+              xstar = rclfi2_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
               print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-              eps1 = rclfi2_epsilon_one(xstar,alpha,p,mu)
-              eps2 = rclfi2_epsilon_two(xstar,alpha,p,mu)
-              eps3 = rclfi2_epsilon_three(xstar,alpha,p,mu)
+              eps1 = rclfi2_epsilon_one(xstar,p,alpha,mu)
+              eps2 = rclfi2_epsilon_two(xstar,p,alpha,mu)
+              eps3 = rclfi2_epsilon_three(xstar,p,alpha,mu)
 
 
               logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -124,7 +124,7 @@ program rclfi2main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,alpha,p/))
+                   ,(/mu,p,alpha/))
 
            end do
 
@@ -154,7 +154,7 @@ program rclfi2main
 
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
 
-        mumin = rclfi2_numacc_mumin(120._kp,alpha,p)
+        mumin = rclfi2_numacc_mumin(120._kp,p,alpha)
         if (mumin.gt.mumax) cycle
         
         print *,'mumin= ',mumin
@@ -163,14 +163,14 @@ program rclfi2main
 
            mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
 
-           efoldmax = rclfi2_numacc_efoldmax(alpha,p,mu)
-           print *,'alpha,p,mu,efoldNumAccMax= ',alpha,p,mu,efoldmax
+           efoldmax = rclfi2_numacc_efoldmax(p,alpha,mu)
+           print *,'p,alpha,mu,efoldNumAccMax= ',p,alpha,mu,efoldmax
 
            lnRhoRehMin = lnRhoNuc
 
-           xend = rclfi2_x_endinf(alpha,p,mu)
+           xend = rclfi2_x_endinf(p,alpha,mu)
 
-           lnRhoRehMax = rclfi2_lnrhoreh_max(alpha,p,mu,xend,Pstar)
+           lnRhoRehMax = rclfi2_lnrhoreh_max(p,alpha,mu,xend,Pstar)
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -178,14 +178,14 @@ program rclfi2main
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-              xstar = rclfi2_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+              xstar = rclfi2_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
               print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-              eps1 = rclfi2_epsilon_one(xstar,alpha,p,mu)
-              eps2 = rclfi2_epsilon_two(xstar,alpha,p,mu)
-              eps3 = rclfi2_epsilon_three(xstar,alpha,p,mu)
+              eps1 = rclfi2_epsilon_one(xstar,p,alpha,mu)
+              eps2 = rclfi2_epsilon_two(xstar,p,alpha,mu)
+              eps3 = rclfi2_epsilon_three(xstar,p,alpha,mu)
 
 
               logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -198,7 +198,7 @@ program rclfi2main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,alpha,p/))
+                   ,(/mu,p,alpha/))
 
            end do
 
@@ -232,7 +232,7 @@ program rclfi2main
 
         print *,'p= alpha= ',p,alpha
         
-        mumin = rclfi2_numacc_mumin(120._kp,alpha,p)
+        mumin = rclfi2_numacc_mumin(120._kp,p,alpha)
         if (mumin.gt.mumax) cycle
         
         print *,'mumin= ',mumin
@@ -241,14 +241,14 @@ program rclfi2main
 
            mu=10._kp**(log10(mumin)+(log10(mumax/mumin))*(real(j,kp)/real(Nmu,kp)))
 
-           efoldmax = rclfi2_numacc_efoldmax(alpha,p,mu)
-           print *,'alpha,p,mu,efoldNumAccMax= ',alpha,p,mu,efoldmax
+           efoldmax = rclfi2_numacc_efoldmax(p,alpha,mu)
+           print *,'p,alpha,mu,efoldNumAccMax= ',p,alpha,mu,efoldmax
 
            lnRhoRehMin = lnRhoNuc
 
-           xend = rclfi2_x_endinf(alpha,p,mu)
+           xend = rclfi2_x_endinf(p,alpha,mu)
 
-           lnRhoRehMax = rclfi2_lnrhoreh_max(alpha,p,mu,xend,Pstar)
+           lnRhoRehMax = rclfi2_lnrhoreh_max(p,alpha,mu,xend,Pstar)
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -256,14 +256,14 @@ program rclfi2main
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-              xstar = rclfi2_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+              xstar = rclfi2_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
               print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-              eps1 = rclfi2_epsilon_one(xstar,alpha,p,mu)
-              eps2 = rclfi2_epsilon_two(xstar,alpha,p,mu)
-              eps3 = rclfi2_epsilon_three(xstar,alpha,p,mu)
+              eps1 = rclfi2_epsilon_one(xstar,p,alpha,mu)
+              eps2 = rclfi2_epsilon_two(xstar,p,alpha,mu)
+              eps3 = rclfi2_epsilon_three(xstar,p,alpha,mu)
 
 
               logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -280,7 +280,7 @@ program rclfi2main
               call livewrite('rclfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,alpha,p/))
+                   ,(/mu,p,alpha/))
 
            end do
 
@@ -301,29 +301,29 @@ program rclfi2main
 
   p = 0.9_kp
   alpha = -0.7
-  mu = 10._kp*rclfi2_numacc_mumin(120._kp,alpha,p)
+  mu = 10._kp*rclfi2_numacc_mumin(120._kp,p,alpha)
 
-  xend = rclfi2_x_endinf(alpha,p,mu)
+  xend = rclfi2_x_endinf(p,alpha,mu)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rclfi2_x_rrad(alpha,p,mu,xend,lnRrad,Pstar,bfoldstar)
+     xstar = rclfi2_x_rrad(p,alpha,mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = rclfi2_epsilon_one(xstar,alpha,p,mu)
+     eps1 = rclfi2_epsilon_one(xstar,p,alpha,mu)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  rclfi2_epsilon_one(xend,alpha,p,mu)
-     VendOverVstar = rclfi2_norm_potential(xend,alpha,p,mu) &
-          /rclfi2_norm_potential(xstar,alpha,p,mu)
+     eps1end =  rclfi2_epsilon_one(xend,p,alpha,mu)
+     VendOverVstar = rclfi2_norm_potential(xend,p,alpha,mu) &
+          /rclfi2_norm_potential(xstar,p,alpha,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rclfi2_x_rreh(alpha,p,mu,xend,lnR,bfoldstar)
+     xstar = rclfi2_x_rreh(p,alpha,mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -331,7 +331,7 @@ program rclfi2main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rclfi2_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rclfi2_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 

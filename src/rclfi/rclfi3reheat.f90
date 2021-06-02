@@ -24,10 +24,10 @@ contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function rclfi3_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)    
+  function rclfi3_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rclfi3_x_star
-    real(kp), intent(in) :: alpha,p,mu,xend,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: p,alpha,mu,xend,lnRhoReh,w,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -41,9 +41,9 @@ contains
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
     
-    epsOneEnd = rclfi3_epsilon_one(xEnd,alpha,p,mu)
-    potEnd = rclfi3_norm_potential(xEnd,alpha,p,mu)
-    primEnd = rclfi3_efold_primitive(xEnd,alpha,p,mu) 
+    epsOneEnd = rclfi3_epsilon_one(xEnd,p,alpha,mu)
+    potEnd = rclfi3_norm_potential(xEnd,p,alpha,mu)
+    primEnd = rclfi3_efold_primitive(xEnd,p,alpha,mu) 
     
 
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
@@ -62,7 +62,7 @@ contains
     
     if (present(bfoldstar)) then
        x = rclfi3_x_star
-       bfoldstar = - (rclfi3_efold_primitive(x,alpha,p,mu) - primEnd)
+       bfoldstar = - (rclfi3_efold_primitive(x,p,alpha,mu) - primEnd)
     endif
 
   end function rclfi3_x_star
@@ -73,7 +73,7 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: rclfiData
 
-    real(kp) :: primStar,alpha,p,mu,w,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,p,alpha,mu,w,CalFplusprimEnd,potStar,epsOneStar
 
     alpha = rclfiData%real1
     p = rclfiData%real2
@@ -81,9 +81,9 @@ contains
     w = rclfiData%real4
     CalFplusprimEnd = rclfiData%real5
 
-    primStar = rclfi3_efold_primitive(x,alpha,p,mu)
-    epsOneStar = rclfi3_epsilon_one(x,alpha,p,mu)
-    potStar = rclfi3_norm_potential(x,alpha,p,mu)
+    primStar = rclfi3_efold_primitive(x,p,alpha,mu)
+    epsOneStar = rclfi3_epsilon_one(x,p,alpha,mu)
+    potStar = rclfi3_norm_potential(x,p,alpha,mu)
 
     find_rclfi3_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
   
@@ -93,10 +93,10 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function rclfi3_x_rrad(alpha,p,mu,xend,lnRrad,Pstar,bfoldstar)    
+  function rclfi3_x_rrad(p,alpha,mu,xend,lnRrad,Pstar,bfoldstar)    
     implicit none
     real(kp) :: rclfi3_x_rrad
-    real(kp), intent(in) :: alpha,p,mu,xend,lnRrad,Pstar
+    real(kp), intent(in) :: p,alpha,mu,xend,lnRrad,Pstar
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -110,9 +110,9 @@ contains
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
         
-    epsOneEnd = rclfi3_epsilon_one(xEnd,alpha,p,mu)
-    potEnd = rclfi3_norm_potential(xEnd,alpha,p,mu)
-    primEnd = rclfi3_efold_primitive(xEnd,alpha,p,mu) 
+    epsOneEnd = rclfi3_epsilon_one(xEnd,p,alpha,mu)
+    potEnd = rclfi3_norm_potential(xEnd,p,alpha,mu)
+    primEnd = rclfi3_efold_primitive(xEnd,p,alpha,mu) 
     
 
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
@@ -131,7 +131,7 @@ contains
 
     if (present(bfoldstar)) then
        x = rclfi3_x_rrad
-       bfoldstar = - (rclfi3_efold_primitive(x,alpha,p,mu) - primEnd)
+       bfoldstar = - (rclfi3_efold_primitive(x,p,alpha,mu) - primEnd)
     endif
 
   end function rclfi3_x_rrad
@@ -142,7 +142,7 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: rclfiData
 
-    real(kp) :: primStar,alpha,p,mu,CalFplusprimEnd,potStar,epsOneStar
+    real(kp) :: primStar,p,alpha,mu,CalFplusprimEnd,potStar,epsOneStar
 
 
     alpha = rclfiData%real1
@@ -150,9 +150,9 @@ contains
     mu = rclfiData%real3
     CalFplusprimEnd = rclfiData%real4
 
-    primStar = rclfi3_efold_primitive(x,alpha,p,mu)
-    epsOneStar = rclfi3_epsilon_one(x,alpha,p,mu)
-    potStar = rclfi3_norm_potential(x,alpha,p,mu)
+    primStar = rclfi3_efold_primitive(x,p,alpha,mu)
+    epsOneStar = rclfi3_epsilon_one(x,p,alpha,mu)
+    potStar = rclfi3_norm_potential(x,p,alpha,mu)
 
     find_rclfi3_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
   
@@ -162,10 +162,10 @@ contains
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function rclfi3_x_rreh(alpha,p,mu,xend,lnRreh,bfoldstar)    
+  function rclfi3_x_rreh(p,alpha,mu,xend,lnRreh,bfoldstar)    
     implicit none
     real(kp) :: rclfi3_x_rreh
-    real(kp), intent(in) :: alpha,p,mu,xend,lnRreh
+    real(kp), intent(in) :: p,alpha,mu,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
@@ -179,9 +179,9 @@ contains
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
         
-    epsOneEnd = rclfi3_epsilon_one(xEnd,alpha,p,mu)
-    potEnd = rclfi3_norm_potential(xEnd,alpha,p,mu)
-    primEnd = rclfi3_efold_primitive(xEnd,alpha,p,mu) 
+    epsOneEnd = rclfi3_epsilon_one(xEnd,p,alpha,mu)
+    potEnd = rclfi3_norm_potential(xEnd,p,alpha,mu)
+    primEnd = rclfi3_efold_primitive(xEnd,p,alpha,mu) 
     
 
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
@@ -199,7 +199,7 @@ contains
 
     if (present(bfoldstar)) then
        x = rclfi3_x_rreh
-       bfoldstar = - (rclfi3_efold_primitive(x,alpha,p,mu) - primEnd)
+       bfoldstar = - (rclfi3_efold_primitive(x,p,alpha,mu) - primEnd)
     endif
 
   end function rclfi3_x_rreh
@@ -210,7 +210,7 @@ contains
     real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: rclfiData
 
-    real(kp) :: primStar,alpha,p,mu,CalFplusprimEnd,potStar
+    real(kp) :: primStar,p,alpha,mu,CalFplusprimEnd,potStar
 
 
     alpha = rclfiData%real1
@@ -218,8 +218,8 @@ contains
     mu = rclfiData%real3
     CalFplusprimEnd = rclfiData%real4
 
-    primStar = rclfi3_efold_primitive(x,alpha,p,mu)
-    potStar = rclfi3_norm_potential(x,alpha,p,mu)
+    primStar = rclfi3_efold_primitive(x,p,alpha,mu)
+    potStar = rclfi3_norm_potential(x,p,alpha,mu)
 
     find_rclfi3_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
   
@@ -227,10 +227,10 @@ contains
 
 
 
-  function rclfi3_lnrhoreh_max(alpha,p,mu,xend,Pstar) 
+  function rclfi3_lnrhoreh_max(p,alpha,mu,xend,Pstar) 
     implicit none
     real(kp) :: rclfi3_lnrhoreh_max
-    real(kp), intent(in) :: alpha,p,mu,xend,Pstar
+    real(kp), intent(in) :: p,alpha,mu,xend,Pstar
 
     real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
@@ -240,14 +240,14 @@ contains
 
     real(kp) :: lnRhoEnd
     
-    potEnd  = rclfi3_norm_potential(xEnd,alpha,p,mu)
-    epsOneEnd = rclfi3_epsilon_one(xEnd,alpha,p,mu)
+    potEnd  = rclfi3_norm_potential(xEnd,p,alpha,mu)
+    epsOneEnd = rclfi3_epsilon_one(xEnd,p,alpha,mu)
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = rclfi3_x_star(alpha,p,mu,xend,wrad,junk,Pstar)    
-    potStar = rclfi3_norm_potential(x,alpha,p,mu)
-    epsOneStar = rclfi3_epsilon_one(x,alpha,p,mu)
+    x = rclfi3_x_star(p,alpha,mu,xend,wrad,junk,Pstar)    
+    potStar = rclfi3_norm_potential(x,p,alpha,mu)
+    epsOneStar = rclfi3_epsilon_one(x,p,alpha,mu)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rclfi3_lnrhoreh_max: slow-roll violated!'
     

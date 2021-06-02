@@ -44,7 +44,7 @@ program rclfi4main
   real(kp) :: xmin = 0
   real(kp) :: xmax = 2
   
-  real(kp) :: alpha,p,mu,w,bfoldstar
+  real(kp) :: p,alpha,mu,w,bfoldstar
   real(kp) :: lnRhoReh,xstar,eps1,eps2,eps3,ns,r
 
   real(kp) :: lnRhoRehMin, lnRhoRehMax, efoldmax
@@ -71,16 +71,16 @@ program rclfi4main
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
 
-     V = rclfi4_norm_potential(x,alpha=alpha,p=p,mu=1._kp)
+     V = rclfi4_norm_potential(x,alpha=p,alpha=p,mu=1._kp)
      
      V1 = rclfi4_norm_potential(x,alpha=-1.2_kp,p=-0.5_kp,mu=1._kp)
 
 
      call livewrite('rclfi4_potential.dat',x,V,V1)
 
-     eps1 = rclfi4_epsilon_one(x,alpha=alpha,p=p,mu=100._kp)
-     eps2 = rclfi4_epsilon_two(x,alpha=alpha,p=p,mu=100._kp)
-     eps3 = rclfi4_epsilon_three(x,alpha=alpha,p=p,mu=100._kp)
+     eps1 = rclfi4_epsilon_one(x,alpha=p,alpha=p,mu=100._kp)
+     eps2 = rclfi4_epsilon_two(x,alpha=p,alpha=p,mu=100._kp)
+     eps3 = rclfi4_epsilon_three(x,alpha=p,alpha=p,mu=100._kp)
 
      call livewrite('rclfi4_slowroll.dat',x,eps1,eps2,eps3)
 
@@ -95,7 +95,7 @@ program rclfi4main
 !$omp parallel sections &
 !$omp default(shared) &
 !$omp private(alphamin,alphamax,pmin,pmax) &  
-!$omp private(alpha,p,l,k,i,j,mu,xmin,xmax) &  
+!$omp private(p,alpha,l,k,i,j,mu,xmin,xmax) &  
 !$omp private(lnRhoRehMax,xend,lnRhoRehMin,lnRhoReh,bfoldstar) &
 !$omp private(xstar,w,eps1,eps2,eps3,logErehGeV,Treh,ns,r)
 
@@ -129,11 +129,11 @@ program rclfi4main
 
            lnRhoRehMin = lnRhoNuc
 
-           xend = rclfi4_x_endinf(alpha,p,mu)
+           xend = rclfi4_x_endinf(p,alpha,mu)
 
            print *,'xend',xend
            
-           lnRhoRehMax = rclfi4_lnrhoreh_max(alpha,p,mu,xend,Pstar)
+           lnRhoRehMax = rclfi4_lnrhoreh_max(p,alpha,mu,xend,Pstar)
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -141,14 +141,14 @@ program rclfi4main
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-              xstar = rclfi4_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+              xstar = rclfi4_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
               print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-              eps1 = rclfi4_epsilon_one(xstar,alpha,p,mu)
-              eps2 = rclfi4_epsilon_two(xstar,alpha,p,mu)
-              eps3 = rclfi4_epsilon_three(xstar,alpha,p,mu)
+              eps1 = rclfi4_epsilon_one(xstar,p,alpha,mu)
+              eps2 = rclfi4_epsilon_two(xstar,p,alpha,mu)
+              eps3 = rclfi4_epsilon_three(xstar,p,alpha,mu)
 
 
               logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -162,7 +162,7 @@ program rclfi4main
 
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,alpha,p/))
+                   ,(/mu,p,alpha/))
 
            end do
 
@@ -202,9 +202,9 @@ program rclfi4main
 
            lnRhoRehMin = lnRhoNuc
 
-           xend = rclfi4_x_endinf(alpha,p,mu)
+           xend = rclfi4_x_endinf(p,alpha,mu)
 
-           lnRhoRehMax = rclfi4_lnrhoreh_max(alpha,p,mu,xend,Pstar)
+           lnRhoRehMax = rclfi4_lnrhoreh_max(p,alpha,mu,xend,Pstar)
 
            print *,'lnRhoRehMin=',lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -212,14 +212,14 @@ program rclfi4main
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-              xstar = rclfi4_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+              xstar = rclfi4_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
 
 
               print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar
 
-              eps1 = rclfi4_epsilon_one(xstar,alpha,p,mu)
-              eps2 = rclfi4_epsilon_two(xstar,alpha,p,mu)
-              eps3 = rclfi4_epsilon_three(xstar,alpha,p,mu)
+              eps1 = rclfi4_epsilon_one(xstar,p,alpha,mu)
+              eps2 = rclfi4_epsilon_two(xstar,p,alpha,mu)
+              eps3 = rclfi4_epsilon_three(xstar,p,alpha,mu)
 
 
               logErehGeV = log_energy_reheat_ingev(lnRhoReh)
@@ -232,7 +232,7 @@ program rclfi4main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,alpha,p/))
+                   ,(/mu,p,alpha/))
 
            end do
 
@@ -256,27 +256,27 @@ program rclfi4main
   alpha = 2._kp
   mu = 10._kp
 
-  xend = rclfi4_x_endinf(alpha,p,mu)
+  xend = rclfi4_x_endinf(p,alpha,mu)
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = rclfi4_x_rrad(alpha,p,mu,xend,lnRrad,Pstar,bfoldstar)
+     xstar = rclfi4_x_rrad(p,alpha,mu,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = rclfi4_epsilon_one(xstar,alpha,p,mu)
+     eps1 = rclfi4_epsilon_one(xstar,p,alpha,mu)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  rclfi4_epsilon_one(xend,alpha,p,mu)
-     VendOverVstar = rclfi4_norm_potential(xend,alpha,p,mu) &
-          /rclfi4_norm_potential(xstar,alpha,p,mu)
+     eps1end =  rclfi4_epsilon_one(xend,p,alpha,mu)
+     VendOverVstar = rclfi4_norm_potential(xend,p,alpha,mu) &
+          /rclfi4_norm_potential(xstar,p,alpha,mu)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = rclfi4_x_rreh(alpha,p,mu,xend,lnR,bfoldstar)
+     xstar = rclfi4_x_rreh(p,alpha,mu,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -284,7 +284,7 @@ program rclfi4main
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = rclfi4_x_star(alpha,p,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = rclfi4_x_star(p,alpha,mu,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
