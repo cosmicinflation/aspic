@@ -358,7 +358,7 @@ contains
 
     if (x.gt.rclfi1_numacc_xinimax(p,alpha,mu)) then
        write(*,*)'rclfi1_efold_primitive: xVmax-x too small!'
-       write(*,*)'x= alpha= p= mu= ',x,p,alpha,mu
+       write(*,*)'x= p= alpha= mu= ',x,p,alpha,mu
        stop
     endif
     

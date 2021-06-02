@@ -85,16 +85,16 @@ program rclfi1main
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
 
-     V = rclfi1_norm_potential(x,alpha=p,alpha=p,mu=1._kp)
+     V = rclfi1_norm_potential(x,p=p,alpha=alpha,mu=1._kp)
      
-     V1 = rclfi1_norm_potential(x,alpha=-1.2_kp,p=-0.5_kp,mu=1._kp)
+     V1 = rclfi1_norm_potential(x,p=-0.5_kp,alpha=-1.2_kp,mu=1._kp)
 
 
      call livewrite('rclfi1_potential.dat',x,V,V1)
 
-     eps1 = rclfi1_epsilon_one(x,alpha=p,alpha=p,mu=100._kp)
-     eps2 = rclfi1_epsilon_two(x,alpha=p,alpha=p,mu=100._kp)
-     eps3 = rclfi1_epsilon_three(x,alpha=p,alpha=p,mu=100._kp)
+     eps1 = rclfi1_epsilon_one(x,p,alpha,mu=100._kp)
+     eps2 = rclfi1_epsilon_two(x,p,alpha,mu=100._kp)
+     eps3 = rclfi1_epsilon_three(x,p,alpha,mu=100._kp)
 
      call livewrite('rclfi1_slowroll.dat',x,eps1,eps2,eps3)
 

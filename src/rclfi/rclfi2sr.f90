@@ -447,7 +447,7 @@ contains
 
     if (x.lt.rclfi2_numacc_xinimin(p,alpha,mu)) then
        write(*,*)'rclfi2_efold_primitive: xVmax+x too small!'
-       write(*,*)'x= alpha= p= mu= ',x,p,alpha,mu
+       write(*,*)'x= p= alpha= mu= ',x,p,alpha,mu
        stop
     endif
     
