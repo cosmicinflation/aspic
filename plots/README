@@ -17,5 +17,20 @@
 
       python ./fooiplots.py --help
 
-NB: you can add contour plot showing one- and two-sigma constraints
-    only by providing the contour files, see the source file fooiplots.py.
+* You can add contour plot showing one- and two-sigma constraints on
+  (ns,logr) and (sr2,sr1) by providing the contour files, which
+  defaults to (edit fooiplots.py)
+
+     data/contour_sr2_sr1_level_0.dat
+     data/contour_sr2_sr1_level_1.dat
+
+  and 
+
+     data/contour_ns_logr_level_0.dat	
+     data/contour_ns_logr_level_0.dat
+
+  This files can be generated from GetDist samples by using the module
+  "aspicdist.py".
+
+    T
+    

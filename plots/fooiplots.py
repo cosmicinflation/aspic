@@ -91,8 +91,8 @@ if pargs.type == 'powerlaw':
         xyzoomrange = (0.95,0.97,1e-20,0.8)
 
     
-    contourfiles=('data/contour_sr2ndlog_bkppol_ns_logr_level_0.dat'
-                 ,'data/contour_sr2ndlog_bkppol_ns_logr_level_1.dat')
+    contourfiles=('data/contour_ns_logr_level_0.dat'
+                 ,'data/contour_ns_logr_level_1.dat')
 
     figprefix = 'nsr_'+ model.getname()
 
@@ -119,8 +119,8 @@ elif pargs.type == 'slowroll':
         xyzoomrange = (0.03,0.05,1e-20,0.5)
 
     
-    contourfiles=('data/contour_sr2ndlog_bkppol_sr2_sr1_level_0.dat'
-                 ,'data/contour_sr2ndlog_bkppol_sr2_sr1_level_1.dat')
+    contourfiles=('data/contour_sr2_sr1_level_0.dat'
+                 ,'data/contour_sr2_sr1_level_1.dat')
 
     figprefix = 'eps_'+ model.getname()
 
