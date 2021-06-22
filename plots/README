@@ -29,8 +29,6 @@
      data/contour_ns_logr_level_0.dat	
      data/contour_ns_logr_level_0.dat
 
-  This files can be generated from GetDist samples by using the module
+  Thse files can be generated from GetDist samples by using the module
   "aspicdist.py".
-
-    T
     
