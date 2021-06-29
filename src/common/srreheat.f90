@@ -2,8 +2,9 @@
 !values for wreh or input lnRrad
 module srreheat
   use infprec, only : kp,pi
-  use srflow, only : slowroll_violated
+  use srflow, only : slowroll_violated, slowroll_to_hubble
   use srflow, only : slowroll_corrections, ln_slowroll_corrections
+  use huflow, only : hubbleflow_corrections
   use cosmopar, only : lnMpcToKappa, HubbleSquareRootOf3OmegaRad
   use cosmopar, only : QrmsOverT, kstar, powerAmpScalar, lnMpinGeV
   use cosmopar, only : RelatDofRatio
@@ -125,17 +126,21 @@ contains
 
   
 !for testing accuracy, add slow-roll corrections. Not robust if called with eps~1
-  function find_reheat_rhow_anyorder(nuStar,calFplusNuEnd,w,epsStarVec,Vstar)
+  function find_reheat_rhow_anyorder(nuStar,calFplusNuEnd,w,epsVStarVec,Vstar)
     implicit none
     real(kp) :: find_reheat_rhow_anyorder
     real(kp), intent(in) :: nuStar, calFplusNuEnd
     real(kp), intent(in) :: w, Vstar
-    real(kp), dimension(neps), intent(in) :: epsStarVec
+    real(kp), dimension(neps), intent(in) :: epsVStarVec
 
+    real(kp), dimension(neps) :: epsHStarVec
+
+    epsHStarVec = slowroll_to_hubble(epsVStarVec)
+    
     find_reheat_rhow_anyorder = nuStar - calFplusNuEnd + 1._kp/(3._kp + 3._kp*w) &
-         * log( (9._kp - 3._kp*epsStarVec(1)) &
-         /( epsStarVec(1)**(0.5_kp+1.5_kp*w)*Vstar) ) &
-         + 0.25_kp*log(slowroll_corrections(epsStarVec))
+         * log( (9._kp - 3._kp*epsHStarVec(1)) &
+         /( epsHStarVec(1)**(0.5_kp+1.5_kp*w)*Vstar) ) &
+         + 0.25_kp*log(hubbleflow_corrections(epsHStarVec))
 
   end function find_reheat_rhow_anyorder
 
@@ -177,15 +182,19 @@ contains
 
 
 
-  function find_reheat_rrad_anyorder(nuStar,calFplusNuEnd,epsStarVec,Vstar)
+  function find_reheat_rrad_anyorder(nuStar,calFplusNuEnd,epsVStarVec,Vstar)
     implicit none
     real(kp) :: find_reheat_rrad_anyorder
     real(kp), intent(in) :: nuStar, calFplusNuEnd, Vstar
-    real(kp), intent(in), dimension(neps) :: epsStarVec
+    real(kp), intent(in), dimension(neps) :: epsVStarVec
+    real(kp), dimension(neps) :: epsHStarVec
 
+    epsHStarVec = slowroll_to_hubble(epsVStarVec)
+    
+    
     find_reheat_rrad_anyorder = nuStar - calFplusNuEnd &
-         + 0.25_kp*log((9._kp-3._kp*epsStarVec(1))/(epsStarVec(1)*Vstar)) &
-         + 0.25_kp*log(slowroll_corrections(epsStarVec))
+         + 0.25_kp*log((9._kp-3._kp*epsHStarVec(1))/(epsHStarVec(1)*Vstar)) &
+         + 0.25_kp*log(hubbleflow_corrections(epsHStarVec))
 
   end function find_reheat_rrad_anyorder
 
@@ -217,14 +226,17 @@ contains
   end function find_reheat_rreh_leadorder
 
 
-  function find_reheat_rreh_anyorder(nuStar,calFplusNuEnd,epsOneStar,Vstar)
+  function find_reheat_rreh_anyorder(nuStar,calFplusNuEnd,epsVStarVec,Vstar)
     implicit none
     real(kp) :: find_reheat_rreh_anyorder
     real(kp), intent(in) :: nuStar, calFplusNuEnd, Vstar
-    real(kp), intent(in) :: epsOneStar
+    real(kp), intent(in), dimension(neps) :: epsVStarVec
+    real(kp), dimension(neps) :: epsHStarVec
 
+    epsHStarVec = slowroll_to_hubble(epsVStarVec)
+    
     find_reheat_rreh_anyorder = nuStar - calFplusNuEnd &
-         + 0.5_kp*log((9._kp-3._kp*epsOneStar)/Vstar)
+         + 0.5_kp*log((9._kp-3._kp*epsHstarVec(1))/Vstar)
 
   end function find_reheat_rreh_anyorder
 
@@ -275,19 +287,25 @@ contains
 !if lnOmega4End is provided, this function assumes that slow-roll
 !calculations are done in the Einstein Frame and return rhoEndInfBar,
 !in the Jordan Frame!
-  function ln_rho_endinf_anyorder(Pstar,epsStarVec,epsOneEnd,VendOverVstar,lnOmega4End)
+  function ln_rho_endinf_anyorder(Pstar,epsVStarVec,epsOneEnd,VendOverVstar,lnOmega4End)
     implicit none
     real(kp) :: ln_rho_endinf_anyorder
     real(kp), intent(in) :: Pstar, epsOneEnd, VendOverVstar
-    real(kp), dimension(neps), intent(in) :: epsStarVec
+    real(kp), dimension(neps), intent(in) :: epsVStarVec
     real(kp), intent(in), optional :: lnOmega4End
+
+    real(kp), dimension(neps) :: epsHStarVec
     
     real(kp) :: lnH2OverEps
 
-    lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsStarVec))
+    epsHStarVec = slowroll_to_hubble(epsVStarVec)
+    
+    lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsVStarVec))
 
+    
+    
     ln_rho_endinf_anyorder = lnH2OverEps &
-         + log(3._kp*epsStarVec(1)*(3._kp - epsStarVec(1))/(3._kp - epsOneEnd)) &
+         + log(3._kp*epsHStarVec(1)*(3._kp - epsHStarVec(1))/(3._kp - epsOneEnd)) &
          + log(VendOverVstar)
 
     if (present(lnOmega4End)) then
@@ -337,28 +355,32 @@ contains
 !if lnOmega4End is provided, this function assumes that slow-roll
 !calculations are done in the Einstein Frame and return rhoEndInfBar,
 !in the Jordan Frame!
-   function ln_rho_reheat_anyorder(w,Pstar,epsStarVec,epsOneEnd,deltaNstar,VendOverVstar &
+   function ln_rho_reheat_anyorder(w,Pstar,epsVStarVec,epsOneEnd,deltaNstar,VendOverVstar &
         , lnOmega4End)
     implicit none
     real(kp) :: ln_rho_reheat_anyorder
     real(kp), intent(in) :: w, Pstar, epsOneEnd, deltaNstar
     real(kp), intent(in) :: VendOverVstar
-    real(kp), dimension(neps), intent(in) :: epsStarVec
+    real(kp), dimension(neps), intent(in) :: epsVStarVec
     real(kp), intent(in), optional :: lnOmega4End
-    
+
     real(kp) :: lnH2OverEps, oneMinusThreeWlnEreh
 
+    real(kp), dimension(neps) :: epsHStarVec
+    
      if (w.eq.1._kp/3._kp) then
         write(*,*)'ln_rho_reheat: w = 1/3!'
         stop
      end if
 
-     lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsStarVec))
+     epsHStarVec = slowroll_to_hubble(epsVStarVec)
+     
+     lnH2OverEps = log(primscalar_to_hsquare(Pstar,epsVStarVec))
 
      oneMinusThreeWlnEreh &
          = (3._kp + 3._kp*w)*(Nzero + deltaNstar) - 0.5_kp*(1._kp+3._kp*w)*lnH2OverEps &
-         + 0.5_kp*(1._kp - 3._kp*w)*log(epsStarVec(1)) &
-         + log(3._kp*(3._kp - epsStarVec(1))/(epsStarVec(1)*(3._kp - epsOneEnd))) &
+         + 0.5_kp*(1._kp - 3._kp*w)*log(epsHStarVec(1)) &
+         + log(3._kp*(3._kp - epsHStarVec(1))/(epsHStarVec(1)*(3._kp - epsOneEnd))) &
          + log(VendOverVstar)
 
      ln_rho_reheat_anyorder = oneMinusThreeWlnEreh*4._kp/(1._kp - 3._kp*w)
@@ -428,18 +450,18 @@ contains
 
 
 !returns H^2/epsilon_1 fropm Pstar
-  function primscalar_to_hsquare(Pstar,epsStarVec)
+  function primscalar_to_hsquare(Pstar,epsVStarVec)
     implicit none
     real(kp) :: primscalar_to_hsquare
     real(kp), intent(in) :: Pstar
-    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+    real(kp), dimension(neps), intent(in), optional :: epsVStarVec
 
     real(kp) :: H2overEps
 
     H2overEps = Pstar*8*pi*pi
 
-    if (present(epsStarVec)) then
-        H2overEps = H2overEps / slowroll_corrections(epsStarVec)
+    if (present(epsVStarVec)) then
+        H2overEps = H2overEps / slowroll_corrections(epsVStarVec)
     endif
 
     primscalar_to_hsquare = H2overEps
@@ -448,11 +470,11 @@ contains
 
 !for test, that is not strictly ln(primscalar_to_hsquare) at second
 !order, that's why this function exists
-  function primscalar_to_lnhsquare(Pstar,epsStarVec)
+  function primscalar_to_lnhsquare(Pstar,epsVStarVec)
     implicit none
     real(kp) :: primscalar_to_lnhsquare
     real(kp), intent(in) :: Pstar
-    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+    real(kp), dimension(neps), intent(in), optional :: epsVStarVec
 
     real(kp) :: lnH2overEps
 
@@ -460,8 +482,8 @@ contains
 
     lnH2overEps = log(Pstar*8*pi*pi)
 
-    if (present(epsStarVec)) then
-       lnH2overEps = lnH2overEps - ln_slowroll_corrections(epsStarVec)
+    if (present(epsVStarVec)) then
+       lnH2overEps = lnH2overEps - ln_slowroll_corrections(epsVStarVec)
     endif
 
     primscalar_to_lnhsquare = lnH2overEps
@@ -471,18 +493,18 @@ contains
 
 
 !returns Pstar from H^2/epsilon_1
-  function hsquare_to_primscalar(H2overEps,epsStarVec)
+  function hsquare_to_primscalar(H2overEps,epsVStarVec)
     implicit none
     real(kp) :: hsquare_to_primscalar
     real(kp), intent(in) :: H2overEps
-    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+    real(kp), dimension(neps), intent(in), optional :: epsVStarVec
 
     real(kp) :: Pstar
 
     Pstar = H2overEps/(8*pi*pi)
 
-    if (present(epsStarVec)) then
-       Pstar = Pstar * slowroll_corrections(epsStarVec)
+    if (present(epsVStarVec)) then
+       Pstar = Pstar * slowroll_corrections(epsVStarVec)
     endif
 
     hsquare_to_primscalar = Pstar
@@ -490,11 +512,11 @@ contains
   end function hsquare_to_primscalar
 
 !for test, this is slightly different than ln(hsquare_to_primscalar)
-  function hsquare_to_lnprimscalar(H2overEps,epsStarVec)
+  function hsquare_to_lnprimscalar(H2overEps,epsVStarVec)
     implicit none
     real(kp) :: hsquare_to_lnprimscalar
     real(kp), intent(in) :: H2overEps
-    real(kp), dimension(neps), intent(in), optional :: epsStarVec
+    real(kp), dimension(neps), intent(in), optional :: epsVStarVec
 
     real(kp) :: lnPstar
 
@@ -502,8 +524,8 @@ contains
 
     lnPstar = log(H2overEps/(8*pi*pi))
 
-    if (present(epsStarVec)) then
-       lnPstar = lnPstar + ln_slowroll_corrections(epsStarVec)
+    if (present(epsVStarVec)) then
+       lnPstar = lnPstar + ln_slowroll_corrections(epsVStarVec)
     endif
 
     hsquare_to_lnprimscalar = lnPstar
@@ -529,17 +551,20 @@ contains
   end function potential_normalization_leadorder
 
 
-  function potential_normalization_anyorder(Pstar,epsStarVec,Vstar)
+  function potential_normalization_anyorder(Pstar,epsVStarVec,Vstar)
     implicit none
     real(kp) :: potential_normalization_anyorder
-    real(kp), dimension(neps), intent(in) :: epsStarVec
+    real(kp), dimension(neps), intent(in) :: epsVStarVec
     real(kp), intent(in) :: Pstar,Vstar
     
     real(kp) :: M4, H2overEps
+    real(kp), dimension(neps) :: epsHStarVec
 
-    H2overEps = primscalar_to_hsquare(Pstar,epsStarVec)
+    epsHStarVec = slowroll_to_hubble(epsVstarVec)
+    
+    H2overEps = primscalar_to_hsquare(Pstar,epsVStarVec)
 
-    M4 = (3._kp-epsStarVec(1))*epsStarVec(1)/Vstar * H2overEps
+    M4 = (3._kp-epsHStarVec(1))*epsHStarVec(1)/Vstar * H2overEps
 
     potential_normalization_anyorder = M4**0.25_kp
 
@@ -562,17 +587,20 @@ contains
   end function primscalar_leadorder
   
 
-  function primscalar_anyorder(M,epsStarVec,Vstar)
+  function primscalar_anyorder(M,epsVStarVec,Vstar)
     implicit none
     real(kp) :: primscalar_anyorder
-    real(kp), dimension(neps), intent(in) :: epsStarVec
+    real(kp), dimension(neps), intent(in) :: epsVStarVec
     real(kp), intent(in) :: M,Vstar
     
     real(kp) :: H2overEps
+    real(kp), dimension(neps) :: epsHStarVec
 
-    H2overEps = M**4*Vstar/(3._kp-epsStarVec(1))/epsStarVec(1)
+    epsHStarVec = slowroll_to_hubble(epsVstarVec)
+    
+    H2overEps = M**4*Vstar/(3._kp-epsHStarVec(1))/epsHStarVec(1)
 
-    primscalar_anyorder = hsquare_to_primscalar(H2overEps,epsStarVec)
+    primscalar_anyorder = hsquare_to_primscalar(H2overEps,epsVStarVec)
     
   end function primscalar_anyorder
 
