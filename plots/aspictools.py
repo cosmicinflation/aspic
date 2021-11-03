@@ -92,20 +92,20 @@ def contour_plot(ax,file1,col1,file2,col2,alpha,depth=None,style=None,log=None,*
 
     if log:
         ax.fill(xy1s[0],10**xy1s[1],col1,xy2s[0],10**xy2s[1],col2
-                ,zorder=depth,alpha=alpha,linestyle=style,**kwargs)
+                ,zorder=depth,alpha=alpha,linestyle=style,edgecolor='black',**kwargs)
     else:
         ax.fill(xy1s[0],xy1s[1],col1,xy2s[0],xy2s[1],col2
-                ,zorder=depth,alpha=alpha,linestyle=style,**kwargs)
+                ,zorder=depth,alpha=alpha,linestyle=style,edgecolor='black',**kwargs)
 
     return
 
 
 def model_prediction(ax,namei,fooi,cmap,marker,alpha,
-                     ilab=None,txtpos=None,cstyle=None,colindex=3,linewidth=1):
-
+                     ilab=None,txtpos=None,cstyle=None,colindex=3,linewidth=1,markersize=16,
+                     edgecolors='black'):
     depth = 6
-    scmodel = ax.scatter(fooi[0],fooi[1],c=fooi[colindex],zorder=depth,marker=marker
-                         ,cmap=cmap,alpha=alpha,linewidth=linewidth)
+    scmodel = ax.scatter(fooi[0],fooi[1],s=markersize,c=fooi[colindex],zorder=depth,marker=marker
+                         ,cmap=cmap,alpha=alpha,linewidths=linewidth,edgecolors=edgecolors)
 
     
     if ilab is not None:
@@ -124,7 +124,7 @@ def model_prediction_efold(ax,namei,fooi,cmap,marker,alpha
                      ,ilab=None,txtpos=None,cstyle=None):
     depth = 6
     scmodel = ax.scatter(fooi[0],fooi[1],c=fooi[2],zorder=depth,marker=marker
-                         ,cmap=cmap,alpha=alpha)
+                         ,cmap=cmap,alpha=alpha,edgecolors='black')
 
     if ilab is not None:
         ax.annotate(namei, xy=(fooi[0][ilab],fooi[1][ilab]),  xycoords='data',
