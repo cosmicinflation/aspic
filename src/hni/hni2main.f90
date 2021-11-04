@@ -57,7 +57,7 @@ program hni2main
   
   npts = 15
   nalpha= 3
-  nf = 5
+  nf = 3
   
   ne = 100
   

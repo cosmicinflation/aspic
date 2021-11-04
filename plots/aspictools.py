@@ -101,7 +101,7 @@ def contour_plot(ax,file1,col1,file2,col2,alpha,depth=None,style=None,log=None,*
 
 
 def model_prediction(ax,namei,fooi,cmap,marker,alpha,
-                     ilab=None,txtpos=None,cstyle=None,colindex=3,linewidth=1,markersize=16,
+                     ilab=None,txtpos=None,cstyle=None,colindex=3,linewidth=0.5,markersize=16,
                      edgecolors='black'):
     depth = 6
     scmodel = ax.scatter(fooi[0],fooi[1],s=markersize,c=fooi[colindex],zorder=depth,marker=marker
