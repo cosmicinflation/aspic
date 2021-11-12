@@ -103,7 +103,7 @@ elif pargs.type == 'slowroll':
     if pargs.xyinibounds is not None:
         xyinibounds = tuple(pargs.xyinibounds)
     else:
-        xyinibounds = (0.005,0.08,9e-6,1e-2)
+        xyinibounds = (0.005,0.08,9e-6,1.2e-2)
 
     if pargs.xyhardbounds is not None:
         xyhardbounds  = [(pargs.xyhardbounds[0],pargs.xyhardbounds[1]),
