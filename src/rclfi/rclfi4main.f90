@@ -162,7 +162,7 @@ program rclfi4main
 
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 
@@ -232,7 +232,7 @@ program rclfi4main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 

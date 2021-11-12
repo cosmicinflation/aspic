@@ -117,12 +117,14 @@ program rclfi1main
      alphamin = alphamax*10._kp
 
      print *,'p alphamin alphamax',p, alphamin,alphamax
-     
+
      do k=1,Na
 
         alpha = alphamin +  real(k-1,kp)*(alphamax - alphamin)/real(Na-1,kp)
 
         mumin = rclfi1_numacc_mumin(120._kp,p,alpha)
+
+        print *,'alpha= mumin= ',alpha,mumin
 
         if (mumin.gt.mumax) cycle
         
@@ -167,7 +169,7 @@ program rclfi1main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 
@@ -240,7 +242,7 @@ program rclfi1main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 

@@ -124,7 +124,7 @@ program rclfi2main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 
@@ -198,7 +198,7 @@ program rclfi2main
               r =16._kp*eps1
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 
@@ -280,7 +280,7 @@ program rclfi2main
               call livewrite('rclfi2_nsr.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
               call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/) &
-                   ,(/mu,p,alpha/))
+                   ,(/mu,alpha,p/))
 
            end do
 
