@@ -531,6 +531,7 @@ contains
 
        !		call assert(x > 0.0, 'ei arg')
        if (.not.(x > 0._kp)) then
+          write(*,*)'x= ',x
           stop 'ei: x<=0'
        endif
        if (x < FPMIN) then !Special case: avoid failure of convergence test

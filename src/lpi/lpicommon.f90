@@ -175,6 +175,8 @@ contains
     real(kp), intent(in) :: x,phi0,p,q
     real(kp) :: lpi_efold_primitive
 
+    if (x.le.0._kp) stop 'lpi_efold_primitive: x <=0'
+    
     lpi_efold_primitive = phi0**2*(x**2/(2._kp*p)- &
          q/(p**2)*exp(-2._kp*q/p)*ei(2._kp*q/p+2._kp*log(x)))
 
