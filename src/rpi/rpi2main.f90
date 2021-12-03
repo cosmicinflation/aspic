@@ -9,7 +9,7 @@ program rpi2main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rpi2sr, only : rpi2_norm_potential
+  use rpi2sr, only : rpi2_norm_potential, rpi2_numacc_efoldmax, rpi2_numacc_xendmin
   use rpi2reheat, only : rpi2_x_rreh, rpi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -56,6 +56,12 @@ program rpi2main
   w=0._kp
 
   pvecm1 = (/0.01,0.03, 0.06/)
+
+!  p=1.376_kp
+!  yendmin=rpi2_numacc_xendmin(120._kp,p)
+!  print *,'yendmin= ',yendmin
+!  print *,'efoldmax',rpi2_numacc_efoldmax(yend=yendmin,p=p)
+  
   
   do j=1,nvec
 

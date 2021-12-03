@@ -8,6 +8,7 @@
 module rpi2sr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
+  use rpicommon, only : rpiBig
   use rpicommon, only : rpi_norm_potential, rpi_norm_deriv_potential
   use rpicommon, only : rpi_norm_deriv_second_potential
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
@@ -18,7 +19,7 @@ module rpi2sr
   private
 
   public rpi2_norm_potential, rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
-  public rpi2_efold_primitive, rpi2_x_trajectory
+  public rpi2_efold_primitive, rpi2_x_trajectory, rpi2_numacc_efoldmax, rpi2_numacc_xendmin
   public rpi2_norm_deriv_potential, rpi2_norm_deriv_second_potential
 
 contains
@@ -95,6 +96,42 @@ contains
 
 
 
+!maximal number of efolds computable at current numerical accuracy
+  function rpi2_numacc_efoldmax(yend,p)
+    implicit none
+    real(kp) :: rpi2_numacc_efoldmax
+    real(kp), intent(in) :: yend,p
+
+    real(kp) :: yinimin
+    
+    
+    yinimin = rpi_x_potmax(p)  + epsilon(1._kp)
+    
+    rpi2_numacc_efoldmax = -rpi2_efold_primitive(yend,p) &
+         + rpi2_efold_primitive(yinimin,p)
+
+    
+  end function rpi2_numacc_efoldmax
+ 
+
+!minimal value of yendmin to get enough efold of inflation at this
+!numerical accuracy
+  function rpi2_numacc_xendmin(efold,p)
+    implicit none
+    real(kp) :: rpi2_numacc_xendmin
+    real(kp), intent(in) :: efold,p
+
+    real(kp) :: yinimin
+        
+    yinimin = rpi_x_potmax(p)*(1._kp+epsilon(1._kp))
+        
+    rpi2_numacc_xendmin = rpi2_x_trajectory(efold,yinimin,p)
+    
+    
+  end function rpi2_numacc_xendmin
+
+  
+
   !this is integral[V(phi)/V'(phi) dphi]
   function rpi2_efold_primitive(y,p)
     implicit none
@@ -111,8 +148,10 @@ contains
 
     yVmax = rpi_x_potmax(p)
 
-    if (y.lt.yVmax) stop 'rpi_efold_primitive: y < yVmax!'
-
+    if (y.lt.yVmax) then
+       write(*,*)'p= y= yVmax= ',p,y,yVmax
+       stop 'rpi_efold_primitive: y < yVmax!'
+    endif
 
     rpi2_efold_primitive = rpi_efold_primitive(y,p)
    
@@ -139,10 +178,15 @@ contains
     yVmax = rpi_x_potmax(p)
 
     if (yend.lt.yVmax) stop 'rpi2_x_trajectory: yend < yVmax'
-   
-    mini = yVmax*(1._kp+epsilon(1._kp))
-    maxi = yEnd
 
+    if (bfold.le.0._kp) then
+       mini = yVmax*(1._kp+epsilon(1._kp))
+       maxi = yEnd
+    else
+       mini = yEnd
+       maxi = rpiBig       
+    endif
+    
     rpi2Data%real1 = p
     rpi2Data%real2 = -bfold + rpi2_efold_primitive(yend,p)
 

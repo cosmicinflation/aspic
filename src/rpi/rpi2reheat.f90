@@ -8,7 +8,7 @@ module rpi2reheat
   use srreheat, only : ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use rpicommon, only : rpi_x_potmax
+  use rpicommon, only : rpi_x_potmax, rpiBig
   use rpi2sr, only : rpi2_epsilon_one, rpi2_epsilon_two, rpi2_epsilon_three
   use rpi2sr, only : rpi2_norm_potential, rpi2_efold_primitive
   implicit none
@@ -219,7 +219,6 @@ contains
        maxi = yEnd
               
     endif
-
     y = zbrent(find_rpi2_x_rreh,mini,maxi,tolzbrent,rpi2Data)
 
     rpi2_x_rreh = y
