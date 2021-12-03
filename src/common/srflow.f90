@@ -87,7 +87,7 @@ contains
     logical :: slowroll_violated
     real(kp), dimension(:), intent(in) :: epsV
 
-    slowroll_violated = any(abs(epsv).gt.1._kp)
+    slowroll_violated = any(abs(epsV).gt.1._kp)
 
   end function slowroll_violated
 
