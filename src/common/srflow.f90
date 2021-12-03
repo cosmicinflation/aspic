@@ -41,6 +41,12 @@ contains
 
     neps = size(epsV,1)
 
+!do not attempt corrections as soon as slow-roll is violated    
+    if (slowroll_violated(epsV)) then
+       slowroll_to_hubble = epsV
+       return
+    endif
+    
     select case (neps)
     
        case (1,2)
@@ -77,12 +83,11 @@ contains
 
 
   function slowroll_violated(epsV)
-    use huflow, only : hf_slowroll_violated
     implicit none
     logical :: slowroll_violated
     real(kp), dimension(:), intent(in) :: epsV
 
-    slowroll_violated =  hf_slowroll_violated(slowroll_to_hubble(epsV))
+    slowroll_violated = any(abs(epsv).gt.1._kp)
 
   end function slowroll_violated
 

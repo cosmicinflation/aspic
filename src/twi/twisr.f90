@@ -75,8 +75,7 @@ contains
 
   
     twi_epsilon_one = (A**2*x**2*(-2._kp*phi0+x)**2)/ &
-                      (2._kp*(exp(x/phi0)*phi0**3-A*phi0*x**2)**2)
-
+                      (2._kp*(exp(x/phi0)*phi0**3-A*phi0*x**2)**2)        
     
   end function twi_epsilon_one
 

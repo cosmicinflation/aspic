@@ -27,7 +27,7 @@ contains
     logical :: hf_slowroll_violated
     real(kp), dimension(:), intent(in) :: epsH
 
-    hf_slowroll_violated =  any(abs(epsH).gt.1._kp)       
+    hf_slowroll_violated =  any(abs(epsH).gt.1._kp)
 
   end function hf_slowroll_violated
 
