@@ -43,6 +43,7 @@ contains
 
 !do not attempt corrections as soon as slow-roll is violated    
     if (slowroll_violated(epsV)) then
+       write(*,*)'slowroll_to_hubble: slowroll violation epsH set to epsV!'
        slowroll_to_hubble = epsV
        return
     endif
