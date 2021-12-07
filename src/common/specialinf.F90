@@ -523,6 +523,8 @@ contains
        ei=-expint(1,-x)
     else if(x.eq.0._kp) then !If x=0, gives a numerical value for -Infinity
        ei=-1._kp/epsilon(1._kp)
+    else if (isnan(x)) then
+       stop 'ei(x): input x is NaN'
     else
        !Computes the exponential integral Ei(x) for x > 0.
        !Parameters: MAXIT is the maximum number of iterations allowed; EPS is the relative error,
