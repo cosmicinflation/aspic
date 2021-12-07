@@ -219,6 +219,7 @@ contains
        maxi = yEnd
               
     endif
+
     y = zbrent(find_rpi2_x_rreh,mini,maxi,tolzbrent,rpi2Data)
 
     rpi2_x_rreh = y
@@ -243,9 +244,10 @@ contains
 
     primStar = rpi2_efold_primitive(y,p)
     potStar = rpi2_norm_potential(y,p)
-
+    
     find_rpi2_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
-  
+
+    
   end function find_rpi2_x_rreh
 
 

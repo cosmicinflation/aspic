@@ -105,7 +105,7 @@ contains
     real(kp) :: yinimin
     
     
-    yinimin = rpi_x_potmax(p)  + epsilon(1._kp)
+    yinimin = rpi_x_potmax(p)*(1._kp + epsilon(1._kp))
     
     rpi2_numacc_efoldmax = -rpi2_efold_primitive(yend,p) &
          + rpi2_efold_primitive(yinimin,p)
