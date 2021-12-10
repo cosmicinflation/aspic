@@ -15,7 +15,7 @@ module csisr
   public csi_norm_potential, csi_norm_deriv_potential, csi_norm_deriv_second_potential
   public csi_epsilon_one, csi_epsilon_two,csi_epsilon_three
   public csi_efold_primitive, csi_x_trajectory
-  public csi_xendmax, csi_x_epsoneunity, csi_numacc_x_epsonenull
+  public csi_xendmax, csi_x_epsoneunity, csi_numacc_x_epsonenull, csi_numacc_x_epsonesmall
 
  
 contains
@@ -158,4 +158,15 @@ contains
 
   end function csi_numacc_x_epsonenull
 
+
+  function csi_numacc_x_epsonesmall(alpha,small)
+    implicit none
+    real(kp), intent(in) :: alpha,small
+    real(kp) :: csi_numacc_x_epsonesmall
+
+!branch x<1/alpha
+    csi_numacc_x_epsonesmall = 1._kp/alpha - sqrt(2._kp)/sqrt(small)
+
+  end function csi_numacc_x_epsonesmall
+  
 end module csisr
