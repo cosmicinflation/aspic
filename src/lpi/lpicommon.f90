@@ -11,9 +11,12 @@ module lpicommon
   use specialinf, only : ei
 
   implicit none
-
+  
   private
 
+  real(kp), parameter :: xBig = 1._kp/(10._kp*epsilon(1._kp))
+  
+  public xBig
   public lpi_norm_potential, lpi_epsilon_one, lpi_epsilon_two, lpi_epsilon_three
   public lpi_norm_deriv_potential, lpi_norm_deriv_second_potential
   public lpi_x_potmax, lpi_efold_primitive, lpi_x_epstwozero

@@ -11,6 +11,8 @@ module lpi1reheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use lpi1sr, only : lpi1_epsilon_one, lpi1_epsilon_two, lpi1_epsilon_three
   use lpi1sr, only : lpi1_norm_potential, lpi1_x_endinf, lpi1_efold_primitive
+  use lpicommon, only : xBig
+
   implicit none
 
   private
@@ -54,7 +56,7 @@ contains
     lpi1Data%real5 = calF + primEnd
 
     mini = xend
-    maxi = 1._kp/epsilon(1._kp)
+    maxi = xBig
 
     x = zbrent(find_lpi1_x_star,mini,maxi,tolzbrent,lpi1Data)
     lpi1_x_star = x  
@@ -124,7 +126,7 @@ contains
     lpi1Data%real4 = calF + primEnd
 
     mini = xend
-    maxi = 1._kp/epsilon(1._kp)
+    maxi = xBig
 
     x = zbrent(find_lpi1_x_rrad,mini,maxi,tolzbrent,lpi1Data)
     lpi1_x_rrad = x  
@@ -193,7 +195,7 @@ contains
     lpi1Data%real4 = calF + primEnd
 
     mini = xend
-    maxi = 1._kp/epsilon(1._kp)
+    maxi = xBig
 
     x = zbrent(find_lpi1_x_rreh,mini,maxi,tolzbrent,lpi1Data)
     lpi1_x_rreh = x  

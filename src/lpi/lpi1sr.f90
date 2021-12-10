@@ -15,7 +15,8 @@ module lpi1sr
   use lpicommon, only : lpi_epsilon_three,  lpi_norm_deriv_potential 
   use lpicommon, only : lpi_norm_deriv_second_potential, lpi_x_potmax
   use lpicommon, only : lpi_efold_primitive, find_lpi_x_trajectory
-
+  use lpicommon, only : xBig
+  
   implicit none
 
   private
@@ -123,7 +124,7 @@ contains
 !    maxi = max(p*10._kp**(3)/(sqrt(2._kp)*phi0),10._kp**(3))
 
     mini = 1._kp
-    maxi = 1._kp/epsilon(1._kp)
+    maxi = xBig
 
     lpi1Data%real1 = p
     lpi1Data%real2 = q
@@ -175,7 +176,7 @@ contains
 
   
     mini = xend
-    maxi = 1._kp/epsilon(1._kp)
+    maxi = xBig
 
     lpi1Data%real1 = p
     lpi1Data%real2 = q

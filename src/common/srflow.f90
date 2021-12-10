@@ -41,9 +41,9 @@ contains
 
     neps = size(epsV,1)
 
-!do not attempt corrections as soon as slow-roll is violated    
+!do not add corrections which are valid only if epsV are small    
     if (slowroll_violated(epsV)) then
-       write(*,*)'slowroll_to_hubble: slowroll violation epsH set to epsV!'
+       if (display) write(*,*)'slowroll_to_hubble: no correction, epsV violates slow-roll!'
        slowroll_to_hubble = epsV
        return
     endif
@@ -92,6 +92,15 @@ contains
 
   end function slowroll_violated
 
+
+  function slowroll_deeply_violated(epsV)
+    implicit none
+    logical :: slowroll_deeply_violated
+    real(kp), dimension(:), intent(in) :: epsV
+
+    slowroll_deeply_violated = any(abs(epsV).gt.3._kp)
+
+  end function slowroll_deeply_violated
 
 
 
