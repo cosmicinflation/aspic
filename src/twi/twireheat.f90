@@ -18,6 +18,8 @@ module twireheat
 !if bigger, <numaccuracy errors
   real(kp), parameter :: TwiMaxFactor = 100._kp
 
+  real(kp), parameter :: epsVclamp = 2._kp
+  
   public twi_x_star, twi_lnrhoreh_max
   public twi_x_rrad, twi_x_rreh
 
@@ -40,8 +42,10 @@ contains
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
-    
-    epsOneEnd = twi_epsilon_one(xEnd,phi0)
+
+!there are possibly slow-roll violations at the end of inflation, do
+!not feed the reheating finder with crap
+    epsOneEnd = min(twi_epsilon_one(xEnd,phi0),epsVclamp)
     potEnd = twi_norm_potential(xEnd,phi0)
 
     primEnd = twi_efold_primitive(xEnd,phi0)
@@ -102,8 +106,10 @@ contains
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
-    
-    epsOneEnd = twi_epsilon_one(xEnd,phi0)
+
+!there are possibly slow-roll violations at the end of inflation, do
+!not feed the reheating finder with crap
+    epsOneEnd = min(twi_epsilon_one(xEnd,phi0),epsVclamp)
     potEnd = twi_norm_potential(xEnd,phi0)
 
     primEnd = twi_efold_primitive(xEnd,phi0)
@@ -162,12 +168,14 @@ contains
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
-    
-    epsOneEnd = twi_epsilon_one(xEnd,phi0)
+
+!there are possibly slow-roll violations at the end of inflation, do
+!not feed the reheating finder with crap
+    epsOneEnd = min(twi_epsilon_one(xEnd,phi0),epsVclamp)
     potEnd = twi_norm_potential(xEnd,phi0)
 
     primEnd = twi_efold_primitive(xEnd,phi0)
-   
+    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
 
     twiData%real1 = phi0
@@ -221,8 +229,9 @@ contains
 
     potEnd  = twi_norm_potential(xEnd,phi0)
 
-    epsOneEnd = twi_epsilon_one(xEnd,phi0)
-
+!there are possibly slow-roll violations at the end of inflation, do
+!not feed the rho reheating equation with crap
+    epsOneEnd = min(twi_epsilon_one(xEnd,phi0),epsVclamp)
 
 
 !   Trick to return x such that rho_reh=rho_end
