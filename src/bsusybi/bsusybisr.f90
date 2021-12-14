@@ -73,9 +73,9 @@ contains
     real(kp) :: bsusybi_epsilon_two
     real(kp), intent(in) :: x,gammaBSUSYB
     
-    bsusybi_epsilon_two = -((12._kp*exp(sqrt(6._kp)*(1._kp+gammaBSUSYB)*x)* &
-         (-1._kp+gammaBSUSYB)**2)/(exp(sqrt(6._kp)*x)+ &
-         exp(sqrt(6._kp)*gammaBSUSYB*x))**2)
+    bsusybi_epsilon_two = -12._kp*(gammaBSUSYB-1._kp)**2 &
+         /( 1._kp + exp(sqrt(6._kp)*(gammaBSUSYB-1._kp)*x) ) &
+         /( 1._kp + exp(sqrt(6._kp)*(1._kp - gammaBSUSYB)*x) )
     
   end function bsusybi_epsilon_two
 
