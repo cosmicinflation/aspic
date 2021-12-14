@@ -15,7 +15,7 @@ module bsusybisr
   public bsusybi_norm_deriv_second_potential
   public bsusybi_epsilon_one, bsusybi_epsilon_two,bsusybi_epsilon_three
   public bsusybi_efold_primitive, bsusybi_x_trajectory
-  public bsusybi_xendmax, bsusybi_x_epsoneunity
+  public bsusybi_xendmax, bsusybi_x_epsoneunity, bsusybi_numacc_xendmin
 
  
 contains
@@ -172,6 +172,19 @@ contains
    
   end function find_bsusybi_x_trajectory
 
+!Returns the minimum value of xend in order to not underflow eps2
+  function bsusybi_numacc_xendmin(epstwomin,gammaBSUSYB) 
+    implicit none
+    real(kp), intent(in) :: gammaBSUSYB, epstwomin
+    real(kp) :: bsusybi_numacc_xendmin
+    
+    bsusybi_numacc_xendmin = log(12._kp*(gammaBSUSYB-1._kp)**2/abs(epstwomin)) &
+         / (gammaBSUSYB - 1._kp) &
+         /sqrt(6._kp)
+
+  end function bsusybi_numacc_xendmin
+  
+  
 
 !Returns the maximum value of xend in order to realize the required -bdolstar e-folds.
   function bsusybi_xendmax(efold, gammaBSUSYB) 
