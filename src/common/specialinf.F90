@@ -239,7 +239,8 @@ contains
 
     integer :: count
     integer, parameter :: iterMax = 100000
-
+    real(kp) :: error
+    real(kp), parameter :: errorWarn = 1d-10
 
 
     if (x.eq.-exp(-1._kp)) then
@@ -301,12 +302,15 @@ contains
               
        wnew = w - num/den
 
-       if (abs(wnew-w).le.tolIter*abs(w)) exit
+       error = abs(wnew-w)
+       if (error.le.tolIter*abs(w)) exit
        count = count + 1
 
        if (count.gt.iterMax) then
-          write(*,*)'x= w= deltaw= ',x,w,abs(wnew-w)
-          write(*,*)'Lambert may be inaccurate!'
+          if (error.gt.errorWarn) then
+             write(*,*)'x= w= deltaw= ',x,w,error
+             write(*,*)'Lambert may be inaccurate!'
+          endif
           exit
        endif
 
