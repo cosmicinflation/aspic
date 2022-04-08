@@ -37,9 +37,9 @@ program saaimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  alphamin=0.05
-  alphamax=80.
-  Nalpha = 500
+  alphamin=0.001
+  alphamax=100.
+  Nalpha = 1000
 
 
   Pstar = powerAmpScalar
@@ -53,7 +53,7 @@ program saaimain
   do j=1,Nalpha
 
      !alpha=alphavalues(j)
-     alpha = alphamin+(alphamax-alphamin)*real(j,kp)/real(Nalpha,kp)
+     alpha = exp(log(alphamin)+(log(alphamax)-log(alphamin))*real(j,kp)/real(Nalpha,kp))
 
      w=0._kp
 
