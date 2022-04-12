@@ -20,7 +20,7 @@ program saaimain
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j
+  integer :: i,j,n
   integer :: npts = 20
 
   real(kp) :: w,bfoldstar
@@ -37,12 +37,46 @@ program saaimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: x, xmin, xmax, V1
+
+  Pstar = powerAmpScalar
+
+  call delete_file('saai_potential.dat')
+  call delete_file('saai_slowroll.dat')
+
+  n=100
+
+  xmin = 1e-2_kp
+  xmax = 5._kp
+  
+  do i=1,n
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(n-1,kp))
+
+     V1 = saai_norm_potential(x,alpha=0.1_kp)
+
+
+     call livewrite('saai_potential.dat',x,V1)
+
+     if (x.eq.0._kp) cycle
+     
+     eps1 = saai_epsilon_one(x,alpha=0.1_kp)
+     eps2 = saai_epsilon_two(x,alpha=0.1_kp)
+     eps3 = saai_epsilon_three(x,alpha=0.1_kp)
+          
+     call livewrite('saai_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+  
+
+
+
+  
   alphamin=0.001
   alphamax=100.
   Nalpha = 1000
 
 
-  Pstar = powerAmpScalar
+
 
   call delete_file('saai_predic.dat')
   call delete_file('saai_nsr.dat')
