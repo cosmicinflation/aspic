@@ -36,9 +36,36 @@ program sabimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: x,xmin,xmax,V1
 
   Pstar = powerAmpScalar
 
+  call delete_file('sabi_potential.dat')
+  call delete_file('sabi_slowroll.dat')
+
+  npts=100
+
+  xmin = 1e-2_kp
+  xmax = 15._kp
+  
+  do i=1,npts
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(npts-1,kp))
+
+     V1 = sabi_norm_potential(x,alpha=1._kp,n=1._kp)
+
+
+     call livewrite('sabi_potential.dat',x,V1)
+
+     if (x.eq.0._kp) cycle
+     
+     eps1 = sabi_epsilon_one(x,alpha=1._kp,n=1._kp)
+     eps2 = sabi_epsilon_two(x,alpha=1._kp,n=1._kp)
+     eps3 = sabi_epsilon_three(x,alpha=1._kp,n=1._kp)
+          
+     call livewrite('sabi_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+  
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
