@@ -409,7 +409,7 @@ contains
     saiiiData%real1 = alpha
     saiiiData%real2 = beta
     
-    if ((beta.ge.1_kp).or.((beta.le.-1._kp).and.(alpha.ge.-1._kp))) then
+    if ((beta.ge.1._kp).or.((beta.le.-1._kp).and.(alpha.ge.-1._kp))) then
 
        mini = pi
        maxi = pi + acos(1._kp/beta)

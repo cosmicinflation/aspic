@@ -231,7 +231,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: rclfiData
 
-    real(kp), parameter :: junk = -1_kp
+    real(kp), parameter :: junk = -1._kp
               
        
     mini = 100*tolkp
@@ -289,7 +289,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: rclfiData
 
-    real(kp), parameter :: junk = -1_kp
+    real(kp), parameter :: junk = -1._kp
               
        
     mini = -exp(1._kp)*(p-4._kp) + tolkp
