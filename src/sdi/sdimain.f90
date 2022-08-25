@@ -51,7 +51,7 @@ program sdimain
   n=150
 
   xmin = 0._kp
-  xmax = 7_kp
+  xmax = 7._kp
   
   do i=1,n
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)        
@@ -105,7 +105,7 @@ program sdimain
      print *,'efoldMax= ',sdi_efold_primitive(xinimin,mu) - sdi_efold_primitive(xendmin,mu)
 
 
-     xendmin=10._kp**(-3.)
+     xendmin=10._kp**(-3._kp)
      xendmax=50._kp
 
 
