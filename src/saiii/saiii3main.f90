@@ -102,7 +102,7 @@ program saiii3main
      call delete_file('saiii3_xeps_1.dat')
 
      beta = -1.5
-     alphamin = -3_kp
+     alphamin = -3._kp
      alphamax = saiii_alpha_one(beta)
 
      
