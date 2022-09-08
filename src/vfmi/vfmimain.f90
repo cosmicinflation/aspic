@@ -126,7 +126,7 @@ program vfmimain
 
      nbeta = 50
      betamin=0.001
-     betamax = min(100.,vfmi_numacc_betamax(300._kp,alpha)) 
+     betamax = min(100.,vfmi_numacc_betamax(120._kp,alpha)) 
      print *,'betamax=',betamax
 
 

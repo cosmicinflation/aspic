@@ -37,7 +37,7 @@ contains
     real(kp) :: vfmi_numacc_betamax
     real(kp), intent(in) :: efold, alpha
 
-    real(kp), parameter :: lnPotNumAccMax = log(huge(1._kp)*epsilon(1._kp))
+    real(kp), parameter :: lnPotNumAccMax = log(1._kp/epsilon(1._kp))
 
     if (alpha.gt.1._kp) then
        vfmi_numacc_betamax = huge(1._kp)
@@ -84,7 +84,7 @@ contains
 
     vfmi_norm_potential = (1._kp - 0.5_kp*beta/y**(alpha/(2._kp-alpha))) &
          * exp(3._kp*beta/(1._kp-alpha)*(y**((1._kp-alpha)/(2._kp-alpha)) - 1._kp))
-
+    
   end function vfmi_norm_potential
 
 

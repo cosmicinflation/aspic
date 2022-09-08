@@ -14,7 +14,7 @@ module vfmireheat
 !we require at minimum this amount of inflation before the potential
 !becomes larger than huge(1.) >> super-planckian...
 
-  real(kp), parameter :: efoldNumAccMin = 200._kp
+  real(kp), parameter :: efoldNumAccMin = 120._kp
 
   private
 
