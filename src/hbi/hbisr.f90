@@ -12,14 +12,14 @@ module hbisr
 
   private
 
-  real(kp), parameter :: hbiBig = epsilon(1._kp)*huge(1._kp)
+  real(kp), parameter :: hbiBig = huge(1._kp)*epsilon(1._kp)
   
   public hbi_norm_potential, hbi_norm_deriv_potential, hbi_norm_deriv_second_potential
-  public hbi_phizeromin, hbi_numacc_x_potbig
+  public hbi_mumin, hbi_numacc_x_potbig
   public hbi_epsilon_one, hbi_epsilon_two,hbi_epsilon_three
   public hbi_x_endinf, hbi_efold_primitive, hbi_x_trajectory
 
-  public hbi_x_fromepstwo
+  public hbi_x_fromepstwo,hbi_epsonemin
 
  
 contains
@@ -61,17 +61,28 @@ contains
   end function hbi_norm_deriv_second_potential
 
 
-!minimal value of mu to get eps1<1
-  function hbi_phizeromin(n)
+!minimal value of mu to get eps1<eps1max
+  function hbi_mumin(n,eps1max)
     implicit none
-    real(kp) :: hbi_phizeromin
-    real(kp), intent(in) :: n
+    real(kp) :: hbi_mumin
+    real(kp), intent(in) :: n,eps1max
 
-    hbi_phizeromin = n/sqrt(2._kp)
+    hbi_mumin = n/sqrt(2._kp*eps1max)
 
-  end function hbi_phizeromin
+  end function hbi_mumin
 
 
+!minimal value of eps1  
+  function hbi_epsonemin(n,mu)
+    implicit none
+    real(kp) :: hbi_epsonemin
+    real(kp), intent(in) :: n,mu
+
+    hbi_epsonemin = 0.5_kp*n*n/mu/mu
+
+  end function hbi_epsonemin
+
+  
 !returns the value of x at which the potential equals hbiBig (above
 !which numerical accuracy is lost)
   function hbi_numacc_x_potbig(n)

@@ -185,7 +185,7 @@ contains
     hbiData%real2 = mu
     hbiData%real3 = calF + primEnd
 
-    mini = xEnd + epsilon(1._kp)
+    mini = xEnd
     maxi = hbi_numacc_x_potbig(n)
 
     x = zbrent(find_hbi_x_rreh,mini,maxi,tolFind,hbiData)
