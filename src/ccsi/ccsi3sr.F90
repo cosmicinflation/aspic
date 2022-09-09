@@ -24,7 +24,7 @@ module ccsi3sr
   public ccsi3_norm_potential, ccsi3_epsilon_one, ccsi3_epsilon_two, ccsi3_epsilon_three
   public ccsi3_efold_primitive, ccsi3_x_trajectory, ccsi3_x_endinf
   public ccsi3_norm_deriv_potential, ccsi3_norm_deriv_second_potential 
-  public ccsi3_check_params, ccsi3_xinimax, ccsi3_alphamin
+  public ccsi3_check_params, ccsi3_xinimax, ccsi3_alphamin, ccsi3_efoldmax
 
 contains
 
@@ -131,6 +131,7 @@ contains
     real(kp), dimension(2) :: xepsone
 
     if (.not.ccsi3_check_params(alpha)) then
+       write(*,*)'alpha= ',alpha
        stop 'ccsi3_xinimax: ccsi3 requires alpha<0'
     endif
 
@@ -155,12 +156,25 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini, maxi
 
+    real(kp), save :: efoldSave = 0._kp
+    real(kp), save :: alphaminSave = 0._kp
+!$omp threadprivate(efoldSave,alphaminSave)
+    
+    if (efoldMax.eq.efoldSave) then
+       ccsi3_alphamin = alphaminSave
+       return
+    else
+       efoldSave = efoldMax
+    endif
+    
     mini = ccsi_alphamin() + epsilon(1._kp)
     maxi = -epsilon(1._kp)
 
     ccsi3Data%real1 = efoldMax
-    ccsi3_alphamin = zbrent(find_ccsi3_alphamin,mini,maxi,tolFind,ccsi3Data)
+    ccsi3_alphamin  = zbrent(find_ccsi3_alphamin,mini,maxi,tolFind,ccsi3Data)
 
+    alphaminSave = ccsi3_alphamin
+    
   end function ccsi3_alphamin
 
   
@@ -180,7 +194,26 @@ contains
 
   end function find_ccsi3_alphamin
 
+  
 
+  !return the maximal number of efold computable at this numerical accuracy
+  function ccsi3_efoldmax(alpha)
+    implicit none
+    real(kp) :: ccsi3_efoldmax
+    real(kp), intent(in) :: alpha
+
+    real(kp) :: xendinf, xuv
+    
+    xuv = ccsi3_xinimax(alpha)
+    xendinf = ccsi3_x_endinf(alpha)
+
+    ccsi3_efoldmax = -ccsi3_efold_primitive(xendinf,alpha) &
+         + ccsi3_efold_primitive(xuv,alpha)
+
+  end function ccsi3_efoldmax
+  
+
+  
 
 !this is integral[V(phi)/V'(phi) dphi]
   function ccsi3_efold_primitive(x,alpha)

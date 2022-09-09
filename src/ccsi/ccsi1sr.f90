@@ -23,7 +23,7 @@ module ccsi1sr
   public ccsi1_norm_potential, ccsi1_epsilon_one, ccsi1_epsilon_two, ccsi1_epsilon_three
   public ccsi1_x_endinf, ccsi1_efold_primitive, ccsi1_x_trajectory
   public ccsi1_norm_deriv_potential, ccsi1_norm_deriv_second_potential 
-  public ccsi1_check_params, ccsi1_numacc_xinimax
+  public ccsi1_check_params, ccsi1_numacc_xinimax, ccsi1_numacc_efoldmax
 
 contains
 
@@ -139,7 +139,25 @@ contains
    
     
   end function ccsi1_numacc_xinimax
- 
+
+
+!return the maximal number of efold computable at this numerical accuracy
+  function ccsi1_numacc_efoldmax(alpha)
+    implicit none
+    real(kp) :: ccsi1_numacc_efoldmax
+    real(kp), intent(in) :: alpha
+
+    real(kp) :: xendinf, xinimax
+    
+    xinimax = ccsi1_numacc_xinimax(alpha)
+    xendinf = ccsi1_x_endinf(alpha)
+
+    ccsi1_numacc_efoldmax = -ccsi1_efold_primitive(xendinf,alpha) &
+         + ccsi1_efold_primitive(xinimax,alpha)
+
+  end function ccsi1_numacc_efoldmax
+
+  
   !this is integral[V(phi)/V'(phi) dphi]
   function ccsi1_efold_primitive(x,alpha)
     implicit none

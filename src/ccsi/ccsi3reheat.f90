@@ -91,7 +91,7 @@ contains
 
 
 
-  function ccsi3_lnrhoreh_max(alpha,xend,Pstar) 
+  function ccsi3_lnrhoreh_max(alpha,xend,Pstar)
     implicit none
     real(kp) :: ccsi3_lnrhoreh_max
     real(kp), intent(in) :: alpha,Pstar
