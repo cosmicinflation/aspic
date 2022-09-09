@@ -15,7 +15,8 @@ module shisr
   public  shi_norm_potential, shi_epsilon_one, shi_epsilon_two, shi_epsilon_three
   public  shi_x_endinf, shi_efold_primitive, shi_x_trajectory
   public  shi_norm_deriv_potential, shi_norm_deriv_second_potential
- 
+  public  shi_epstwomin
+  
 contains
 !returns V/M**4
   function shi_norm_potential(x,alpha,phi0)
@@ -106,6 +107,17 @@ contains
   end function shi_epsilon_three
 
 
+  function shi_epstwomin(alpha,phi0)
+    implicit none
+    real(kp) :: shi_epstwomin
+    real(kp), intent(in) :: alpha,phi0
+    
+    shi_epstwomin = 32._kp/(alpha+4._kp)/phi0/phi0
+    
+  end function shi_epstwomin
+
+
+  
 !returns x at the end of inflation defined as epsilon1=1
   function shi_x_endinf(alpha,phi0)
     implicit none
@@ -116,7 +128,7 @@ contains
     type(transfert) :: shiData  
 
     mini = epsilon(1._kp)
-    maxi = 1._kp-epsilon(1._kp)
+    maxi = 1._kp-10._kp*epsilon(1._kp)
 
     shiData%real1 = alpha
     shiData%real2 = phi0	
@@ -198,7 +210,7 @@ contains
 
   
     mini = tolkp
-    maxi = shi_x_endinf(alpha,phi0)*(1._kp-epsilon(1._kp))
+    maxi = shi_x_endinf(alpha,phi0)
   
 
     shiData%real1 = alpha

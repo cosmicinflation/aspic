@@ -52,7 +52,7 @@ contains
     shiData%real4 = calF + primEnd
 
     mini = tolkp
-    maxi = shi_x_endinf(alpha,phi0)*(1._kp-epsilon(1._kp))
+    maxi = shi_x_endinf(alpha,phi0)
 
     x = zbrent(find_shi_x_star,mini,maxi,tolzbrent,shiData)
     shi_x_star = x
@@ -115,7 +115,7 @@ contains
     shiData%real3 = calF + primEnd
 
     mini = tolkp
-    maxi = shi_x_endinf(alpha,phi0)*(1._kp-epsilon(1._kp))
+    maxi = shi_x_endinf(alpha,phi0)
 
     x = zbrent(find_shi_x_rrad,mini,maxi,tolzbrent,shiData)
     shi_x_rrad = x
@@ -177,7 +177,7 @@ contains
     shiData%real3 = calF + primEnd
 
     mini = tolkp
-    maxi = shi_x_endinf(alpha,phi0)*(1._kp-epsilon(1._kp))
+    maxi = shi_x_endinf(alpha,phi0)
 
     x = zbrent(find_shi_x_rreh,mini,maxi,tolzbrent,shiData)
     shi_x_rreh = x
