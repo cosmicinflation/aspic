@@ -15,14 +15,14 @@ module nclireheat
 
   private
 
-  public ncli_x_star, ncli_lnrhoreh_max 
+  public ncli_x_star, ncli_lnrhoreh_max
   public ncli_x_rrad, ncli_x_rreh
 
 contains
 
 !returns x such potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)    
+  function ncli_x_star(alpha,phi0,n,xend,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
     real(kp) :: ncli_x_star
     real(kp), intent(in) :: alpha,phi0,n,xend,lnRhoReh,w,Pstar
@@ -33,7 +33,7 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: ncliData
-    
+
 
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
@@ -46,7 +46,7 @@ contains
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
 
-    ncliData%real1 = alpha 
+    ncliData%real1 = alpha
     ncliData%real2 = phi0
     ncliData%real3 = n
     ncliData%real4 = w
@@ -64,7 +64,7 @@ contains
 
   end function ncli_x_star
 
-  function find_ncli_x_star(x,ncliData)   
+  function find_ncli_x_star(x,ncliData)
     implicit none
     real(kp) :: find_ncli_x_star
     real(kp), intent(in) :: x
@@ -83,13 +83,13 @@ contains
     potStar = ncli_norm_potential(x,alpha,phi0,n)
 
     find_ncli_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
+
   end function find_ncli_x_star
 
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function ncli_x_rrad(alpha,phi0,n,xend,lnRrad,Pstar,bfoldstar)    
+  function ncli_x_rrad(alpha,phi0,n,xend,lnRrad,Pstar,bfoldstar)
     implicit none
     real(kp) :: ncli_x_rrad
     real(kp), intent(in) :: alpha,phi0,n,xend,lnRrad,Pstar
@@ -100,7 +100,7 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: ncliData
-    
+
 
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
@@ -114,7 +114,7 @@ contains
 
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
 
-    ncliData%real1 = alpha 
+    ncliData%real1 = alpha
     ncliData%real2 = phi0
     ncliData%real3 = n
     ncliData%real4 = calF + primEnd
@@ -131,7 +131,7 @@ contains
 
   end function ncli_x_rrad
 
-  function find_ncli_x_rrad(x,ncliData)   
+  function find_ncli_x_rrad(x,ncliData)
     implicit none
     real(kp) :: find_ncli_x_rrad
     real(kp), intent(in) :: x
@@ -149,13 +149,13 @@ contains
     potStar = ncli_norm_potential(x,alpha,phi0,n)
 
     find_ncli_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
-  
+
   end function find_ncli_x_rrad
 
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function ncli_x_rreh(alpha,phi0,n,xend,lnRreh,bfoldstar)    
+  function ncli_x_rreh(alpha,phi0,n,xend,lnRreh,bfoldstar)
     implicit none
     real(kp) :: ncli_x_rreh
     real(kp), intent(in) :: alpha,phi0,n,xend,lnRreh
@@ -166,7 +166,7 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
 
     type(transfert) :: ncliData
-    
+
 
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
@@ -178,7 +178,7 @@ contains
 
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
 
-    ncliData%real1 = alpha 
+    ncliData%real1 = alpha
     ncliData%real2 = phi0
     ncliData%real3 = n
     ncliData%real4 = calF + primEnd
@@ -195,7 +195,7 @@ contains
 
   end function ncli_x_rreh
 
-  function find_ncli_x_rreh(x,ncliData)   
+  function find_ncli_x_rreh(x,ncliData)
     implicit none
     real(kp) :: find_ncli_x_rreh
     real(kp), intent(in) :: x
@@ -212,12 +212,12 @@ contains
     potStar = ncli_norm_potential(x,alpha,phi0,n)
 
     find_ncli_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
-  
+
   end function find_ncli_x_rreh
 
 
 
-  function ncli_lnrhoreh_max(alpha,phi0,n,xend,Pstar) 
+  function ncli_lnrhoreh_max(alpha,phi0,n,xend,Pstar)
     implicit none
     real(kp) :: ncli_lnrhoreh_max
     real(kp), intent(in) :: alpha,phi0,n,xend,Pstar
@@ -235,17 +235,17 @@ contains
 
 !   Trick to return x such that rho_reh=rho_end
 
-    x = ncli_x_star(alpha,phi0,n,xend,wrad,junk,Pstar)    
+    x = ncli_x_star(alpha,phi0,n,xend,wrad,junk,Pstar)
     potStar = ncli_norm_potential(x,alpha,phi0,n)
     epsOneStar = ncli_epsilon_one(x,alpha,phi0,n)
-    
+
     if (.not.slowroll_validity(epsOneStar)) stop 'ncli_lnrhoreh_max: slow-roll violated!'
-    
+
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
     ncli_lnrhoreh_max = lnRhoEnd
 
   end function ncli_lnrhoreh_max
 
-  
+
 end module nclireheat

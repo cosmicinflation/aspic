@@ -26,8 +26,8 @@ contains
   function sbki_check_params(efoldNum, alpha)
     implicit none
     logical :: sbki_check_params
-    real(kp), intent(in) :: efoldNum, alpha    
-    
+    real(kp), intent(in) :: efoldNum, alpha
+
     sbki_check_params = sbki_efoldmax(alpha) .ge. efoldNum
 
   end function sbki_check_params
@@ -38,7 +38,7 @@ contains
     implicit none
     real(kp) :: sbki_alphamax
     sbki_alphamax = 9._kp/4._kp/(11._kp + 5._kp*sqrt(5._kp))
-    
+
   end function sbki_alphamax
 
 
@@ -90,36 +90,36 @@ contains
 
 
 !epsilon_one(x)
-  function sbki_epsilon_one(x, alpha)    
+  function sbki_epsilon_one(x, alpha)
     implicit none
     real(kp) :: sbki_epsilon_one
     real(kp), intent(in) :: x, alpha
-    
+
     sbki_epsilon_one = (2._kp*(3._kp+alpha*x**2*(3._kp+alpha*x**2))**2)/(9._kp*x**2)
-    
+
   end function sbki_epsilon_one
 
 
 !epsilon_two(x)
-  function sbki_epsilon_two(x, alpha)    
+  function sbki_epsilon_two(x, alpha)
     implicit none
     real(kp) :: sbki_epsilon_two
     real(kp), intent(in) :: x, alpha
-    
+
     sbki_epsilon_two = 4._kp/x**2-4._kp*alpha*(1._kp+alpha*x**2)
-    
+
   end function sbki_epsilon_two
 
 
 !epsilon_three(x)
-  function sbki_epsilon_three(x, alpha)    
+  function sbki_epsilon_three(x, alpha)
     implicit none
     real(kp) :: sbki_epsilon_three
     real(kp), intent(in) :: x, alpha
-    
+
     sbki_epsilon_three = (-4._kp*(1._kp+alpha**2*x**4)*(3._kp+alpha*x**2* &
                         (3._kp+alpha*x**2)))/(3._kp*x**2*(-1._kp+alpha*x**2+alpha**2*x**4))
-    
+
   end function sbki_epsilon_three
 
 ! This is the minimum value taken by epsilon_one
@@ -149,7 +149,7 @@ contains
     elseif (alpha.lt.sbki_alphamin()) then
        stop 'sbki_x_epsoneunity: alpha < alphamin!'
     endif
-    
+
     sbki_x_epsoneunity(1) = sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
          (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
          alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
@@ -168,7 +168,7 @@ contains
 
 
 
-    
+
     sbki_x_epsoneunity(2) = sqrt((-4._kp*alpha**3+(10._kp*2**(2._kp/3._kp)*alpha**6)/ &
          (9._kp*alpha**8-44._kp*alpha**9+sqrt(-alpha**16*(-81._kp+792._kp* &
          alpha+64._kp*alpha**2)))**(1._kp/3._kp)+2._kp**(1._kp/3._kp)*(9._kp* &
@@ -188,7 +188,7 @@ contains
 
   end function sbki_x_epsoneunity
 
-  
+
 
 !returns x at the end of inflation defined as epsilon1=1
   function sbki_x_endinf(alpha)
@@ -201,11 +201,11 @@ contains
     xepsoneone = sbki_x_epsoneunity(alpha)
 
     sbki_x_endinf = xepsoneone(1)
-   
+
   end function sbki_x_endinf
 
 
-  
+
 !returns the other value x at which epsilon1=1 which places an upper bound on xstar
   function sbki_xinimax(alpha)
     implicit none
@@ -215,10 +215,10 @@ contains
     real(kp), dimension(2) :: xepsoneone
 
     xepsoneone = sbki_x_epsoneunity(alpha)
-    
+
     sbki_xinimax = xepsoneone(2)
 
-    
+
   end function sbki_xinimax
 
 
@@ -267,14 +267,14 @@ contains
     xend = sbki_x_endinf(alpha)
     xplus = sbki_xinimax(alpha)
 
-    print *,'test',alpha,xend,xplus
-    
+    !print *,'test',alpha,xend,xplus
+
     sbki_efoldmax = -sbki_efold_primitive(xend,alpha) + sbki_efold_primitive(xplus,alpha)
 
-    
+
   end function sbki_efoldmax
 
 
 
-  
+
 end module sbkisr

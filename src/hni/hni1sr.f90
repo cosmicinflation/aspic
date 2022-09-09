@@ -14,7 +14,7 @@ module hni1sr
   use hnicommon, only : hni_x_epsoneunity, hni_alpha, hni_f
   use hnicommon, only : find_hni_x_trajectory, hni_efold_primitive
   use hnicommon, only : hni_numacc_xinimin
-  
+
   implicit none
 
   private
@@ -27,27 +27,27 @@ module hni1sr
 
 
 contains
-      
+
 
   function hni1_alphamin(f)
     implicit none
     real(kp) :: hni1_alphamin
     real(kp), intent(in) :: f
-    
+
     hni1_alphamin = hni_alpha(f)
-    
+
   end function hni1_alphamin
 
   function hni1_fmax(alpha)
     implicit none
     real(kp) :: hni1_fmax
     real(kp), intent(in) :: alpha
-    
+
     hni1_fmax = hni_f(alpha)
-    
+
   end function hni1_fmax
-  
-  
+
+
   function hni1_check_params(alpha,f)
     implicit none
     logical :: hni1_check_params
@@ -95,28 +95,28 @@ contains
 
 
 !epsilon1(x)
-  function hni1_epsilon_one(x,alpha,f)    
+  function hni1_epsilon_one(x,alpha,f)
     implicit none
     real(kp) :: hni1_epsilon_one
     real(kp), intent(in) :: x,alpha,f
 
-    hni1_epsilon_one = hni_epsilon_one(x,alpha,f)    
+    hni1_epsilon_one = hni_epsilon_one(x,alpha,f)
 
   end function hni1_epsilon_one
 
 
 !epsilon2(x)
-  function hni1_epsilon_two(x,alpha,f)    
+  function hni1_epsilon_two(x,alpha,f)
     implicit none
     real(kp) :: hni1_epsilon_two
     real(kp), intent(in) :: x,alpha,f
 
-    hni1_epsilon_two = hni_epsilon_two(x,alpha,f) 
+    hni1_epsilon_two = hni_epsilon_two(x,alpha,f)
 
   end function hni1_epsilon_two
 
 !epsilon3(x)
-  function hni1_epsilon_three(x,alpha,f)    
+  function hni1_epsilon_three(x,alpha,f)
     implicit none
     real(kp) :: hni1_epsilon_three
     real(kp), intent(in) :: x,alpha,f
@@ -134,7 +134,7 @@ contains
     real(kp), dimension(2) :: xepsone
 
     xepsone = hni_x_epsoneunity(alpha,f)
-    
+
     hni1_x_endinf = xepsone(1)
 
   end function hni1_x_endinf
@@ -157,7 +157,7 @@ contains
 
 
   end function hni1_numacc_efoldmax
-  
+
 
 !returns x at bfold=-efolds before the end of inflation
   function hni1_x_trajectory(bfold,xend,alpha,f)

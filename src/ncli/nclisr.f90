@@ -25,7 +25,7 @@ module nclisr
   public ncli_xinimin, ncli_xinimax, ncli_x_potzero, ncli_x_inflection, ncli_phizeromin
   public xNumAccMax
 
- 
+
 
 contains
 
@@ -33,7 +33,7 @@ contains
     implicit none
     logical :: ncli_check_params
     real(kp), intent(in) :: efoldMin,epsMin
-    real(kp), intent(in) :: alpha,phi0,n    
+    real(kp), intent(in) :: alpha,phi0,n
 
     real(kp) :: eps1Min, eps1Max, xiniMax
     real(kp) :: efoldMax, xend
@@ -51,16 +51,20 @@ contains
     if (eps1min.ge.epsMin) then
        ncli_check_params = .false.
        return
-    endif    
+    endif
 
     xend = ncli_x_endinf(alpha,phi0,n)
-    xiniMax = ncli_xinimax(alpha,phi0,n)   
+    xiniMax = ncli_xinimax(alpha,phi0,n)
 
     efoldMax = -ncli_efold_primitive(xend,alpha,phi0,n) &
          + ncli_efold_primitive(xiniMax,alpha,phi0,n)
 
     if (efoldMax.lt.efoldMin) then
        ncli_check_params = .false.
+    endif
+
+    if (phi0.lt.ncli_phizeromin(alpha,n)) then
+      ncli_check_params = .false.
     endif
 
 
@@ -102,7 +106,7 @@ contains
   end function ncli_norm_deriv_second_potential
 
 
-  function ncli_epsilon_one(x,alpha,phi0,n)    
+  function ncli_epsilon_one(x,alpha,phi0,n)
     implicit none
     real(kp) :: ncli_epsilon_one
     real(kp), intent(in) :: x,alpha,phi0,n
@@ -114,7 +118,7 @@ contains
 
 
 
-  function ncli_epsilon_two(x,alpha,phi0,n)    
+  function ncli_epsilon_two(x,alpha,phi0,n)
     implicit none
     real(kp) :: ncli_epsilon_two
     real(kp), intent(in) :: x,alpha,phi0,n
@@ -127,7 +131,7 @@ contains
   end function ncli_epsilon_two
 
 
-  function ncli_epsilon_three(x,alpha,phi0,n)    
+  function ncli_epsilon_three(x,alpha,phi0,n)
     implicit none
     real(kp) :: ncli_epsilon_three
     real(kp), intent(in) :: x,alpha,phi0,n
@@ -190,7 +194,7 @@ contains
 
   end function ncli_phizeromin
 
-  
+
 ! returns the location of the two zeros of eps2
   function ncli_x_epstwozero(alpha,phi0,n)
     implicit none
@@ -222,7 +226,7 @@ contains
 
 
     xguess = ncli_x_inflection(alpha,phi0,n)
-    
+
     eps2 = 1._kp
     x = xguess
     count = 0
@@ -257,7 +261,7 @@ contains
 
 !numerical limitation
        if (abs(newton).lt.epsilon(1._kp)) exit
-      
+
 !safeguard
        count = count + 1
        if (count.eq.countMax) then
@@ -276,11 +280,11 @@ contains
     ncliData%real2 = phi0
     ncliData%real3 = n
 
-    mini = x * (1._kp + epsilon(1._kp))
+    mini = x * (1._kp + 10._kp*epsilon(1._kp))
     maxi = xNumAccMax
 
     xeps2(2) = zbrent(find_ncli_x_epstwozero,mini,maxi,tolFind,ncliData)
-   
+
     ncli_x_epstwozero = xeps2
 
   end function ncli_x_epstwozero
@@ -289,7 +293,7 @@ contains
 
   function find_ncli_x_epstwozero(x,ncliData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: ncliData
     real(kp) :: find_ncli_x_epstwozero
     real(kp) :: alpha,phi0,n
@@ -358,7 +362,7 @@ contains
        phi0sav = phi0
        nsav = n
     endif
-    
+
     xzero = ncli_x_potzero(alpha,phi0,n)
     xeps2 = ncli_x_epstwozero(alpha,phi0,n)
     eps1min = ncli_epsilon_one(xeps2(1),alpha,phi0,n)
@@ -366,7 +370,7 @@ contains
 
     ncliData%real1 = alpha
     ncliData%real2 = phi0
-    ncliData%real3 = n    
+    ncliData%real3 = n
 
 !eps1->infty in 0, there is only one root in these cases only
     oneroot = ((eps1min.gt.1._kp).and.(eps1max.gt.1._kp)) &
@@ -376,7 +380,7 @@ contains
 
        mini = xzero + epsilon(1._kp)
        maxi = xNumAccMax
-       
+
        xeps1(:) = zbrent(find_ncli_x_epsoneunity,mini,maxi,tolFind,ncliData)
 
 !tworoots
@@ -390,7 +394,7 @@ contains
 
        xeps1(3) = zbrent(find_ncli_x_epsoneunity,mini,maxi,tolFind,ncliData)
 
-!tworoots       
+!tworoots
     elseif ((eps1min.lt.1._kp).and.(eps1max.eq.1._kp)) then
 
        xeps1(3) = xeps2(2)
@@ -414,11 +418,11 @@ contains
        mini = xeps2(2)
        maxi = xNumAccMax
        xeps1(3) = zbrent(find_ncli_x_epsoneunity,mini,maxi,tolFind,ncliData)
-    
+
     endif
 
     ncli_x_epsoneunity(1:3) = xeps1(1:3)
-    
+
 
   end function ncli_x_epsoneunity
 
@@ -426,7 +430,7 @@ contains
 
   function find_ncli_x_epsoneunity(x,ncliData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: ncliData
     real(kp) :: find_ncli_x_epsoneunity
     real(kp) :: alpha,phi0,n
@@ -461,7 +465,7 @@ contains
 
   end function ncli_x_endinf
 
- 
+
 
 
 !returns the maximum value for xini such that slow-roll inflation is
@@ -473,7 +477,7 @@ contains
     real(kp) :: ncli_xinimax
     real(kp), parameter :: tolFind=tolkp
     real(kp), dimension(3) :: xeps1
-   
+
     xeps1 = ncli_x_epsoneunity(alpha,phi0,n)
 
 !happens only when eps1max > 1
@@ -547,7 +551,7 @@ contains
   end function ncli_efold_primitive
 
   subroutine find_ncli_efold_primitive(n,x,y,yprime,ncliData)
-    implicit none          
+    implicit none
     integer :: n
     real(kp) :: x
     real(kp), dimension(n) :: y, yprime
@@ -593,9 +597,9 @@ contains
 
   end function ncli_x_trajectory
 
-  function find_ncli_x_trajectory(x,ncliData)    
+  function find_ncli_x_trajectory(x,ncliData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: ncliData
     real(kp) :: find_ncli_x_trajectory
     real(kp) :: alpha,phi0,n,NplusPrimEnd
