@@ -16,11 +16,11 @@ module hnicommon
   public hni_efold_primitive, find_hni_x_trajectory, hni_x_epsoneunity
   public hni_alpha, hni_f, hni_check_params, hni_x_potmin, hni_numacc_x_epsonenull
   public hni_numacc_xinimin
-  
+
   real(kp), parameter :: hniSmall = epsilon(1._kp)
 
   public hniSmall
-  
+
 contains
 
 
@@ -63,7 +63,7 @@ contains
     hni_x_potmin = pi
 
   end function hni_x_potmin
-  
+
 
 !returns V/M**4
   function hni_norm_potential(x,alpha,f)
@@ -102,7 +102,7 @@ contains
 
 
 !epsilon1(x)
-  function hni_epsilon_one(x,alpha,f)    
+  function hni_epsilon_one(x,alpha,f)
     implicit none
     real(kp) :: hni_epsilon_one
     real(kp), intent(in) :: x,alpha,f
@@ -113,7 +113,7 @@ contains
 
 
 !epsilon2(x)
-  function hni_epsilon_two(x,alpha,f)    
+  function hni_epsilon_two(x,alpha,f)
     implicit none
     real(kp) :: hni_epsilon_two
     real(kp), intent(in) :: x,alpha,f
@@ -123,7 +123,7 @@ contains
   end function hni_epsilon_two
 
 !epsilon3(x)
-  function hni_epsilon_three(x,alpha,f)    
+  function hni_epsilon_three(x,alpha,f)
     implicit none
     real(kp) :: hni_epsilon_three
     real(kp), intent(in) :: x,alpha,f
@@ -145,7 +145,7 @@ contains
        write(*,*)'alpha= f= ',alpha,f
        stop 'hni_x_epsoneunity: no solution to epsilon1=1!'
     endif
-    
+
     hni_x_epsoneunity(1) = acos( ( sqrt(alpha**2/(4._kp*f**2)+alpha**2/2._kp-0.5_kp)/f- &
          1._kp)/(alpha*(1._kp+1._kp/(2._kp*f**2))))
 
@@ -164,7 +164,7 @@ contains
     real(kp) :: sqrteps
 
     sqrteps = sqrt(hniSmall)
-    
+
 !let's be clever
     hni_numacc_x_epsonenull = hni_x_epsoneunity(alpha,f*sqrteps)
 
@@ -180,17 +180,17 @@ contains
     real(kp), intent(in) :: alpha,f
 
     real(kp), dimension(2) :: xnumacc
-      
+
     xnumacc = hni_numacc_x_epsonenull(alpha,f)
 
 !keep the smallest one (close to the top of the potential)
     hni_numacc_xinimin = max(epsilon(1._kp), xnumacc(1))
 
-    
-    
+
+
   end function hni_numacc_xinimin
 
-  
+
 
 !this is integral[V(phi)/V'(phi) dphi]
   function hni_efold_primitive(x,alpha,f)
@@ -202,15 +202,13 @@ contains
 
     hni_efold_primitive = f**2/alpha*((1._kp-alpha)*log(cos(x/2._kp))-(1._kp+alpha)*log(sin(x/2))) &
          - f**2*log(2._kp)
-    
+
   end function hni_efold_primitive
-
-
 
 
   function find_hni_x_trajectory(x,hniData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: hniData
     real(kp) :: find_hni_x_trajectory
     real(kp) :: alpha,f,NplusPrimEnd

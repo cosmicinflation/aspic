@@ -18,7 +18,7 @@ module hni2sr
   use hnicommon, only : hni_x_epsoneunity, hni_alpha, hni_f, hni_x_potmin
   use hnicommon, only : find_hni_x_trajectory, hni_efold_primitive, hni_numacc_x_epsonenull
   use hnicommon, only : hni_numacc_xinimin
-  
+
   implicit none
 
   private
@@ -31,10 +31,11 @@ module hni2sr
 
 
 
-contains
-      
 
-  
+contains
+
+
+
   function hni2_check_params(alpha,f)
     implicit none
     logical :: hni2_check_params
@@ -44,27 +45,27 @@ contains
 
   end function hni2_check_params
 
-  
+
   function hni2_alphamax(f)
     implicit none
     real(kp) :: hni2_alphamax
     real(kp), intent(in) :: f
-    
+
     hni2_alphamax = hni_alpha(f)
-    
+
   end function hni2_alphamax
 
-  
+
   function hni2_fmin(alpha)
     implicit none
     real(kp) :: hni2_fmin
     real(kp), intent(in) :: alpha
-    
+
     hni2_fmin = hni_f(alpha)
-    
+
   end function hni2_fmin
 
-  
+
 !returns V/M**4
   function hni2_norm_potential(x,alpha,f)
     implicit none
@@ -102,28 +103,28 @@ contains
 
 
 !epsilon1(x)
-  function hni2_epsilon_one(x,alpha,f)    
+  function hni2_epsilon_one(x,alpha,f)
     implicit none
     real(kp) :: hni2_epsilon_one
     real(kp), intent(in) :: x,alpha,f
 
-    hni2_epsilon_one = hni_epsilon_one(x,alpha,f)    
+    hni2_epsilon_one = hni_epsilon_one(x,alpha,f)
 
   end function hni2_epsilon_one
 
 
 !epsilon2(x)
-  function hni2_epsilon_two(x,alpha,f)    
+  function hni2_epsilon_two(x,alpha,f)
     implicit none
     real(kp) :: hni2_epsilon_two
     real(kp), intent(in) :: x,alpha,f
 
-    hni2_epsilon_two = hni_epsilon_two(x,alpha,f) 
+    hni2_epsilon_two = hni_epsilon_two(x,alpha,f)
 
   end function hni2_epsilon_two
 
 !epsilon3(x)
-  function hni2_epsilon_three(x,alpha,f)    
+  function hni2_epsilon_three(x,alpha,f)
     implicit none
     real(kp) :: hni2_epsilon_three
     real(kp), intent(in) :: x,alpha,f
@@ -134,7 +135,7 @@ contains
 
 
 !return the maximal allowed valued for xend. If eps>1, this is the
-!smallest root of eps1=1, oterwise this is the value at which the
+!smallest root of eps1=1, otherwise this is the value at which the
 !potential is minimal
   function hni2_xendmax(alpha,f)
     implicit none
@@ -142,18 +143,18 @@ contains
     real(kp), intent(in) :: alpha,f
     real(kp), dimension(2) :: xepsone
 
-    if (alpha.lt.hni2_alphamax(f)) then
+    if (alpha.le.hni2_alphamax(f)*(1._kp+epsilon(1._kp))) then
 
        hni2_xendmax = hni_x_potmin(alpha,f)
 
     else
 
        xepsone = hni_x_epsoneunity(alpha,f)
-       
+
        hni2_xendmax = xepsone(1)
 
     endif
-                  
+
   end function hni2_xendmax
 
 
@@ -171,15 +172,15 @@ contains
 
   end function hni2_numacc_xendmax
 
-  
+
 
   function hni2_numacc_efoldmax(alpha,f)
     implicit none
     real(kp) :: hni2_numacc_efoldmax
     real(kp), intent(in) :: alpha,f
 
-    real(kp) :: xinimin, xendmax    
-    
+    real(kp) :: xinimin, xendmax
+
     xendmax = hni2_numacc_xendmax(alpha,f)
     xinimin = hni_numacc_xinimin(alpha,f)
 
@@ -188,9 +189,9 @@ contains
 
 
   end function hni2_numacc_efoldmax
-  
 
-  
+
+
   function hni2_numacc_xendmin(efold,alpha,f)
     implicit none
     real(kp) :: hni2_numacc_xendmin
@@ -198,23 +199,23 @@ contains
 
     real(kp) :: efoldMax
     real(kp) :: xinimin, xendmax
-   
-    
+
+
     xinimin = hni_numacc_xinimin(alpha,f)
-    
+
     efoldMax = hni2_numacc_efoldmax(alpha,f)
-    
+
     if (efold.gt.efoldMax) then
        write(*,*)'hni2_numacc_xendmin: not enough efolds!'
-       write(*,*)'efold requested= efold maxi= ',efold,efoldMax       
+       write(*,*)'efold requested= efold maxi= ',efold,efoldMax
        stop
     endif
-    
+
     hni2_numacc_xendmin = hni2_x_trajectory(efold,xinimin,alpha,f)
-    
+
   end function hni2_numacc_xendmin
 
-  
+
 
 !returns x at bfold=-efolds before the end of inflation
   function hni2_x_trajectory(bfold,xend,alpha,f)
@@ -228,11 +229,11 @@ contains
     if (bfold.le.0._kp) then
        mini = epsilon(1._kp)
        maxi = xend
-    else       
+    else
        mini = xend
        maxi = hni_x_potmin(alpha,f)
-    endif   
-    
+    endif
+
     hni2Data%real1 = alpha
     hni2Data%real2 = f
     hni2Data%real3 = -bfold + hni_efold_primitive(xend,alpha,f)

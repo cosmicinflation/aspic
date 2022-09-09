@@ -18,7 +18,7 @@ module fisr
   public fi_efoldmax, fi_epsilon_one_min
 
   real(kp), parameter :: sqr3 = sqrt(3._kp)
- 
+
 contains
 
 
@@ -218,7 +218,7 @@ contains
 
   function find_fi_x_epstwozero(x,fiData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: fiData
     real(kp) :: find_fi_x_epstwozero
     real(kp) :: delta,n
@@ -275,11 +275,11 @@ contains
 ! in this case epsilon1 reaches 2/3<1 at infinity, and the function
 ! returns the maximal value of x above which the potential becomes
 ! larger than numerical accuracy
-    if (n .eq. 0._kp) then 
+    if (n .eq. 0._kp) then
 
        fi_x_epsoneunity(2) = xnumaccMax
 
-    else      
+    else
 
        fi_x_epsoneunity(2) = zbrent(find_fi_x_epsoneunity,mini,maxi,tolFind,fiData)
 
@@ -291,7 +291,7 @@ contains
 
   function find_fi_x_epsoneunity(x,fiData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: fiData
     real(kp) :: find_fi_x_epsoneunity
     real(kp) :: delta,n
@@ -348,7 +348,7 @@ contains
   end function fi_efold_primitive
 
   subroutine find_fi_efold_primitive(n,x,y,yprime,fiData)
-    implicit none          
+    implicit none
     integer :: n
     real(kp) :: x
     real(kp), dimension(n) :: y, yprime
@@ -396,7 +396,7 @@ contains
 
   function find_fi_x_trajectory(x,fiData)
     implicit none
-    real(kp), intent(in) :: x   
+    real(kp), intent(in) :: x
     type(transfert), optional, intent(inout) :: fiData
     real(kp) :: find_fi_x_trajectory
     real(kp) :: delta,n,NplusPrimEnd
