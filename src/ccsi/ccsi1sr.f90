@@ -24,7 +24,7 @@ module ccsi1sr
   public ccsi1_x_endinf, ccsi1_efold_primitive, ccsi1_x_trajectory
   public ccsi1_norm_deriv_potential, ccsi1_norm_deriv_second_potential 
   public ccsi1_check_params, ccsi1_numacc_xinimax, ccsi1_numacc_efoldmax
-
+  public ccsi1_numacc_alphamax
 contains
 
 
@@ -140,6 +140,55 @@ contains
     
   end function ccsi1_numacc_xinimax
 
+
+
+
+!returns the minimum (<0) value of alpha to get at most efoldMax
+!of inflation (from xinimax to xend)
+  function ccsi1_numacc_alphamax(efoldMax)
+    implicit none
+    real(kp) :: ccsi1_numacc_alphamax
+    real(kp), intent(in) :: efoldMax
+    type(transfert) :: ccsi1Data
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini, maxi
+
+    real(kp), save :: efoldSave = 0._kp
+    real(kp), save :: alphamaxSave = 0._kp
+!$omp threadprivate(efoldSave,alphamaxSave)
+    
+    if (efoldMax.eq.efoldSave) then
+       ccsi1_numacc_alphamax = alphamaxSave
+       return
+    else
+       efoldSave = efoldMax
+    endif
+    
+    mini = epsilon(1._kp)
+    maxi = 1._kp
+
+    ccsi1Data%real1 = efoldMax
+    ccsi1_numacc_alphamax  = zbrent(find_ccsi1_alphamax,mini,maxi,tolFind,ccsi1Data)
+
+    alphamaxSave = ccsi1_numacc_alphamax
+    
+  end function ccsi1_numacc_alphamax
+
+  
+  function find_ccsi1_alphamax(alpha,ccsi1Data)
+    implicit none
+    real(kp), intent(in) :: alpha
+    type(transfert), optional, intent(inout) :: ccsi1Data
+    real(kp) :: find_ccsi1_alphamax
+    real(kp) :: xinimax, xend, efoldMax
+
+    efoldMax = ccsi1Data%real1
+
+    find_ccsi1_alphamax = efoldMax  - ccsi1_numacc_efoldmax(alpha)
+
+  end function find_ccsi1_alphamax
+  
+  
 
 !return the maximal number of efold computable at this numerical accuracy
   function ccsi1_numacc_efoldmax(alpha)

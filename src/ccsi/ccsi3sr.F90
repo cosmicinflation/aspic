@@ -196,7 +196,7 @@ contains
 
   
 
-  !return the maximal number of efold computable at this numerical accuracy
+!return the maximal number of efold computable between xuv and xend
   function ccsi3_efoldmax(alpha)
     implicit none
     real(kp) :: ccsi3_efoldmax
