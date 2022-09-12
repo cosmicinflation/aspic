@@ -1,3 +1,473 @@
+commit fed2d5f32cc830cec87248e91b816151ab3bb359
+Date:   Mon Sep 12 13:42:10 2022 +0200
+
+    New function numacc for ccsi1
+
+ src/ccsi/ccsi1sr.f90 | 51 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/ccsi/ccsi3sr.F90 |  2 +-
+ 2 files changed, 51 insertions(+), 2 deletions(-)
+
+commit 868ec630cf1ffa1f008075a9ecbefc6ad42b71e7
+Merge: 0598949 5661cc2
+Date:   Fri Sep 9 18:37:24 2022 +0200
+
+    Merge branch 'vincent'
+
+commit 5661cc212089abacf86cb7ab5079d228f2a1c5ee
+Date:   Fri Sep 9 18:33:58 2022 +0200
+
+    Vincent's hardening for sbki, saci, hni, and fi
+
+ src/fi/fireheat.f90     | 48 ++++++++++++++++-----------------
+ src/fi/fisr.f90         | 14 +++++-----
+ src/hni/hni1sr.f90      | 30 ++++++++++-----------
+ src/hni/hni2sr.f90      | 71 +++++++++++++++++++++++++------------------------
+ src/hni/hnicommon.f90   | 30 ++++++++++-----------
+ src/ncli/nclireheat.f90 | 42 ++++++++++++++---------------
+ src/ncli/nclisr.f90     | 54 ++++++++++++++++++++-----------------
+ src/saci/sacireheat.f90 | 43 +++++++++++++++---------------
+ src/sbki/sbkisr.f90     | 46 ++++++++++++++++----------------
+ 9 files changed, 191 insertions(+), 187 deletions(-)
+
+commit 0598949d428d76ab8ec906a2afd7c61effba1f1c
+Date:   Fri Sep 9 16:07:43 2022 +0200
+
+    Harden ccsi for bayaspic exploration
+
+ src/ccsi/Makefile.am                  |  2 +-
+ src/ccsi/ccsi1sr.f90                  | 22 +++++++++++++++++++--
+ src/ccsi/ccsi3reheat.f90              |  2 +-
+ src/ccsi/{ccsi3sr.f90 => ccsi3sr.F90} | 37 +++++++++++++++++++++++++++++++++--
+ 4 files changed, 57 insertions(+), 6 deletions(-)
+
+commit bf445db3291fe7569ffbb7b0b93a12d8afff748a
+Date:   Fri Sep 9 13:47:55 2022 +0200
+
+    Harden shi for bayaspic exploration
+
+ src/shi/shireheat.f90 |  6 +++---
+ src/shi/shisr.f90     | 18 +++++++++++++++---
+ 2 files changed, 18 insertions(+), 6 deletions(-)
+
+commit dd89bcccb8b2960774e1becc7a462a9fb5989a61
+Date:   Fri Sep 9 10:45:18 2022 +0200
+
+    Add prior functions for hbi
+
+ src/hbi/hbireheat.f90 |  2 +-
+ src/hbi/hbisr.f90     | 29 ++++++++++++++++++++---------
+ 2 files changed, 21 insertions(+), 10 deletions(-)
+
+commit 737fe05b1b1a38afcd4f72f0ac32e375e1511b75
+Date:   Thu Sep 8 09:52:42 2022 +0200
+
+    Tune vfmi to avoid overflow in bayaspic (potential too large)
+
+ src/vfmi/vfmimain.f90   | 2 +-
+ src/vfmi/vfmireheat.f90 | 2 +-
+ src/vfmi/vfmisr.f90     | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 78a82672918d4d316aa14edc7e931ad194782b15
+Date:   Thu Aug 25 18:23:26 2022 +0200
+
+    Fix i586 precision
+
+ src/saiii/saiii3main.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 58dd499162aa92beac870f1b3b7ccb79e5e30a9a
+Date:   Thu Aug 25 18:02:44 2022 +0200
+
+    Fix precision
+
+ src/sdi/sdimain.f90 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 605e7efdb22c6e79a2f40bd4ac9b20171c961c3a
+Date:   Thu Aug 25 17:15:57 2022 +0200
+
+    Fix bad precision 1_kp
+
+ src/rclfi/rclfi2sr.f90    | 4 ++--
+ src/saiii/saiiicommon.f90 | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 8af4fd6fd9db43d25700091ac4ace6ff540821fa
+Date:   Mon May 23 17:38:20 2022 +0200
+
+    Add potential output for EI figure
+
+ src/sabi/sabimain.f90 | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+commit 1e80d65a5479764b0f9f6adb060455971af6cbc7
+Date:   Tue Apr 12 11:09:22 2022 +0200
+
+    add potential output for EI fig
+
+ src/saai/saaimain.f90 | 38 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
+
+commit d58200035aa6e592c3df7072a45dda7f6ea73c40
+Date:   Fri Apr 8 14:54:27 2022 +0200
+
+    Tune saaimain for EI figures
+
+ src/saai/saaimain.f90 | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 570d8748ca816f12a8b15cc84a1b17db550df8c2
+Date:   Mon Dec 20 16:36:35 2021 +0100
+
+    Display lambert warning at 10^(-10)
+
+ src/common/specialinf.F90 | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+commit 06516ac04b79bef01b18c4dabc61d0ef51de1606
+Date:   Tue Dec 14 11:33:57 2021 +0100
+
+    Add numacc function for choose xend not unsanely negative
+
+ src/bsusybi/bsusybisr.f90 | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+commit f3ac12b2dcde6584cbe83a984a6cb2f5e2e84191
+Date:   Tue Dec 14 11:09:46 2021 +0100
+
+    rewrite eps2 in a underflow friendly way
+
+ src/bsusybi/bsusybisr.f90 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit f57d3eca92cc0ad29d76e1e5059cc80b5d730fda
+Date:   Mon Dec 13 18:24:08 2021 +0100
+
+    Add safeguard to prevent crap calculations when slow-roll violations occur at the end of inflation
+
+ src/twi/twireheat.f90 | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+commit 0c614fa1b3e8d518471257a3fd78a1a6574c8865
+Date:   Fri Dec 10 18:31:03 2021 +0100
+
+    Add numacc test function for csi
+
+ src/csi/csisr.f90 | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+commit b1f8154d278eaf19a9c45902bf59d3712264b697
+Date:   Fri Dec 10 12:02:30 2021 +0100
+
+    Skip corrections for slow-roll violation, harden lpi
+
+ src/common/srflow.f90  | 13 +++++++++++--
+ src/lpi/lpi1reheat.f90 |  8 +++++---
+ src/lpi/lpi1sr.f90     |  7 ++++---
+ src/lpi/lpicommon.f90  |  5 ++++-
+ 4 files changed, 24 insertions(+), 9 deletions(-)
+
+commit 2481ed980c2a92c5a060d37d21464a5efcb1388d
+Date:   Tue Dec 7 16:58:26 2021 +0100
+
+    Add warning message for epsV to epsH when epsV > 1
+
+ src/common/srflow.f90 | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit b2d052f6ee0b24b10280c74185c9751572de13c3
+Date:   Tue Dec 7 16:13:45 2021 +0100
+
+    Add Nan test on specialinf
+
+ src/common/specialinf.F90 | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 8a22869986bb9805c94679794e062109d419b7d7
+Date:   Tue Dec 7 16:03:33 2021 +0100
+
+    test rpi2 reheating, for which yend drastically changes Rreh
+
+ src/rpi/rpi2reheat.f90 | 6 ++++--
+ src/rpi/rpi2sr.f90     | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 2c96748b65b98277c580f0d339f98ca3566821a1
+Date:   Fri Dec 3 15:05:27 2021 +0100
+
+    fix typo
+
+ src/common/srflow.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 353249b3e63bc4b352adb5c20139e42dc24f7e8d
+Date:   Fri Dec 3 15:04:56 2021 +0100
+
+    Add some checks for slow-roll violations before attempting to compute small corrections
+
+ src/common/huflow.f90 | 2 +-
+ src/common/srflow.f90 | 9 +++++++--
+ src/twi/twisr.f90     | 3 +--
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+commit ab2c3fa564d4ef3e299c0562e8caacad644b4ffe
+Date:   Fri Dec 3 11:55:51 2021 +0100
+
+    Add numacc functions for rpi2
+
+ src/rpi/rpi2main.f90   |  8 +++++++-
+ src/rpi/rpi2reheat.f90 |  3 +--
+ src/rpi/rpi2sr.f90     | 56 ++++++++++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 58 insertions(+), 9 deletions(-)
+
+commit edf1381e978a9124408991d0ae93d1183afe91c5
+Date:   Tue Nov 30 14:19:25 2021 +0100
+
+    Error messages for non-sense values
+
+ src/common/specialinf.F90 | 1 +
+ src/lpi/lpicommon.f90     | 2 ++
+ 2 files changed, 3 insertions(+)
+
+commit 4832e610efddceba41f29b30aa4f642766688ff9
+Date:   Fri Nov 12 18:35:00 2021 +0100
+
+    Adjust default settings in fooiplot for planck 2018 contour output
+
+ plots/fooiplots.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fd13eec87a2863e4a765838506214e32ae83ad35
+Date:   Fri Nov 12 15:59:29 2021 +0100
+
+    Fix missing output file bug in rclf1mp
+
+ src/rclfi/rclfi1main.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c9d42e9a9a6685ddba09b27680f509d311d0e1a4
+Date:   Fri Nov 12 15:17:15 2021 +0100
+
+    Fix bug in output files for all rcmimain
+
+ src/ni/nimain.f90        | 2 +-
+ src/rclfi/rclfi1main.f90 | 8 +++++---
+ src/rclfi/rclfi2main.f90 | 6 +++---
+ src/rclfi/rclfi3main.f90 | 6 +++---
+ src/rclfi/rclfi4main.f90 | 4 ++--
+ 5 files changed, 14 insertions(+), 12 deletions(-)
+
+commit 9606ea820f94e3193018a1f32c297ae624210ae0
+Date:   Thu Nov 4 17:18:10 2021 +0100
+
+    Fix hni2main and reduce marker edge on figure generator
+
+ plots/aspictools.py  | 2 +-
+ src/hni/hni2main.f90 | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7fa15fe31cc004aea5f79d94f39b29f0b70ac310
+Date:   Wed Nov 3 19:00:24 2021 +0100
+
+    Propagate API changes in matplotlib
+
+ plots/aspictools.py | 14 +++++++-------
+ plots/modeldict.txt |  3 ++-
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+commit df227ad673ab5e779f03b9a53c2a21587d0d97dc
+Date:   Tue Jun 29 18:37:50 2021 +0200
+
+    Add third order correction in Hubble flow parameter to srreheat function, just to be consistent
+
+ src/common/srreheat.f90 | 122 +++++++++++++++++++++++++++++-------------------
+ 1 file changed, 75 insertions(+), 47 deletions(-)
+
+commit e4c6a9d9d67f86a0a1bedfd65f886231af7bb4d4
+Date:   Tue Jun 22 12:03:50 2021 +0200
+
+    Fix typos in README
+
+ plots/README | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+commit 4e0816d793d679d484dfd34758a417041fab783d
+Date:   Mon Jun 21 17:01:30 2021 +0200
+
+    Add aspicdist module to generate contour level files
+
+ plots/README       | 19 +++++++++++++++++--
+ plots/aspicdist.py | 32 ++++++++++++++++++++++++++++++++
+ plots/fooiplots.py |  8 ++++----
+ 3 files changed, 53 insertions(+), 6 deletions(-)
+
+commit 69970d287c9996021ef1739260e66b1316c070bd
+Date:   Wed Jun 2 16:30:32 2021 +0200
+
+    Makes public lambda
+
+ src/hi/hireheat.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a9cc57a05cbc8e53619c96999080c68a671703df
+Date:   Wed Jun 2 15:06:31 2021 +0200
+
+    Fix change of parameter ordering in rclfi
+
+ src/rclfi/rclfi1main.f90 | 10 +++++-----
+ src/rclfi/rclfi1sr.f90   |  2 +-
+ src/rclfi/rclfi2sr.f90   |  2 +-
+ src/rclfi/rclfi4main.f90 | 10 +++++-----
+ 4 files changed, 12 insertions(+), 12 deletions(-)
+
+commit cf9c3e393937adb7f9d705c2f75b0757b50fcd49
+Date:   Wed Jun 2 14:03:03 2021 +0200
+
+    Change API of rclfi, call as (p alpha mu)
+
+ src/rclfi/aspic_rclfi1.3   |   4 +-
+ src/rclfi/aspic_rclfi2.3   |   4 +-
+ src/rclfi/aspic_rclfi3.3   |   4 +-
+ src/rclfi/aspic_rclfi4.3   |   4 +-
+ src/rclfi/rclfi1main.f90   |  88 ++++++++++++++---------------
+ src/rclfi/rclfi1reheat.f90 |  78 +++++++++++++-------------
+ src/rclfi/rclfi1sr.f90     | 114 ++++++++++++++++++-------------------
+ src/rclfi/rclfi2main.f90   |  80 +++++++++++++-------------
+ src/rclfi/rclfi2reheat.f90 |  78 +++++++++++++-------------
+ src/rclfi/rclfi2sr.f90     | 136 ++++++++++++++++++++++-----------------------
+ src/rclfi/rclfi3main.f90   |  62 ++++++++++-----------
+ src/rclfi/rclfi3reheat.f90 |  72 ++++++++++++------------
+ src/rclfi/rclfi3sr.f90     |  68 +++++++++++------------
+ src/rclfi/rclfi4main.f90   |  56 +++++++++----------
+ src/rclfi/rclfi4reheat.f90 |  72 ++++++++++++------------
+ src/rclfi/rclfi4sr.f90     |  56 +++++++++----------
+ src/rclfi/rclficommon.f90  |  44 +++++++--------
+ 17 files changed, 510 insertions(+), 510 deletions(-)
+
+commit 419bc9847828496c02abf394d3a6b4eaf227d1ee
+Date:   Tue Jun 1 17:42:57 2021 +0200
+
+    Fix rclfi man
+
+ src/rclfi/aspic_rclfi2.3 | 2 --
+ src/rclfi/aspic_rclfi3.3 | 2 --
+ 2 files changed, 4 deletions(-)
+
+commit b03b0c3bdf5aff8535918f9c97157f43a69ff1ba
+Date:   Tue Jun 1 17:40:47 2021 +0200
+
+    Update include files
+
+ include/aspic.h          | 8 ++++----
+ src/rclfi/aspic_rclfi1.3 | 2 --
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+commit 28b7ad9dde4ca86f3989a271c1bd901ab7ddf1b5
+Date:   Thu May 27 17:03:14 2021 +0200
+
+    Update man and include files
+
+ NEWS            |   4 ++
+ include/aspic.h |  22 +++++++--
+ man/libaspic.3  | 147 ++++++++++++++++++++++++++++++--------------------------
+ 3 files changed, 101 insertions(+), 72 deletions(-)
+
+commit 6087980987dd26747f4e15c4d9380bdebfb5a28f
+Date:   Thu May 27 16:21:34 2021 +0200
+
+    Implement reheating equations for scalar-tensor theories; add corrective terms to rpi, ccsi and si
+
+ src/ccsi/aspic_ccsi1.3   |  9 +++---
+ src/ccsi/aspic_ccsi2.3   | 10 +++----
+ src/ccsi/aspic_ccsi3.3   |  6 ++--
+ src/ccsi/ccsi1main.f90   |  8 +++---
+ src/ccsi/ccsi1reheat.f90 | 10 ++++---
+ src/ccsi/ccsi2main.f90   |  8 +++---
+ src/ccsi/ccsi2reheat.f90 |  5 ++--
+ src/ccsi/ccsi3main.f90   |  9 +++---
+ src/ccsi/ccsi3reheat.f90 |  6 ++--
+ src/ccsi/ccsicomreh.f90  | 14 ++++++----
+ src/common/cosmopar.f90  | 27 ++++++++++++++++++
+ src/common/srreheat.f90  | 73 +++++++++++++++++++++++++++++++++++++-----------
+ src/rpi/aspic_rpi1.3     |  9 +++---
+ src/rpi/aspic_rpi2.3     |  4 +--
+ src/rpi/aspic_rpi3.3     |  6 ++--
+ src/rpi/rpi1main.f90     |  7 +++--
+ src/rpi/rpi1reheat.f90   | 25 ++++++++++-------
+ src/rpi/rpi2main.f90     |  7 +++--
+ src/rpi/rpi2reheat.f90   | 20 +++++++------
+ src/rpi/rpi3main.f90     |  9 +++---
+ src/rpi/rpi3reheat.f90   | 22 +++++++++------
+ src/si/simain.f90        |  8 ++++--
+ src/si/sireheat.f90      | 25 ++++++++++-------
+ src/si/sisr.f90          |  6 ++--
+ 24 files changed, 219 insertions(+), 114 deletions(-)
+
+commit da91da694b6df35d3414ef20f37e5835941e3fe5
+Date:   Thu May 27 16:20:20 2021 +0200
+
+    Finishing HI
+
+ configure.ac        |   1 +
+ src/Makefile.am     |   5 +-
+ src/hi/Makefile.am  |  12 +--
+ src/hi/hicommon.f90 | 109 ++++++++++++++------------
+ src/hi/himain.f90   |  89 +++++++++++++--------
+ src/hi/hireheat.f90 | 221 ++++++++++++++++++++++++++++------------------------
+ src/hi/hisr.f90     |  20 +++--
+ 7 files changed, 254 insertions(+), 203 deletions(-)
+
+commit 863cfa4682576e39b1a14254e079df9ce7a55a35
+Date:   Wed May 26 16:26:32 2021 +0200
+
+    Fix conditions on di to get rhoreh=rhoend
+
+ src/di/direheat.f90 | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 068d28be685ad5757266eb26adad95151476de0f
+Date:   Fri May 21 14:33:23 2021 +0200
+
+    coding himain
+
+ src/hi/hicommon.f90 |   7 +-
+ src/hi/himain.f90   | 288 ++++++++++++++--------------------------------------
+ src/hi/hireheat.f90 |   8 +-
+ src/hi/hisr.f90     |   7 +-
+ 4 files changed, 87 insertions(+), 223 deletions(-)
+
+commit f0829237082d0ca8985aaa1fd0cf37218433e074
+Date:   Fri May 21 13:58:30 2021 +0200
+
+    Fix precision on constant
+
+ src/si/sisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1a714f0782092f0b1b19f897a9dcd227038e868c
+Date:   Fri May 21 13:57:41 2021 +0200
+
+    Coding HI exact in the Einstein-Frame
+
+ src/hi/Makefile.am  |  26 +++
+ src/hi/aspic_hi.3   | 272 ++++++++++++++++++++++++++++++
+ src/hi/hicommon.f90 | 384 ++++++++++++++++++++++++++++++++++++++++++
+ src/hi/himain.f90   | 313 +++++++++++++++++++++++++++++++++++
+ src/hi/hireheat.f90 | 468 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/hi/hispline.F90 | 244 +++++++++++++++++++++++++++
+ src/hi/hisr.f90     | 186 +++++++++++++++++++++
+ 7 files changed, 1893 insertions(+)
+
+commit 4003ca404ed134cf5aa6ddcbbb4d955792f4b738
+Date:   Thu May 6 12:16:52 2021 +0200
+
+    Update changelog and news
+
+ ChangeLog | 629 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ NEWS      |   2 +-
+ 2 files changed, 627 insertions(+), 4 deletions(-)
+
 commit 527c52810e6cea48d86f2610f2c40be02e13e806
 Date:   Thu May 6 12:06:45 2021 +0200
 

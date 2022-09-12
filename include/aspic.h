@@ -148,7 +148,10 @@ use deisr
 use deireheat
 use sdisr
 use sdireheat
-
+use saii1sr
+use saii1reheat
+use saii2sr
+use saii2reheat
 
 !three parameter models
 use lmi2sr
@@ -197,3 +200,9 @@ use hni2sr
 use hni2reheat
 use rcipisr
 use rcipireheat
+use saiii1sr
+use saiii1reheat
+use saiii2sr
+use saiii2reheat
+use saiii3sr
+use saiii3reheat
