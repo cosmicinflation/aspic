@@ -20,7 +20,7 @@ program gdwimain
 
   real(kp) :: Pstar, logErehGeV, Treh
 
-  integer :: i,j
+  integer :: i,j,n
   integer :: npts = 20
 
   integer :: Nphi0
@@ -40,12 +40,37 @@ program gdwimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  real(kp) :: p
+  real(kp) :: p,V1
+  real(kp) :: x, xmin,xmax
+
   
   Nphi0=26
 
   Pstar = powerAmpScalar
 
+
+  n = 500
+  xmin = 0._kp
+  xmax = 1.5_kp
+
+  p = 2
+  phi0 = 1._kp
+  
+  do i=1,n
+     x=xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
+     V1 = gdwi_norm_potential(x,p,phi0)
+
+     call livewrite('gdwi_potential.dat',x,V1)
+
+     eps1 = gdwi_epsilon_one(x,p,phi0)
+     eps2 = gdwi_epsilon_two(x,p,phi0)
+     eps3 = gdwi_epsilon_three(x,p,phi0)
+
+     call livewrite('gdwi_slowroll.dat',x,eps1,eps2,eps3)
+
+  end do
+
+  
   call delete_file('gdwi_predic.dat')
   call delete_file('gdwi_nsr.dat')
 
