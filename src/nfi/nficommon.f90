@@ -13,6 +13,7 @@ module nficommon
 
   real(kp), parameter :: NfiBig = epsilon(1._kp)*huge(1._kp)
   real(kp), parameter :: NfiSmall = epsilon(1._kp)
+  real(kp), parameter :: logVbig = 80._kp
 
 
   public nfi_norm_potential
@@ -20,7 +21,7 @@ module nficommon
   public nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   public nfi_x_epsoneunity, nfi_x_epstwounity
   public nfi_efold_primitive, nfi_x_trajectory
-  public NfiBig, NfiSmall, nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
+  public NfiBig, NfiSmall, logVbig, nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
  
 
 

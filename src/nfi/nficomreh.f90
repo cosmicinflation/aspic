@@ -12,18 +12,18 @@ module nficomreh
   use nficommon, only : nfi_epsilon_one
   use nficommon, only : nfi_norm_potential, nfi_efold_primitive
 
-  
+
   implicit none
 
   private
-  
+
   public nfi_x_star, nfi_x_rrad, nfi_x_rreh
 
 contains
 
 !returns x such given potential parameters, scalar power, wreh and
 !lnrhoreh. If present, returns the corresponding bfoldstar
-  function nfi_x_star(a,b,w,lnRhoReh,Pstar,xend,xmin,xmax,bfoldstar)    
+  function nfi_x_star(a,b,w,lnRhoReh,Pstar,xend,xmin,xmax,bfoldstar)
     implicit none
     real(kp) :: nfi_x_star
     real(kp), intent(in) :: a,b,lnRhoReh,w,Pstar
@@ -35,7 +35,7 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: nfiData
 
-  
+
     if (w.eq.1._kp/3._kp) then
        if (display) write(*,*)'w = 1/3 : solving for rhoReh = rhoEnd'
     endif
@@ -44,7 +44,7 @@ contains
     potEnd = nfi_norm_potential(xEnd,a,b)
 
     primEnd = nfi_efold_primitive(xEnd,a,b)
-    
+
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
 
     nfiData%real1 = a
@@ -61,7 +61,7 @@ contains
 
   end function nfi_x_star
 
-  function find_nfi_x_star(x,nfiData)   
+  function find_nfi_x_star(x,nfiData)
     implicit none
     real(kp) :: find_nfi_x_star
     real(kp), intent(in) :: x
@@ -79,12 +79,12 @@ contains
     potStar = nfi_norm_potential(x,a,b)
 
     find_nfi_x_star = find_reheat(primStar,calFplusprimEnd,w,epsOneStar,potStar)
-  
+
   end function find_nfi_x_star
 
 !returns x given potential parameters, scalar power, and lnRrad.
 !If present, returns the corresponding bfoldstar
-  function nfi_x_rrad(a,b,lnRrad,Pstar,xend,xmin,xmax,bfoldstar)    
+  function nfi_x_rrad(a,b,lnRrad,Pstar,xend,xmin,xmax,bfoldstar)
     implicit none
     real(kp) :: nfi_x_rrad
     real(kp), intent(in) :: a,b,lnRrad,Pstar
@@ -96,7 +96,7 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: nfiData
 
-  
+
     if (lnRrad.eq.0._kp) then
        if (display) write(*,*)'Rrad=1 : solving for rhoReh = rhoEnd'
     endif
@@ -105,7 +105,7 @@ contains
     potEnd = nfi_norm_potential(xEnd,a,b)
 
     primEnd = nfi_efold_primitive(xEnd,a,b)
-   
+
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
 
     nfiData%real1 = a
@@ -121,7 +121,7 @@ contains
 
   end function nfi_x_rrad
 
-  function find_nfi_x_rrad(x,nfiData)   
+  function find_nfi_x_rrad(x,nfiData)
     implicit none
     real(kp) :: find_nfi_x_rrad
     real(kp), intent(in) :: x
@@ -138,13 +138,13 @@ contains
     potStar = nfi_norm_potential(x,a,b)
 
     find_nfi_x_rrad = find_reheat_rrad(primStar,calFplusprimEnd,epsOneStar,potStar)
-  
+
   end function find_nfi_x_rrad
 
 
 !returns x given potential parameters, scalar power, and lnRreh.
 !If present, returns the corresponding bfoldstar
-  function nfi_x_rreh(a,b,lnRreh,xend,xmin,xmax,bfoldstar)    
+  function nfi_x_rreh(a,b,lnRreh,xend,xmin,xmax,bfoldstar)
     implicit none
     real(kp) :: nfi_x_rreh
     real(kp), intent(in) :: a,b,lnRreh
@@ -156,7 +156,7 @@ contains
     real(kp) :: primEnd,epsOneEnd,potEnd
     type(transfert) :: nfiData
 
-  
+
     if (lnRreh.eq.0._kp) then
        if (display) write(*,*)'Rreh=1 : solving for rhoReh = rhoEnd'
     endif
@@ -165,12 +165,25 @@ contains
     potEnd = nfi_norm_potential(xEnd,a,b)
 
     primEnd = nfi_efold_primitive(xEnd,a,b)
-   
+
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
 
     nfiData%real1 = a
     nfiData%real2 = b
     nfiData%real3 = calF + primEnd
+
+    !DEBUGGING, TO REMOVE...
+    if (find_nfi_x_rreh(xmin,nfiData)*find_nfi_x_rreh(xmax,nfiData).gt.0.) then
+      print*, 'a=',a,'b=',b
+      print*, 'xmin=',xmin,'fmin=',find_nfi_x_rreh(xmin,nfiData)
+      print*, 'xmax=',xmax,'fmax=',find_nfi_x_rreh(xmax,nfiData)
+      print*, 'primStarmin=',nfi_efold_primitive(xmin,a,b)
+      print*, 'primStarmax=',nfi_efold_primitive(xmax,a,b)
+      print*, 'potStarmin=',nfi_norm_potential(xmin,a,b)
+      print*, 'potStarmax=',nfi_norm_potential(xmax,a,b)
+      print*, 'calFplusNuEnd=', calF + primEnd
+      print*, 'calF=',calF
+    endif
 
     x = zbrent(find_nfi_x_rreh,xmin,xmax,tolzbrent,nfiData)
     nfi_x_rreh = x
@@ -181,7 +194,7 @@ contains
 
   end function nfi_x_rreh
 
-  function find_nfi_x_rreh(x,nfiData)   
+  function find_nfi_x_rreh(x,nfiData)
     implicit none
     real(kp) :: find_nfi_x_rreh
     real(kp), intent(in) :: x
@@ -197,9 +210,9 @@ contains
     potStar = nfi_norm_potential(x,a,b)
 
     find_nfi_x_rreh = find_reheat_rreh(primStar,calFplusprimEnd,potStar)
-  
+
   end function find_nfi_x_rreh
 
 
-  
+
 end module nficomreh

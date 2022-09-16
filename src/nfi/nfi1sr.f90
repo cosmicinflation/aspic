@@ -14,7 +14,8 @@ module nfi1sr
   use nficommon, only : nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
   use nficommon, only : nfi_epsilon_one, nfi_epsilon_two, nfi_epsilon_three
   use nficommon, only : nfi_x_epsoneunity, nfi_x_trajectory,nfi_efold_primitive
-
+  use nficommon, only : logVbig
+  
   implicit none
 
   private
@@ -39,7 +40,7 @@ contains
 
   end function nfi1_check_params
 
-  
+
 !V/M^4
   function nfi1_norm_potential(x,a,b)
     implicit none
@@ -49,7 +50,7 @@ contains
     nfi1_norm_potential = nfi_norm_potential(x,a,b)
 
   end function nfi1_norm_potential
- 
+
 
 !first derivative of the potential/M^4 with respect to x
   function nfi1_norm_deriv_potential(x,a,b)
@@ -74,35 +75,35 @@ contains
 
 
 !epsilon_one(x)
-  function nfi1_epsilon_one(x,a,b)    
+  function nfi1_epsilon_one(x,a,b)
     implicit none
     real(kp) :: nfi1_epsilon_one
     real(kp), intent(in) :: x,a,b
-    
+
     nfi1_epsilon_one = nfi_epsilon_one(x,a,b)
-    
+
   end function nfi1_epsilon_one
 
 
 !epsilon_two(x)
-  function nfi1_epsilon_two(x,a,b)    
+  function nfi1_epsilon_two(x,a,b)
     implicit none
     real(kp) :: nfi1_epsilon_two
     real(kp), intent(in) :: x,a,b
-    
+
     nfi1_epsilon_two = nfi_epsilon_two(x,a,b)
-    
+
   end function nfi1_epsilon_two
 
 
 !epsilon_three(x)
-  function nfi1_epsilon_three(x,a,b)    
+  function nfi1_epsilon_three(x,a,b)
     implicit none
     real(kp) :: nfi1_epsilon_three
     real(kp), intent(in) :: x,a,b
-    
+
     nfi1_epsilon_three = nfi_epsilon_three(x,a,b)
-    
+
   end function nfi1_epsilon_three
 
 
@@ -131,10 +132,10 @@ contains
     if (.not.nfi1_check_params(a,b)) then
        stop 'nfi1_numacc_xinimin: nfi1 requires a>0, b>1'
     endif
-      
+
     nfi1_numacc_xinimin = nfi_numacc_x_epsonenull(a,b)
-   
-    
+
+
   end function nfi1_numacc_xinimin
 
 
@@ -151,7 +152,11 @@ contains
     endif
 
     nfi1_numacc_amin = log(NfiBig)**(1._kp-b)*(0.5_kp*b*b)**(-0.5_kp*b)
-    
+! Maximum 20 orders of magnitude in energy are allowed between
+! 'star' and 'end', hence logVbig = 80 orders of magnitude for the
+! potential
+    nfi1_numacc_amin = logVbig*log(10._kp)**(1._kp-b)*(0.5_kp*b*b)**(-0.5_kp*b)
+
   end function nfi1_numacc_amin
 
 
@@ -166,7 +171,7 @@ contains
     if (b.le.1._kp) then
        stop 'nfi1_amax: nfi1 requires b>1'
     endif
-    
+
     if (b.ge.2._kp) then
        if (display) write(*,*)'nfi1_amax: for b>=2 amax is infinite!'
        nfi1_amax = huge(1._kp)
@@ -238,9 +243,9 @@ contains
        write(*,*)'nfi1_x_trajectory: not enough efolds!'
        write(*,*)'efold requested= efold maxi= ',-bfold,efoldMax
        if (b.gt.1._kp) write(*,*) 'xinimin (numacc)= ',xinimin
-       stop 
+       stop
     endif
-    
+
     nfi1_x_trajectory = nfi_x_trajectory(bfold,xend,a,b)
 
   end function nfi1_x_trajectory

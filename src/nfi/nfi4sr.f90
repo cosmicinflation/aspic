@@ -9,6 +9,7 @@
 
 module nfi4sr
   use infprec, only : kp
+  use nficommon, only : logVbig
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
   use nficommon, only : nfi_norm_deriv_second_potential
   use nficommon, only : nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
@@ -40,7 +41,7 @@ contains
 
   end function nfi4_check_params
 
-  
+
 !V/M^4
   function nfi4_norm_potential(x,a,b)
     implicit none
@@ -50,7 +51,7 @@ contains
     nfi4_norm_potential = nfi_norm_potential(x,a,b)
 
   end function nfi4_norm_potential
- 
+
 
 !first derivative of the potential/M^4 with respect to x
   function nfi4_norm_deriv_potential(x,a,b)
@@ -75,35 +76,35 @@ contains
 
 
 !epsilon_one(x)
-  function nfi4_epsilon_one(x,a,b)    
+  function nfi4_epsilon_one(x,a,b)
     implicit none
     real(kp) :: nfi4_epsilon_one
     real(kp), intent(in) :: x,a,b
-    
+
     nfi4_epsilon_one = nfi_epsilon_one(x,a,b)
-    
+
   end function nfi4_epsilon_one
 
 
 !epsilon_two(x)
-  function nfi4_epsilon_two(x,a,b)    
+  function nfi4_epsilon_two(x,a,b)
     implicit none
     real(kp) :: nfi4_epsilon_two
     real(kp), intent(in) :: x,a,b
-    
+
     nfi4_epsilon_two = nfi_epsilon_two(x,a,b)
-    
+
   end function nfi4_epsilon_two
 
 
 !epsilon_three(x)
-  function nfi4_epsilon_three(x,a,b)    
+  function nfi4_epsilon_three(x,a,b)
     implicit none
     real(kp) :: nfi4_epsilon_three
     real(kp), intent(in) :: x,a,b
-    
+
     nfi4_epsilon_three = nfi_epsilon_three(x,a,b)
-    
+
   end function nfi4_epsilon_three
 
 
@@ -115,7 +116,7 @@ contains
     real(kp), intent(in) :: a,b
 
     nfi4_xinimin = nfi_x_epsoneunity(a,b)
-    
+
   end function nfi4_xinimin
 
 
@@ -126,7 +127,7 @@ contains
     implicit none
     real(kp) :: nfi4_xendmin
     real(kp), intent(in) :: efold,a,b
-    
+
     real(kp) :: xinimin, xendmax, efoldMax
 
     if (.not.nfi4_check_params(a,b)) then
@@ -139,7 +140,7 @@ contains
 
     efoldMax = -nfi4_efold_primitive(xendmax,a,b) &
          + nfi4_efold_primitive(xinimin,a,b)
-    
+
     if (efold.gt.efoldMax) then
        write(*,*)'nfi4_xendmin: not enough efolds!'
        write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
@@ -158,12 +159,12 @@ contains
     real(kp) :: nfi4_numacc_xendmax
     real(kp), intent(in) :: a,b
 
-    real(kp) :: xpotbig, xepsnull
+    real(kp) :: xpotbig, xepsnull, xinimin
 
     if (.not.nfi4_check_params(a,b)) then
        stop 'nfi4_xendmax: nfi4 requires a>0, 0<b<1 or a<0, b<0'
     endif
-    
+
     xpotbig = nfi_numacc_x_potbig(a,b)
     xepsnull = nfi_numacc_x_epsonenull(a,b)
 
@@ -174,7 +175,13 @@ contains
        nfi4_numacc_xendmax = min(xepsnull,xpotbig)
     endif
 
-    
+!check that there are no more than logVbig = 80 order of magnitude
+!between Vmin and Vmax (since inflation must proceed between the
+!Planck and BBN scales)
+    xinimin = nfi4_xinimin(a,b)
+    nfi4_numacc_xendmax = min (nfi4_numacc_xendmax, &
+                      (xinimin**b+logVbig*log(10._kp)/a)**(1._kp/b))
+
   end function nfi4_numacc_xendmax
 
 
@@ -202,7 +209,7 @@ contains
     if (.not.nfi4_check_params(a,b)) then
        stop 'nfi4_x_trajectory: nfi4 requires a>0, 0<b<1 or a<0, b<0'
     endif
-    
+
     xinimin = nfi4_xinimin(a,b)
 
     efoldMax = -nfi4_efold_primitive(xend,a,b) &
@@ -213,7 +220,7 @@ contains
        write(*,*)'efold requested= efold maxi= ',-bfold,efoldMax
        stop
     endif
-    
+
     nfi4_x_trajectory = nfi_x_trajectory(bfold,xend,a,b)
 
   end function nfi4_x_trajectory

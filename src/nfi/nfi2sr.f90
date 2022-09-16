@@ -9,6 +9,7 @@
 
 module nfi2sr
   use infprec, only : kp
+  use nficommon, only : logVbig
   use nficommon, only : nfi_norm_potential, nfi_norm_deriv_potential
   use nficommon, only : nfi_norm_deriv_second_potential
   use nficommon, only : nfi_numacc_x_potbig, nfi_numacc_x_epsonenull
@@ -26,7 +27,7 @@ module nfi2sr
 
   public nfi2_check_params
   public nfi2_numacc_xinimax, nfi2_numacc_xendmax, nfi2_numacc_xendmin
-  public nfi2_xinimax, nfi2_xendmax, nfi2_amin, nfi2_numacc_amin
+  public nfi2_xinimax, nfi2_xendmax, nfi2_amin, nfi2_numacc_amin, nfi2_efold_max
 
 contains
 
@@ -40,7 +41,7 @@ contains
 
   end function nfi2_check_params
 
-  
+
 !V/M^4
   function nfi2_norm_potential(x,a,b)
     implicit none
@@ -50,7 +51,7 @@ contains
     nfi2_norm_potential = nfi_norm_potential(x,a,b)
 
   end function nfi2_norm_potential
- 
+
 
 !first derivative of the potential/M^4 with respect to x
   function nfi2_norm_deriv_potential(x,a,b)
@@ -75,35 +76,35 @@ contains
 
 
 !epsilon_one(x)
-  function nfi2_epsilon_one(x,a,b)    
+  function nfi2_epsilon_one(x,a,b)
     implicit none
     real(kp) :: nfi2_epsilon_one
     real(kp), intent(in) :: x,a,b
-    
+
     nfi2_epsilon_one = nfi_epsilon_one(x,a,b)
-    
+
   end function nfi2_epsilon_one
 
 
 !epsilon_two(x)
-  function nfi2_epsilon_two(x,a,b)    
+  function nfi2_epsilon_two(x,a,b)
     implicit none
     real(kp) :: nfi2_epsilon_two
     real(kp), intent(in) :: x,a,b
-    
+
     nfi2_epsilon_two = nfi_epsilon_two(x,a,b)
-    
+
   end function nfi2_epsilon_two
 
 
 !epsilon_three(x)
-  function nfi2_epsilon_three(x,a,b)    
+  function nfi2_epsilon_three(x,a,b)
     implicit none
     real(kp) :: nfi2_epsilon_three
     real(kp), intent(in) :: x,a,b
-    
+
     nfi2_epsilon_three = nfi_epsilon_three(x,a,b)
-    
+
   end function nfi2_epsilon_three
 
 
@@ -115,18 +116,19 @@ contains
     real(kp), intent(in) :: a,b
 
     nfi2_xinimax = nfi_x_epsoneunity(a,b)
-    
+
   end function nfi2_xinimax
 
 
 
-!returns the maximal possible value of xend to get efold number of
-!inflation while still starting in the domain eps1<1
+!returns the maximal possible value of xend to get efold number of inflation
+! while still starting in the domain eps1<1 (option 1)
+! while starting in the numerically acceptable domain (option 2)
    function nfi2_xendmax(efold,a,b)
     implicit none
     real(kp) :: nfi2_xendmax
     real(kp), intent(in) :: efold,a,b
-    
+
     real(kp) :: xinimax, xendmin, efoldMax
 
     if (.not.nfi2_check_params(a,b)) then
@@ -134,12 +136,13 @@ contains
     endif
 
 
-    xinimax = nfi2_xinimax(a,b)
+    !xinimax = nfi2_xinimax(a,b)
+    xinimax = nfi2_numacc_xinimax(a,b)
     xendmin = tiny(0._kp)
 
     efoldMax = -nfi2_efold_primitive(xendmin,a,b) &
          + nfi2_efold_primitive(xinimax,a,b)
-    
+
     if (efold.gt.efoldMax) then
        write(*,*)'nfi2_xendmax: not enough efolds!'
        write(*,*)'efold requested=',efold,'efold maxi= ',efoldMax
@@ -152,7 +155,10 @@ contains
 
 
 
-!return the maximal positive value of xini both inflation and numerical
+!return the maximal positive value of xini such that:
+!    inflation takes place (eps1<1)
+!    V(xini) < huge (numerical condition)
+!    V(xini) < Vbig (less than 20 orders of magnitude between BBN and Planck)
 !value for the potential (< huge)
   function nfi2_numacc_xinimax(a,b)
     implicit none
@@ -163,8 +169,10 @@ contains
        stop 'nfi1_numacc_xinimax: nfi2 requires a<0, b>1'
     endif
 
-    nfi2_numacc_xinimax = min(nfi_x_epsoneunity(a,b),nfi_numacc_x_potbig(a,b))
-   
+    nfi2_numacc_xinimax = min(nfi_x_epsoneunity(a,b), &
+                              nfi_numacc_x_potbig(a,b), &
+                              exp(log(log(10._kp)*logVbig/abs(a))/b))
+
   end function nfi2_numacc_xinimax
 
 
@@ -188,7 +196,7 @@ contains
 
     efoldMax = -nfi2_efold_primitive(xendmin,a,b) &
          + nfi2_efold_primitive(xinimax,a,b)
-    
+
     if (efold.gt.efoldMax) then
        if (display) then
           write(*,*)'nfi2_numacc_xendmax: not enough efolds!'
@@ -218,7 +226,7 @@ contains
     endif
 
     nfi2_numacc_xendmin = nfi_numacc_x_epsonenull(a,b)
-   
+
   end function nfi2_numacc_xendmin
 
 
@@ -235,7 +243,7 @@ contains
     if (b.le.1._kp) then
        stop 'nfi2_amin: nfi2 requires b>1'
     endif
-    
+
     if (b.ge.2._kp) then
        if (display) write(*,*)'nfi2_amin: for b>=2 amin is -infinite!'
        nfi2_amin = -huge(1._kp)
@@ -262,7 +270,7 @@ contains
        stop 'nfi2_numacc_amin: nfi2 requires b>1'
     endif
 
-!this assumes that xinimax is given by xepsone    
+!this assumes that xinimax is given by xepsone
     if (b.eq.2._kp) then
        amin = 0.25*log(NfiSmall)/efold
     else
@@ -281,7 +289,7 @@ contains
 !if this is violated, let's do it again by assuming xinimax=xpotbig;
 !but now this sucks because we have to solve a transcendental
 !equation. We approximate in the safest way provided  afix < a < 0
-    
+
     afix = -1._kp
     if (b.eq.2._kp) then
        amin = -1._kp/log(NfiBig)*(2._kp/NfiSmall)**(-1._kp) &
@@ -291,12 +299,25 @@ contains
             *(log(NfiBig)**((2._kp-b)/b) + (-afix)**(2._kp/b)*b*(b-2._kp)*efold) &
             **(b*(b-1._kp)/(b-2._kp))
     endif
-   
+
     nfi2_numacc_amin = amin
 
   end function nfi2_numacc_amin
 
+!Returns the maximum number of efolds realised from the maximum allowed value for xini
+  function nfi2_efold_max(a,b)
+    implicit none
+    real(kp), intent(in) :: a,b
+    real(kp) :: nfi2_efold_max
+    real(kp) :: xend_min, xini_max
 
+    xini_max = nfi2_numacc_xinimax(a,b)
+    xend_min = epsilon(1._kp)
+
+    nfi2_efold_max = nfi2_efold_primitive(xini_max,a,b)- &
+                      nfi2_efold_primitive(xend_min,a,b)
+
+  end function nfi2_efold_max
 
 !this is integral[V(phi)/V'(phi) dphi]
   function nfi2_efold_primitive(x,a,b)
@@ -321,7 +342,7 @@ contains
     if (.not.nfi2_check_params(a,b)) then
        stop 'nfi2_x_trajectory: nfi2 requires a<0, b>1'
     endif
-    
+
 
     xinimax = nfi2_xinimax(a,b)
 
@@ -333,7 +354,7 @@ contains
        write(*,*)'efold requested= efold maxi= ',-bfold,efoldMax
        stop
     endif
-    
+
     nfi2_x_trajectory = nfi_x_trajectory(bfold,xend,a,b)
 
   end function nfi2_x_trajectory
