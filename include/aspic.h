@@ -152,6 +152,8 @@ use saii1sr
 use saii1reheat
 use saii2sr
 use saii2reheat
+use gdwisr
+use gdwireheat
 
 !three parameter models
 use lmi2sr
