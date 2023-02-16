@@ -1,14 +1,14 @@
 !test the reheating derivation from slow-roll
-program sabimain
+program satimain
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar
-  use sabisr, only : sabi_epsilon_one, sabi_epsilon_two,sabi_epsilon_three
-  use sabireheat, only : sabi_lnrhoreh_max, sabi_x_star
+  use satisr, only : sati_epsilon_one, sati_epsilon_two,sati_epsilon_three
+  use satireheat, only : sati_lnrhoreh_max, sati_x_star
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use sabisr, only : sabi_norm_potential, sabi_x_endinf, sabi_x_trajectory
-  use sabireheat, only : sabi_x_rreh, sabi_x_rrad
+  use satisr, only : sati_norm_potential, sati_x_endinf, sati_x_trajectory
+  use satireheat, only : sati_x_rreh, sati_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
 
@@ -40,8 +40,8 @@ program sabimain
 
   Pstar = powerAmpScalar
 
-  call delete_file('sabi_potential.dat')
-  call delete_file('sabi_slowroll.dat')
+  call delete_file('sati_potential.dat')
+  call delete_file('sati_slowroll.dat')
 
   npts=100
 
@@ -51,18 +51,18 @@ program sabimain
   do i=1,npts
      x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(npts-1,kp))
 
-     V1 = sabi_norm_potential(x,alpha=1._kp,n=1._kp)
+     V1 = sati_norm_potential(x,alpha=1._kp,n=1._kp)
 
 
-     call livewrite('sabi_potential.dat',x,V1)
+     call livewrite('sati_potential.dat',x,V1)
 
      if (x.eq.0._kp) cycle
      
-     eps1 = sabi_epsilon_one(x,alpha=1._kp,n=1._kp)
-     eps2 = sabi_epsilon_two(x,alpha=1._kp,n=1._kp)
-     eps3 = sabi_epsilon_three(x,alpha=1._kp,n=1._kp)
+     eps1 = sati_epsilon_one(x,alpha=1._kp,n=1._kp)
+     eps2 = sati_epsilon_two(x,alpha=1._kp,n=1._kp)
+     eps3 = sati_epsilon_three(x,alpha=1._kp,n=1._kp)
           
-     call livewrite('sabi_slowroll.dat',x,eps1,eps2,eps3)
+     call livewrite('sati_slowroll.dat',x,eps1,eps2,eps3)
      
   enddo
   
@@ -78,10 +78,10 @@ program sabimain
 !!      n=1      !!
 !!!!!!!!!!!!!!!!!!!
 
-  call delete_file('sabi_predic_neq1.dat')
-  call delete_file('sabi_nsr_neq1.dat')
+  call delete_file('sati_predic_neq1.dat')
+  call delete_file('sati_nsr_neq1.dat')
 
-  call aspicwrite_header('sabi',labeps12,labnsr,labbfoldreh,(/'alpha','n    '/))
+  call aspicwrite_header('sati',labeps12,labnsr,labbfoldreh,(/'alpha','n    '/))
   
   n=1._kp
 
@@ -101,8 +101,8 @@ program sabimain
     print*,'alpha=',alpha,'n=',n
 
     lnRhoRehMin = lnRhoNuc
-    xEnd = sabi_x_endinf(alpha,n)
-    lnRhoRehMax = sabi_lnrhoreh_max(alpha,n,xend,Pstar)
+    xEnd = sati_x_endinf(alpha,n)
+    lnRhoRehMax = sati_lnrhoreh_max(alpha,n,xend,Pstar)
 
     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -111,11 +111,11 @@ program sabimain
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-      xstar = sabi_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
+      xstar = sati_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
-      eps1 = sabi_epsilon_one(xstar,alpha,n)
-      eps2 = sabi_epsilon_two(xstar,alpha,n)
-      eps3 = sabi_epsilon_three(xstar,alpha,n)
+      eps1 = sati_epsilon_one(xstar,alpha,n)
+      eps2 = sati_epsilon_two(xstar,alpha,n)
+      eps3 = sati_epsilon_three(xstar,alpha,n)
 
       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
@@ -130,9 +130,9 @@ program sabimain
 
       call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,n/))
       
-      call livewrite('sabi_predic_neq1.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
+      call livewrite('sati_predic_neq1.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
 
-      call livewrite('sabi_nsr_neq1.dat',ns,r,abs(bfoldstar),lnRhoReh)
+      call livewrite('sati_nsr_neq1.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
 
     end do
@@ -145,8 +145,8 @@ end do
 !!      n=5      !!
 !!!!!!!!!!!!!!!!!!!
 
-call delete_file('sabi_predic_neq5.dat')
-call delete_file('sabi_nsr_neq5.dat')
+call delete_file('sati_predic_neq5.dat')
+call delete_file('sati_nsr_neq5.dat')
 
   n=5._kp
 
@@ -167,8 +167,8 @@ call delete_file('sabi_nsr_neq5.dat')
 
 
     lnRhoRehMin = lnRhoNuc
-    xEnd = sabi_x_endinf(alpha,n)
-    lnRhoRehMax = sabi_lnrhoreh_max(alpha,n,xend,Pstar)
+    xEnd = sati_x_endinf(alpha,n)
+    lnRhoRehMax = sati_lnrhoreh_max(alpha,n,xend,Pstar)
 
     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -177,11 +177,11 @@ call delete_file('sabi_nsr_neq5.dat')
 
       lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-      xstar = sabi_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
+      xstar = sati_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
-      eps1 = sabi_epsilon_one(xstar,alpha,n)
-      eps2 = sabi_epsilon_two(xstar,alpha,n)
-      eps3 = sabi_epsilon_three(xstar,alpha,n)
+      eps1 = sati_epsilon_one(xstar,alpha,n)
+      eps2 = sati_epsilon_two(xstar,alpha,n)
+      eps3 = sati_epsilon_three(xstar,alpha,n)
 
       print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
@@ -196,9 +196,9 @@ call delete_file('sabi_nsr_neq5.dat')
 
       call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,n/))
       
-      call livewrite('sabi_predic_neq5.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
+      call livewrite('sati_predic_neq5.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
 
-      call livewrite('sabi_nsr_neq5.dat',ns,r,abs(bfoldstar),lnRhoReh)
+      call livewrite('sati_nsr_neq5.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
 
    end do
@@ -226,8 +226,8 @@ call delete_file('sabi_nsr_neq5.dat')
 
 
     lnRhoRehMin = lnRhoNuc
-    xEnd = sabi_x_endinf(alpha,n)
-    lnRhoRehMax = sabi_lnrhoreh_max(alpha,n,xend,Pstar)
+    xEnd = sati_x_endinf(alpha,n)
+    lnRhoRehMax = sati_lnrhoreh_max(alpha,n,xend,Pstar)
 
     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
 
@@ -236,11 +236,11 @@ call delete_file('sabi_nsr_neq5.dat')
 
        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-       xstar = sabi_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
+       xstar = sati_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
 
-       eps1 = sabi_epsilon_one(xstar,alpha,n)
-       eps2 = sabi_epsilon_two(xstar,alpha,n)
-       eps3 = sabi_epsilon_three(xstar,alpha,n)
+       eps1 = sati_epsilon_one(xstar,alpha,n)
+       eps2 = sati_epsilon_two(xstar,alpha,n)
+       eps3 = sati_epsilon_three(xstar,alpha,n)
 
        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
 
@@ -255,9 +255,9 @@ call delete_file('sabi_nsr_neq5.dat')
 
        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/alpha,n/))
 
-       call livewrite('sabi_predic_neq5.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
+       call livewrite('sati_predic_neq5.dat',alpha,n,eps1,eps2,eps3,ns,r,Treh)
 
-       call livewrite('sabi_nsr_neq5.dat',ns,r,abs(bfoldstar),lnRhoReh)
+       call livewrite('sati_nsr_neq5.dat',ns,r,abs(bfoldstar),lnRhoReh)
 
 
     end do
@@ -279,27 +279,27 @@ call delete_file('sabi_nsr_neq5.dat')
   lnRradmax = 10
   alpha = 2._kp
   n = 2._kp
-  xEnd = sabi_x_endinf(alpha,n)
+  xEnd = sati_x_endinf(alpha,n)
   
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     xstar = sabi_x_rrad(alpha,n,xend,lnRrad,Pstar,bfoldstar)
+     xstar = sati_x_rrad(alpha,n,xend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad,' bfoldstar= ',bfoldstar, 'xstar', xstar
 
-     eps1 = sabi_epsilon_one(xstar,alpha,n)
+     eps1 = sati_epsilon_one(xstar,alpha,n)
 
      !consistency test
      !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  sabi_epsilon_one(xend,alpha,n)
-     VendOverVstar = sabi_norm_potential(xend,alpha,n)/sabi_norm_potential(xstar,alpha,n)
+     eps1end =  sati_epsilon_one(xend,alpha,n)
+     VendOverVstar = sati_norm_potential(xend,alpha,n)/sati_norm_potential(xstar,alpha,n)
 
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
-     xstar = sabi_x_rreh(alpha,n,xend,lnR,bfoldstar)
+     xstar = sati_x_rreh(alpha,n,xend,lnR,bfoldstar)
      print *,'lnR',lnR, 'bfoldstar= ',bfoldstar, 'xstar', xstar
 
      !second consistency check
@@ -307,7 +307,7 @@ call delete_file('sabi_nsr_neq5.dat')
      w = 0._kp
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar)
 
-     xstar = sabi_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
+     xstar = sati_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'xstar',xstar
 
@@ -316,4 +316,4 @@ call delete_file('sabi_nsr_neq5.dat')
 
 
 
-end program sabimain
+end program satimain

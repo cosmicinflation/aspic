@@ -72,7 +72,7 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
 	sbki/libsbki.la \
 	sdi/libsdi.la \
 	saai/libsaai.la \
-	sabi/libsabi.la \
+	sati/libsati.la \
 	saci/libsaci.la \
 	hbi/libhbi.la \
 	shi/libshi.la \
@@ -88,7 +88,7 @@ libaspic@PREC_SUFFIX@_la_LIBADD =                \
 SUBDIRS = lfi gmlfi rcmi rcqi ni esi pli kmii hf1i sfi li ii cwi kmiii si hi twi \
           mhi rpi dwi gmssmi bsusybi ti bei psni ncki lmi rgi vhi dsi ssbi oi \
           ai cnai cnbi oripi csi sbi cnci rmi lpi cndi rchi osti wri imi gripi \
-          bi kklti nfi ccsi di hni ncli vfmi fi ahi sbki sdi saai sabi saci hbi \
+          bi kklti nfi ccsi di hni ncli vfmi fi ahi sbki sdi saai sati saci hbi \
           shi rcipi gdwi saii saiii rclfi dei pai
 
 #in parallel (bugged)
