@@ -125,7 +125,7 @@ AC_CONFIG_FILES([Makefile
 		 src/sbki/Makefile
 		 src/sdi/Makefile
 		 src/saai/Makefile
-		 src/sabi/Makefile
+		 src/sati/Makefile
 		 src/saci/Makefile
 		 src/hbi/Makefile
 		 src/shi/Makefile
