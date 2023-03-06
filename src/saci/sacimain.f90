@@ -36,9 +36,38 @@ program sacimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
+  real(kp) :: xmin,xmax,V1,x
 
   Pstar = powerAmpScalar
 
+
+  call delete_file('saci_potential.dat')
+  call delete_file('saci_slowroll.dat')
+
+  npts=100
+
+  xmin = 1e-2_kp
+  xmax = 5._kp
+  
+  do i=1,npts
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(npts-1,kp))
+
+     V1 = saci_norm_potential(x,alpha=0.1_kp,n=2._kp)
+
+
+     call livewrite('saci_potential.dat',x,V1)
+
+     if (x.eq.0._kp) cycle
+     
+     eps1 = saci_epsilon_one(x,alpha=0.1_kp,n=2._kp)
+     eps2 = saci_epsilon_two(x,alpha=0.1_kp,n=2._kp)
+     eps3 = saci_epsilon_three(x,alpha=0.1_kp,n=2._kp)
+          
+     call livewrite('saci_slowroll.dat',x,eps1,eps2,eps3)
+     
+  enddo
+
+  
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -56,7 +85,7 @@ program sacimain
 
   call aspicwrite_header('saci',labeps12,labnsr,labbfoldreh,(/'alpha','n    '/))
   
-  n=1._kp
+  n=2._kp
 
   npts = 20
   nalpha = 500

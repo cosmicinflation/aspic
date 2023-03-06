@@ -1,7 +1,7 @@
 !slow-roll functions for the SuperConformal alpha-attractor C inflation potential
 !
-!V(phi) =  M^4 [ tanh(x/sqrt(6 alpha)) / ( 1 + tanh(x/sqrt(6 alpha)) )   ]^(2n)
-!
+!V(phi) propto [ tanh(x/sqrt(6 alpha)) / ( 1 + tanh(x/sqrt(6 alpha)) )   ]^(2n)
+!       = M^4 ( 1 - exp{-sqrt[2/(3 alpha)]x} )^(2n)
 !x = phi/Mp
 
 module sacisr
@@ -15,56 +15,60 @@ module sacisr
   public saci_epsilon_one, saci_epsilon_two, saci_epsilon_three
   public saci_efold_primitive, saci_x_trajectory, saci_x_endinf
 
+  real(kp), parameter :: sqtwothird = sqrt(2._kp/3._kp)
+  
 contains
 
 !returns V/M**4
   function saci_norm_potential(x,alpha,n)
     implicit none
-    real(kp) :: saci_norm_potential, y
+    real(kp) :: saci_norm_potential,expmy
     real(kp), intent(in) :: x,alpha,n
 
-    y = tanh(x/sqrt(6._kp*alpha))
-    saci_norm_potential = (y/(y+1._kp))**(2._kp*n)
+    expmy = exp(-sqtwothird * x/sqrt(alpha))
+    
+    saci_norm_potential = (1._kp - expmy)**(2._kp*n)
 
+    
   end function saci_norm_potential
 
 
 !returns the first derivative of the potential with respect to x=phi/Mp, divided by M**4
   function saci_norm_deriv_potential(x,alpha,n)
     implicit none
-    real(kp) :: saci_norm_deriv_potential
+    real(kp) :: saci_norm_deriv_potential,expmy
     real(kp), intent(in) :: x,alpha,n
 
-    saci_norm_deriv_potential = (sqrt(2._kp/3._kp)*n*1._kp/cosh(x/(sqrt(6._kp)*sqrt(alpha)))**2* &
-                                (tanh(x/(sqrt(6._kp)*sqrt(alpha)))/(1._kp+tanh(x/(sqrt(6._kp)* &
-                                sqrt(alpha)))))**(-1._kp+2._kp*n))/(sqrt(alpha)*(1._kp+ &
-                                tanh(x/(sqrt(6._kp)*sqrt(alpha))))**2)
-
+    expmy = exp(-sqtwothird*x/sqrt(alpha))
+    
+    saci_norm_deriv_potential = 2._kp*n*sqtwothird/sqrt(alpha)*expmy*(1._kp - expmy)**(2._kp*n-1._kp)
+    
   end function saci_norm_deriv_potential
 
 
 !returns the second derivative of the potential with respect to x=phi/Mp, divided by M**4
   function saci_norm_deriv_second_potential(x,alpha,n)
     implicit none
-    real(kp) :: saci_norm_deriv_second_potential
+    real(kp) :: saci_norm_deriv_second_potential,expmy,exppy
     real(kp), intent(in) :: x,alpha,n
 
-    saci_norm_deriv_second_potential = (n*1._kp/sinh(x/(sqrt(6._kp)*sqrt(alpha)))**2*(tanh(x/ &
-                                        (sqrt(6._kp)*sqrt(alpha)))/(1._kp+tanh(x/(sqrt(6._kp)* &
-                                        sqrt(alpha)))))**(2*n)*(2._kp*n*1._kp/cosh(x/ &
-                                        (sqrt(6._kp)*sqrt(alpha)))**2-(1._kp+tanh(x/(sqrt(6._kp)* &
-                                        sqrt(alpha))))**2))/(3._kp*alpha*(1._kp+tanh(x/(sqrt(6._kp)* &
-                                        sqrt(alpha))))**2)
-
+    expmy = exp(-sqtwothird*x/sqrt(alpha))
+    exppy = exp(sqtwothird*x/sqrt(alpha))
+    
+    saci_norm_deriv_second_potential = 4._kp*n/(3._kp*alpha)*(1._kp - expmy)**(2._kp*n) &
+         * (exppy - 2._kp*n) / (exppy - 1._kp)**2
+    
   end function saci_norm_deriv_second_potential
 
 !epsilon1(x)
   function saci_epsilon_one(x,alpha,n)
     implicit none
-    real(kp) :: saci_epsilon_one
+    real(kp) :: saci_epsilon_one,exppy
     real(kp), intent(in) :: x,alpha,n
 
-    saci_epsilon_one = (4._kp*n**2)/(3._kp*alpha*(-1._kp+exp((sqrt(2._kp/3._kp)*x)/sqrt(alpha)))**2)
+    exppy = exp(sqtwothird*x/sqrt(alpha))
+    
+    saci_epsilon_one = (4._kp*n**2)/(3._kp*alpha*(-1._kp + exppy)**2)
 
   end function saci_epsilon_one
 
@@ -75,7 +79,7 @@ contains
     real(kp) :: saci_epsilon_two
     real(kp), intent(in) :: x,alpha,n
 
-    saci_epsilon_two = (2._kp*n*1._kp/sinh(x/(sqrt(6._kp*alpha)))**2)/(3.*alpha)
+    saci_epsilon_two = (2._kp*n*1._kp/sinh(x/(sqrt(6._kp*alpha)))**2)/(3._kp*alpha)
 
   end function saci_epsilon_two
 
@@ -85,8 +89,8 @@ contains
     real(kp) :: saci_epsilon_three
     real(kp), intent(in) :: x,alpha,n
 
-    saci_epsilon_three = (2*n*(-1._kp+1._kp/tanh(x/(sqrt(6._kp)*sqrt(alpha))))* &
-                            1._kp/tanh(x/(sqrt(6._kp)*sqrt(alpha))))/(3._kp*alpha)
+    saci_epsilon_three = 4._kp*n/(3._kp*alpha)/(exp(sqtwothird*x/sqrt(alpha))-1._kp) &
+         /tanh(x/sqrt(6._kp*alpha))
 
   end function saci_epsilon_three
 
@@ -97,7 +101,8 @@ contains
     real(kp) :: saci_x_endinf
     real(kp), intent(in) :: alpha,n
 
-    saci_x_endinf = sqrt(6._kp*alpha)/2._kp*log(1._kp+2._kp*n/sqrt(3._kp*alpha))
+    saci_x_endinf = sqrt(3._kp*alpha/2._kp) * log(1._kp+2._kp*n/sqrt(3._kp*alpha))
+    
   end function saci_x_endinf
 
 
@@ -107,8 +112,8 @@ contains
     real(kp), intent(in) :: x,alpha,n
     real(kp) :: saci_efold_primitive
 
-    saci_efold_primitive = 3._kp*alpha/(4._kp*n)*exp(sqrt(2._kp/(3._kp*alpha))*x)- &
-                            sqrt(6._kp*alpha)/(4._kp*n)*x
+    saci_efold_primitive = 3._kp*alpha/(4._kp*n)*exp(sqrt(2._kp/(3._kp*alpha))*x) &
+                            - sqrt(6._kp*alpha)/(4._kp*n)*x
 
   end function saci_efold_primitive
 
