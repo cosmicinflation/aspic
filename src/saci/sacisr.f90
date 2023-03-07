@@ -57,7 +57,7 @@ contains
     expmy = exp(-sqtwothird*x/sqrt(alpha))
     exppy = exp(sqtwothird*x/sqrt(alpha))
     
-    saci_norm_deriv_second_potential = 4._kp*n/(3._kp*alpha)*(1._kp - expmy)**(2._kp*n) &
+    saci_norm_deriv_second_potential = -4._kp*n/(3._kp*alpha)*(1._kp - expmy)**(2._kp*n) &
          * (exppy - 2._kp*n) / (exppy - 1._kp)**2
     
   end function saci_norm_deriv_second_potential

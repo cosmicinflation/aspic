@@ -1,4 +1,4 @@
-.TH libsaci 3 "April 28, 2016" "libaspic" "Module convention"
+.TH libsaci 3 "March 7, 2023" "libaspic" "Module convention"
 
 .SH NAME
 .I saci
@@ -7,7 +7,7 @@
 .SH SYNOPSIS
 .TP 20
 Physical potential
-V(phi) = M^4 ( tanh[x/sqrt(6 alpha)]/{ 1 + tanh[x/sqrt(6 alpha)] } )^(2n)
+V(phi) = M^4 ( 1 - exp{-sqrt[2/(3 alpha)]x} )^(2n)
 .TP
 Routine units
 .I real(kp)
