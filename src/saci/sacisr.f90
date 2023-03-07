@@ -1,7 +1,9 @@
 !slow-roll functions for the SuperConformal alpha-attractor C inflation potential
 !
-!V(phi) propto [ tanh(x/sqrt(6 alpha)) / ( 1 + tanh(x/sqrt(6 alpha)) )   ]^(2n)
+!V(phi) = Mo^4 [tanh(x/sqrt(6 alpha)) / ( 1 + tanh(x/sqrt(6 alpha)) )   ]^(2n)
+!
 !       = M^4 ( 1 - exp{-sqrt[2/(3 alpha)]x} )^(2n)
+!
 !x = phi/Mp
 
 module sacisr
@@ -113,7 +115,7 @@ contains
     real(kp) :: saci_efold_primitive
 
     saci_efold_primitive = 3._kp*alpha/(4._kp*n)*exp(sqrt(2._kp/(3._kp*alpha))*x) &
-                            - sqrt(6._kp*alpha)/(4._kp*n)*x
+         - sqrt(6._kp*alpha)/(4._kp*n)*x
 
   end function saci_efold_primitive
 
@@ -124,10 +126,10 @@ contains
     real(kp) :: saci_x_trajectory
 
     saci_x_trajectory = -(sqrt(2._kp)*n)+(2._kp*sqrt(2._kp/3._kp)*bfold*n)/sqrt(alpha)+ &
-                        sqrt(1.5)*sqrt(alpha)*(-1._kp+log(1._kp+(2._kp*n)/(sqrt(3._kp)* &
-                        sqrt(alpha)))-lambert((exp(-1._kp-(2._kp*(sqrt(3._kp)*sqrt(alpha)- &
-                        2._kp*bfold)*n)/(3._kp*alpha))*(-3._kp-(2._kp*sqrt(3._kp)*n)/ &
-                        sqrt(alpha)))/3._kp,-1))
+         sqrt(1.5)*sqrt(alpha)*(-1._kp+log(1._kp+(2._kp*n)/(sqrt(3._kp)* &
+         sqrt(alpha)))-lambert((exp(-1._kp-(2._kp*(sqrt(3._kp)*sqrt(alpha)- &
+         2._kp*bfold)*n)/(3._kp*alpha))*(-3._kp-(2._kp*sqrt(3._kp)*n)/ &
+         sqrt(alpha)))/3._kp,-1))
 
   end function saci_x_trajectory
 

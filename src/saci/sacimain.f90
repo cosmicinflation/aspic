@@ -209,7 +209,7 @@ program sacimain
 end do
 
 
-  n=10._kp
+  n=20._kp
 
   npts = 20
   nalpha = 500
