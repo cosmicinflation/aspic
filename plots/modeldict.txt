@@ -109,8 +109,9 @@ saiii2m		\mathrm{SAIII}_{2-}
 saiii3p		\mathrm{SAIII}_{3+}
 saiii3m		\mathrm{SAIII}_{3-}
 saai		\mathrm{SAAI}
+tmi		\mathrm{TMI}
+sabi		\mathrm{SABI}
 sati		\mathrm{SATI}
-saci		\mathrm{SACI}
 sbi		\mathrm{SBI}
 sbiamin		\mathrm{SBI}_{\alpha_{\min}}
 sbki		\mathrm{SBKI}
