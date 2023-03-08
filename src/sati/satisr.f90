@@ -93,7 +93,7 @@ contains
     real(kp) :: sati_x_endinf
     real(kp), intent(in) :: alpha,n
 
-    sati_x_endinf = sqrt(6._kp*alpha)/2._kp*asinh(2._kp*n/sqrt(3._kp*alpha))
+    sati_x_endinf = sqrt(6._kp*alpha)/2._kp * asinh(2._kp*n/sqrt(3._kp*alpha))
 
   end function sati_x_endinf
 

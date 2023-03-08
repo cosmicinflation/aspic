@@ -36,12 +36,15 @@ program satimain
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
 
-  real(kp) :: x,xmin,xmax,V1
+  real(kp) :: x,xmin,xmax,V1,V2
 
   Pstar = powerAmpScalar
 
   call delete_file('sati_potential.dat')
   call delete_file('sati_slowroll.dat')
+
+  call delete_file('tmi_potential.dat')
+  call delete_file('tmi_slowroll.dat')
 
   npts=100
 
@@ -51,28 +54,98 @@ program satimain
   do i=1,npts
      x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(npts-1,kp))
 
-     V1 = sati_norm_potential(x,alpha=1._kp,n=1._kp)
-
+     V1 = sati_norm_potential(x,alpha=2._kp,n=1._kp)
+     V2 = sati_norm_potential(x,alpha=1._kp,n=1._kp)
 
      call livewrite('sati_potential.dat',x,V1)
-
+     call livewrite('tmi_potential.dat',x,V2)
+     
      if (x.eq.0._kp) cycle
      
+     eps1 = sati_epsilon_one(x,alpha=2._kp,n=1._kp)
+     eps2 = sati_epsilon_two(x,alpha=2._kp,n=1._kp)
+     eps3 = sati_epsilon_three(x,alpha=2._kp,n=1._kp)
+          
+     call livewrite('sati_slowroll.dat',x,eps1,eps2,eps3)
+
      eps1 = sati_epsilon_one(x,alpha=1._kp,n=1._kp)
      eps2 = sati_epsilon_two(x,alpha=1._kp,n=1._kp)
      eps3 = sati_epsilon_three(x,alpha=1._kp,n=1._kp)
           
-     call livewrite('sati_slowroll.dat',x,eps1,eps2,eps3)
+     call livewrite('tmi_slowroll.dat',x,eps1,eps2,eps3)
      
   enddo
   
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!        Calculates the reheating predictions           !!
+!!        Calculates the reheating predictions for TMI   !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  
+  call aspicwrite_header('tmi',labeps12,labnsr,labbfoldreh,(/'n'/))
+  
+  npts = 20
+  nn = 100
+
+  w=0._kp
+  !  w = 1._kp/3._kp
+
+
+  nmin=1._kp
+  nmax=100._kp
+
+  alpha = 1._kp
+  
+  do k=0,nn
+     n=nmin+(nmax-nmin)*(real(k,kp)/real(nn,kp))
+
+     print*,'n=',n
+
+     lnRhoRehMin = lnRhoNuc
+     xEnd = sati_x_endinf(alpha,n)
+     lnRhoRehMax = sati_lnrhoreh_max(alpha,n,xend,Pstar)
+
+     print *,lnRhoRehMin, 'lnRhoRehMax= ',lnRhoRehMax
+
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        xstar = sati_x_star(alpha,n,xend,w,lnRhoReh,Pstar,bfoldstar)
+
+        eps1 = sati_epsilon_one(xstar,alpha,n)
+        eps2 = sati_epsilon_two(xstar,alpha,n)
+        eps3 = sati_epsilon_three(xstar,alpha,n)
+
+        print *,'lnRhoReh',lnRhoReh,' bfoldstar= ',bfoldstar,'xstar=',xstar,'eps1star=',eps1
+
+
+        logErehGeV = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp - 2._kp*eps1 - eps2
+        r = 16._kp*eps1
+
+        print*, 'nS=',ns,'r=',r
+
+        call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/n/))
+
+     end do
+
+  end do
+
+  
+  call aspicwrite_end()
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!        Calculates the reheating predictions for SATI  !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
 
 !!!!!!!!!!!!!!!!!!!
 !!      n=1      !!
