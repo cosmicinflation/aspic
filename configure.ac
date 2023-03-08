@@ -1,4 +1,4 @@
-AC_INIT([aspic],[1.2.0],[aspic@ringeval.info],[],[http://curl.irmp.ucl.ac.be/~chris/aspic.html])
+AC_INIT([aspic],[1.3.0],[aspic@ringeval.info],[],[http://curl.irmp.ucl.ac.be/~chris/aspic.html])
 
 AM_INIT_AUTOMAKE
 
@@ -9,7 +9,7 @@ AC_PROG_CPP
 LT_INIT
 
 
-version_info="4:0:0"
+version_info="5:0:0"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
