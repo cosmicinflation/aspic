@@ -25,13 +25,12 @@ program nmlfimain
   implicit none
 
 
-  integer :: i,j,k,n,npts
+  integer :: i,j,k,n,npts,nxi
 
   real(kp) :: p
 
   real(kp) :: hbar,hbarstar, hbarmin, hbarmax, hbarend
   real(kp) :: xend, xstar
-  real(kp) :: xi
   
   real(kp) :: x, xmin, xmax
   real(kp) :: dx, d2x, d3x
@@ -55,10 +54,10 @@ program nmlfimain
 
   n=500
 
-  xmin = 0._kp
+  xmin = 0.01_kp
   xmax = 10._kp
 
-  xi = 20000._kp
+  xi = 10._kp
   p = 2
   
   do i=1,n
@@ -94,7 +93,7 @@ program nmlfimain
   Pstar = powerAmpScalar
   
 
-  call aspicwrite_header('nmlfi',labeps12,labnsr,labbfoldreh,(/'xi','p '/)))
+  call aspicwrite_header('nmlfi',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
  
   npts = 20
   ximin = 1d-3
@@ -128,7 +127,7 @@ program nmlfimain
            Vstar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
            M = potential_normalization(Pstar,eps1,Vstar)
 
-           print *,'lnRhoReh= ',lnRhoReh, 'M= ', M, 'xi= ',xistar, 'p= ',p &
+           print *,'lnRhoReh= ',lnRhoReh, 'M= ', M, 'xi= ',xi, 'p= ',p &
                 , 'bfoldstar= ',bfoldstar
 
            logErehGev = log_energy_reheat_ingev(lnRhoReh)
@@ -184,7 +183,7 @@ program nmlfimain
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
 
-     hbarstar = nmlfi_hbar_rreh(xi,p,hbarend,lnRreh)
+     hbarstar = nmlfi_hbar_rreh(xi,p,hbarend,lnR)
 
      print *,'lnR',lnR,'hbarstar', hbarstar
 

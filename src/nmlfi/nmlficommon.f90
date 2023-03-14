@@ -32,9 +32,10 @@ module nmlficommon
   public nmlfi_x, nmlfi_hbar, nmlfi_deriv_x, nmlfi_deriv_second_x
   public nmlfi_norm_parametric_potential, nmlfi_norm_deriv_second_parametric_potential
   public nmlfi_norm_deriv_parametric_potential, nmlfi_parametric_hbar_endinf
+  public nmlfi_parametric_hbar_potmax
   public nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   public nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
-  public nmlfi_parametric_hbar_trajectory, nmlfi_quartic_parametric_hbar_tracjectory
+  public nmlfi_parametric_hbar_trajectory, nmlfi_quartic_parametric_hbar_trajectory
 
 
 contains
@@ -163,10 +164,10 @@ contains
 
 
 !returns the 2nd derivative of the potential W with respect to hbar
-  function nmlfi_norm_deriv_second_parametric_potential(hbar,xi)
+  function nmlfi_norm_deriv_second_parametric_potential(hbar,xi,p)
     implicit none
     real(kp) :: nmlfi_norm_deriv_second_parametric_potential
-    real(kp), intent(in) :: hbar,xi
+    real(kp), intent(in) :: hbar,xi,p
 
     nmlfi_norm_deriv_second_parametric_potential = hbar**(p-2._kp) * ( p*(p-1._kp) &
          + 2._kp*(p*(p-5._kp)-2._kp)*hbar*hbar +(p-4._kp)*(p-5._kp)*hbar**4._kp ) &
@@ -196,7 +197,7 @@ contains
     real(kp) :: nmlfi_parametric_epsilon_two
     real(kp), intent(in) :: hbar,xi,p
 
-    nmlfi_parametric_epsilon_two =  2_kp*xi * (1._kp + hbar*hbar)* &
+    nmlfi_parametric_epsilon_two =  2_kp*xi * (1._kp + hbar*hbar) &
          * (p + hbar*hbar*(4._kp + p + 12._kp*p*xi))  &
          /(1._kp + hbar*hbar*(1._kp + 6._kp*xi))**2 / (hbar*hbar)
         
@@ -219,6 +220,21 @@ contains
   end function nmlfi_parametric_epsilon_three
 
 
+!for p<4, the potential admits a maximum at this parametric value
+  function nmlfi_parametric_hbar_potmax(xi,p)
+    implicit none
+    real(kp) :: nmlfi_parametric_hbar_potmax
+    real(kp), intent(in) :: xi,p
+
+    if (p.ge.4._kp) then
+       stop 'nmlfi_parametric_hbar_potmax: no maximum for p >= 4'
+    endif
+
+    nmlfi_parametric_hbar_potmax =  sqrt(p/(4._kp-p))
+
+  end function nmlfi_parametric_hbar_potmax
+
+  
 
 !the solution of eps1=1 in terms of hbar. This is the only real root
 !defined for all xi > 0 for p < p+ and for xi<ximax for p>p+
@@ -254,13 +270,13 @@ contains
     if (p.eq.4._kp) then
 
        nmlfi_parametric_efold_primitive = (1._kp + 6._kp*xi)*(1._kp+hbar*hbar)/(8._kp*xi) &
-            - 0.75._kp*log(1._kp+hbar*hbar)
+            - 0.75_kp*log(1._kp+hbar*hbar)
        
        return
     endif
     
-    nmlfi_parametric_efold_primitive = (2._kp + 3._kp*xi*p)/(4._kp*xi*(p-.4._kp)) &
-         * log(p+(p-4._kp)*hbar*hbar) - 0.75._kp*log(1._kp+hbar*hbar)
+    nmlfi_parametric_efold_primitive = (2._kp + 3._kp*xi*p)/(4._kp*xi*(p-4._kp)) &
+         * log(p+(p-4._kp)*hbar*hbar) - 0.75_kp*log(1._kp+hbar*hbar)
      
   end function nmlfi_parametric_efold_primitive
 
@@ -268,9 +284,10 @@ contains
 !returns hbar at bfold=-efolds before the end of inflation, ie N-Nend
   function nmlfi_parametric_hbar_trajectory(bfold,hbarend,xi,p)
     implicit none
-    real(kp), intent(in) :: bfold, hbarend,xi
+    real(kp), intent(in) :: bfold, hbarend,xi,p
     real(kp) :: nmlfi_parametric_hbar_trajectory
     real(kp), parameter :: tolFind = tolkp
+    real(kp) :: mini,maxi
     type(transfert) :: nmlfiData
     
 !there is an analytical solution only for p=4 (see next function)
@@ -284,7 +301,8 @@ contains
     maxi = hbarBig
 
     nmlfiData%real1 = xi
-    nmlfiData%real2 = -bfold + nmlfi_parametric_efold_primitive(hbarend,xi,p)
+    nmlfiData%real2 = p
+    nmlfiData%real3 = -bfold + nmlfi_parametric_efold_primitive(hbarend,xi,p)
 
     nmlfi_parametric_hbar_trajectory = zbrent(find_nmlfi_parametric_hbar_trajectory,mini,maxi,tolFind,nmlfiData)
 
@@ -296,12 +314,13 @@ contains
     real(kp), intent(in) :: hbar
     type(transfert), optional, intent(inout) :: nmlfiData
 
-    real(kp) :: xi,NplusNuend
+    real(kp) :: xi,p,NplusNuend
 
     xi = nmlfiData%real1
-    NplusNuend = nmlfiData%real2
+    p = nmlfiData%real2
+    NplusNuend = nmlfiData%real3
 
-    find_nmlfi_parametric_hbar_trajectory = nmlfi_parametric_efold_primitive(hbar,xi) - NplusNuend
+    find_nmlfi_parametric_hbar_trajectory = nmlfi_parametric_efold_primitive(hbar,xi,p) - NplusNuend
 
   end function find_nmlfi_parametric_hbar_trajectory
 

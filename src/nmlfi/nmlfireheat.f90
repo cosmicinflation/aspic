@@ -38,7 +38,7 @@ module nmlfireheat
   private
 
 !take as input the parametric field hbar  
-  public nmlfi_lnrhoreh_max,
+  public nmlfi_lnrhoreh_max
   public nmlfi_hbar_star, nmlfi_hbar_rrad, nmlfi_hbar_rreh
 
 !for convenience only
@@ -54,7 +54,7 @@ contains
   function nmlfi_x_star(xi,p,xend,w,lnRhoReh,Pstar,bfoldstar)
     implicit none
     real(kp) :: nmlfi_x_star
-    real(kp), intent(in) :: xi,p,xend,w,lnRhoReh,w,Pstar
+    real(kp), intent(in) :: xi,p,xend,w,lnRhoReh,Pstar
     real(kp), intent(out), optional :: bfoldstar
     
     real(kp) :: hbarstar, hbarend
@@ -84,10 +84,10 @@ contains
   end function nmlfi_x_rrad
 
     
-  function nmlfi_x_rreh(xi,p,lnRreh,bfoldstar)
+  function nmlfi_x_rreh(xi,p,xend,lnRreh,bfoldstar)
     implicit none
     real(kp) :: nmlfi_x_rreh
-    real(kp), intent(in) :: lnRreh
+    real(kp), intent(in) :: xi,p,xend,lnRreh
     real(kp), intent(out), optional :: bfoldstar
     
     real(kp) :: hbarstar,hbarend
@@ -175,7 +175,7 @@ contains
     real(kp), intent(out), optional :: bfoldstar
 
     real(kp), parameter :: tolzbrent=tolkp
-    real(kp) :: calF, xi
+    real(kp) :: calF
     real(kp) :: primEnd,epsOneEnd,potEnd
     real(kp) :: mini,maxi,hbarstar
     type(transfert) :: nmlfiData
@@ -197,7 +197,7 @@ contains
     nmlfiData%real3 = calF + primEnd
     
     mini = hbarend
-    hbarmax = hbarBig
+    maxi = hbarBig
      
     hbarstar = zbrent(find_nmlfi_hbar_rrad,mini,maxi,tolzbrent,nmlfiData)
 
@@ -309,13 +309,13 @@ contains
     real(kp), parameter :: lnRrad=0._kp
 
     real(kp) :: xistar
-    real(kp) :: hbarstar, hbarend
+    real(kp) :: hbarstar
     real(kp) :: potStar, potEnd
     real(kp) :: epsOneStar, lnRhoEnd, epsOneEnd, lnOmega4End
 
-    potEnd = nmlfi_norm_parametric_potential(hbarend,xistar)
+    potEnd = nmlfi_norm_parametric_potential(hbarend,xi,p)
 !should be one
-    epsOneEnd = nmlfi_parametric_epsilon_one(hbarend,xistar)
+    epsOneEnd = nmlfi_parametric_epsilon_one(hbarend,xi,p)
 
     hbarstar = nmlfi_hbar_rrad(xi,p,hbarend,lnRrad,Pstar)
     

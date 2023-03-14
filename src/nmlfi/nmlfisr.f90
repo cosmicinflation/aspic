@@ -147,6 +147,25 @@ contains
   end function nmlfi_x_endinf
 
 
+!the field value at which the potential is maximal (exists only for p<4)
+  function nmlfi_x_potmax(xi,p)
+    implicit none
+    real(kp), intent(in) :: xi,p
+    real(kp) :: nmlfi_x_potmax
+
+    real(kp) :: hbarmax
+
+    if (p.ge.4._kp) then
+       stop 'nmlfi_x_potmax: p>=4 no maximum'
+    endif
+    
+    hbarmax = nmlfi_parametric_hbar_potmax(xi,p)
+
+    nmlfi_x_potmax = nmlfi_x(hbarmax,xi)
+  
+  end function nmlfi_x_potmax
+  
+
  
 !this is integral[V(phi)/V'(phi) dphi]
   function nmlfi_efold_primitive(x,xi,p)
