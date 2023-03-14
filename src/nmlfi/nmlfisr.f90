@@ -1,18 +1,20 @@
-! Slow-roll functions for Higgs inflation out of the large field approximation
+! Slow-roll functions for Non-Minimal Large Field Inflation
 !
-! V(hbar) = M^4[ (hbar^2 - xi v^2)^2 / (1+hbar^2) ]
+! V(hbar) = M^4[ hbar^p / (1+hbar^2)^2 ]
 !
-! x = pnmlfi/Mg ~ pnmlfi/Mpl, the field value in unit of the Jordan Frame gravity scale Mg
+! x = phi/Mg ~ phi/Mpl, the Einstein frame field value in unit of the
+!
+! Jordan Frame gravity scale Mg
 !
 ! (dx/dhbar)^2 = [ 1 + (1+6xi) hbar^2 ] / [ xi (1+hbar^2)^2]
 !
-! NB: hbar = sqrt(xi) H/Mg where H is the Higgs field in the unitary gauge
+! NB: hbar = sqrt(xi) phibar/Mg where phibar is the Jordan frame field
 !
 ! The normalization of the potential is:
 !
-!  M^4 = lambda Mg^4 / (4 xi^2)
+!  M^4 = lambdabar Mg^4 / xi^2
 !
-! with Mg ~ Mpl.
+! all with Mg ~ Mpl.
 
 module nmlfisr
   use infprec, only : kp,pi,tolkp,transfert
@@ -37,48 +39,48 @@ contains
 
 
 !returns V/M^4
-  function nmlfi_norm_potential(x,xi)
+  function nmlfi_norm_potential(x,xi,p)
     implicit none
     real(kp) :: nmlfi_norm_potential
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
     real(kp) :: hbar    
 
     hbar = nmlfi_hbar(x,xi)
     
-    nmlfi_norm_potential = nmlfi_norm_parametric_potential(hbar,xi)
+    nmlfi_norm_potential = nmlfi_norm_parametric_potential(hbar,xi,p)
 
   end function nmlfi_norm_potential
 
 
 
 !with respect to x
-  function nmlfi_norm_deriv_potential(x,xi)
+  function nmlfi_norm_deriv_potential(x,xi,p)
     implicit none
     real(kp) :: nmlfi_norm_deriv_potential
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
     real(kp) :: hbar, dx
 
     hbar = nmlfi_hbar(x,xi)
     
     dx = nmlfi_deriv_x(hbar,xi)
 
-    nmlfi_norm_deriv_potential = nmlfi_norm_deriv_parametric_potential(hbar,xi)/dx
+    nmlfi_norm_deriv_potential = nmlfi_norm_deriv_parametric_potential(hbar,xi,p)/dx
 
   end function nmlfi_norm_deriv_potential
 
 
 
 !with respect to x
-  function nmlfi_norm_deriv_second_potential(x,xi)
+  function nmlfi_norm_deriv_second_potential(x,xi,p)
     implicit none
     real(kp) :: nmlfi_norm_deriv_second_potential
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
     real(kp) :: hbar, dV, d2V, dx, d2x
 
     hbar = nmlfi_hbar(x,xi)
     
-    dV = nmlfi_norm_deriv_parametric_potential(hbar,xi)
-    d2V = nmlfi_norm_deriv_second_parametric_potential(hbar,xi)
+    dV = nmlfi_norm_deriv_parametric_potential(hbar,xi,p)
+    d2V = nmlfi_norm_deriv_second_parametric_potential(hbar,xi,p)
 
     dx = nmlfi_deriv_x(hbar,xi)
     d2x = nmlfi_deriv_second_x(hbar,xi)
@@ -89,56 +91,56 @@ contains
 
 
   
-  function nmlfi_epsilon_one(x,xi)
+  function nmlfi_epsilon_one(x,xi,p)
     implicit none
     real(kp) :: nmlfi_epsilon_one
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
     real(kp) :: hbar
 
     hbar = nmlfi_hbar(x,xi)
 
-    nmlfi_epsilon_one = nmlfi_parametric_epsilon_one(hbar,xi)
+    nmlfi_epsilon_one = nmlfi_parametric_epsilon_one(hbar,xi,p)
 
   end function nmlfi_epsilon_one
 
 
 
-  function nmlfi_epsilon_two(x,xi)
+  function nmlfi_epsilon_two(x,xi,p)
     implicit none
     real(kp) :: nmlfi_epsilon_two
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
     real(kp) :: hbar
 
     hbar = nmlfi_hbar(x,xi)
 
-    nmlfi_epsilon_two = nmlfi_parametric_epsilon_two(hbar,xi)
+    nmlfi_epsilon_two = nmlfi_parametric_epsilon_two(hbar,xi,p)
 
   end function nmlfi_epsilon_two
 
 
-  function nmlfi_epsilon_three(x,xi)
+  function nmlfi_epsilon_three(x,xi,p)
     implicit none
     real(kp) :: nmlfi_epsilon_three
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
 
     real(kp) :: hbar
 
     hbar = nmlfi_hbar(x,xi)
 
-    nmlfi_epsilon_three = nmlfi_parametric_epsilon_three(hbar,xi)
+    nmlfi_epsilon_three = nmlfi_parametric_epsilon_three(hbar,xi,p)
 
   end function nmlfi_epsilon_three
 
 
 
-  function nmlfi_x_endinf(xi)
+  function nmlfi_x_endinf(xi,p)
     implicit none
-    real(kp), intent(in) :: xi
+    real(kp), intent(in) :: xi,p
     real(kp) :: nmlfi_x_endinf
 
     real(kp) :: hbarend
     
-    hbarend = nmlfi_parametric_hbar_endinf(xi)
+    hbarend = nmlfi_parametric_hbar_endinf(xi,p)
 
     nmlfi_x_endinf = nmlfi_x(hbarend,xi)
   
@@ -146,32 +148,32 @@ contains
 
 
  
-!tnmlfis is integral[V(pnmlfi)/V'(pnmlfi) dpnmlfi]
-  function nmlfi_efold_primitive(x,xi)
+!this is integral[V(phi)/V'(phi) dphi]
+  function nmlfi_efold_primitive(x,xi,p)
     implicit none
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
     real(kp) :: nmlfi_efold_primitive
 
     real(kp) :: hbar
 
     hbar = nmlfi_hbar(x,xi)
 
-    nmlfi_efold_primitive = nmlfi_parametric_efold_primitive(hbar,xi)
+    nmlfi_efold_primitive = nmlfi_parametric_efold_primitive(hbar,xi,p)
 
   end function nmlfi_efold_primitive
 
 
 
 !returns x at bfold=-efolds before the end of inflation, ie N-Nend
-  function nmlfi_x_trajectory(bfold,xend,xi)
+  function nmlfi_x_trajectory(bfold,xend,xi,p)
     implicit none
-    real(kp), intent(in) :: bfold, xend, xi
+    real(kp), intent(in) :: bfold, xend, xi,p
     real(kp) :: nmlfi_x_trajectory
     real(kp) :: hbar,hbarend
 
-    hbarend = nmlfi_parametric_hbar_endinf(xi)
+    hbarend = nmlfi_parametric_hbar_endinf(xi,p)
 
-    hbar = nmlfi_parametric_hbar_trajectory(bfold,hbarend,xi)
+    hbar = nmlfi_parametric_hbar_trajectory(bfold,hbarend,xi,p)
 
     nmlfi_x_trajectory = nmlfi_x(hbar,xi)
 

@@ -1,55 +1,40 @@
-! Common routines for Higgs inflation out of the large field approximation.
+! Common routines for Non-Minimal Large Field Inflation
 !
-! With pnmlfi cannonically normalized field in the Einstein Frame:
+! V(hbar) = M^4[ hbar^p / (1+hbar^2)^2 ]
 !
-! x = pnmlfi/Mg
+! x = phi/Mg ~ phi/Mpl, the Einstein frame field value in unit of the
 !
-! where Mg is the gravity scale in the Jordan Frame (Mg ~ Mpl).
+! Jordan Frame gravity scale Mg
 !
-! The Einstein frame parametric potential:
+! (dx/dhbar)^2 = [ 1 + (1+6xi) hbar^2 ] / [ xi (1+hbar^2)^2]
 !
-! W(x) = M^4 (hbar^2 - vbar^2)^2 / (1 + hbar^2)^2
+! NB: hbar = sqrt(xi) phibar/Mg where phibar is the Jordan frame field
 !
-! with hbar(x),  vbar^2 = xi*v^2/Mg^2 and  M^4 = lambda Mg^4/(4 xi^2)
+! The normalization of the potential is:
 !
-! h is the Higgs field in the Jordan frame and hbar is defined as
-!
-! hbar = sqrt(xi) * h/Mg
-!
-! with the Higgs potential taken as
-!
-! V(h) = lambda/4 ( h^2 - v^2 )^2
-!
+!  M^4 = lambdabar Mg^4 / xi^2
 !
 
 
 module nmlficommon
   use infprec, only : kp, pi, toldp, tolkp, transfert
   use inftools, only : zbrent
-  use cosmopar, only : nmlfiggsVeV
   use specialinf, only : lambert
   implicit none
 
-  real(kp), parameter :: sqr6 = sqrt(6._kp)
-!makes eps1 macnmlfine precision for xi > 1
+!makes eps1 machine precision for xi > 1
   real(kp), parameter :: hbarBig = epsilon(1._kp)**(-0.25_kp)
   real(kp), parameter :: hbarSmall = epsilon(1._kp)**(0.5_kp)
-  
-  
-!for the record, tnmlfis guy is 10^(-34), it starts being significant when
-!multiplied by xi larger than 10^(34).
-  real(kp), parameter :: vev2 = nmlfiggsVeV*nmlfiggsVeV
-
-  
+      
   private
 
-  public vev2, hbarBig, hbarSmall
+  public hbarBig, hbarSmall
   public nmlfi_x, nmlfi_hbar, nmlfi_deriv_x, nmlfi_deriv_second_x
   public nmlfi_norm_parametric_potential, nmlfi_norm_deriv_second_parametric_potential
   public nmlfi_norm_deriv_parametric_potential, nmlfi_parametric_hbar_endinf
   public nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   public nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
-  public nmlfi_parametric_hbar_trajectory
+  public nmlfi_parametric_hbar_trajectory, nmlfi_quartic_parametric_hbar_tracjectory
 
 
 contains
@@ -73,7 +58,7 @@ contains
     real(kp), intent(in) :: hbar2,xi
     
     nmlfi_expx = ( sqrt(1._kp+hbar2) &
-         / ( sqrt(1._kp + (1._kp+6._kp*xi)*hbar2) + sqrt(6._kp*xi*hbar2) ) )**sqr6 &
+         / ( sqrt(1._kp + (1._kp+6._kp*xi)*hbar2) + sqrt(6._kp*xi*hbar2) ) )**sqrt(6._kp) &
          * ( sqrt(1._kp + (1._kp + 6._kp*xi)*hbar2) &
          + sqrt((1._kp+6._kp*xi)*hbar2) )**(sqrt(6._kp+1._kp/xi))
 
@@ -152,12 +137,12 @@ contains
 
 !returns the normalized Einstein Frame potential W(hbar)/M^4 in terms of
 !the parameter hbar
-  function nmlfi_norm_parametric_potential(hbar,xi)
+  function nmlfi_norm_parametric_potential(hbar,xi,p)
     implicit none
     real(kp) :: nmlfi_norm_parametric_potential
-    real(kp), intent(in) :: hbar,xi
+    real(kp), intent(in) :: hbar,xi,p
 
-    nmlfi_norm_parametric_potential = (hbar*hbar - xi*vev2)**2 / (1._kp &
+    nmlfi_norm_parametric_potential = (hbar*hbar)**(p/2._kp) / (1._kp &
          + hbar*hbar)**2
 
 
@@ -166,13 +151,13 @@ contains
 
 
 !returns the first derivative of the potential W with respect to hbar
-  function nmlfi_norm_deriv_parametric_potential(hbar,xi)
+  function nmlfi_norm_deriv_parametric_potential(hbar,xi,p)
     implicit none
     real(kp) :: nmlfi_norm_deriv_parametric_potential
-    real(kp), intent(in) :: hbar,xi
+    real(kp), intent(in) :: hbar,xi,p
 
-    nmlfi_norm_deriv_parametric_potential = 4._kp* (1._kp + xi*vev2) &
-         * hbar*(hbar*hbar - xi*vev2) / (1._kp + hbar*hbar)**3._kp
+    nmlfi_norm_deriv_parametric_potential = (p + (p-4._kp)*hbar*hbar)*hbar**(p-1._kp) &
+         / (1._kp + hbar*hbar)**3._kp
     
   end function nmlfi_norm_deriv_parametric_potential
 
@@ -183,8 +168,8 @@ contains
     real(kp) :: nmlfi_norm_deriv_second_parametric_potential
     real(kp), intent(in) :: hbar,xi
 
-    nmlfi_norm_deriv_second_parametric_potential = -4._kp * (1._kp+xi*vev2) &
-         * (xi*vev2 + 3._kp*hbar**4._kp - hbar*hbar*(3._kp + 5._kp*xi*vev2) ) &
+    nmlfi_norm_deriv_second_parametric_potential = hbar**(p-2._kp) * ( p*(p-1._kp) &
+         + 2._kp*(p*(p-5._kp)-2._kp)*hbar*hbar +(p-4._kp)*(p-5._kp)*hbar**4._kp ) &
          / (1._kp + hbar*hbar)**4._kp
 
   end function nmlfi_norm_deriv_second_parametric_potential
@@ -192,105 +177,68 @@ contains
 
   
 !eps1 Einstein-Frame in terms of hbar
-  function nmlfi_parametric_epsilon_one(hbar,xi)
+  function nmlfi_parametric_epsilon_one(hbar,xi,p)
     real(kp) :: nmlfi_parametric_epsilon_one
-    real(kp), intent(in) :: hbar,xi
-    real(kp) :: xivev2
+    real(kp), intent(in) :: hbar,xi,p
 
-    xivev2 = xi*vev2
     
-    nmlfi_parametric_epsilon_one = 8._kp*xi * (1._kp + xivev2)**2._kp &
-         * hbar*hbar / (hbar*hbar - xivev2)**2._kp / (1._kp + (1._kp + 6._kp*xi) * hbar*hbar)
+    nmlfi_parametric_epsilon_one = 0.5_kp*xi * ( p + (p-4._kp)*hbar*hbar)**2._kp &
+         / (1._kp + (1._kp + 6._kp*xi)*hbar*hbar) / (hbar*hbar)
+         
     
   end function nmlfi_parametric_epsilon_one
 
   
 
 !eps2 (EF) in terms of hbar
-  function nmlfi_parametric_epsilon_two(hbar,xi)
+  function nmlfi_parametric_epsilon_two(hbar,xi,p)
     implicit none
     real(kp) :: nmlfi_parametric_epsilon_two
-    real(kp), intent(in) :: hbar,xi
-    real(kp) :: xivev2
+    real(kp), intent(in) :: hbar,xi,p
 
-    xivev2 = xi*vev2
-
-    nmlfi_parametric_epsilon_two =  (8._kp*(1._kp + hbar*hbar)*xi*(1._kp + xivev2) &
-         *(hbar*hbar + 2._kp*hbar**4._kp*(1._kp + 6._kp*xi) + xivev2)) &
-         / ((1._kp + hbar*hbar*(1._kp + 6._kp*xi))**2 * (hbar*hbar - xivev2)**2._kp)
+    nmlfi_parametric_epsilon_two =  2_kp*xi * (1._kp + hbar*hbar)* &
+         * (p + hbar*hbar*(4._kp + p + 12._kp*p*xi))  &
+         /(1._kp + hbar*hbar*(1._kp + 6._kp*xi))**2 / (hbar*hbar)
         
   end function nmlfi_parametric_epsilon_two
 
 
 !eps3 (EF) in terms of hbar
-  function nmlfi_parametric_epsilon_three(hbar,xi)
+  function nmlfi_parametric_epsilon_three(hbar,xi,p)
     implicit none
     real(kp) :: nmlfi_parametric_epsilon_three
-    real(kp), intent(in) :: hbar,xi
+    real(kp), intent(in) :: hbar,xi,p
 
-    real(kp) :: xivev2
-
-    xivev2 = xi*vev2
     
-    nmlfi_parametric_epsilon_three = (8._kp*hbar*hbar * xi * (1._kp + xivev2) &
-         * (2._kp*hbar**8._kp*(1._kp + 6._kp*xi)**2._kp + 3._kp*xivev2 &
-         - (1._kp + 12._kp*xi)*xivev2**2._kp + 2._kp*hbar**6._kp &
-         * (1._kp + 6._kp*xi)**2._kp * (2._kp + xivev2) + 3._kp*hbar**4._kp &
-         * (1._kp + 6._kp*xi)*(1._kp + 3._kp*xivev2) + hbar*hbar &
-         * (1._kp + 2._kp*(5._kp + 21._kp*xi)*xivev2 - (1._kp + 6._kp*xi) &
-         *xivev2**2._kp) ) ) &
-         / ( (1._kp + hbar*hbar*(1._kp + 6._kp*xi))**2._kp &
-         * (hbar*hbar - xivev2)**2._kp * ( hbar*hbar &
-         + 2._kp*hbar**4._kp*(1._kp + 6._kp*xi) + xivev2 ) )
+    nmlfi_parametric_epsilon_three = (2*(hbar*hbar*(-4._kp + p) + p)*xi &
+         * (p + 3._kp*hbar*hbar*(p + 6._kp*p*xi) &
+         + hbar**6._kp*(1._kp + 6._kp*xi)*(4._kp + p + 12._kp*p*xi) &
+         + hbar**4._kp*(4._kp + 3._kp*p + 48._kp*xi + 36._kp*p*xi*(1._kp + 4._kp*xi)))) &
+         /((hbar + hbar**3*(1 + 6._kp*xi))**2._kp*(p + hbar**2._kp*(4._kp + p + 12._kp*p*xi)))
 
   end function nmlfi_parametric_epsilon_three
 
 
 
-!the solution of eps1=1 in terms of hbar (tnmlfird order polynomial in hbar^2
-!solution irreducible). Tnmlfis is the only real root defined for all xi > 0
-  function nmlfi_parametric_hbar_endinf(xi)
+!the solution of eps1=1 in terms of hbar. This is the only real root
+!defined for all xi > 0 for p < p+ and for xi<ximax for p>p+
+  function nmlfi_parametric_hbar_endinf(xi,p)
     implicit none
     real(kp) :: nmlfi_parametric_hbar_endinf
-    real(kp), intent(in) :: xi
+    real(kp), intent(in) :: xi,p
 
-    real(kp), parameter :: onetnmlfird = 1._kp/3._kp
-
-    complex(kp) :: xiz,xizvev2, zend2
-
-
-    xizvev2 = cmplx(xi*vev2,0._kp,kp)
-    xiz = cmplx(xi,0._kp,kp)
+    real(kp) :: hbarend2
     
-    zend2 = (4._kp - 8._kp*(1._kp + 6._kp*xiz)*xizvev2 - (cmplx(0._kp,2._kp,kp) &
-         *( cmplx(0._kp,-1._kp,kp) + sqrt(3._kp)) * ((1._kp + 12._kp*xiz)**2._kp &
-         + 2._kp*(1._kp + 6._kp*xiz)*(1._kp + 24._kp*xiz)*xizvev2 &
-         + (1._kp + 6._kp*xiz)*(1._kp + 30._kp*xiz)*xizvev2**2._kp)) &
-         / (1._kp + 36._kp*xiz + 216._kp*xiz**2._kp + 3._kp*xizvev2 + 18._kp*xiz*xizvev2 &
-         - 432._kp*xiz**2._kp*xizvev2 - 2592._kp*xiz**3._kp*xizvev2 + 3._kp*xizvev2**2._kp &
-         - 72._kp*xiz*xizvev2**2._kp - 1404._kp*xiz**2._kp*xizvev2**2._kp &
-         - 5184._kp*xiz**3._kp*xizvev2**2._kp + xizvev2**3._kp - 54._kp*xiz*xizvev2**3._kp &
-         - 756._kp*xiz**2._kp*xizvev2**3._kp - 2376._kp*xiz**3._kp*xizvev2**3._kp &
-         + 6._kp*sqrt(6._kp)*(1._kp + 6._kp*xiz)*(1._kp + xizvev2) &
-         * sqrt(xiz*(-(xizvev2*(1._kp + xizvev2)**3._kp) - 24._kp*xiz**3._kp*(4._kp &
-         + 8._kp*xizvev2 + xizvev2**2._kp)**2._kp - 2._kp*xiz*(1._kp + xizvev2)**2._kp &
-         * (1._kp + 20._kp*xizvev2 + xizvev2**2._kp) + 4._kp*xiz**2._kp*(1._kp + xizvev2) &
-         * (-16._kp - 108._kp*xizvev2 - 60._kp*xizvev2**2._kp + 5._kp*xizvev2**3._kp))))**onetnmlfird &
-         + cmplx(0._kp,2._kp,kp)*(cmplx(0._kp,1._kp,kp) + sqrt(3._kp)) &
-         * (1._kp + 36._kp*xiz + 216._kp*xiz**2._kp + 3._kp*xizvev2 + 18._kp*xiz*xizvev2 &
-         - 432._kp*xiz**2._kp*xizvev2 - 2592._kp*xiz**3._kp*xizvev2 + 3._kp*xizvev2**2._kp &
-         - 72._kp*xiz*xizvev2**2._kp - 1404._kp*xiz**2._kp*xizvev2**2._kp &
-         - 5184._kp*xiz**3._kp*xizvev2**2._kp + xizvev2**3._kp - 54._kp*xiz*xizvev2**3._kp &
-         - 756._kp*xiz**2._kp*xizvev2**3._kp - 2376._kp*xiz**3._kp*xizvev2**3._kp &
-         + 6._kp*sqrt(6._kp)*(1._kp + 6._kp*xiz)*(1._kp + xizvev2) &
-         * sqrt(xiz*(-(xizvev2*(1._kp + xizvev2)**3) - 24._kp*xiz**3._kp &
-         * (4._kp + 8._kp*xizvev2 + xizvev2**2._kp)**2._kp - 2._kp*xiz*(1._kp + xizvev2)**2._kp &
-         * (1._kp + 20._kp*xizvev2 + xizvev2**2._kp) + 4._kp*xiz**2._kp*(1._kp + xizvev2) &
-         * (-16._kp - 108._kp*xizvev2 - 60._kp*xizvev2**2._kp + 5._kp*xizvev2**3._kp))))**onetnmlfird) &
-         / (12._kp*(-1._kp - 6._kp*xiz))
+    hbarend2 = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
+         / (2._kp - xi*(p*(p-8._kp) + 4._kp))
 
-    nmlfi_parametric_hbar_endinf = sqrt(real(zend2,kp))
-    
+    if (hbarend2.ge.0._kp) then
+       nmlfi_parametric_hbar_endinf = sqrt(hbarend2)
+    else
+       write(*,*)'xi= p= ',xi,p
+       write(*,*)'hbarend^2 = ',hbarend2
+       stop 'nmlfi_parametric_hbar_endinf: hbarend^2 < 0'
+    endif
 
   end function nmlfi_parametric_hbar_endinf
     
@@ -298,48 +246,45 @@ contains
   
 
 !efold (Einstein Frame) primitive in terms of the parameter hbar
-  function nmlfi_parametric_efold_primitive(hbar,xi)
+  function nmlfi_parametric_efold_primitive(hbar,xi,p)
     implicit none
     real(kp) :: nmlfi_parametric_efold_primitive
-    real(kp), intent(in) :: hbar,xi
-    type(transfert) :: nmlfiData
+    real(kp), intent(in) :: hbar,xi,p
 
-    real(kp) :: xivev2
+    if (p.eq.4._kp) then
 
-    xivev2 = xi*vev2
+       nmlfi_parametric_efold_primitive = (1._kp + 6._kp*xi)*(1._kp+hbar*hbar)/(8._kp*xi) &
+            - 0.75._kp*log(1._kp+hbar*hbar)
+       
+       return
+    endif
     
-    nmlfi_parametric_efold_primitive = 1._kp/(8._kp*xi*(1._kp+xivev2)) &
-         * ( (1._kp + 6._kp*xi)*hbar*hbar - xivev2*log(hbar*hbar) &
-         - 6._kp*xi*(1._kp + xivev2) * log(1._kp + hbar*hbar) )
+    nmlfi_parametric_efold_primitive = (2._kp + 3._kp*xi*p)/(4._kp*xi*(p-.4._kp)) &
+         * log(p+(p-4._kp)*hbar*hbar) - 0.75._kp*log(1._kp+hbar*hbar)
      
   end function nmlfi_parametric_efold_primitive
 
 
 !returns hbar at bfold=-efolds before the end of inflation, ie N-Nend
-  function nmlfi_parametric_hbar_trajectory(bfold,hbarend,xi)
+  function nmlfi_parametric_hbar_trajectory(bfold,hbarend,xi,p)
     implicit none
     real(kp), intent(in) :: bfold, hbarend,xi
     real(kp) :: nmlfi_parametric_hbar_trajectory
     real(kp), parameter :: tolFind = tolkp
     type(transfert) :: nmlfiData
-    real(kp) :: mini, maxi, xivev2, hbar2
     
-!there is an analytical solution (inverting
-!nmlfi_parametric_efold_primitive) but only for xivev2 = 0, let us do
-!tnmlfis for xivev2 << 1
+!there is an analytical solution only for p=4 (see next function)
 
-    xivev2 = xi*vev2
-    
-    if (xivev2 .le. epsilon(1._kp)) then
-       nmlfi_parametric_hbar_trajectory = nmlfi_approx_parametric_hbar_trajectory(bfold,hbarend,xi)
+    if (p.eq.4._kp) then
+       nmlfi_parametric_hbar_trajectory = nmlfi_quartic_parametric_hbar_trajectory(bfold,hbarend,xi)
        return
     endif
-
+    
     mini = hbarend
     maxi = hbarBig
 
     nmlfiData%real1 = xi
-    nmlfiData%real2 = -bfold + nmlfi_parametric_efold_primitive(hbarend,xi)
+    nmlfiData%real2 = -bfold + nmlfi_parametric_efold_primitive(hbarend,xi,p)
 
     nmlfi_parametric_hbar_trajectory = zbrent(find_nmlfi_parametric_hbar_trajectory,mini,maxi,tolFind,nmlfiData)
 
@@ -363,11 +308,11 @@ contains
 
   
   
-!analytical solution obtained for xivev2=0
-  function nmlfi_approx_parametric_hbar_trajectory(bfold,hbarend,xi)
+!analytical solution for p=4
+  function nmlfi_quartic_parametric_hbar_trajectory(bfold,hbarend,xi)
     implicit none
     real(kp), intent(in) :: bfold, hbarend,xi
-    real(kp) :: nmlfi_approx_parametric_hbar_trajectory
+    real(kp) :: nmlfi_quartic_parametric_hbar_trajectory
 
     real(kp) :: xibfold, hbar2, hbarend2
 
@@ -379,12 +324,12 @@ contains
          * exp(-((1._kp + 6._kp*xi)*(1._kp*hbarend2) - 8._kp*xibfold )/(6._kp*xi)),-1)
 
     if (hbar2.lt.0._kp) then
-       stop 'nmlfi_approx_parametric_hbar_trajectory: hbar^2 < 0!'
+       stop 'nmlfi_quartic_parametric_hbar_trajectory: hbar^2 < 0!'
     else    
-       nmlfi_approx_parametric_hbar_trajectory = sqrt(hbar2)
+       nmlfi_quartic_parametric_hbar_trajectory = sqrt(hbar2)
     endif
     
-  end function nmlfi_approx_parametric_hbar_trajectory
+  end function nmlfi_quartic_parametric_hbar_trajectory
 
 
 

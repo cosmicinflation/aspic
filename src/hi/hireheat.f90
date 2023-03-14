@@ -488,6 +488,4 @@ contains
 
   
 
-
-
 end module hireheat
