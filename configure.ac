@@ -136,5 +136,6 @@ AC_CONFIG_FILES([Makefile
 		 src/rclfi/Makefile
 		 src/dei/Makefile
 		 src/pai/Makefile
+		 src/nmlfi/Makefile
                 ])
 AC_OUTPUT
