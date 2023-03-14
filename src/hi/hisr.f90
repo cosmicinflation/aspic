@@ -1,6 +1,6 @@
 ! Slow-roll functions for Higgs inflation out of the large field approximation
 !
-! V(hbar) = M^4[ (hbar^2 - xi v^2)^2 / (1+hbar^2) ]
+! V(hbar) = M^4[ (hbar^2 - xi v^2)^2 / (1+hbar^2)^2 ]
 !
 ! x = phi/Mg ~ phi/Mpl, the field value in unit of the Jordan Frame gravity scale Mg
 !
