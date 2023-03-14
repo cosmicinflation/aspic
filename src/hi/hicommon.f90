@@ -302,7 +302,6 @@ contains
     implicit none
     real(kp) :: hi_parametric_efold_primitive
     real(kp), intent(in) :: hbar,xi
-    type(transfert) :: hiData
 
     real(kp) :: xivev2
 
