@@ -1,4 +1,4 @@
-!Reheating functions for Non-Minimal Large Field Inflation
+!Common reheating functions for Non-Minimal Large Field Inflation
 !
 !We here assume that the coupling constant (lambdabar in Encyclopedia
 !Inflationaris) is free and we trade it for the potential
@@ -48,7 +48,8 @@ contains
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!the parametric reheating functions, the ones you should use !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  function nmlfi_hbar_star(xi,p,w,lnRhoReh,Pstar,,hbarend,hbarmin,hbarmax,bfoldstar)
+
+  function nmlfi_hbar_star(xi,p,w,lnRhoReh,Pstar,hbarend,hbarmin,hbarmax,bfoldstar)
     implicit none
     real(kp) :: nmlfi_hbar_star
     real(kp), intent(in) :: xi,p,hbarend,hbarmin,hbarmax,lnRhoReh,w,Pstar

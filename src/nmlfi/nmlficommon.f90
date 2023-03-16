@@ -37,7 +37,7 @@ module nmlficommon
   public nmlfi_norm_parametric_potential, nmlfi_norm_deriv_second_parametric_potential
   public nmlfi_norm_deriv_parametric_potential
 
-  public nmlfi_parametric_hbar_potmax, nmlfi_parametric_hbarsquare_epsoneunity, nmlfi_xizero
+  public nmlfi_hbar_potmax, nmlfi_hbarsquare_epsoneunity, nmlfi_xizero
 
   public nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   public nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
@@ -210,12 +210,10 @@ contains
   function nmlfi_parametric_epsilon_one(hbar,xi,p)
     real(kp) :: nmlfi_parametric_epsilon_one
     real(kp), intent(in) :: hbar,xi,p
-
     
     nmlfi_parametric_epsilon_one = 0.5_kp*xi * ( p + (p-4._kp)*hbar*hbar)**2._kp &
          / (1._kp + (1._kp + 6._kp*xi)*hbar*hbar) / (hbar*hbar)
-         
-    
+             
   end function nmlfi_parametric_epsilon_one
 
   
@@ -250,37 +248,37 @@ contains
 
 
 !for p<4, the potential admits a maximum at this parametric value
-  function nmlfi_parametric_hbar_potmax(xi,p)
+  function nmlfi_hbar_potmax(xi,p)
     implicit none
-    real(kp) :: nmlfi_parametric_hbar_potmax
+    real(kp) :: nmlfi_hbar_potmax
     real(kp), intent(in) :: xi,p
 
     if (p.ge.4._kp) then
-       stop 'nmlfi_parametric_hbar_potmax: no maximum for p >= 4'
+       stop 'nmlfi_hbar_potmax: no maximum for p >= 4'
     endif
 
-    nmlfi_parametric_hbar_potmax =  sqrt(p/(4._kp-p))
+    nmlfi_hbar_potmax =  sqrt(p/(4._kp-p))
 
-  end function nmlfi_parametric_hbar_potmax
+  end function nmlfi_hbar_potmax
 
   
 
 !the two solutions of eps1=1 in terms of hbar^2, may be negative, see
 !nmlfi123 for the cases
-  function nmlfi_parametric_hbarsquare_epsoneunity(xi,p) return hbarend2
+  function nmlfi_hbarsquare_epsoneunity(xi,p) return hbarepsone2
     implicit none
     real(kp), dimension(2) :: nmlfi_parametric_hbar_epsoneunity
     real(kp), intent(in) :: xi,p
 
-    real(kp), dimension(2) :: hbarend2
+    real(kp), dimension(2) :: hbarepsone2
     
-    hbarend2(1) = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
+    hbarepsone2(1) = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
          / (2._kp - xi*(p*(p-8._kp) + 4._kp))
 
-    hbarend2(2) = (-sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
+    hbarepsone2(2) = (-sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
          / (2._kp - xi*(p*(p-8._kp) + 4._kp))
     
-  end function nmlfi_parametric_hbarsquare_epsoneunity
+  end function nmlfi_hbarsquare_epsoneunity
     
 
   
