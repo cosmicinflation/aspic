@@ -1,23 +1,23 @@
-program nmlfimain
+program nmlfi1main
   use infprec, only : kp
   use cosmopar, only : lnRhoNuc, powerAmpScalar, HiggsCoupling
   use infinout, only : delete_file, livewrite
 
-  use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_norm_deriv_parametric_potential
-  use nmlficommon, only : nmlfi_norm_deriv_second_parametric_potential
-  use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_efold_primitive
-  use nmlficommon, only : nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_deriv_x, nmlfi_deriv_second_x, nmlfi_parametric_hbar_endinf
+  use nmlfi1common, only : nmlfi1_norm_parametric_potential, nmlfi1_norm_deriv_parametric_potential
+  use nmlfi1common, only : nmlfi1_norm_deriv_second_parametric_potential
+  use nmlfi1common, only : nmlfi1_parametric_epsilon_one, nmlfi1_parametric_efold_primitive
+  use nmlfi1common, only : nmlfi1_parametric_epsilon_two, nmlfi1_parametric_epsilon_three
+  use nmlfi1common, only : nmlfi1_deriv_x, nmlfi1_deriv_second_x, nmlfi1_parametric_hbar_endinf
   
-  use nmlfisr, only : nmlfi_norm_potential, nmlfi_norm_deriv_potential, nmlfi_norm_deriv_second_potential
-  use nmlfisr, only : nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three, nmlfi_x_endinf  
-  use nmlfisr, only : nmlfi_x_trajectory, nmlfi_x, nmlfi_hbar
+  use nmlfi1sr, only : nmlfi1_norm_potential, nmlfi1_norm_deriv_potential, nmlfi1_norm_deriv_second_potential
+  use nmlfi1sr, only : nmlfi1_epsilon_one, nmlfi1_epsilon_two, nmlfi1_epsilon_three, nmlfi1_x_endinf  
+  use nmlfi1sr, only : nmlfi1_x_trajectory, nmlfi1_x, nmlfi1_hbar
 
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
   use srreheat, only : potential_normalization
-  use nmlfireheat, only : nmlfi_hbar_star, nmlfi_hbar_rrad, nmlfi_hbar_rreh, nmlfi_lnrhoreh_max
-  use nmlfireheat, only : nmlfi_x_star, nmlfi_x_rrad, nmlfi_x_rreh
+  use nmlfi1reheat, only : nmlfi1_hbar_star, nmlfi1_hbar_rrad, nmlfi1_hbar_rreh, nmlfi1_lnrhoreh_max
+  use nmlfi1reheat, only : nmlfi1_x_star, nmlfi1_x_rrad, nmlfi1_x_rreh
 
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -48,9 +48,9 @@ program nmlfimain
 
   real(kp) :: xi, ximin,ximax
   
-  call delete_file('nmlfi_potential.dat')
-  call delete_file('nmlfi_parametric_potential.dat')
-  call delete_file('nmlfi_slowroll.dat')
+  call delete_file('nmlfi1_potential.dat')
+  call delete_file('nmlfi1_parametric_potential.dat')
+  call delete_file('nmlfi1_slowroll.dat')
 
   n=500
 
@@ -58,21 +58,21 @@ program nmlfimain
   xmax = 10._kp
 
   xi = 10._kp
-  p = 2
+  p = 0.5
   
   do i=1,n
 
      x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
 
-     V = nmlfi_norm_potential(x,xi,p)
+     V = nmlfi1_norm_potential(x,xi,p)
 
-     call livewrite('nmlfi_potential.dat',x,V)
+     call livewrite('nmlfi1_potential.dat',x,V)
 
-     eps1 = nmlfi_epsilon_one(x,xi,p)
-     eps2 = nmlfi_epsilon_two(x,xi,p)
-     eps3 = nmlfi_epsilon_three(x,xi,p)
+     eps1 = nmlfi1_epsilon_one(x,xi,p)
+     eps2 = nmlfi1_epsilon_two(x,xi,p)
+     eps3 = nmlfi1_epsilon_three(x,xi,p)
 
-     call livewrite('nmlfi_slowroll.dat',x,eps1,eps2,eps3)
+     call livewrite('nmlfi1_slowroll.dat',x,eps1,eps2,eps3)
 
   enddo
 
@@ -80,11 +80,11 @@ program nmlfimain
   do i=1,n
 
      hbar = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
-     x = nmlfi_x(hbar,xi)
+     x = nmlfi1_x(hbar,xi)
      
-     V = nmlfi_norm_parametric_potential(hbar,xi,p)
+     V = nmlfi1_norm_parametric_potential(hbar,xi,p)
 
-     call livewrite('nmlfi_parametric_potential.dat',hbar/sqrt(xi),V,x,hbar/sqrt(xi))
+     call livewrite('nmlfi1_parametric_potential.dat',hbar/sqrt(xi),V,x,hbar/sqrt(xi))
 
   
   enddo
@@ -93,24 +93,25 @@ program nmlfimain
   Pstar = powerAmpScalar
   
 
-  call aspicwrite_header('nmlfi',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
+  call aspicwrite_header('nmlfi1',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
  
   npts = 20
+  nxi=100
   ximin = 1d-3
   ximax = 1d3
   
   lnRhoRehMin = lnRhoNuc
 
-  do k=2,8
+  do k=2,4
 
      p = k
      
      do j=1,nxi
-        xi = ximin + real(j-1,kp)*(ximax-ximin)/real(j-1,kp)
+        xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
   
   
-        hbarend = nmlfi_parametric_hbar_endinf(xi,p)
-        lnRhoRehMax = nmlfi_lnrhoreh_max(xi,p,hbarend,Pstar)
+        hbarend = nmlfi1_parametric_hbar_endinf(xi,p)
+        lnRhoRehMax = nmlfi1_lnrhoreh_max(xi,p,hbarend,Pstar)
 
         print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -118,13 +119,13 @@ program nmlfimain
 
            lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
 
-           hbarstar = nmlfi_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar,bfoldstar)
+           hbarstar = nmlfi1_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar,bfoldstar)
 
-           eps1 = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
-           eps2 = nmlfi_parametric_epsilon_two(hbarstar,xi,p)
-           eps3 = nmlfi_parametric_epsilon_three(hbarstar,xi,p)
+           eps1 = nmlfi1_parametric_epsilon_one(hbarstar,xi,p)
+           eps2 = nmlfi1_parametric_epsilon_two(hbarstar,xi,p)
+           eps3 = nmlfi1_parametric_epsilon_three(hbarstar,xi,p)
 
-           Vstar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
+           Vstar = nmlfi1_norm_parametric_potential(hbarstar,xi,p)
            M = potential_normalization(Pstar,eps1,Vstar)
 
            print *,'lnRhoReh= ',lnRhoReh, 'M= ', M, 'xi= ',xi, 'p= ',p &
@@ -136,7 +137,7 @@ program nmlfimain
            ns = 1._kp-2._kp*eps1 - eps2
            r = 16._kp*eps1   
 
-           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/))
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xi,p/))
 
         enddo
 
@@ -153,48 +154,48 @@ program nmlfimain
   lnRradmin=-40
   lnRradmax = 10
 
-  xi = 1000
-  p=2
+  xi = 0.1
+  p=5
   npts = 10
   
-  hbarend = nmlfi_parametric_hbar_endinf(xi,p)
+  hbarend = nmlfi1_parametric_hbar_endinf(xi,p)
   
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
 
-     hbarstar = nmlfi_hbar_rrad(xi,p,hbarend,lnRrad,Pstar,bfoldstar)
+     hbarstar = nmlfi1_hbar_rrad(xi,p,hbarend,lnRrad,Pstar,bfoldstar)
 
      print *,'lnRrad=',lnRrad, 'hbarstar=', hbarstar, 'xi= ',xi, 'p= ',p, 'bfoldstar= ',bfoldstar
      
-     eps1 = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
-     eps2 = nmlfi_parametric_epsilon_two(hbarstar,xi,p)
-     eps3 = nmlfi_parametric_epsilon_three(hbarstar,xi,p)
+     eps1 = nmlfi1_parametric_epsilon_one(hbarstar,xi,p)
+     eps2 = nmlfi1_parametric_epsilon_two(hbarstar,xi,p)
+     eps3 = nmlfi1_parametric_epsilon_three(hbarstar,xi,p)
      
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
-     eps1end =  nmlfi_parametric_epsilon_one(hbarend,xi,p)
+     eps1end =  nmlfi1_parametric_epsilon_one(hbarend,xi,p)
      lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
 
-     VendOverVstar = nmlfi_norm_parametric_potential(hbarend,xi,p) &
-          /nmlfi_norm_parametric_potential(hbarstar,xi,p)     
+     VendOverVstar = nmlfi1_norm_parametric_potential(hbarend,xi,p) &
+          /nmlfi1_norm_parametric_potential(hbarstar,xi,p)     
      
 !in the Jordan Frame!!!     
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
 
-     hbarstar = nmlfi_hbar_rreh(xi,p,hbarend,lnR)
+     hbarstar = nmlfi1_hbar_rreh(xi,p,hbarend,lnR)
 
      print *,'lnR',lnR,'hbarstar', hbarstar
 
 !second consistency check
-!get rhoreh for chosen w and check that hbarstar gotten tnmlfis way is the same
+!get rhoreh for chosen w and check that hbarstar gotten tnmlfi1s way is the same
      w = 0._kp
 !in the Jordan Frame!!!
      lnRhoReh = ln_rho_reheat(w,Pstar,eps1,eps1End,-bfoldstar,VendOverVstar,lnOmega4End)
 
-     hbarstar = nmlfi_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar)
-     xstar = nmlfi_x(hbarstar,xi)
+     hbarstar = nmlfi1_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar)
+     xstar = nmlfi1_x(hbarstar,xi)
 
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'hbarstar',hbarstar,'hbarend ',hbarend
@@ -206,4 +207,4 @@ program nmlfimain
 
 
 
-end program nmlfimain
+end program nmlfi1main

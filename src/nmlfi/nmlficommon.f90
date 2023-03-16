@@ -25,22 +25,50 @@ module nmlficommon
 !makes eps1 machine precision for xi > 1
   real(kp), parameter :: hbarBig = epsilon(1._kp)**(-0.25_kp)
   real(kp), parameter :: hbarSmall = epsilon(1._kp)**(0.5_kp)
-      
+
+  real(kp), parameter :: pplus = 2._kp*(2._kp + sqrt(3._kp))
+  real(kp), parameter :: pminus = 2._kp*(2._kp - sqrt(3._kp))
+  
   private
 
-  public hbarBig, hbarSmall
+  public hbarBig, hbarSmall, pplus, pminus
   public nmlfi_x, nmlfi_hbar, nmlfi_deriv_x, nmlfi_deriv_second_x
+
   public nmlfi_norm_parametric_potential, nmlfi_norm_deriv_second_parametric_potential
-  public nmlfi_norm_deriv_parametric_potential, nmlfi_parametric_hbar_endinf
-  public nmlfi_parametric_hbar_potmax
+  public nmlfi_norm_deriv_parametric_potential
+
+  public nmlfi_parametric_hbar_potmax, nmlfi_parametric_hbarsquare_epsoneunity, nmlfi_xizero
+
   public nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   public nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
   public nmlfi_parametric_hbar_trajectory, nmlfi_quartic_parametric_hbar_trajectory
 
 
+  public nmlfi_norm_potential, nmlfi_norm_deriv_second_potential, nmlfi_norm_deriv_potential
+  public nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
+  public nmlfi_efold_primitive, nmlfi_hbar_trajectory
+
+  
+
 contains
 
 
+!values of xi separating the different NMLFI regimes  
+  function nmlfi_xizero(p)
+    implicit none
+    real(kp) :: nmlfi_xizero
+    real(kp), intent(in) :: p
+
+    if ((p.eq.pplus).or.(p.eq.pminus)) then
+       write(*,*)'nmlfi_xizero -> oo for p=p+-'
+       stop
+    endif
+    
+    nmlfi_xizero = 2._kp/(p*p -8._kp*p + 4)
+    
+  end function nmlfi_xizero
+
+  
 !returns the field value x from hbar and xi
   function nmlfi_x(hbar,xi)
     implicit none
@@ -133,8 +161,9 @@ contains
          / (xi * (1._kp+hbar*hbar)**3._kp * sqrt(nmlfi_deriv_x(hbar,xi)) )
     
   end function nmlfi_deriv_second_x
-  
 
+
+  
 
 !returns the normalized Einstein Frame potential W(hbar)/M^4 in terms of
 !the parameter hbar
@@ -236,27 +265,22 @@ contains
 
   
 
-!the solution of eps1=1 in terms of hbar. This is the only real root
-!defined for all xi > 0 for p < p+ and for xi<ximax for p>p+
-  function nmlfi_parametric_hbar_endinf(xi,p)
+!the two solutions of eps1=1 in terms of hbar^2, may be negative, see
+!nmlfi123 for the cases
+  function nmlfi_parametric_hbarsquare_epsoneunity(xi,p) return hbarend2
     implicit none
-    real(kp) :: nmlfi_parametric_hbar_endinf
+    real(kp), dimension(2) :: nmlfi_parametric_hbar_epsoneunity
     real(kp), intent(in) :: xi,p
 
-    real(kp) :: hbarend2
+    real(kp), dimension(2) :: hbarend2
     
-    hbarend2 = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
+    hbarend2(1) = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
          / (2._kp - xi*(p*(p-8._kp) + 4._kp))
 
-    if (hbarend2.ge.0._kp) then
-       nmlfi_parametric_hbar_endinf = sqrt(hbarend2)
-    else
-       write(*,*)'xi= p= ',xi,p
-       write(*,*)'hbarend^2 = ',hbarend2
-       stop 'nmlfi_parametric_hbar_endinf: hbarend^2 < 0'
-    endif
-
-  end function nmlfi_parametric_hbar_endinf
+    hbarend2(2) = (-sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
+         / (2._kp - xi*(p*(p-8._kp) + 4._kp))
+    
+  end function nmlfi_parametric_hbarsquare_epsoneunity
     
 
   
@@ -281,13 +305,13 @@ contains
   end function nmlfi_parametric_efold_primitive
 
 
-!returns hbar at bfold=-efolds before the end of inflation, ie N-Nend
-  function nmlfi_parametric_hbar_trajectory(bfold,hbarend,xi,p)
+  
+!returns hbar at bfold=-efolds before the end of inflation, ie N-Nend, in the range [hbarmini, hbarmaxi]
+  function nmlfi_parametric_hbar_trajectory(bfold,hbarend,hbarmini,hbarmaxi,xi,p)
     implicit none
-    real(kp), intent(in) :: bfold, hbarend,xi,p
+    real(kp), intent(in) :: bfold, hbarend, hbarmini, hbarmaxi, xi,p
     real(kp) :: nmlfi_parametric_hbar_trajectory
     real(kp), parameter :: tolFind = tolkp
-    real(kp) :: mini,maxi
     type(transfert) :: nmlfiData
     
 !there is an analytical solution only for p=4 (see next function)
@@ -297,14 +321,12 @@ contains
        return
     endif
     
-    mini = hbarend
-    maxi = hbarBig
-
     nmlfiData%real1 = xi
     nmlfiData%real2 = p
     nmlfiData%real3 = -bfold + nmlfi_parametric_efold_primitive(hbarend,xi,p)
 
-    nmlfi_parametric_hbar_trajectory = zbrent(find_nmlfi_parametric_hbar_trajectory,mini,maxi,tolFind,nmlfiData)
+    nmlfi_parametric_hbar_trajectory = zbrent(find_nmlfi_parametric_hbar_trajectory,hbarmini,hbarmaxi &
+         ,tolFind,nmlfiData)
 
   end function nmlfi_parametric_hbar_trajectory
   
@@ -352,5 +374,117 @@ contains
 
 
 
+  
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! non parametric function, for convenience only as they are
+!!! computationally inefficient
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
+
+
+  
+!returns V/M^4
+  function nmlfi_norm_potential(x,xi,p)
+    implicit none
+    real(kp) :: nmlfi_norm_potential
+    real(kp), intent(in) :: x,xi,p
+    real(kp) :: hbar    
+
+    hbar = nmlfi_hbar(x,xi)
+    
+    nmlfi_norm_potential = nmlfi_norm_parametric_potential(hbar,xi,p)
+
+  end function nmlfi_norm_potential
+
+!with respect to x
+  function nmlfi_norm_deriv_potential(x,xi,p)
+    implicit none
+    real(kp) :: nmlfi_norm_deriv_potential
+    real(kp), intent(in) :: x,xi,p
+    real(kp) :: hbar, dx
+
+    hbar = nmlfi_hbar(x,xi)
+    
+    dx = nmlfi_deriv_x(hbar,xi)
+
+    nmlfi_norm_deriv_potential = nmlfi_norm_deriv_parametric_potential(hbar,xi,p)/dx
+
+  end function nmlfi_norm_deriv_potential
+
+!with respect to x
+  function nmlfi_norm_deriv_second_potential(x,xi,p)
+    implicit none
+    real(kp) :: nmlfi_norm_deriv_second_potential
+    real(kp), intent(in) :: x,xi,p
+    real(kp) :: hbar, dV, d2V, dx, d2x
+
+    hbar = nmlfi_hbar(x,xi)
+    
+    dV = nmlfi_norm_deriv_parametric_potential(hbar,xi,p)
+    d2V = nmlfi_norm_deriv_second_parametric_potential(hbar,xi,p)
+
+    dx = nmlfi_deriv_x(hbar,xi)
+    d2x = nmlfi_deriv_second_x(hbar,xi)
+
+    nmlfi_norm_deriv_second_potential = (d2V - (d2x/dx)*dV)/dx/dx
+
+  end function nmlfi_norm_deriv_second_potential
+
+  
+  function nmlfi_epsilon_one(x,xi,p)
+    implicit none
+    real(kp) :: nmlfi_epsilon_one
+    real(kp), intent(in) :: x,xi,p
+    real(kp) :: hbar
+
+    hbar = nmlfi_hbar(x,xi)
+
+    nmlfi_epsilon_one = nmlfi_parametric_epsilon_one(hbar,xi,p)
+
+  end function nmlfi_epsilon_one
+
+
+  function nmlfi_epsilon_two(x,xi,p)
+    implicit none
+    real(kp) :: nmlfi_epsilon_two
+    real(kp), intent(in) :: x,xi,p
+    real(kp) :: hbar
+
+    hbar = nmlfi_hbar(x,xi)
+
+    nmlfi_epsilon_two = nmlfi_parametric_epsilon_two(hbar,xi,p)
+
+  end function nmlfi_epsilon_two
+
+
+  function nmlfi_epsilon_three(x,xi,p)
+    implicit none
+    real(kp) :: nmlfi_epsilon_three
+    real(kp), intent(in) :: x,xi,p
+
+    real(kp) :: hbar
+
+    hbar = nmlfi_hbar(x,xi)
+
+    nmlfi_epsilon_three = nmlfi_parametric_epsilon_three(hbar,xi,p)
+
+  end function nmlfi_epsilon_three
+
+
+  !this is integral[V(phi)/V'(phi) dphi]
+  function nmlfi_efold_primitive(x,xi,p)
+    implicit none
+    real(kp), intent(in) :: x,xi,p
+    real(kp) :: nmlfi_efold_primitive
+
+    real(kp) :: hbar
+
+    hbar = nmlfi_hbar(x,xi)
+
+    nmlfi_efold_primitive = nmlfi_parametric_efold_primitive(hbar,xi,p)
+
+  end function nmlfi_efold_primitive
+
+
+  
   
 end module nmlficommon

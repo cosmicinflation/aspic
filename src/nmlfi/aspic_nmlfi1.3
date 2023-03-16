@@ -1,0 +1,49 @@
+.TH libccsi 3 "January 19, 2014" "libaspic" "Module convention" 
+
+.SH NAME
+.I ccsi1
+- the cubicly corrected Starobinski inflation module with positive corrections and at small field values
+
+.SH SYNOPSIS
+.TP 20
+Physical potential
+V(phi) = M^4 * exp(-2x) * [ exp(x) - 1 ]^2 /
+{ 1 + sqrt[1+3 alpha(exp(x)-1)]}^3 * { 1 + sqrt[1 + 3 alpha (exp(x)-1)] + 2 alpha (exp(x)-1) }
+.TP
+Routine units
+.I real(kp)
+::
+.B x
+= phi/Mp * sqrt(2/3)
+.TP
+Parameters
+.I real(kp)
+::
+.B alpha
+
+.SH DESCRIPTION
+The
+.I ccsi1
+module is used for the R + R^2/mu^2 + alpha R^3/mu^4 inflation
+when 'alpha > 0' at small field values, namely in the region for
+which 'x < xVmax', the field value at which the potential is
+maximal. In this regime, inflation naturally ends at a field
+value 'xend' returned by the function
+.BR ccsi1_x_endinf (alpha).
+
+This model shares a few peculiar functions with
+.I ccsi2
+and
+.I ccsi3
+in a module named
+.BR ccsicommon .
+The value of 'xvMax' is returned by
+.BR ccsi_x_potmax (alpha)
+while the value at which the first Hubble flow function is maximal is
+given by
+.BR ccsi_x_epstwozero (alpha).
+Both functions are imported by
+.IP
+.B use ccsicommon, only : ccsi_x_potmax, ccsi_x_epstwozero
+.SH AUTHORS
+Jerome Martin, Christophe Ringeval, Vincent Vennin

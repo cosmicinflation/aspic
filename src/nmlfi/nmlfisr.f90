@@ -21,7 +21,7 @@ module nmlfisr
   use inftools, only : zbrent, easydverk
   use nmlficommon, only : nmlfi_x, nmlfi_hbar, nmlfi_deriv_x, nmlfi_deriv_second_x
   use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_norm_deriv_parametric_potential
-  use nmlficommon, only : nmlfi_norm_deriv_second_parametric_potential
+  use nmlficommon, only : nmlfi_norm_deriv_second_parametric_potential,nmlfi_parametric_hbar_potmax
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   use nmlficommon, only : nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
   use nmlficommon, only : nmlfi_parametric_hbar_trajectory, nmlfi_parametric_hbar_endinf

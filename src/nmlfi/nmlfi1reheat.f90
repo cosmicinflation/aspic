@@ -20,7 +20,7 @@
 ! to be consistent with lnRrad defined with JF energy densities and to
 ! ensure than all reheating-related energies are Jordan Frame-defined.
 !
-module nmlfireheat
+module nmlficomreh
   use infprec, only :  kp, tolkp, toldp, pi, transfert
   use inftools, only : zbrent
   use srreheat, only : display
@@ -31,7 +31,7 @@ module nmlfireheat
 
   use nmlficommon, only : nmlfi_x, nmlfi_hbar, hbarBig, hbarSmall
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_norm_parametric_potential
-  use nmlficommon, only : nmlfi_parametric_efold_primitive, nmlfi_parametric_hbar_endinf
+  use nmlficommon, only : nmlfi_parametric_efold_primitive
   
   implicit none
 
@@ -333,4 +333,4 @@ contains
   end function nmlfi_lnrhoreh_max
 
   
-end module nmlfireheat
+end module nmlficomreh
