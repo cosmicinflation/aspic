@@ -46,7 +46,7 @@ module nmlficommon
 
   public nmlfi_norm_potential, nmlfi_norm_deriv_second_potential, nmlfi_norm_deriv_potential
   public nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
-  public nmlfi_efold_primitive, nmlfi_hbar_trajectory
+  public nmlfi_efold_primitive
 
   
 
@@ -265,12 +265,10 @@ contains
 
 !the two solutions of eps1=1 in terms of hbar^2, may be negative, see
 !nmlfi123 for the cases
-  function nmlfi_hbarsquare_epsoneunity(xi,p) return hbarepsone2
+  function nmlfi_hbarsquare_epsoneunity(xi,p) result(hbarepsone2)
     implicit none
-    real(kp), dimension(2) :: nmlfi_parametric_hbar_epsoneunity
-    real(kp), intent(in) :: xi,p
-
     real(kp), dimension(2) :: hbarepsone2
+    real(kp), intent(in) :: xi,p
     
     hbarepsone2(1) = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
          / (2._kp - xi*(p*(p-8._kp) + 4._kp))

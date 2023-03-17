@@ -1,9 +1,14 @@
 !Reheating functions for Non-Minimal Large Field Inflation 3, in the
 !large field region x > xVmax where xend is an extra model parameter
 
-module nmlficomreh
+module nmlfi3reheat
   use infprec, only :  kp
   use nmlficommon, only : nmlfi_x, nmlfi_hbar, hbarBig, hbarSmall
+  use nmlficommon, only : nmlfi_hbar_potmax
+  
+  use nmlficomreh, only : nmlfi_hbar_rreh, nmlfi_hbar_star, nmlfi_hbar_rrad
+  use nmlficomreh, only : nmlfi_lnrhoreh_max
+
   use nmlfi3sr, only : nmlfi3_check_params
   
   implicit none
@@ -11,11 +16,11 @@ module nmlficomreh
   private
 
 !take as input the parametric field hbar  
-  public nmlfi3_lnrhoreh_max
+  public nmlfi3_parametric_lnrhoreh_max
   public nmlfi3_hbar_star, nmlfi3_hbar_rrad, nmlfi3_hbar_rreh
 
 !for convenience only
-  public nmlfi3_x_star, nmlfi3_x_rrad, nmlfi3_x_rreh
+  public nmlfi3_x_star, nmlfi3_x_rrad, nmlfi3_x_rreh, nmlfi3_lnrhoreh_max
 
 contains
 
@@ -89,16 +94,20 @@ contains
   end function nmlfi3_hbar_rreh
 
   
-    
 !jordan frame
-  function nmlfi3_lnrhoreh_max(xi,p,hbarend,Pstar)
+  function nmlfi3_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
     implicit none
-    real(kp) :: nmlfi3_lnrhoreh_max
+    real(kp) :: nmlfi3_parametric_lnrhoreh_max
     real(kp), intent(in) :: xi,p,hbarend,Pstar
-
-    nmlfi3_lnrhoreh_max = nmlfi_lnrhoreh_max(xi,p,hbarend,Pstar)
+    real(kp) :: hbarmin, hbarmax
+        
+    hbarmin = nmlfi_hbar_potmax(xi,p)
+    hbarmax = hbarend
     
-  end function nmlfi3_lnrhoreh_max
+    nmlfi3_parametric_lnrhoreh_max = nmlfi_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
+
+  end function nmlfi3_parametric_lnrhoreh_max
+
 
 
 
@@ -153,6 +162,18 @@ contains
     
   end function nmlfi3_x_rreh
   
+
+  function nmlfi3_lnrhoreh_max(xi,p,xend,Pstar)
+    implicit none
+    real(kp) :: nmlfi3_lnrhoreh_max
+    real(kp), intent(in) :: xi,p,xend,Pstar
+    real(kp) :: hbarmin, hbarmax, hbarend
+    
+    hbarend = nmlfi_hbar(xend,xi)
+  
+    nmlfi3_lnrhoreh_max = nmlfi3_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
+
+  end function nmlfi3_lnrhoreh_max
   
   
-end module nmlficomreh
+end module nmlfi3reheat

@@ -5,7 +5,7 @@ program nmlfi3main
 
   use nmlficommon, only : pplus, pminus, nmlfi_xizero
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_parametric_potential, nmlfi_x
+  use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x, nmlfi_hbar_potmax
   
   use nmlfi3sr, only : nmlfi3_norm_potential, nmlfi3_norm_deriv_potential, nmlfi3_norm_deriv_second_potential
   use nmlfi3sr, only : nmlfi3_epsilon_one, nmlfi3_epsilon_two, nmlfi3_epsilon_three
@@ -23,9 +23,10 @@ program nmlfi3main
   implicit none
 
 
-  integer :: i,j,k,l,n,npts,nxi,nend
+  integer :: i,j,k,l,n,np,npts,nxi,nend
 
-  real(kp) :: hbar,hbarstar, hbarmin, hbarmax, hbarend
+  real(kp) :: hbar,hbarstar, hbarmin, hbarmax
+  real(kp) :: hbarend, hbarendmax, hbarendmin
   real(kp) :: xstar
   
   real(kp) :: x, xmin, xmax
@@ -48,7 +49,7 @@ program nmlfi3main
   Pstar = powerAmpScalar
   
 
-  call aspicwrite_header('nmlfi3s',labeps12,labnsr,labbfoldreh,(/'xend','xi ','p  '/))
+  call aspicwrite_header('nmlfi3s',labeps12,labnsr,labbfoldreh,(/'xend','xi  ','p   '/))
  
   npts = 20
 
@@ -58,7 +59,7 @@ program nmlfi3main
   
   nxi=10
 
-  nxend = 10
+  nend = 10
 
   
   lnRhoRehMin = lnRhoNuc
@@ -74,13 +75,13 @@ program nmlfi3main
         
         xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
 
-        do l=1,nxend
+        do l=1,nend
 
            hbarendmin = nmlfi_hbar_potmax(xi,p)
            hbarendmax = 1000._kp * hbarendmin
-           hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nxend-1,kp)
+           hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nend-1,kp)
 
-           xend = nmlfi_x(hbarend)
+           xend = nmlfi_x(hbarend,xi)
            
            lnRhoRehMax = nmlfi3_lnrhoreh_max(xi,p,hbarend,Pstar)
 
@@ -121,7 +122,7 @@ program nmlfi3main
   call aspicwrite_end()
 
 
-  call aspicwrite_header('nmlfi3l',labeps12,labnsr,labbfoldreh,(/'xend','xi ','p  '/))
+  call aspicwrite_header('nmlfi3l',labeps12,labnsr,labbfoldreh,(/'xend','xi  ','p   '/))
  
   npts = 20
 
@@ -133,7 +134,7 @@ program nmlfi3main
   ximin = 1d-3
   ximax = 1d3
   
-  nxend = 10
+  nend = 10
   
   lnRhoRehMin = lnRhoNuc
 
@@ -145,13 +146,13 @@ program nmlfi3main
         
         xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
 
-        do l=1,nxend
+        do l=1,nend
 
            hbarendmin = nmlfi_hbar_potmax(xi,p)
            hbarendmax = 1000._kp * hbarendmin
-           hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nxend-1,kp)
+           hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nend-1,kp)
 
-           xend = nmlfi_x(hbarend)
+           xend = nmlfi_x(hbarend,xi)
            
            lnRhoRehMax = nmlfi3_lnrhoreh_max(xi,p,hbarend,Pstar)
 

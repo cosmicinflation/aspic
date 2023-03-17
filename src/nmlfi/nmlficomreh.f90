@@ -237,10 +237,10 @@ contains
   end function find_nmlfi_hbar_rreh
   
 !jordan frame
-  function nmlfi_lnrhoreh_max(xi,p,hbarend,Pstar)
+  function nmlfi_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
     implicit none
     real(kp) :: nmlfi_lnrhoreh_max
-    real(kp), intent(in) :: xi,p,hbarend,Pstar
+    real(kp), intent(in) :: xi,p,hbarend,hbarmin,hbarmax,Pstar
 
 !trick to return rhoreh=rhoend    
     real(kp), parameter :: lnRrad=0._kp
@@ -254,7 +254,7 @@ contains
 !should be one
     epsOneEnd = nmlfi_parametric_epsilon_one(hbarend,xi,p)
 
-    hbarstar = nmlfi_hbar_rrad(xi,p,hbarend,lnRrad,Pstar)
+    hbarstar = nmlfi_hbar_rrad(xi,p,lnRrad,Pstar,hbarend,hbarmin,hbarmax)
     
     epsOneStar = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
     potStar = nmlfi_norm_parametric_potential(hbarstar,xi,p)

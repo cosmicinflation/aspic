@@ -5,11 +5,11 @@ program nmlfi2main
 
   use nmlficommon, only : pplus, pminus, nmlfi_xizero
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_parametric_potential, nmlfi_x
+  use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x
   
   use nmlfi2sr, only : nmlfi2_norm_potential, nmlfi2_norm_deriv_potential, nmlfi2_norm_deriv_second_potential
   use nmlfi2sr, only : nmlfi2_epsilon_one, nmlfi2_epsilon_two, nmlfi2_epsilon_three, nmlfi2_x_endinf  
-  use nmlfi2sr, only : nmlfi2_x_trajectory
+  use nmlfi2sr, only : nmlfi2_x_trajectory, nmlfi2_hbar_endinf
 
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
@@ -23,7 +23,7 @@ program nmlfi2main
   implicit none
 
 
-  integer :: i,j,k,n,npts,nxi
+  integer :: i,j,k,n,np,npts,nxi
 
   real(kp) :: hbar,hbarstar, hbarmin, hbarmax, hbarend
   real(kp) :: xend, xstar
@@ -118,7 +118,7 @@ program nmlfi2main
   xi = 10._kp * nmlfi_xizero(p)
   npts = 10
   
-  hbarend = nmlfi2_parametric_hbar_endinf(xi,p)
+  hbarend = nmlfi2_hbar_endinf(xi,p)
   
   do i=1,npts
 

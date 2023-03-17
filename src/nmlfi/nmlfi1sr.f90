@@ -23,7 +23,7 @@
 
 module nmlfi1sr
   use infprec, only : kp
-  use nmlficommon, only : hbarSmall, hbarBig, pplus
+  use nmlficommon, only : hbarSmall, hbarBig, pplus, nmlfi_hbar, nmlfi_x
   use nmlficommon, only : nmlfi_norm_potential, nmlfi_norm_deriv_potential, nmlfi_norm_deriv_second_potential
   use nmlficommon, only : nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
@@ -59,7 +59,7 @@ contains
     real(kp) :: nmlfi1_norm_potential
     real(kp), intent(in) :: x,xi,p
     
-    nmlfi1_norm_potential = nmlfi_norm_potential(hbar,xi,p)
+    nmlfi1_norm_potential = nmlfi_norm_potential(x,xi,p)
 
   end function nmlfi1_norm_potential
 
@@ -87,14 +87,14 @@ contains
   end function nmlfi1_norm_deriv_second_potential
 
   
-  function nmlfi_epsilon_one(x,xi,p)
+  function nmlfi1_epsilon_one(x,xi,p)
     implicit none
     real(kp) :: nmlfi1_epsilon_one
     real(kp), intent(in) :: x,xi,p
 
     nmlfi1_epsilon_one = nmlfi_epsilon_one(x,xi,p)
 
-  end function nmlfi_epsilon_one
+  end function nmlfi1_epsilon_one
 
 
   function nmlfi1_epsilon_two(x,xi,p)
@@ -121,7 +121,8 @@ contains
   function nmlfi1_x_endinf(xi,p)
     implicit none
     real(kp) ::  nmlfi1_x_endinf
-
+    real(kp), intent(in) :: xi,p
+    
     real(kp) :: hbarendinf
     
     hbarendinf = nmlfi1_hbar_endinf(xi,p)
@@ -137,7 +138,7 @@ contains
     real(kp) :: nmlfi1_hbar_endinf
     real(kp), intent(in) :: xi,p
 
-    real(kp) :: hbarepsone2
+    real(kp), dimension(2) :: hbarepsone2
 
     if (.not.nmlfi1_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
@@ -199,7 +200,9 @@ contains
     implicit none
     real(kp), intent(in) :: bfold, xend, xi,p
     real(kp) :: nmlfi1_x_trajectory
-    real(kp) :: hbar
+    real(kp) :: hbar, hbarend
+
+    hbarend = nmlfi_hbar(xend,xi)
     
     hbar = nmlfi1_parametric_hbar_trajectory(bfold,hbarend,xi,p)
 

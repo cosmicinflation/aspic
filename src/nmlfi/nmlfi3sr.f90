@@ -22,7 +22,7 @@
 
 module nmlfi3sr
   use infprec, only : kp
-  use nmlficommon, only : hbarBig
+  use nmlficommon, only : hbarBig, pminus, nmlfi_xizero, nmlfi_hbar, nmlfi_x
   use nmlficommon, only : nmlfi_norm_potential, nmlfi_norm_deriv_potential, nmlfi_norm_deriv_second_potential
   use nmlficommon, only : nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
@@ -32,9 +32,10 @@ module nmlfi3sr
 
   private
 
+  public nmlfi3_check_params
   public nmlfi3_norm_potential, nmlfi3_norm_deriv_potential, nmlfi3_norm_deriv_second_potential
   public nmlfi3_epsilon_one, nmlfi3_epsilon_two, nmlfi3_epsilon_three
-  public nmlfi3_x_endinf, nmlfi3_efold_primitive, nmlfi3_x_trajectory
+  public nmlfi3_efold_primitive, nmlfi3_x_trajectory
   public nmlfi3_parametric_hbar_trajectory
 
 
@@ -45,6 +46,7 @@ contains
   function nmlfi3_check_params(xi,p)
     implicit none
     logical :: nmlfi3_check_params
+    real(kp), intent(in) :: xi,p
 
     nmlfi3_check_params = ( (p.le.pminus).and.(xi.lt.nmlfi_xizero(p)) ) &
          .or. ( (p.gt.pminus).and.(p.lt.4._kp) ) 
@@ -58,7 +60,7 @@ contains
     real(kp) :: nmlfi3_norm_potential
     real(kp), intent(in) :: x,xi,p
     
-    nmlfi3_norm_potential = nmlfi_norm_potential(hbar,xi,p)
+    nmlfi3_norm_potential = nmlfi_norm_potential(x,xi,p)
 
   end function nmlfi3_norm_potential
 
@@ -86,14 +88,14 @@ contains
   end function nmlfi3_norm_deriv_second_potential
 
   
-  function nmlfi_epsilon_one(x,xi,p)
+  function nmlfi3_epsilon_one(x,xi,p)
     implicit none
     real(kp) :: nmlfi3_epsilon_one
     real(kp), intent(in) :: x,xi,p
 
     nmlfi3_epsilon_one = nmlfi_epsilon_one(x,xi,p)
 
-  end function nmlfi_epsilon_one
+  end function nmlfi3_epsilon_one
 
 
   function nmlfi3_epsilon_two(x,xi,p)
@@ -155,7 +157,9 @@ contains
     implicit none
     real(kp), intent(in) :: bfold, xend, xi,p
     real(kp) :: nmlfi3_x_trajectory
-    real(kp) :: hbar
+    real(kp) :: hbar, hbarend
+
+    hbarend = nmlfi_hbar(xend,xi)
     
     hbar = nmlfi3_parametric_hbar_trajectory(bfold,hbarend,xi,p)
 

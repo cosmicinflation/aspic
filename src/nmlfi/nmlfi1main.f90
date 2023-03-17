@@ -4,16 +4,17 @@ program nmlfi1main
   use infinout, only : delete_file, livewrite
 
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_parametric_potential, nmlfi_x
+  use nmlficommon, only : nmlfi_x, nmlfi_norm_parametric_potential
   
   use nmlfi1sr, only : nmlfi1_norm_potential, nmlfi1_norm_deriv_potential, nmlfi1_norm_deriv_second_potential
   use nmlfi1sr, only : nmlfi1_epsilon_one, nmlfi1_epsilon_two, nmlfi1_epsilon_three, nmlfi1_x_endinf  
-  use nmlfi1sr, only : nmlfi1_x_trajectory, nmlfi1_x, nmlfi1_hbar
+  use nmlfi1sr, only : nmlfi1_x_trajectory, nmlfi1_hbar_endinf
 
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
   use srreheat, only : potential_normalization
-  use nmlfi1reheat, only : nmlfi1_hbar_star, nmlfi1_hbar_rrad, nmlfi1_hbar_rreh, nmlfi1_lnrhoreh_max
+
+  use nmlfi1reheat, only : nmlfi1_hbar_star, nmlfi1_hbar_rrad, nmlfi1_hbar_rreh, nmlfi1_parametric_lnrhoreh_max
   use nmlfi1reheat, only : nmlfi1_x_star, nmlfi1_x_rrad, nmlfi1_x_rreh
 
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
@@ -24,7 +25,7 @@ program nmlfi1main
 
   integer :: i,j,k,n,npts,nxi
 
-  real(kp) :: p
+  real(kp) :: p,V
 
   real(kp) :: hbar,hbarstar, hbarmin, hbarmax, hbarend
   real(kp) :: xend, xstar
@@ -74,9 +75,9 @@ program nmlfi1main
   do i=1,n
 
      hbar = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
-     x = nmlfi1_x(hbar,xi)
+     x = nmlfi_x(hbar,xi)
      
-     V = nmlfi1_norm_parametric_potential(hbar,xi,p)
+     V = nmlfi_norm_parametric_potential(hbar,xi,p)
 
      call livewrite('nmlfi1_parametric_potential.dat',hbar/sqrt(xi),V,x,hbar/sqrt(xi))
 
@@ -105,7 +106,7 @@ program nmlfi1main
   
   
         hbarend = nmlfi1_hbar_endinf(xi,p)
-        lnRhoRehMax = nmlfi1_lnrhoreh_max(xi,p,hbarend,Pstar)
+        lnRhoRehMax = nmlfi1_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
 
         print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 
@@ -152,7 +153,7 @@ program nmlfi1main
   p=5
   npts = 10
   
-  hbarend = nmlfi1_parametric_hbar_endinf(xi,p)
+  hbarend = nmlfi1_hbar_endinf(xi,p)
   
   do i=1,npts
 
