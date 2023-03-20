@@ -4,11 +4,12 @@ program nmlfi1main
   use infinout, only : delete_file, livewrite
 
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_x, nmlfi_norm_parametric_potential
+  use nmlficommon, only : nmlfi_x, nmlfi_norm_parametric_potential, pplus
   
   use nmlfi1sr, only : nmlfi1_norm_potential, nmlfi1_norm_deriv_potential, nmlfi1_norm_deriv_second_potential
   use nmlfi1sr, only : nmlfi1_epsilon_one, nmlfi1_epsilon_two, nmlfi1_epsilon_three, nmlfi1_x_endinf  
-  use nmlfi1sr, only : nmlfi1_x_trajectory, nmlfi1_hbar_endinf
+  use nmlfi1sr, only : nmlfi1_x_trajectory, nmlfi1_hbar_endinf, nmlfi1_ximax
+  use nmlfi1sr, only : nmlfi1_numacc_efoldmax, nmlfi1_numacc_ximax
 
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
@@ -41,7 +42,7 @@ program nmlfi1main
   real(kp) :: M, Vstar, lnOmega4End
    
 
-  real(kp) :: xi, ximin,ximax
+  real(kp) :: xi, ximin,ximax, efoldMin, efoldMax
   
   call delete_file('nmlfi1_potential.dat')
   call delete_file('nmlfi1_parametric_potential.dat')
@@ -86,26 +87,46 @@ program nmlfi1main
 
   
   Pstar = powerAmpScalar
+  w = 0._kp
   
 
   call aspicwrite_header('nmlfi1',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
  
   npts = 20
-  nxi=100
-  ximin = 1d-3
-  ximax = 1d3
+  efoldMin = 120._kp
   
   lnRhoRehMin = lnRhoNuc
 
-  do k=2,7
+  do k=1,8
 
      p = k
+
+     nxi=100
+     
+     ximin = 1d-6
+     ximax = 1d6
+
+     if (p.ge.pplus) then
+        print *,'ximaxth= ',nmlfi1_ximax(p)
+        ximax = min(ximax,nmlfi1_ximax(p))
+     endif
+     
+     ximax = min(ximax,nmlfi1_numacc_ximax(efoldMin,p))
+     print *,'ximin, ximax= ',ximin,ximax
      
      do j=1,nxi
-        xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
-  
-  
+        
+        xi = exp(log(ximin) + real(j-1,kp)*(log(ximax)-log(ximin))/real(nxi-1,kp))
+
+        efoldMax = nmlfi1_numacc_efoldmax(xi,p)
+
+        if (efoldMax.lt.efoldMin) then
+           print *,'not enough e-folds: xi= efoldMax= ',xi,efoldMax
+           cycle
+        end if
+        
         hbarend = nmlfi1_hbar_endinf(xi,p)
+
         lnRhoRehMax = nmlfi1_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
 
         print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
@@ -116,6 +137,9 @@ program nmlfi1main
 
            hbarstar = nmlfi1_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar,bfoldstar)
 
+!           print *,'test',hbarstar,hbarend,xi,p,w
+
+           
            eps1 = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
            eps2 = nmlfi_parametric_epsilon_two(hbarstar,xi,p)
            eps3 = nmlfi_parametric_epsilon_three(hbarstar,xi,p)
@@ -191,7 +215,7 @@ program nmlfi1main
 
      hbarstar = nmlfi1_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar)
      xstar = nmlfi_x(hbarstar,xi)
-
+     
      print *,'lnR', get_lnrreh_rhow(lnRhoReh,w,lnRhoEnd),'lnRrad' &
           ,get_lnrrad_rhow(lnRhoReh,w,lnRhoEnd),'hbarstar',hbarstar,'hbarend ',hbarend
 

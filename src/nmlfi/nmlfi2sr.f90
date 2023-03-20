@@ -22,11 +22,12 @@
 
 module nmlfi2sr
   use infprec, only : kp
-  use nmlficommon, only : hbarSmall, hbarBig, pminus, pplus, nmlfi_hbar, nmlfi_x, nmlfi_xizero
+  use nmlficommon, only : pminus, pplus, nmlfi_hbar, nmlfi_x, nmlfi_xizero
   use nmlficommon, only : nmlfi_norm_potential, nmlfi_norm_deriv_potential, nmlfi_norm_deriv_second_potential
   use nmlficommon, only : nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
   use nmlficommon, only : nmlfi_hbarsquare_epsoneunity, nmlfi_hbar_potmax
+  use nmlficommon, only : nmlfi_numacc_hbarsquare_epsonenull, nmlfi_parametric_efold_primitive
   
   implicit none
 
@@ -38,6 +39,7 @@ module nmlfi2sr
   public nmlfi2_x_endinf, nmlfi2_efold_primitive, nmlfi2_x_trajectory
   public nmlfi2_hbar_endinf, nmlfi2_parametric_hbar_trajectory
 
+  public nmlfi2_numacc_hbarinimin, nmlfi2_numacc_xinimin, nmlfi2_numacc_efoldmax
 
   
 contains
@@ -148,13 +150,80 @@ contains
     hbarepsone2 = nmlfi_hbarsquare_epsoneunity(xi,p)
 
 !safety check    
-    if (hbarepsone2(2).le.0._kp) stop 'nmlfi2_hbar_endinf: hbarend^2 < 0!?'
-
+    if (hbarepsone2(2).le.0._kp) then
+       write(*,*)'xi= p= hbarepsone2= ',xi,p,hbarepsone2
+       stop 'nmlfi2_hbar_endinf: hbarend^2 < 0!?'
+    endif
+    
     nmlfi2_hbar_endinf = sqrt(hbarepsone2(2))
         
   end function nmlfi2_hbar_endinf
 
   
+
+
+!A the top of the potential, eps1->0. This function returns the
+!minimal possible value of hbarini, close to the top of the potential,
+!starting at eps1=machine precision
+  function nmlfi2_numacc_hbarinimin(xi,p)
+    implicit none
+    real(kp) :: nmlfi2_numacc_hbarinimin
+    real(kp), intent(in) :: xi,p
+
+    real(kp), dimension(2) :: hbar2null
+
+    if (.not.nmlfi2_check_params(xi,p)) then
+       write(*,*)'xi= p= ',xi,p
+       stop 'nmlfi2_numacc_hbarinimin: NMLFI2 does not exist for these parameters!'
+    endif
+    
+    hbar2null = nmlfi_numacc_hbarsquare_epsonenull(xi,p)
+
+    if (hbar2null(2).le.0._kp) then
+       write(*,*)'xi= p= hbar2null= ',xi,p,hbar2null(:)
+       stop ' nmlfi2_numacc_hbarinimin: bug!?'
+    endif
+
+    nmlfi2_numacc_hbarinimin = sqrt(hbar2null(2))
+
+!safety check
+    if (nmlfi2_numacc_hbarinimin.lt.nmlfi_hbar_potmax(xi,p)) then
+       stop 'nmlfi2_numacc_hbarinimin: hbarinimin <  hbarpotmax!?'
+    endif
+
+  end function nmlfi2_numacc_hbarinimin
+    
+  
+
+  function nmlfi2_numacc_xinimin(xi,p)
+    implicit none
+    real(kp) :: nmlfi2_numacc_xinimin
+    real(kp), intent(in) :: xi,p
+    real(kp) :: hbarinimin
+
+    hbarinimin = nmlfi2_numacc_hbarinimin(xi,p)
+
+    nmlfi2_numacc_xinimin = nmlfi_x(hbarinimin,xi)
+    
+  end function nmlfi2_numacc_xinimin
+
+
+!the maximal number of efold computable at the current numerical accuracy
+  function nmlfi2_numacc_efoldmax(xi,p)
+    implicit none
+    real(kp) :: nmlfi2_numacc_efoldmax
+    real(kp), intent(in) :: xi,p
+
+    real(kp) :: hbarend, hbarinimin
+    
+    hbarend = nmlfi2_hbar_endinf(xi,p)
+    hbarinimin = nmlfi2_numacc_hbarinimin(xi,p)
+    
+    nmlfi2_numacc_efoldmax = -nmlfi_parametric_efold_primitive(hbarend,xi,p) &
+         + nmlfi_parametric_efold_primitive(hbarinimin,xi,p)
+    
+  end function nmlfi2_numacc_efoldmax
+
   
   
   !this is integral[V(phi)/V'(phi) dphi]

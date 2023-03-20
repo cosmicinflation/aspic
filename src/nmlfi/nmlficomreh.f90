@@ -79,6 +79,8 @@ contains
     nmlfiData%real4 = calF + primEnd
     
     hbarstar = zbrent(find_nmlfi_hbar_star,hbarmin,hbarmax,tolzbrent,nmlfiData)
+
+    nmlfi_hbar_star = hbarstar
     
     if (present(bfoldstar)) then
        bfoldstar = - (nmlfi_parametric_efold_primitive(hbarstar,xi,p) - primEnd)

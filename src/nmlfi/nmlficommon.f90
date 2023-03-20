@@ -23,15 +23,17 @@ module nmlficommon
   implicit none
 
 !makes eps1 machine precision for xi > 1
-  real(kp), parameter :: hbarBig = epsilon(1._kp)**(-0.25_kp)
-  real(kp), parameter :: hbarSmall = epsilon(1._kp)**(0.5_kp)
 
   real(kp), parameter :: pplus = 2._kp*(2._kp + sqrt(3._kp))
   real(kp), parameter :: pminus = 2._kp*(2._kp - sqrt(3._kp))
+
+  real(kp), parameter :: hbarBig = epsilon(1._kp)*huge(1._kp)
+  real(kp), parameter :: nmlfiSmall = epsilon(1._kp)
+  
   
   private
 
-  public hbarBig, hbarSmall, pplus, pminus
+  public hbarBig, nmlfiSmall, pplus, pminus
   public nmlfi_x, nmlfi_hbar, nmlfi_deriv_x, nmlfi_deriv_second_x
 
   public nmlfi_norm_parametric_potential, nmlfi_norm_deriv_second_parametric_potential
@@ -42,7 +44,7 @@ module nmlficommon
   public nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   public nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
   public nmlfi_parametric_hbar_trajectory, nmlfi_quartic_parametric_hbar_trajectory
-
+  public nmlfi_numacc_hbarsquare_epsonenull
 
   public nmlfi_norm_potential, nmlfi_norm_deriv_second_potential, nmlfi_norm_deriv_potential
   public nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
@@ -269,6 +271,10 @@ contains
     implicit none
     real(kp), dimension(2) :: hbarepsone2
     real(kp), intent(in) :: xi,p
+
+    if (xi.eq.nmlfi_xizero(p)) then
+       stop 'nmlfi_hbarsquare_epsoneunity: xi=xizero => eps=1 at infinity!'
+    endif
     
     hbarepsone2(1) = (sqrt( (1._kp + 2._kp*p*xi)*(1._kp+6._kp*p*xi) ) + p*xi*(p-4._kp) - 1._kp) &
          / (2._kp - xi*(p*(p-8._kp) + 4._kp))
@@ -279,6 +285,30 @@ contains
   end function nmlfi_hbarsquare_epsoneunity
     
 
+
+!the two solutions of eps1=eps around the maximum of the potential in
+!terms of hbar^2. Relevant only for p<4, for p>4 this returns negative values
+  function nmlfi_numacc_hbarsquare_epsonenull(xi,p) result(hbarepsnull2)
+    implicit none
+    real(kp), dimension(2) :: hbarepsnull2
+    real(kp), intent(in) :: xi,p
+
+    real(kp), parameter :: eps = nmlfiSmall
+    
+    hbarepsnull2(1) = (sqrt(eps*eps + 8._kp*p*xi*eps + 12._kp*p*p*xi*xi*eps ) + p*xi*(p-4._kp) - eps) &
+         / (2._kp*eps -16._kp*xi + 8._kp*p*xi -p*p*xi + 12._kp*eps*xi)
+
+    hbarepsnull2(2) = (-sqrt(eps*eps + 8._kp*p*xi*eps + 12._kp*p*p*xi*xi*eps ) + p*xi*(p-4._kp) - eps) &
+         / (2._kp*eps -16._kp*xi + 8._kp*p*xi -p*p*xi + 12._kp*eps*xi)
+
+    !sanity check
+    if ((hbarepsnull2(1).le.0._kp).or.(hbarepsnull2(1).lt.0._kp)) then
+       write(*,*)'xi= p= hbarepsnull= ',xi,p,hbarepsnull2(:)
+       stop 'nmlfi_numacc_hbarsquare_epsonenull: h^2 < 0!?'
+    endif
+    
+  end function nmlfi_numacc_hbarsquare_epsonenull
+  
   
 
 !efold (Einstein Frame) primitive in terms of the parameter hbar
@@ -296,7 +326,7 @@ contains
     endif
     
     nmlfi_parametric_efold_primitive = (2._kp + 3._kp*xi*p)/(4._kp*xi*(p-4._kp)) &
-         * log(p+(p-4._kp)*hbar*hbar) - 0.75_kp*log(1._kp+hbar*hbar)
+         * log(abs(p+(p-4._kp)*hbar*hbar)) - 0.75_kp*log(1._kp+hbar*hbar)
      
   end function nmlfi_parametric_efold_primitive
 

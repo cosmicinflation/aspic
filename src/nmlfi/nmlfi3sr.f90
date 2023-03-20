@@ -26,7 +26,8 @@ module nmlfi3sr
   use nmlficommon, only : nmlfi_norm_potential, nmlfi_norm_deriv_potential, nmlfi_norm_deriv_second_potential
   use nmlficommon, only : nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
-  use nmlficommon, only : nmlfi_hbar_potmax
+  use nmlficommon, only : nmlfi_hbar_potmax, nmlfi_numacc_hbarsquare_epsonenull
+  use nmlficommon, only : nmlfi_parametric_efold_primitive
   
   implicit none
 
@@ -38,7 +39,8 @@ module nmlfi3sr
   public nmlfi3_efold_primitive, nmlfi3_x_trajectory
   public nmlfi3_parametric_hbar_trajectory
 
-
+  public nmlfi3_numacc_hbarinimin, nmlfi3_numacc_xinimin, nmlfi3_numacc_efoldmax
+  public nmlfi3_numacc_hbarendmin
   
 contains
 
@@ -116,6 +118,87 @@ contains
     nmlfi3_epsilon_three = nmlfi_epsilon_three(x,xi,p)
 
   end function nmlfi3_epsilon_three
+
+
+  
+!A the top of the potential, eps1->0. This function returns the
+!minimal possible value of hbarini, close to the top of the potential,
+!starting at eps1=machine precision
+  function nmlfi3_numacc_hbarinimin(xi,p)
+    implicit none
+    real(kp) :: nmlfi3_numacc_hbarinimin
+    real(kp), intent(in) :: xi,p
+
+    real(kp), dimension(2) :: hbar2null
+
+    if (.not.nmlfi3_check_params(xi,p)) then
+       write(*,*)'xi= p= ',xi,p
+       stop 'nmlfi3_numacc_hbarinimin: NMLFI3 does not exist for these parameters!'
+    endif
+    
+    hbar2null = nmlfi_numacc_hbarsquare_epsonenull(xi,p)
+
+    if (hbar2null(2).le.0._kp) then
+       write(*,*)'xi= p= hbar2null= ',xi,p,hbar2null(:)
+       stop ' nmlfi3_numacc_hbarinimin: bug!?'
+    endif
+
+    nmlfi3_numacc_hbarinimin = sqrt(hbar2null(2))
+
+!safety check
+    if (nmlfi3_numacc_hbarinimin.lt.nmlfi_hbar_potmax(xi,p)) then
+       stop 'nmlfi3_numacc_hbarinimin: hbarinimin <  hbarpotmax!?'
+    endif
+
+  end function nmlfi3_numacc_hbarinimin
+    
+  
+
+  function nmlfi3_numacc_xinimin(xi,p)
+    implicit none
+    real(kp) :: nmlfi3_numacc_xinimin
+    real(kp), intent(in) :: xi,p
+    real(kp) :: hbarinimin
+
+    hbarinimin = nmlfi3_numacc_hbarinimin(xi,p)
+
+    nmlfi3_numacc_xinimin = nmlfi_x(hbarinimin,xi)
+    
+  end function nmlfi3_numacc_xinimin
+
+
+  function nmlfi3_numacc_hbarendmin(efold,xi,p)
+    implicit none
+    real(kp) :: nmlfi3_numacc_hbarendmin
+    real(kp), intent(in) :: efold,xi,p
+
+    real(kp) :: hbarinimin
+
+    hbarinimin = nmlfi3_numacc_hbarinimin(xi,p)
+
+    nmlfi3_numacc_hbarendmin = nmlfi3_parametric_hbar_trajectory(efold,hbarinimin,xi,p)
+
+  end function nmlfi3_numacc_hbarendmin
+
+    
+  
+!the maximal number of efold computable at the current numerical
+!accuracy. This is not necessarily huge as eps1 can be not small
+!asymptotically
+  function nmlfi3_numacc_efoldmax(xi,p)
+    implicit none
+    real(kp) :: nmlfi3_numacc_efoldmax
+    real(kp), intent(in) :: xi,p
+
+    real(kp) :: hbarinimin, hbarendmax
+    
+    hbarendmax = huge(1._kp)
+    hbarinimin = nmlfi3_numacc_hbarinimin(xi,p)
+    
+    nmlfi3_numacc_efoldmax = -nmlfi_parametric_efold_primitive(hbarendmax,xi,p) &
+         + nmlfi_parametric_efold_primitive(hbarinimin,xi,p)
+    
+  end function nmlfi3_numacc_efoldmax
 
 
     

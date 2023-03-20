@@ -9,13 +9,14 @@ program nmlfi3main
   
   use nmlfi3sr, only : nmlfi3_norm_potential, nmlfi3_norm_deriv_potential, nmlfi3_norm_deriv_second_potential
   use nmlfi3sr, only : nmlfi3_epsilon_one, nmlfi3_epsilon_two, nmlfi3_epsilon_three
-  use nmlfi3sr, only : nmlfi3_x_trajectory
-
+  use nmlfi3sr, only : nmlfi3_x_trajectory, nmlfi3_numacc_hbarinimin, nmlfi3_numacc_efoldmax
+  use nmlfi3sr, only : nmlfi3_numacc_hbarendmin
+  
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
   use srreheat, only : potential_normalization
-  use nmlfi3reheat, only : nmlfi3_hbar_star, nmlfi3_hbar_rrad, nmlfi3_hbar_rreh, nmlfi3_lnrhoreh_max
-  use nmlfi3reheat, only : nmlfi3_x_star, nmlfi3_x_rrad, nmlfi3_x_rreh
+  use nmlfi3reheat, only : nmlfi3_hbar_star, nmlfi3_hbar_rrad, nmlfi3_hbar_rreh
+  use nmlfi3reheat, only : nmlfi3_x_star, nmlfi3_x_rrad, nmlfi3_x_rreh,nmlfi3_parametric_lnrhoreh_max
 
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -41,25 +42,29 @@ program nmlfi3main
   real(kp) :: M, Vstar, lnOmega4End
    
 
-  real(kp) :: xi, ximin,ximax
-  real(kp) :: p, pmin,pmax
+  real(kp) :: xi, ximin,ximax,xizero
+  real(kp) :: p, pmin,pmax, efoldMin
   real(kp) :: xend, xendmin, xendmax
   
   
   Pstar = powerAmpScalar
+  w = 0._kp
+  efoldMin = 120._kp
   
-
   call aspicwrite_header('nmlfi3s',labeps12,labnsr,labbfoldreh,(/'xend','xi  ','p   '/))
  
   npts = 20
 
   np = 5
-  pmin = 0.1
-  pmax = pminus
-  
-  nxi=10
+  pmin = 0.1_kp
+  pmax = 0.5_kp
 
-  nend = 10
+!reminder  
+  if (pmax.gt.pminus) stop 'nmlfi3s is for p<p- and xi<xizero'
+  
+  nxi=4
+
+  nend = 100
 
   
   lnRhoRehMin = lnRhoNuc
@@ -67,26 +72,34 @@ program nmlfi3main
   do k=1,np
 
      p = pmin +real(k-1,kp)*(pmax-pmin)/real(np-1,kp)
+     xizero = nmlfi_xizero(p)
      
      do j=1,nxi
 
-        ximin = 0.01_kp*nmlfi_xizero(p)
-        ximax = 0.99_kp*nmlfi_xizero(p)
+!nmlfi3 with p<p- and xi<xizero, eps1 is always < 1. If slow-roll has to be enforced, xi cannot be too close of xizero      
+        ximin = 0.0001_kp*xizero
+        ximax = 0.1_kp*xizero
         
-        xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
+        xi = 10._kp**(log10(ximin) + real(j-1,kp)*(log10(ximax)-log10(ximin))/real(nxi-1,kp))
 
+        hbarendmin = nmlfi3_numacc_hbarendmin(efoldMin,xi,p)
+        hbarendmax = 1000._kp * hbarendmin
+
+        print *
+        print *,'hbarendmin= hbarendmax= ',hbarendmin,hbarendmax
+        print *,'p= pminus= ',p,pminus
+        print *,'xi= xizero(p)= ',xi,xizero
+        
         do l=1,nend
 
-           hbarendmin = nmlfi_hbar_potmax(xi,p)
-           hbarendmax = 1000._kp * hbarendmin
            hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nend-1,kp)
-
+           
            xend = nmlfi_x(hbarend,xi)
            
-           lnRhoRehMax = nmlfi3_lnrhoreh_max(xi,p,hbarend,Pstar)
-
+           lnRhoRehMax = nmlfi3_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
+           
            print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
-
+           
            do i=1,npts
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
@@ -121,20 +134,21 @@ program nmlfi3main
   
   call aspicwrite_end()
 
-
   call aspicwrite_header('nmlfi3l',labeps12,labnsr,labbfoldreh,(/'xend','xi  ','p   '/))
  
   npts = 20
 
   np = 5
-  pmin = pminus
-  pmax = 4._kp
+  pmin = 0.6_kp
+  pmax = 3.5_kp
+
+  if ((pmin.le.pminus).or.(p.ge.4._kp)) stop 'nmlfi3l is for p>pminus'
   
-  nxi=10
+  nxi=5
   ximin = 1d-3
   ximax = 1d3
   
-  nend = 10
+  nend = 100
   
   lnRhoRehMin = lnRhoNuc
 
@@ -144,17 +158,25 @@ program nmlfi3main
      
      do j=1,nxi
         
-        xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
+        xi = 10._kp**(log10(ximin) + real(j-1,kp)*(log10(ximax)-log10(ximin))/real(nxi-1,kp))
 
+
+        hbarendmin = nmlfi3_numacc_hbarendmin(efoldMin,xi,p)
+        hbarendmax = 1000._kp * hbarendmin
+
+        print *
+        print *,'hbarendmin= hbarendmax= ',hbarendmin,hbarendmax
+        print *,'p= pminus= ',p,pminus
+        print *,'xi= ',xi
+        
+        
         do l=1,nend
 
-           hbarendmin = nmlfi_hbar_potmax(xi,p)
-           hbarendmax = 1000._kp * hbarendmin
            hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nend-1,kp)
 
            xend = nmlfi_x(hbarend,xi)
-           
-           lnRhoRehMax = nmlfi3_lnrhoreh_max(xi,p,hbarend,Pstar)
+
+           lnRhoRehMax = nmlfi3_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
 
            print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
 

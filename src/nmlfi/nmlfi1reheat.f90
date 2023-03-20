@@ -2,7 +2,7 @@
 
 module nmlfi1reheat
   use infprec, only :  kp
-  use nmlficommon, only : nmlfi_x, nmlfi_hbar, hbarBig, hbarSmall
+  use nmlficommon, only : nmlfi_x, nmlfi_hbar, hbarBig
   use nmlficommon, only : nmlfi_hbar_potmax
 
   use nmlficomreh, only : nmlfi_hbar_rreh, nmlfi_hbar_star, nmlfi_hbar_rrad
@@ -37,19 +37,20 @@ contains
 
     real(kp) :: hbarmin, hbarmax
 
-    if (.not.nmlfi1_check_params(p,xi)) then
+    if (.not.nmlfi1_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
        stop 'nmlfi1_hbar_star: NMLFI1 does not exist for these parameters!'
     endif
     
     hbarmin = hbarend
     if (p.ge.4._kp) then
-       hbarmax = hbarBig
+       hbarmax = hbarBig**(1._kp/p)
     else
        hbarmax = nmlfi_hbar_potmax(xi,p)
     endif
     
     nmlfi1_hbar_star = nmlfi_hbar_star(xi,p,w,lnRhoReh,Pstar,hbarend,hbarmin,hbarmax,bfoldstar)
+
     
   end function nmlfi1_hbar_star
 
@@ -63,14 +64,14 @@ contains
 
     real(kp) :: hbarmin, hbarmax
 
-    if (.not.nmlfi1_check_params(p,xi)) then
+    if (.not.nmlfi1_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
        stop 'nmlfi1_hbar_rrad: NMLFI1 does not exist for these parameters!'
     endif
     
     hbarmin = hbarend
     if (p.ge.4._kp) then
-       hbarmax = hbarBig
+       hbarmax = hbarBig**(1._kp/p)
     else
        hbarmax = nmlfi_hbar_potmax(xi,p)
     endif
@@ -89,14 +90,14 @@ contains
 
     real(kp) :: hbarmin, hbarmax
 
-    if (.not.nmlfi1_check_params(p,xi)) then
+    if (.not.nmlfi1_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
        stop 'nmlfi1_hbar_rreh: NMLFI1 does not exist for these parameters!'
     endif
     
     hbarmin = hbarend
     if (p.ge.4._kp) then
-       hbarmax = hbarBig
+       hbarmax = hbarBig**(1._kp/p)
     else
        hbarmax = nmlfi_hbar_potmax(xi,p)
     endif
@@ -116,7 +117,7 @@ contains
         
     hbarmin = hbarend
     if (p.ge.4._kp) then
-       hbarmax = hbarBig
+       hbarmax = hbarBig**(1._kp/p)
     else
        hbarmax = nmlfi_hbar_potmax(xi,p)
     endif

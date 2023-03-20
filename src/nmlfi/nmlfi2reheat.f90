@@ -3,7 +3,7 @@
 
 module nmlfi2reheat
   use infprec, only :  kp
-  use nmlficommon, only : nmlfi_x, nmlfi_hbar, hbarBig, hbarSmall
+  use nmlficommon, only : nmlfi_x, nmlfi_hbar
   use nmlficommon, only : nmlfi_hbar_potmax
 
   use nmlficomreh, only : nmlfi_hbar_rreh, nmlfi_hbar_star, nmlfi_hbar_rrad
@@ -37,7 +37,7 @@ contains
 
     real(kp) :: hbarmin, hbarmax
 
-    if (.not.nmlfi2_check_params(p,xi)) then
+    if (.not.nmlfi2_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
        stop 'nmlfi2_hbar_star: NMLFI2 does not exist for these parameters!'
     endif
@@ -59,7 +59,7 @@ contains
 
     real(kp) :: hbarmin, hbarmax
 
-    if (.not.nmlfi2_check_params(p,xi)) then
+    if (.not.nmlfi2_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
        stop 'nmlfi2_hbar_rrad: NMLFI2 does not exist for these parameters!'
     endif
@@ -81,7 +81,7 @@ contains
 
     real(kp) :: hbarmin, hbarmax
     
-    if (.not.nmlfi2_check_params(p,xi)) then
+    if (.not.nmlfi2_check_params(xi,p)) then
        write(*,*)'xi= p= ',xi,p
        stop 'nmlfi2_hbar_rreh: NMLFI2 does not exist for these parameters!'
     endif

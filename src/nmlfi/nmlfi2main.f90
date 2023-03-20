@@ -5,17 +5,18 @@ program nmlfi2main
 
   use nmlficommon, only : pplus, pminus, nmlfi_xizero
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x
+  use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x, nmlfi_hbar_potmax
   
   use nmlfi2sr, only : nmlfi2_norm_potential, nmlfi2_norm_deriv_potential, nmlfi2_norm_deriv_second_potential
   use nmlfi2sr, only : nmlfi2_epsilon_one, nmlfi2_epsilon_two, nmlfi2_epsilon_three, nmlfi2_x_endinf  
   use nmlfi2sr, only : nmlfi2_x_trajectory, nmlfi2_hbar_endinf
+  use nmlfi2sr, only : nmlfi2_numacc_efoldmax, nmlfi2_numacc_hbarinimin
 
   use srreheat, only : get_lnrreh_rrad, get_lnrreh_rhow, get_lnrrad_rhow
   use srreheat, only : ln_rho_reheat, ln_rho_endinf, log_energy_reheat_ingev
   use srreheat, only : potential_normalization
-  use nmlfi2reheat, only : nmlfi2_hbar_star, nmlfi2_hbar_rrad, nmlfi2_hbar_rreh, nmlfi2_lnrhoreh_max
-  use nmlfi2reheat, only : nmlfi2_x_star, nmlfi2_x_rrad, nmlfi2_x_rreh
+  use nmlfi2reheat, only : nmlfi2_hbar_star, nmlfi2_hbar_rrad, nmlfi2_hbar_rreh
+  use nmlfi2reheat, only : nmlfi2_x_star, nmlfi2_x_rrad, nmlfi2_x_rreh, nmlfi2_parametric_lnrhoreh_max
 
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use infinout, only : labeps12, labnsr, labbfoldreh
@@ -28,7 +29,7 @@ program nmlfi2main
   real(kp) :: hbar,hbarstar, hbarmin, hbarmax, hbarend
   real(kp) :: xend, xstar
   
-  real(kp) :: x, xmin, xmax
+  real(kp) :: x, xmin, xmax, efoldMax
 
   real(kp) :: eps1, eps2, eps3
 
@@ -41,39 +42,53 @@ program nmlfi2main
    
 
   real(kp) :: xi, ximin,ximax
-  real(kp) :: p, pmin,pmax
+  real(kp) :: p, pmin,pmax, xizero
   
   
   Pstar = powerAmpScalar
-  
+  w = 0._kp
 
   call aspicwrite_header('nmlfi2',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
  
   npts = 20
 
   np = 5
-  pmin = 0.1
-  pmax = pminus
+  pmin = 0.01_kp
+  pmax = 0.1_kp
   
-  nxi=100
+  nxi=10
   
   lnRhoRehMin = lnRhoNuc
 
   do k=1,np
 
      p = pmin +real(k-1,kp)*(pmax-pmin)/real(np-1,kp)
+
+     xizero = nmlfi_xizero(p)
+
+     print *,'p= xizero= ',p,xizero
      
      do j=1,nxi
-
-        ximin = nmlfi_xizero(p)
-        ximax = 100._kp * xmin
         
-        xi = ximin + real(j-1,kp)*(ximax-ximin)/real(nxi-1,kp)
-    
+        ximin = 1.01_kp * xizero
+        ximax = 1d3
+        
+        xi = exp(log(ximin) + real(j-1,kp)*(log(ximax)-log(ximin))/real(nxi-1,kp))
+
+        efoldMax = nmlfi2_numacc_efoldmax(xi,p)
+        
+        print *, 'efoldMax=',efoldMax
+
+        if (efoldMax.lt.120._kp) then
+           write(*,*)'not enough e-folds to be viable!'
+           cycle
+        endif
         hbarend = nmlfi2_hbar_endinf(xi,p)
-        lnRhoRehMax = nmlfi2_lnrhoreh_max(xi,p,hbarend,Pstar)
+
+        lnRhoRehMax = nmlfi2_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
 
         print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
+        print *, 'efoldmax= ',efoldMAx
 
         do i=1,npts
 
@@ -105,17 +120,17 @@ program nmlfi2main
   enddo
   
   call aspicwrite_end()
-  
+
 ! Test reheating with lnRrad and lnR
 
   write(*,*)
   write(*,*)'Testing Rrad/Rreh'
   
-  lnRradmin=-40
-  lnRradmax = 10
+  lnRradmin=-46
+  lnRradmax = -40
 
-  p = 0.5_kp*pminus
-  xi = 10._kp * nmlfi_xizero(p)
+  p = 0.1*pminus
+  xi = 1.1_kp * nmlfi_xizero(p)
   npts = 10
   
   hbarend = nmlfi2_hbar_endinf(xi,p)
