@@ -36,8 +36,8 @@ module cosmopar
 !pivot scale in Mpc^-1
   real(kp), parameter :: kstar = 0.05_kp !Mpc^-1
 
-!scalar amp at kstar from planck 2013 + slow-roll second order
-  real(kp), parameter :: powerAmpScalar = 2.2030e-09
+!scalar amp at kstar from planck 2018 + BKP + slow-roll second order
+  real(kp), parameter :: powerAmpScalar = 2.1127e-09
 
 !Effective COBE normalisation given the same amplitude as Pstar
   real(kp), parameter :: QrmsOverT = sqrt(powerAmpScalar/60._kp)
