@@ -180,7 +180,7 @@ contains
     real(kp), intent(in) :: alpha
     type(transfert), optional, intent(inout) :: ccsi1Data
     real(kp) :: find_ccsi1_alphamax
-    real(kp) :: xinimax, xend, efoldMax
+    real(kp) :: efoldMax
 
     efoldMax = ccsi1Data%real1
 

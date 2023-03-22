@@ -40,6 +40,7 @@ module nmlficomreh
 !take as input the parametric field hbar  
   public nmlfi_lnrhoreh_max
   public nmlfi_hbar_star, nmlfi_hbar_rrad, nmlfi_hbar_rreh
+  public nmlfi_gravity_mass_scale
 
 contains
 
@@ -49,6 +50,28 @@ contains
 !!!the parametric reheating functions, the ones you should use !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+!this function returns Mg (in unit of Mpl) at the given parametric
+!field value hbar. This may be relevant for NMLFI3 as it may end for
+!large hbarend. As such Mg may differ from Mpl. Notice that all
+!quantities here are normalized in unit of Mg
+  function nmlfi_gravity_mass_scale(xi,p,hbar)
+    implicit none
+    real(kp) :: nmlfi_gravity_mass_scale
+    real(kp), intent(in) :: xi,p,hbar
+
+    real(kp) :: Mg2, hbar2
+
+    hbar2 = hbar*hbar
+
+    
+    Mg2 = (1._kp + hbar2 + 8._kp*xi*hbar2)/(1._kp + hbar2 + 6._kp*xi*hbar2)/(1._kp+hbar2)
+
+    nmlfi_gravity_mass_scale = sqrt(Mg2)
+        
+  end function nmlfi_gravity_mass_scale
+
+
+  
   function nmlfi_hbar_star(xi,p,w,lnRhoReh,Pstar,hbarend,hbarmin,hbarmax,bfoldstar)
     implicit none
     real(kp) :: nmlfi_hbar_star

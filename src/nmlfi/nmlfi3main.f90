@@ -6,6 +6,7 @@ program nmlfi3main
   use nmlficommon, only : pplus, pminus, nmlfi_xizero
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
   use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x, nmlfi_hbar_potmax
+  use nmlficomreh, only : nmlfi_gravity_mass_scale
   
   use nmlfi3sr, only : nmlfi3_norm_potential, nmlfi3_norm_deriv_potential, nmlfi3_norm_deriv_second_potential
   use nmlfi3sr, only : nmlfi3_epsilon_one, nmlfi3_epsilon_two, nmlfi3_epsilon_three
@@ -24,7 +25,7 @@ program nmlfi3main
   implicit none
 
 
-  integer :: i,j,k,l,n,np,npts,nxi,nend
+  integer :: i,j,k,l,n,npts,nend
 
   real(kp) :: hbar,hbarstar, hbarmin, hbarmax
   real(kp) :: hbarend, hbarendmax, hbarendmin
@@ -39,32 +40,47 @@ program nmlfi3main
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, bfoldstar
-  real(kp) :: M, Vstar, lnOmega4End
+  real(kp) :: M, Mg, Vstar, lnOmega4End
    
 
   real(kp) :: xi, ximin,ximax,xizero
   real(kp) :: p, pmin,pmax, efoldMin
   real(kp) :: xend, xendmin, xendmax
+
+  integer, parameter :: np = 3
+  integer, parameter :: nxi = 3
+  real(kp), dimension(nxi,np) :: xivec
   
   
   Pstar = powerAmpScalar
   w = 0._kp
   efoldMin = 120._kp
   
-  call aspicwrite_header('nmlfi3s',labeps12,labnsr,labbfoldreh,(/'xend','xi  ','p   '/))
+  call aspicwrite_header('nmlfi3s',labeps12,labnsr,labbfoldreh,(/'chiend','xi    ','p     '/))
  
   npts = 20
 
-  np = 5
   pmin = 0.1_kp
-  pmax = 0.5_kp
+  pmax = 0.4_kp
 
+  
+  xivec(1,1) = 0.001_kp
+  xivec(2,1) = 0.0025_kp
+  xivec(3,1) = 0.004_kp
+
+  xivec(1,2) = 0.001_kp
+  xivec(2,2) = 0.003_kp
+  xivec(3,2) = 0.004_kp
+
+  xivec(1,3) = 0.001_kp
+  xivec(2,3) = 0.003_kp
+  xivec(3,3) = 0.004_kp
+  
 !reminder  
   if (pmax.gt.pminus) stop 'nmlfi3s is for p<p- and xi<xizero'
   
-  nxi=4
 
-  nend = 100
+  nend = 1000
 
   
   lnRhoRehMin = lnRhoNuc
@@ -74,32 +90,31 @@ program nmlfi3main
      p = pmin +real(k-1,kp)*(pmax-pmin)/real(np-1,kp)
      xizero = nmlfi_xizero(p)
      
+     !nmlfi3 with p<p- and xi<xizero, eps1 is always < 1. If slow-roll has to be enforced, xi cannot be too close of xizero
+
      do j=1,nxi
 
-!nmlfi3 with p<p- and xi<xizero, eps1 is always < 1. If slow-roll has to be enforced, xi cannot be too close of xizero      
-        ximin = 0.0001_kp*xizero
-        ximax = 0.1_kp*xizero
-        
-        xi = 10._kp**(log10(ximin) + real(j-1,kp)*(log10(ximax)-log10(ximin))/real(nxi-1,kp))
+        xi = xivec(j,k)
 
         hbarendmin = nmlfi3_numacc_hbarendmin(efoldMin,xi,p)
-        hbarendmax = 1000._kp * hbarendmin
-
+        hbarendmax = 10._kp * hbarendmin
         print *
         print *,'hbarendmin= hbarendmax= ',hbarendmin,hbarendmax
         print *,'p= pminus= ',p,pminus
         print *,'xi= xizero(p)= ',xi,xizero
-        
+
+        if (xi.gt.xizero) stop 'buffoon!'
+
         do l=1,nend
 
            hbarend = hbarendmin + real(l-1,kp)*(hbarendmax-hbarendmin)/real(nend-1,kp)
-           
+
            xend = nmlfi_x(hbarend,xi)
-           
+
            lnRhoRehMax = nmlfi3_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
-           
+
            print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
-           
+
            do i=1,npts
 
               lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
@@ -112,8 +127,11 @@ program nmlfi3main
 
               Vstar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
               M = potential_normalization(Pstar,eps1,Vstar)
+              Mg = nmlfi_gravity_mass_scale(xi,p,hbarend)
 
-              print *,'lnRhoReh= ',lnRhoReh, 'M= ', M, 'xi= ',xi, 'p= ',p &
+              print *,'M= Mg= ',M,Mg
+
+              print *,'lnRhoReh= ',lnRhoReh, 'xi= ',xi, 'p= ',p &
                    , 'bfoldstar= ',bfoldstar
 
               logErehGev = log_energy_reheat_ingev(lnRhoReh)
@@ -134,21 +152,30 @@ program nmlfi3main
   
   call aspicwrite_end()
 
-  call aspicwrite_header('nmlfi3l',labeps12,labnsr,labbfoldreh,(/'xend','xi  ','p   '/))
+  call aspicwrite_header('nmlfi3l',labeps12,labnsr,labbfoldreh,(/'chiend','xi    ','p     '/))
  
   npts = 20
 
-  np = 5
   pmin = 0.6_kp
   pmax = 3.5_kp
 
   if ((pmin.le.pminus).or.(p.ge.4._kp)) stop 'nmlfi3l is for p>pminus'
+
+
+  xivec(1,1) = 0.001_kp
+  xivec(2,1) = 0.003_kp
+  xivec(3,1) = 0.004_kp
+
+  xivec(1,2) = 0.002_kp
+  xivec(2,2) = 0.004_kp
+  xivec(3,2) = 0.005_kp
+
+  xivec(1,3) = 0.01_kp
+  xivec(2,3) = 0.02_kp
+  xivec(3,3) = 0.03_kp
   
-  nxi=5
-  ximin = 1d-3
-  ximax = 1d3
   
-  nend = 100
+  nend = 1000
   
   lnRhoRehMin = lnRhoNuc
 
@@ -158,11 +185,11 @@ program nmlfi3main
      
      do j=1,nxi
         
-        xi = 10._kp**(log10(ximin) + real(j-1,kp)*(log10(ximax)-log10(ximin))/real(nxi-1,kp))
+        xi = xivec(j,k)
 
 
         hbarendmin = nmlfi3_numacc_hbarendmin(efoldMin,xi,p)
-        hbarendmax = 1000._kp * hbarendmin
+        hbarendmax = 10._kp * hbarendmin
 
         print *
         print *,'hbarendmin= hbarendmax= ',hbarendmin,hbarendmax
@@ -192,8 +219,11 @@ program nmlfi3main
 
               Vstar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
               M = potential_normalization(Pstar,eps1,Vstar)
+              Mg = nmlfi_gravity_mass_scale(xi,p,hbarend)
 
-              print *,'lnRhoReh= ',lnRhoReh, 'M= ', M, 'xi= ',xi, 'p= ',p &
+              print *,'M= Mg= ',M,Mg
+              
+              print *,'lnRhoReh= ',lnRhoReh,'xi= ',xi, 'p= ',p &
                    , 'bfoldstar= ',bfoldstar
 
               logErehGev = log_energy_reheat_ingev(lnRhoReh)

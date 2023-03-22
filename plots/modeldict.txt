@@ -64,6 +64,11 @@ nfi2		\mathrm{NFI}_2
 nfi3		\mathrm{NFI}_3
 nfi4		\mathrm{NFI}_4
 ni		\mathrm{NI}
+nmlfi		\mathrm{NMLFI}
+nmlfi1s		\mathrm{NMLFI1}_\mathrm{s}
+nmlfi1l		\mathrm{NMLFI1}_\mathrm{l}
+nmlfi3s		\mathrm{NMLFI3}_\mathrm{s}
+nmlfi3l		\mathrm{NMLFI3}_\mathrm{l}
 oi		\mathrm{OI}
 oripi		\mathrm{ORIPI}
 osti		\mathrm{OSTI}

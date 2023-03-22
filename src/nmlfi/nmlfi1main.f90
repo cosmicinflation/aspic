@@ -44,21 +44,70 @@ program nmlfi1main
 
   real(kp) :: xi, ximin,ximax, efoldMin, efoldMax
   
-  call delete_file('nmlfi1_potential.dat')
-  call delete_file('nmlfi1_parametric_potential.dat')
-  call delete_file('nmlfi1_slowroll.dat')
+  call delete_file('nmlfi12_potential.dat')
+  call delete_file('nmlfi12_slowroll.dat')
 
   n=500
 
   xmin = 0.01_kp
   xmax = 10._kp
 
-  xi = 10._kp
-  p = 0.5
+  xi = 1._kp
+  p = 0.1
   
   do i=1,n
 
-     x = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(n-1,kp))
+
+     V = nmlfi1_norm_potential(x,xi,p)
+
+     call livewrite('nmlfi12_potential.dat',x,V)
+
+     eps1 = nmlfi1_epsilon_one(x,xi,p)
+     eps2 = nmlfi1_epsilon_two(x,xi,p)
+     eps3 = nmlfi1_epsilon_three(x,xi,p)
+
+     call livewrite('nmlfi12_slowroll.dat',x,eps1,eps2,eps3)
+
+  enddo
+
+    
+  call delete_file('nmlfi13_potential.dat')
+  call delete_file('nmlfi13_slowroll.dat')
+  
+  xi = 1._kp
+  p = 2._kp
+  
+  do i=1,n
+
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(n-1,kp))
+
+     V = nmlfi1_norm_potential(x,xi,p)
+
+     call livewrite('nmlfi13_potential.dat',x,V)
+
+     eps1 = nmlfi1_epsilon_one(x,xi,p)
+     eps2 = nmlfi1_epsilon_two(x,xi,p)
+     eps3 = nmlfi1_epsilon_three(x,xi,p)
+
+     call livewrite('nmlfi13_slowroll.dat',x,eps1,eps2,eps3)
+
+  enddo
+
+
+  call delete_file('nmlfi1_potential.dat')
+  call delete_file('nmlfi1_slowroll.dat')
+
+
+  xmin = 0.1_kp
+  xmax = 100._kp
+  xi = 0.01_kp
+  p = 6._kp
+  
+  
+  do i=1,n
+
+     x = exp(log(xmin) + real(i-1,kp)*(log(xmax)-log(xmin))/real(n-1,kp))
 
      V = nmlfi1_norm_potential(x,xi,p)
 
@@ -71,40 +120,27 @@ program nmlfi1main
      call livewrite('nmlfi1_slowroll.dat',x,eps1,eps2,eps3)
 
   enddo
-
-
-  do i=1,n
-
-     hbar = xmin + real(i-1,kp)*(xmax-xmin)/real(n-1,kp)
-     x = nmlfi_x(hbar,xi)
-     
-     V = nmlfi_norm_parametric_potential(hbar,xi,p)
-
-     call livewrite('nmlfi1_parametric_potential.dat',hbar/sqrt(xi),V,x,hbar/sqrt(xi))
-
   
-  enddo
-
   
   Pstar = powerAmpScalar
   w = 0._kp
   
 
-  call aspicwrite_header('nmlfi1',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
+  call aspicwrite_header('nmlfi1s',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
  
   npts = 20
   efoldMin = 120._kp
   
   lnRhoRehMin = lnRhoNuc
 
-  do k=1,8
+  do k=1,4
 
      p = k
 
      nxi=100
      
-     ximin = 1d-6
-     ximax = 1d6
+     ximin = 1d-5
+     ximax = 1d2
 
      if (p.ge.pplus) then
         print *,'ximaxth= ',nmlfi1_ximax(p)
@@ -164,6 +200,85 @@ program nmlfi1main
   enddo
   
   call aspicwrite_end()
+
+
+
+
+  call aspicwrite_header('nmlfi1l',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
+ 
+  npts = 20
+  efoldMin = 120._kp
+  
+  lnRhoRehMin = lnRhoNuc
+
+  do k=5,8,3
+
+     p = k
+
+     nxi=100
+     
+     ximin = 1d-5
+     ximax = 1d2
+
+     if (p.ge.pplus) then
+        print *,'ximaxth= ',nmlfi1_ximax(p)
+        ximax = min(ximax,nmlfi1_ximax(p))
+     endif
+     
+     ximax = min(ximax,nmlfi1_numacc_ximax(efoldMin,p))
+     print *,'ximin, ximax= ',ximin,ximax
+     
+     do j=nxi,1,-1
+        
+        xi = exp(log(ximin) + real(j-1,kp)*(log(ximax)-log(ximin))/real(nxi-1,kp))
+
+        efoldMax = nmlfi1_numacc_efoldmax(xi,p)
+
+        if (efoldMax.lt.efoldMin) then
+           print *,'not enough e-folds: xi= efoldMax= ',xi,efoldMax
+           cycle
+        end if
+        
+        hbarend = nmlfi1_hbar_endinf(xi,p)
+
+        lnRhoRehMax = nmlfi1_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
+
+        print *,'lnRhoRehMin= lnRhoRehMax= ',lnRhoRehMin,lnRhoRehMax
+
+        do i=npts,1,-1
+
+           lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+           hbarstar = nmlfi1_hbar_star(xi,p,hbarend,w,lnRhoReh,Pstar,bfoldstar)
+
+!           print *,'test',hbarstar,hbarend,xi,p,w
+
+           
+           eps1 = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
+           eps2 = nmlfi_parametric_epsilon_two(hbarstar,xi,p)
+           eps3 = nmlfi_parametric_epsilon_three(hbarstar,xi,p)
+
+           Vstar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
+           M = potential_normalization(Pstar,eps1,Vstar)
+
+           print *,'lnRhoReh= ',lnRhoReh, 'M= ', M, 'xi= ',xi, 'p= ',p &
+                , 'bfoldstar= ',bfoldstar
+
+           logErehGev = log_energy_reheat_ingev(lnRhoReh)
+           Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+           ns = 1._kp-2._kp*eps1 - eps2
+           r = 16._kp*eps1   
+
+           call aspicwrite_data((/eps1,eps2/),(/ns,r/),(/abs(bfoldstar),lnRhoReh/),(/xi,p/))
+
+        enddo
+
+     enddo
+  enddo
+  
+  call aspicwrite_end()
+
   
 ! Test reheating with lnRrad and lnR
 
