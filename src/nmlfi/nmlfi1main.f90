@@ -43,6 +43,9 @@ program nmlfi1main
    
 
   real(kp) :: xi, ximin,ximax, efoldMin, efoldMax
+
+
+  write(*,*)'Dumping potential and eps123 as a function of x...'
   
   call delete_file('nmlfi12_potential.dat')
   call delete_file('nmlfi12_slowroll.dat')
@@ -121,10 +124,11 @@ program nmlfi1main
 
   enddo
   
+  write(*,*)
+  write(*,*)'Reheating predictions...'
   
   Pstar = powerAmpScalar
   w = 0._kp
-  
 
   call aspicwrite_header('nmlfi1s',labeps12,labnsr,labbfoldreh,(/'xi','p '/))
  
