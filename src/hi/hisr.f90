@@ -22,7 +22,7 @@ module hisr
   use hicommon, only : hi_norm_deriv_second_parametric_potential
   use hicommon, only : hi_parametric_epsilon_one, hi_parametric_epsilon_two
   use hicommon, only : hi_parametric_epsilon_three, hi_parametric_efold_primitive
-  use hicommon, only : hi_parametric_hbar_trajectory, hi_parametric_hbar_endinf
+  use hicommon, only : hi_parametric_hbar_trajectory, hi_hbar_endinf
   implicit none
 
   private
@@ -138,7 +138,7 @@ contains
 
     real(kp) :: hbarend
     
-    hbarend = hi_parametric_hbar_endinf(xi)
+    hbarend = hi_hbar_endinf(xi)
 
     hi_x_endinf = hi_x(hbarend,xi)
   
@@ -169,7 +169,7 @@ contains
     real(kp) :: hi_x_trajectory
     real(kp) :: hbar,hbarend
 
-    hbarend = hi_parametric_hbar_endinf(xi)
+    hbarend = hi_hbar_endinf(xi)
 
     hbar = hi_parametric_hbar_trajectory(bfold,hbarend,xi)
 

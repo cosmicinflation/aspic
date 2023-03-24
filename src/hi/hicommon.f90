@@ -46,7 +46,7 @@ module hicommon
   public vev2, hbarBig, hbarSmall
   public hi_x, hi_hbar, hi_deriv_x, hi_deriv_second_x
   public hi_norm_parametric_potential, hi_norm_deriv_second_parametric_potential
-  public hi_norm_deriv_parametric_potential, hi_parametric_hbar_endinf
+  public hi_norm_deriv_parametric_potential, hi_hbar_endinf
   public hi_parametric_epsilon_one, hi_parametric_epsilon_two
   public hi_parametric_epsilon_three, hi_parametric_efold_primitive
   public hi_parametric_hbar_trajectory
@@ -249,9 +249,9 @@ contains
 
 !the solution of eps1=1 in terms of hbar (third order polynomial in hbar^2
 !solution irreducible). This is the only real root defined for all xi > 0
-  function hi_parametric_hbar_endinf(xi)
+  function hi_hbar_endinf(xi)
     implicit none
-    real(kp) :: hi_parametric_hbar_endinf
+    real(kp) :: hi_hbar_endinf
     real(kp), intent(in) :: xi
 
     real(kp), parameter :: onethird = 1._kp/3._kp
@@ -289,10 +289,10 @@ contains
          * (-16._kp - 108._kp*xizvev2 - 60._kp*xizvev2**2._kp + 5._kp*xizvev2**3._kp))))**onethird) &
          / (12._kp*(-1._kp - 6._kp*xiz))
 
-    hi_parametric_hbar_endinf = sqrt(real(zend2,kp))
+    hi_hbar_endinf = sqrt(real(zend2,kp))
     
 
-  end function hi_parametric_hbar_endinf
+  end function hi_hbar_endinf
     
 
   

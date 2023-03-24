@@ -40,7 +40,7 @@ module hireheat
 
   use hicommon, only : vev2, hi_x, hi_hbar, hbarBig, hbarSmall
   use hicommon, only : hi_parametric_epsilon_one, hi_norm_parametric_potential
-  use hicommon, only : hi_parametric_efold_primitive, hi_parametric_hbar_endinf
+  use hicommon, only : hi_parametric_efold_primitive, hi_hbar_endinf
   
   implicit none
 
@@ -217,7 +217,7 @@ contains
     
     if (present(bfoldstar)) then
 
-       hbarend = hi_parametric_hbar_endinf(xi)
+       hbarend = hi_hbar_endinf(xi)
 
        bfoldstar = -( hi_parametric_efold_primitive(hbarstar,xi) &
             - hi_parametric_efold_primitive(hbarend,xi) )
@@ -253,7 +253,7 @@ contains
 
     primStar = hi_parametric_efold_primitive(hbar,xi)
     
-    hbarend = hi_parametric_hbar_endinf(xi)
+    hbarend = hi_hbar_endinf(xi)
 
     potEnd = hi_norm_parametric_potential(hbarend,xi)
     
@@ -273,7 +273,7 @@ contains
 
 
 !returns k2 given potential parameters, scalar power, and lnRrad
-  function hi_hbar_rrad(lnRrad,Pstar,bfoldstar,xistar)    
+  function hi_hbar_rrad(lnRrad,Pstar,bfoldstar,xistar)
     implicit none
     real(kp) :: hi_hbar_rrad
     real(kp), intent(in) :: lnRrad,Pstar
@@ -310,7 +310,7 @@ contains
     
     if (present(bfoldstar)) then
 
-       hbarend = hi_parametric_hbar_endinf(xi)
+       hbarend = hi_hbar_endinf(xi)
 
        bfoldstar = -( hi_parametric_efold_primitive(hbarstar,xi) &
             - hi_parametric_efold_primitive(hbarend,xi) )
@@ -345,7 +345,7 @@ contains
 
     primStar = hi_parametric_efold_primitive(hbar,xi)
     
-    hbarend = hi_parametric_hbar_endinf(xi)
+    hbarend = hi_hbar_endinf(xi)
 
     potEnd = hi_norm_parametric_potential(hbarend,xi)
     
@@ -400,7 +400,7 @@ contains
 
     if (present(bfoldstar)) then
 
-       hbarend = hi_parametric_hbar_endinf(xi)
+       hbarend = hi_hbar_endinf(xi)
 
        bfoldstar = -( hi_parametric_efold_primitive(hbarstar,xi) &
             - hi_parametric_efold_primitive(hbarend,xi) )
@@ -436,7 +436,7 @@ contains
 
     primStar = hi_parametric_efold_primitive(hbar,xi)
     
-    hbarend = hi_parametric_hbar_endinf(xi)
+    hbarend = hi_hbar_endinf(xi)
 
     potEnd = hi_norm_parametric_potential(hbarend,xi)
     
@@ -471,7 +471,7 @@ contains
     epsOneStar = hi_parametric_epsilon_one(hbarstar,xistar)
     potStar = hi_norm_parametric_potential(hbarstar,xistar)
 
-    hbarend = hi_parametric_hbar_endinf(xistar)
+    hbarend = hi_hbar_endinf(xistar)
     potEnd = hi_norm_parametric_potential(hbarend,xistar)
 !should be one
     epsOneEnd = hi_parametric_epsilon_one(hbarend,xistar)
