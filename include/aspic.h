@@ -136,10 +136,6 @@ use sdisr
 use sdireheat
 use fisr
 use fireheat
-use sabisr
-use sabireheat
-use satisr
-use satireheat
 use hbisr
 use hbireheat
 use shisr
@@ -154,6 +150,16 @@ use saii2sr
 use saii2reheat
 use gdwisr
 use gdwireheat
+use nmlfi1sr
+use nmlfi1reheat
+use nmlfi2sr
+use nmlfi2reheat
+use nmlfi3sr
+use nmlfi3reheat
+use sabisr
+use sabireheat
+use satisr
+use satireheat
 
 !three parameter models
 use lmi2sr
