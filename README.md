@@ -74,7 +74,7 @@ Then run the standard
 ```bash
    ./configure"
    make
-    make install
+   make install
 ```
 
 Some models may require quite extreme fine-tunings according to the
