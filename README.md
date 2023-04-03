@@ -53,9 +53,13 @@ This is the equivalent of 'make check' followed by the execution of
 all the test programs. The testsuite returns an error if one of them
 fails to terminate properly.
 
+---
+
 ### Documentation
 
 Checkout the MAN pages for a complete documentation man libaspic
+
+---
 
 ### Troubleshooting
 
@@ -64,13 +68,13 @@ for complex numbers. This is supported with recent versions of open
 source compilers such as gfortran. If you ever encounter an error with
 these function calls try to define:
 ```bash
-  	 export FCFLAGS="-DNOF08"
+   export FCFLAGS="-DNOF08"
 ```  
 Then run the standard
 ```bash
- ./configure"
- make
- make install
+   ./configure"
+   make
+    make install
 ```
 
 Some models may require quite extreme fine-tunings according to the
