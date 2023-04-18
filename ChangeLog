@@ -1,3 +1,13 @@
+commit 849b9ae77530f51e3ea18d5c790cfb8b01586102 (HEAD -> master)
+Date:   Tue Apr 18 14:18:40 2023 +0200
+
+    Update logs and version
+
+ ChangeLog    | 415 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS         |   4 ++
+ configure.ac |   2 +-
+ 3 files changed, 420 insertions(+), 1 deletion(-)
+
 commit db9f95d649dfb3a938821ce53705cd9387707de4
 Date:   Mon Apr 3 17:25:26 2023 +0200
 
