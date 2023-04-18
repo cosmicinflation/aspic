@@ -1,3 +1,7 @@
+* version 1.4.1 (GITHUB release)
+- A bunch of new models
+- Python code to generate figures
+
 * version 1.1.0 (COVID release)
 
 - Change of API in essentially all reheating routines:

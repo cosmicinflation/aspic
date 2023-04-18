@@ -1,3 +1,418 @@
+commit db9f95d649dfb3a938821ce53705cd9387707de4
+Date:   Mon Apr 3 17:25:26 2023 +0200
+
+    Update affiliation
+
+ man/libaspic.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 72ef1827303e49e54c19e685b76eac9260fb61aa
+Date:   Mon Apr 3 11:40:08 2023 +0200
+
+    fix indent
+
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5dac78ff1c82df6b9c5e83c9f66edf8edbe18113
+Date:   Mon Apr 3 11:09:45 2023 +0200
+
+    adjust README
+
+ README.md | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+commit c186a33e48ae6c308c0e9edf1fee7799a9f0ed47
+Date:   Mon Apr 3 11:07:38 2023 +0200
+
+    Mding README
+
+ README    |  80 +----------------------------------------------
+ README.md | 106 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 107 insertions(+), 79 deletions(-)
+
+commit 11d9980bffc290f7a588bac2db8115332689f8b7
+Date:   Fri Mar 24 12:00:19 2023 +0100
+
+    update man
+
+ man/libaspic.3 | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
+
+commit 28d75212f0b873e93d164fa55f8785f836821fad
+Date:   Fri Mar 24 11:52:01 2023 +0100
+
+    Update include
+
+ include/aspic.h | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+commit c31c2b7c6c908e2e89accf588bc177a7b62f0c7f
+Date:   Fri Mar 24 11:48:22 2023 +0100
+
+    Update libtool versionning
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit d18d622497e2c180878366c36094483ec53ed3fc
+Date:   Fri Mar 24 11:42:06 2023 +0100
+
+    test nmlfimain in quadprec
+
+ src/nmlfi/nmlfi1main.f90 | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit d1c5449237e7fb321eea5599d7c1bf97c54b0042
+Date:   Fri Mar 24 11:23:02 2023 +0100
+
+    Fix man of nmlfi
+
+ src/nmlfi/aspic_nmlfi1.3 | 10 ++++++++++
+ src/nmlfi/aspic_nmlfi2.3 | 10 ++++++++++
+ src/nmlfi/aspic_nmlfi3.3 | 10 ++++++++++
+ 3 files changed, 30 insertions(+)
+
+commit be8043ab8469d307afc0394f3e887f48d58e30b7
+Date:   Fri Mar 24 11:22:39 2023 +0100
+
+    Fix HI man which was never written and rename a function to be consistent with nmlfi
+
+ src/hi/aspic_hi.3   | 279 ++++++++++++++++++----------------------------------
+ src/hi/hicommon.f90 |  10 +-
+ src/hi/himain.f90   |   4 +-
+ src/hi/hireheat.f90 |  18 ++--
+ src/hi/hisr.f90     |   6 +-
+ 5 files changed, 117 insertions(+), 200 deletions(-)
+
+commit 5515e0600fb102216185523925176688931e9248
+Date:   Thu Mar 23 18:06:58 2023 +0100
+
+    Updating man pages with Mg instead of Mp
+
+ src/ccsi/aspic_ccsi1.3 | 2 +-
+ src/ccsi/aspic_ccsi2.3 | 2 +-
+ src/ccsi/aspic_ccsi3.3 | 2 +-
+ src/rpi/aspic_rpi1.3   | 2 +-
+ src/rpi/aspic_rpi2.3   | 2 +-
+ src/rpi/aspic_rpi3.3   | 2 +-
+ src/si/aspic_si.3      | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
+commit a8799e39785a1053db839f2322d110ce1e111f88
+Date:   Thu Mar 23 18:06:14 2023 +0100
+
+    Writting man pages for nmlfi
+
+ src/nmlfi/aspic_nmlfi1.3 | 123 ++++++++++++++++++++++++++++++++++++-----------
+ src/nmlfi/aspic_nmlfi2.3 | 103 ++++++++++++++++++++++++++++++---------
+ src/nmlfi/aspic_nmlfi3.3 | 108 ++++++++++++++++++++++++++++++-----------
+ 3 files changed, 255 insertions(+), 79 deletions(-)
+
+commit e82ae6fc1c132c8e2ab755a6b99026e7d8022c46
+Date:   Wed Mar 22 17:20:34 2023 +0100
+
+    Update P* with Planck2018 + BKP
+
+ src/common/cosmopar.f90 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 36062d6629a04a9f8b1bfe04e49950d5f9e8c041
+Date:   Wed Mar 22 10:46:39 2023 +0100
+
+    Debugging nmlfi and setting main for EI figures
+
+ plots/modeldict.txt       |   5 ++
+ plots/paramdict.txt       |   2 +
+ src/ccsi/ccsi1sr.f90      |   2 +-
+ src/nmlfi/nmlfi1main.f90  | 153 ++++++++++++++++++++++++++++++++++++++++------
+ src/nmlfi/nmlfi3main.f90  |  88 +++++++++++++++++---------
+ src/nmlfi/nmlficomreh.f90 |  23 +++++++
+ 6 files changed, 224 insertions(+), 49 deletions(-)
+
+commit 98458f247468324c6ba5ca8224626852052c8029
+Date:   Mon Mar 20 10:39:46 2023 +0100
+
+    First working version of nmlfi123
+
+ src/nmlfi/nmlfi1main.f90   |  46 ++++++++---
+ src/nmlfi/nmlfi1reheat.f90 |  17 ++--
+ src/nmlfi/nmlfi1sr.f90     | 155 +++++++++++++++++++++++++++++++++-
+ src/nmlfi/nmlfi2main.f90   |  53 +++++++-----
+ src/nmlfi/nmlfi2reheat.f90 |   8 +-
+ src/nmlfi/nmlfi2sr.f90     |  75 ++++++++++++++++-
+ src/nmlfi/nmlfi3main.f90   |  82 +++++++++++-------
+ src/nmlfi/nmlfi3reheat.f90 |   8 +-
+ src/nmlfi/nmlfi3sr.f90     |  87 ++++++++++++++++++-
+ src/nmlfi/nmlficommon.f90  |  40 +++++++--
+ src/nmlfi/nmlficomreh.f90  |   2 +
+ src/nmlfi/nmlfisr.f90      | 202 ---------------------------------------------
+ 12 files changed, 483 insertions(+), 292 deletions(-)
+
+commit 2d2f750bb4059a2c2a6c5ff3edbdea58445b8ae5
+Date:   Fri Mar 17 11:11:31 2023 +0100
+
+    First compiling version for nmlfi
+
+ src/nmlfi/Makefile.am      |  4 ++--
+ src/nmlfi/nmlfi1main.f90   | 17 +++++++++--------
+ src/nmlfi/nmlfi1reheat.f90 | 47 +++++++++++++++++++++++++++++++++++++---------
+ src/nmlfi/nmlfi1sr.f90     | 17 ++++++++++-------
+ src/nmlfi/nmlfi2main.f90   |  8 ++++----
+ src/nmlfi/nmlfi2reheat.f90 | 39 +++++++++++++++++++++++++++++---------
+ src/nmlfi/nmlfi2sr.f90     | 21 +++++++++++++--------
+ src/nmlfi/nmlfi3main.f90   | 27 +++++++++++++-------------
+ src/nmlfi/nmlfi3reheat.f90 | 41 ++++++++++++++++++++++++++++++----------
+ src/nmlfi/nmlfi3sr.f90     | 16 ++++++++++------
+ src/nmlfi/nmlficommon.f90  |  8 +++-----
+ src/nmlfi/nmlficomreh.f90  |  6 +++---
+ 12 files changed, 167 insertions(+), 84 deletions(-)
+
+commit ee73a41b6d07a12f017784d6e1b6b7225cd248fc
+Date:   Thu Mar 16 18:24:03 2023 +0100
+
+    Split nmlfi3 tests in the two p domains
+
+ src/nmlfi/nmlfi3main.f90 | 142 +++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 114 insertions(+), 28 deletions(-)
+
+commit 861e9ee72dec62cee3f2a4f1ee0b2340dbf15106
+Date:   Thu Mar 16 18:15:04 2023 +0100
+
+    Finishing the skeleton of nmlfi123
+
+ src/nmlfi/nmlfi1main.f90   |  36 ++---
+ src/nmlfi/nmlfi1reheat.f90 | 365 ++++++++++++---------------------------------
+ src/nmlfi/nmlfi1sr.f90     | 168 +++++++++++++++++----
+ src/nmlfi/nmlfi2main.f90   | 170 +++++++++++++++++++++
+ src/nmlfi/nmlfi2reheat.f90 | 158 ++++++++++++++++++++
+ src/nmlfi/nmlfi2sr.f90     | 203 +++++++++++++++++++++++++
+ src/nmlfi/nmlfi3main.f90   | 171 +++++++++++++++++++++
+ src/nmlfi/nmlfi3reheat.f90 | 158 ++++++++++++++++++++
+ src/nmlfi/nmlfi3sr.f90     | 167 +++++++++++++++++++++
+ src/nmlfi/nmlficommon.f90  |  26 ++--
+ src/nmlfi/nmlficomreh.f90  |   5 +-
+ src/nmlfi/nmlfisr.f90      |   4 +-
+ 12 files changed, 1301 insertions(+), 330 deletions(-)
+
+commit 62a9f61d7834758dc66805d59b9fa20c827aa8b8
+Date:   Thu Mar 16 16:27:28 2023 +0100
+
+    Drafting the forgotten nmlfi123 models
+
+ src/nmlfi/Makefile.am                           |  26 ++-
+ src/nmlfi/aspic_nmlfi1.3                        |  49 +++++
+ src/nmlfi/aspic_nmlfi2.3                        |  45 ++++
+ src/nmlfi/aspic_nmlfi3.3                        |  50 +++++
+ src/nmlfi/{nmlfimain.f90 => nmlfi1main.f90}     | 101 ++++-----
+ src/nmlfi/{nmlfireheat.f90 => nmlfi1reheat.f90} |   6 +-
+ src/nmlfi/nmlfi1sr.f90                          |  93 ++++++++
+ src/nmlfi/nmlficommon.f90                       | 190 ++++++++++++++---
+ src/nmlfi/nmlficomreh.f90                       | 272 ++++++++++++++++++++++++
+ src/nmlfi/nmlfisr.f90                           |   2 +-
+ 10 files changed, 745 insertions(+), 89 deletions(-)
+
+commit be1e86de4af3676224318cc236e50ae7415adf8a
+Date:   Tue Mar 14 16:38:04 2023 +0100
+
+    Debug nmlfi, add potmax field value for p<4
+
+ src/nmlfi/nmlficommon.f90 | 43 +++++++++++++++++++++++++++++++------------
+ src/nmlfi/nmlfimain.f90   | 13 ++++++-------
+ src/nmlfi/nmlfireheat.f90 | 18 +++++++++---------
+ src/nmlfi/nmlfisr.f90     | 19 +++++++++++++++++++
+ 4 files changed, 65 insertions(+), 28 deletions(-)
+
+commit 2f23f5a6b17d60c64199e95c42432f46f5ff8316
+Date:   Tue Mar 14 15:59:34 2023 +0100
+
+    drafting nlmfi code
+
+ src/hi/hireheat.f90       |   2 -
+ src/nmlfi/aspic_nmlfi.3   |   4 +-
+ src/nmlfi/nmlficommon.f90 | 207 ++++++++--------------
+ src/nmlfi/nmlfimain.f90   | 114 ++++++------
+ src/nmlfi/nmlfireheat.f90 | 443 +++++++++++++++-------------------------------
+ src/nmlfi/nmlfisr.f90     |  74 ++++----
+ 6 files changed, 322 insertions(+), 522 deletions(-)
+
+commit 9c436dbf1fd138c2185ea119bb8d0d893477b81c
+Date:   Tue Mar 14 13:42:37 2023 +0100
+
+    Remove unused variable
+
+ src/hi/hicommon.f90 | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit d83a9e223610cee1085343d68b78350c4a5abdbf
+Date:   Tue Mar 14 11:32:59 2023 +0100
+
+    Fix typo in comment
+
+ src/hi/hisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2acdaa15320c189b69971bdfbb6b324f0ec5cd81
+Date:   Tue Mar 14 11:14:32 2023 +0100
+
+    Remove unused hispline module
+
+ src/hi/hispline.F90 | 244 ----------------------------------------------------
+ 1 file changed, 244 deletions(-)
+
+commit e2fd85945148e6e216a004aa292e13aeef56f091
+Date:   Tue Mar 14 11:14:05 2023 +0100
+
+    Introduce nmlfi
+
+ configure.ac              |   1 +
+ src/Makefile.am           |   5 +-
+ src/nmlfi/Makefile.am     |  26 +++
+ src/nmlfi/aspic_nmlfi.3   | 272 +++++++++++++++++++++++++
+ src/nmlfi/nmlficommon.f90 | 392 ++++++++++++++++++++++++++++++++++++
+ src/nmlfi/nmlfimain.f90   | 198 +++++++++++++++++++
+ src/nmlfi/nmlfireheat.f90 | 493 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/nmlfi/nmlfisr.f90     | 181 +++++++++++++++++
+ 8 files changed, 1566 insertions(+), 2 deletions(-)
+
+commit ee24e728dc7395a896a43d79c1241ddb4df564a4
+Date:   Wed Mar 8 16:13:15 2023 +0100
+
+    Change of major
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit e6fb23634c8988a92f4d33bb630fa3c55ad67aa9
+Date:   Wed Mar 8 15:08:29 2023 +0100
+
+    Rename saci to sabi, propagate changes
+
+ configure.ac                                 |   2 +-
+ include/aspic.h                              |   4 +-
+ plots/modeldict.txt                          |   3 +-
+ src/Makefile.am                              |   4 +-
+ src/hi/aspic_hi.3                            |   6 +-
+ src/sabi/Makefile.am                         |  22 +++
+ src/{saci/aspic_saci.3 => sabi/aspic_sabi.3} |   6 +-
+ src/{saci/sacimain.f90 => sabi/sabimain.f90} | 100 +++++------
+ src/sabi/sabireheat.f90                      | 238 +++++++++++++++++++++++++++
+ src/{saci/sacisr.f90 => sabi/sabisr.f90}     |  82 ++++-----
+ src/saci/Makefile.am                         |  22 ---
+ src/saci/sacireheat.f90                      | 238 ---------------------------
+ 12 files changed, 364 insertions(+), 363 deletions(-)
+
+commit ee2df400a5d9aee7e614e445b489d16b5f32678f
+Date:   Wed Mar 8 15:03:38 2023 +0100
+
+    Add reheating predictions for tmi (sati for alpha=1)
+
+ src/sati/aspic_sati.3 | 11 +++++++
+ src/sati/satimain.f90 | 85 +++++++++++++++++++++++++++++++++++++++++++++++----
+ src/sati/satisr.f90   |  2 +-
+ 3 files changed, 91 insertions(+), 7 deletions(-)
+
+commit 40db656f4ce47a9d6d14acdc6c0cfc210b7dda86
+Date:   Tue Mar 7 16:57:19 2023 +0100
+
+    Fix sati man
+
+ src/sati/aspic_sati.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 69a935adb70f9a19659e380ff297db500c8dcaaa
+Date:   Tue Mar 7 16:41:49 2023 +0100
+
+    Fix man and bug in 2nd derivative
+
+ src/saci/aspic_saci.3 | 4 ++--
+ src/saci/sacisr.f90   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 46461bbb61e73e4a1357e38ab6e00beeda570103
+Date:   Tue Mar 7 11:30:01 2023 +0100
+
+    Tuning for figures
+
+ src/saci/sacimain.f90 |  2 +-
+ src/saci/sacisr.f90   | 14 ++++++++------
+ 2 files changed, 9 insertions(+), 7 deletions(-)
+
+commit 8d6d7c21ed2279ad283ba97b99ed3861e7138059
+Date:   Mon Mar 6 17:55:49 2023 +0100
+
+    Change sacisr calculations to use the simple exponential version of the potential
+
+ src/saci/sacimain.f90 | 31 ++++++++++++++++++++++++++-
+ src/saci/sacisr.f90   | 59 ++++++++++++++++++++++++++++-----------------------
+ 2 files changed, 62 insertions(+), 28 deletions(-)
+
+commit 85297c90780338f6f5f65438e0c9d027ffd60cad
+Date:   Thu Feb 16 17:50:16 2023 +0100
+
+    Fix export symbols for sabi->sati
+
+ configure.ac        | 2 +-
+ include/aspic.h     | 4 ++--
+ man/libaspic.3      | 6 +++---
+ plots/modeldict.txt | 2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
+
+commit d324e5cb550a434e1aa29ce4eea0deaa70dc0c47
+Date:   Thu Feb 16 17:33:35 2023 +0100
+
+    renaming sabi into sati
+
+ src/Makefile.am                              |   4 +-
+ src/sabi/Makefile.am                         |  22 ---
+ src/sabi/sabireheat.f90                      | 237 ---------------------------
+ src/sati/Makefile.am                         |  22 +++
+ src/{sabi/aspic_sabi.3 => sati/aspic_sati.3} |   4 +-
+ src/{sabi/sabimain.f90 => sati/satimain.f90} | 100 +++++------
+ src/sati/satireheat.f90                      | 237 +++++++++++++++++++++++++++
+ src/{sabi/sabisr.f90 => sati/satisr.f90}     |  82 ++++-----
+ 8 files changed, 354 insertions(+), 354 deletions(-)
+
+commit 78305d687b0375785fb9c039fc04d6b264177f0d
+
+Date:   Fri Oct 7 11:50:15 2022 +0200
+
+    Add missing gdwi in aspic.h
+
+ include/aspic.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 6b87c8c953727b2f97688ca37f17d1484362e292
+Date:   Fri Sep 16 14:39:56 2022 +0200
+
+    nfi tuning
+
+ src/nfi/nfi1sr.f90    | 43 +++++++++++++++-------------
+ src/nfi/nfi2sr.f90    | 79 ++++++++++++++++++++++++++++++++-------------------
+ src/nfi/nfi4sr.f90    | 45 ++++++++++++++++-------------
+ src/nfi/nficommon.f90 |  3 +-
+ src/nfi/nficomreh.f90 | 49 ++++++++++++++++++++------------
+ 5 files changed, 133 insertions(+), 86 deletions(-)
+
+commit e2f7172f9fe1950f46baf3f2d093a858a7e55e63
+
+Date:   Wed Sep 14 15:30:30 2022 +0200
+
+    Add potential and eps123 data for EI figures
+
+ src/gdwi/gdwimain.f90 | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
+
+commit e11ca7b12d35ef6e556459b875f1df6c603fca44
+Date:   Mon Sep 12 13:54:03 2022 +0200
+
+    Update version, ChangeLog and include file
+
+ ChangeLog       | 470 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac    |   2 +-
+ include/aspic.h |  11 +-
+ 3 files changed, 481 insertions(+), 2 deletions(-)
+
 commit fed2d5f32cc830cec87248e91b816151ab3bb359
 Date:   Mon Sep 12 13:42:10 2022 +0200
 
