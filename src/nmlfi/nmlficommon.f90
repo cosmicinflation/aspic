@@ -226,7 +226,7 @@ contains
     real(kp) :: nmlfi_parametric_epsilon_two
     real(kp), intent(in) :: hbar,xi,p
 
-    nmlfi_parametric_epsilon_two =  2_kp*xi * (1._kp + hbar*hbar) &
+    nmlfi_parametric_epsilon_two =  2._kp*xi * (1._kp + hbar*hbar) &
          * (p + hbar*hbar*(4._kp + p + 12._kp*p*xi))  &
          /(1._kp + hbar*hbar*(1._kp + 6._kp*xi))**2 / (hbar*hbar)
         
@@ -240,7 +240,7 @@ contains
     real(kp), intent(in) :: hbar,xi,p
 
     
-    nmlfi_parametric_epsilon_three = (2*(hbar*hbar*(-4._kp + p) + p)*xi &
+    nmlfi_parametric_epsilon_three = (2._kp*(hbar*hbar*(-4._kp + p) + p)*xi &
          * (p + 3._kp*hbar*hbar*(p + 6._kp*p*xi) &
          + hbar**6._kp*(1._kp + 6._kp*xi)*(4._kp + p + 12._kp*p*xi) &
          + hbar**4._kp*(4._kp + 3._kp*p + 48._kp*xi + 36._kp*p*xi*(1._kp + 4._kp*xi)))) &
