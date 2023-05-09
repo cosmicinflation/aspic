@@ -117,6 +117,30 @@ def read_nsr(filename):
     return ns,r,N,EGeV
 
 
+def aspicfile_to_nsr(filename):
+    fixParams, varParams = read_aspicfile(filename)
+
+    ns = []
+    r = []
+    N = []
+    lnRhoReh = []
+    
+    for par in varParams:
+        ns.append(par[0].getvalue())
+        r.append(par[1].getvalue())
+        N.append(par[2].getvalue())
+        lnRhoReh.append(par[3].getvalue())
+
+    ns = np.array(ns)
+    r = np.array(r)
+    N = np.array(N)
+    lnRhoReh = np.array(lnRhoReh)
+            
+    EGeV = ast.log_energy_reheat_ingev(lnRhoReh)
+
+    return ns,r,N,EGeV
+
+
 def read_sr21(filename):
     eps2, eps1, N, lnRhoReh =  np.loadtxt(filename,unpack=True,usecols=[0,1,2,3])
     EGeV=ast.log_energy_reheat_ingev(lnRhoReh)

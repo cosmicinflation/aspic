@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import numpy as np
 import aspicio as aio
+import aspicfigs as asf
 import matplotlib.colors as mplc
 
 def reduced_cmap(numcolors=32, name='reducecolor',
@@ -136,3 +137,32 @@ def model_prediction_efold(ax,namei,fooi,cmap,marker,alpha
     return scmodel
 
 
+def model_prediction_filtered(fig,ax,xybounds,xyzoomrange,namei,fooi,scmap,marker,scalpha,
+                              semilog=True,threshlabel=None,threshscat=None,
+                              ilab=None,txtpos=None,cstyle=None):
+
+    depth = 6
+
+    if threshlabel is None:
+        threshlabel = 0.45
+
+    if threshscat is None:
+        threshscat = 0.1
+        
+    xycscat, sannotate, xyannotate, xylabel, labangles, countplot, countrange = asf.filter_model_data(
+        fig.get_size_inches(),xybounds,xyzoomrange,fooi,semilog,threshscat,threshlabel)
+    
+    scmodel = asf.add_model_scatter(ax,xycscat,scmap,marker=marker,alpha=scalpha,depth=depth)
+
+
+    
+    if ilab is not None:
+        par = fooi[ilab]
+        ax.annotate(namei, xy=(par[0].getvalue(),par[1].getvalue()),  xycoords='data',
+                    xytext=txtpos, textcoords='offset points',
+                    zorder=depth, color='black',
+                    arrowprops=dict(arrowstyle="->",
+                                    connectionstyle=cstyle))
+        print('Ereh = ',par[3].getvalue())
+
+    return scmodel
