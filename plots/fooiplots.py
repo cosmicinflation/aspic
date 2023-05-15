@@ -60,6 +60,7 @@ parser.add_argument("--zoomrange", type=int, help="zoom out till the number of p
 in --xyzoomrange range reaches the input value")
 parser.add_argument("--xyzoomrange", type=float, nargs="+", help="count the number of model's \
 points only within the sub-window: xmin xmax ymin ymax")
+parser.add_argument("--figtype", type=str, help="graphic output format, the file extension (eps, png, pdf...)")
 
 pargs = parser.parse_args()
 
@@ -162,7 +163,10 @@ if pargs.movielabel is not None:
 else:
     myMovieLabel = None
 
-
+if pargs.figtype is not None:
+    suffix = pargs.figtype
+else:
+    suffix = 'eps'
     
 fileprefix = pargs.dir+'/'+model.getname()+'_'+pargs.type+'_'
 
@@ -171,7 +175,7 @@ sort_nicely(aspicfiles)
 
 for i in range(len(aspicfiles)):
     datafile = aspicfiles[i]
-    figfile = figprefix + '_' + str(i) + '.eps'
+    figfile = figprefix + '_' + str(i) + '.' + suffix
 
     print('Reading data',datafile)
     fixedParams, varParams = aio.read_aspicfile(datafile)
