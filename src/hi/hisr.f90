@@ -28,6 +28,8 @@ module hisr
   private
 
   public hi_norm_potential, hi_epsilon_one, hi_epsilon_two, hi_epsilon_three
+  public hi_norm_parametric_potential, hi_parametric_epsilon_one, hi_parametric_epsilon_two
+  public hi_parametric_epsilon_three, hi_parametric_endinf
   public hi_x_endinf, hi_efold_primitive, hi_x_trajectory
   public hi_norm_deriv_potential, hi_norm_deriv_second_potential 
   public hi_x, hi_hbar
@@ -143,8 +145,7 @@ contains
     hi_x_endinf = hi_x(hbarend,xi)
   
   end function hi_x_endinf
-
-
+  
  
 !this is integral[V(phi)/V'(phi) dphi]
   function hi_efold_primitive(x,xi)
