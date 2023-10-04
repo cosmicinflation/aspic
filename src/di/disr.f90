@@ -41,6 +41,8 @@ module disr
   public di_x_endinf, di_efold_primitive, di_x_trajectory
   public di_norm_deriv_potential, di_norm_deriv_second_potential 
   public di_k2_epsoneunity, di_k2_trajectory
+  public di_norm_parametric_potential, di_parametric_epsilon_one
+  public di_parametric_epsilon_two, di_parametric_epsilon_three
 
 
 contains
