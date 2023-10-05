@@ -10,6 +10,7 @@ module rpi3reheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rpi3sr, only : rpi3_epsilon_one, rpi3_epsilon_two, rpi3_epsilon_three
   use rpi3sr, only : rpi3_norm_potential, rpi3_x_endinf, rpi3_efold_primitive
+  use rpi3sr, only : rpi3_ln_omega4
   use rpicommon, only : rpiBig
   implicit none
 
@@ -45,7 +46,8 @@ contains
 
     primEnd = rpi3_efold_primitive(yEnd,p)
 
-    lnOmega4End = 2._kp*yEnd
+!    lnOmega4End = 2._kp*yEnd
+    lnOmega4End = rpi3_ln_omega4(yEnd)
     
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
@@ -204,7 +206,8 @@ contains
     potEnd = rpi3_norm_potential(yEnd,p)
 
     primEnd = rpi3_efold_primitive(yEnd,p)
-    lnOmega4End = 2._kp*yEnd
+!    lnOmega4End = 2._kp*yEnd
+    lnOmega4End = rpi3_ln_omega4(yEnd)
     
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
@@ -282,7 +285,8 @@ contains
     potStar = rpi3_norm_potential(y,p)
     epsOneStar = rpi3_epsilon_one(y,p)
 
-    lnOmega4End = 2._kp*yEnd
+!    lnOmega4End = 2._kp*yEnd
+    lnOmega4End = rpi3_ln_omega4(yEnd)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rpi3_lnrhoreh_max: slow-roll violated!'
     

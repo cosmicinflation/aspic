@@ -152,7 +152,8 @@ program rpi2main
      !get lnR from lnRrad and check that it gives the same ystar
      eps1end =  rpi2_epsilon_one(yend,p)
      VendOverVstar = rpi2_norm_potential(yend,p)/rpi2_norm_potential(ystar,p)
-     lnOmega4End = 2._kp*yEnd
+     !     lnOmega4End = 2._kp*yEnd
+     lnOmega4End = rpi2_ln_omega4(yEnd)     
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)

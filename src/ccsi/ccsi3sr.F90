@@ -16,7 +16,7 @@ module ccsi3sr
   use ccsicommon, only : ccsih_efold_primitive, ccsih_x_trajectory, ccsi_x_potmax
   use ccsicommon, only : ccsi_efold_primitive, find_ccsi_x_trajectory
   use ccsicommon, only : ccsi_x_epsoneunity, ccsi_alphamin, ccsi_xmax
-  use ccsicommon, only : ccsiBig
+  use ccsicommon, only : ccsiBig, ccsi_ln_omega4
   implicit none
 
   private
@@ -25,6 +25,7 @@ module ccsi3sr
   public ccsi3_efold_primitive, ccsi3_x_trajectory, ccsi3_x_endinf
   public ccsi3_norm_deriv_potential, ccsi3_norm_deriv_second_potential 
   public ccsi3_check_params, ccsi3_xinimax, ccsi3_alphamin, ccsi3_efoldmax
+  public ccsi3_ln_omega4
 
 contains
 
@@ -72,6 +73,16 @@ contains
     ccsi3_norm_deriv_second_potential = ccsi_norm_deriv_second_potential(x,alpha)
 
   end function ccsi3_norm_deriv_second_potential
+
+
+  function ccsi3_ln_omega4(x)
+    implicit none
+    real(kp) :: ccsi3_ln_omega4
+    real(kp), intent(in) :: x
+
+    ccsi3_ln_omega4 = ccsi_ln_omega4(x)
+
+  end function ccsi3_ln_omega4
 
 
   

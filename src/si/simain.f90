@@ -9,7 +9,7 @@ program simain
   use infinout, only : aspicwrite_header, aspicwrite_data, aspicwrite_end
   use srreheat, only : log_energy_reheat_ingev
 
-  use sisr, only : si_norm_potential, si_x_endinf
+  use sisr, only : si_norm_potential, si_x_endinf, si_ln_omega4
   use sireheat, only : si_x_rreh, si_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -161,8 +161,9 @@ program simain
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  si_epsilon_one(xend)
      VendOverVstar = si_norm_potential(xend)/si_norm_potential(xstar)
-     lnOmega4End =  2._kp*sqrt(2._kp/3._kp)*xend
-
+!     lnOmega4End =  2._kp*sqrt(2._kp/3._kp)*xend
+     lnOmega4End = si_ln_omega4(xend)
+     
 !Jordan frame (we input the conformal factor)     
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 

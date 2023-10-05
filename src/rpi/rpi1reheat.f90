@@ -11,6 +11,7 @@ module rpi1reheat
   use rpicommon, only : rpi_x_potmax, rpiBig
   use rpi1sr, only : rpi1_epsilon_one, rpi1_epsilon_two, rpi1_epsilon_three
   use rpi1sr, only : rpi1_norm_potential, rpi1_x_endinf, rpi1_efold_primitive
+  use rpi1sr, only : rpi1_ln_omega4
   implicit none
 
   private
@@ -46,7 +47,8 @@ contains
 
     primEnd = rpi1_efold_primitive(yEnd,p)
 
-    lnOmega4End = 2._kp*yEnd
+!    lnOmega4End = 2._kp*yEnd
+    lnOmega4End = rpi1_ln_omega4(yEnd)
     
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
@@ -207,7 +209,8 @@ contains
 
     primEnd = rpi1_efold_primitive(yEnd,p)
 
-    lnOmega4End = 2._kp*yEnd
+!    lnOmega4End = 2._kp*yEnd
+    lnOmega4End = rpi1_ln_omega4(yEnd)
     
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
@@ -286,8 +289,9 @@ contains
     potStar = rpi1_norm_potential(y,p)
     epsOneStar = rpi1_epsilon_one(y,p)
 
-    lnOmega4End = 2._kp*yEnd
-       
+!    lnOmega4End = 2._kp*yEnd
+    lnOmega4End = rpi1_ln_omega4(yEnd)
+    
     if (.not.slowroll_validity(epsOneStar)) stop 'rpi1_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)

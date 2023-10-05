@@ -14,13 +14,13 @@ module rpi3sr
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   use rpicommon, only : rpih_efold_primitive, rpih_x_trajectory
   use rpicommon, only : rpi_efold_primitive, find_rpi_x_trajectory
-  use rpicommon, only : rpi_x_epsoneunity,rpiBig
+  use rpicommon, only : rpi_x_epsoneunity,rpiBig, rpi_ln_omega4
   implicit none
 
   private
 
   public rpi3_norm_potential, rpi3_epsilon_one, rpi3_epsilon_two
-  public rpi3_epsilon_three
+  public rpi3_epsilon_three, rpi3_ln_omega4
   public rpi3_x_endinf, rpi3_efold_primitive, rpi3_x_trajectory
   public rpi3_norm_deriv_potential, rpi3_norm_deriv_second_potential 
 
@@ -63,6 +63,15 @@ contains
   end function rpi3_norm_deriv_second_potential
 
 
+  function rpi3_ln_omega4(y)
+    implicit none
+    real(kp) :: rpi3_ln_omega4
+    real(kp), intent(in) :: y
+    
+    rpi3_ln_omega4 = rpi_ln_omega4(y)
+
+  end function rpi3_ln_omega4
+  
 
 !epsilon_one(y)
   function rpi3_epsilon_one(y,p)    

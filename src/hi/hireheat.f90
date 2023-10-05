@@ -41,6 +41,7 @@ module hireheat
   use hicommon, only : vev2, hi_x, hi_hbar, hbarBig, hbarSmall
   use hicommon, only : hi_parametric_epsilon_one, hi_norm_parametric_potential
   use hicommon, only : hi_parametric_efold_primitive, hi_hbar_endinf
+  use hicommon, only : hi_parametric_ln_omega4
   
   implicit none
 
@@ -476,7 +477,7 @@ contains
 !should be one
     epsOneEnd = hi_parametric_epsilon_one(hbarend,xistar)
 
-    lnOmega4End = 2._kp*log(1._kp+hbarend*hbarend)
+    lnOmega4End = hi_parametric_ln_omega4(hbarend)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'hi_lnrhoreh_max: slow-roll violated!'
 !Jordan frame

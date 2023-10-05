@@ -23,7 +23,7 @@ module ccsicommon
   public ccsi_x_epsoneunity, ccsi_x_epstwozero, ccsi_alphamin
   public ccsi_efold_primitive, find_ccsi_x_trajectory
 
-  public ccsi_numacc_x_epsonenull
+  public ccsi_numacc_x_epsonenull, ccsi_ln_omega4
 
 !because we use exp(x) everywhere
   real(kp), parameter :: ccsiBig = log(epsilon(1._8)*huge(1._8))
@@ -89,7 +89,16 @@ contains
   end function ccsi_norm_deriv_second_potential
 
 
+  function ccsi_ln_omega4(x)
+    implicit none
+    real(kp) :: ccsi_ln_omega4
+    real(kp), intent(in) :: x
+    
+    ccsi_ln_omega4 = 2._kp*x
 
+  end function ccsi_ln_omega4
+
+  
 !epsilon_one(x)
   function ccsi_epsilon_one(x,alpha)    
     implicit none

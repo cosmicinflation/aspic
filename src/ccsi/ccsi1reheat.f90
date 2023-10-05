@@ -11,7 +11,8 @@ module ccsi1reheat
   use ccsi1sr, only : ccsi1_norm_potential
   use ccsi1sr, only : ccsi1_x_endinf, ccsi1_efold_primitive
   use ccsi1sr, only : ccsi1_numacc_xinimax, ccsi1_check_params
-
+  use ccsi1sr, only : ccsi1_ln_omega4
+  
   implicit none
 
   private
@@ -114,7 +115,8 @@ contains
 
     potStar = ccsi1_norm_potential(x,alpha)
     epsOneStar = ccsi1_epsilon_one(x,alpha)
-    lnOmega4End = 2._kp*xend
+!    lnOmega4End = 2._kp*xend
+    lnOmega4End = ccsi1_ln_omega4(xend)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi1_lnrhoreh_max: slow-roll violated!'
 

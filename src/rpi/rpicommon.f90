@@ -17,6 +17,7 @@ module rpicommon
   public rpi_norm_deriv_potential, rpi_norm_deriv_second_potential
   public rpih_x_trajectory, rpih_efold_primitive, rpi_x_potmax
   public rpi_x_epsoneunity, rpi_efold_primitive, find_rpi_x_trajectory
+  public rpi_ln_omega4
 
 !because we use exp(x) everywhere
   real(kp), parameter :: rpiBig = log(epsilon(1._kp)*huge(1._kp))
@@ -77,6 +78,15 @@ contains
   end function rpi_norm_deriv_second_potential
 
 
+  function rpi_ln_omega4(y)
+    implicit none
+    real(kp) :: rpi_ln_omega4
+    real(kp), intent(in) :: y
+
+    rpi_ln_omega4 = 2._kp*y
+
+  end function rpi_ln_omega4
+  
 
   !epsilon_one(y)
   function rpi_epsilon_one(y,p)    

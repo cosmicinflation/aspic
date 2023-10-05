@@ -8,7 +8,7 @@ module ccsi3reheat
   use srreheat, only : ln_rho_reheat
   use ccsicomreh, only : ccsi_x_star, ccsi_x_rrad, ccsi_x_rreh
   use ccsi3sr, only : ccsi3_epsilon_one, ccsi3_epsilon_two, ccsi3_epsilon_three
-  use ccsi3sr, only : ccsi3_norm_potential
+  use ccsi3sr, only : ccsi3_norm_potential, ccsi3_ln_omega4
   use ccsi3sr, only : ccsi3_x_endinf, ccsi3_efold_primitive
   use ccsi3sr, only : ccsi3_xinimax, ccsi3_check_params
 
@@ -114,7 +114,9 @@ contains
 
     potStar = ccsi3_norm_potential(x,alpha)
     epsOneStar = ccsi3_epsilon_one(x,alpha)
-    lnOmega4End = 2._kp*xend
+!    lnOmega4End = 2._kp*xend
+    lnOmega4End = ccsi3_ln_omega4(xend)
+    
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi3_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)

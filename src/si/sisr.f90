@@ -11,9 +11,10 @@ module sisr
 
   private
 
-  public  si_norm_potential, si_epsilon_one, si_epsilon_two, si_epsilon_three
-  public  si_x_endinf, si_efold_primitive, si_x_trajectory
-  public  si_norm_deriv_potential, si_norm_deriv_second_potential
+  public si_norm_potential, si_epsilon_one, si_epsilon_two, si_epsilon_three
+  public si_x_endinf, si_efold_primitive, si_x_trajectory
+  public si_norm_deriv_potential, si_norm_deriv_second_potential
+  public si_ln_omega4
  
 contains
 !returns V/M^4
@@ -26,6 +27,7 @@ contains
 
   end function si_norm_potential
 
+  
 
 !returns the first derivative of the potential with respect to x, divided by M^4
   function si_norm_deriv_potential(x)
@@ -52,7 +54,18 @@ contains
   end function si_norm_deriv_second_potential
 
 
+!omega4 = 1/A^4 where A is the conformal factor
+  function si_ln_omega4(x)
+    implicit none
+    real(kp) ::  si_ln_omega4
+    real(kp), intent(in) :: x
 
+    si_ln_omega4 = 2._kp*sqrt(2._kp/3._kp)*x
+
+  end function si_ln_omega4
+
+
+  
 !epsilon_one(x)
   function si_epsilon_one(x)    
     implicit none

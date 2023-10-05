@@ -9,7 +9,7 @@ module sireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use sisr, only : si_epsilon_one, si_epsilon_two, si_epsilon_three
-  use sisr, only : si_norm_potential
+  use sisr, only : si_norm_potential, si_ln_omega4
   use sisr, only : si_x_endinf, si_efold_primitive
   implicit none
 
@@ -44,8 +44,9 @@ contains
 
     primEnd = si_efold_primitive(xEnd)
 !ln(Omega^4) = ln(F^2)
-    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
-   
+!    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
+    lnOmega4End = si_ln_omega4(xend)
+    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     siData%real1 = w
@@ -166,8 +167,9 @@ contains
     primEnd = si_efold_primitive(xEnd)
 
 !ln(Omega^4) = ln(F^2)
-    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
-
+!    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
+    lnOmega4End = si_ln_omega4(xend)
+    
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     siData%real1 = calF + primEnd
@@ -228,7 +230,8 @@ contains
     epsOneStar = si_epsilon_one(x)
 
     !ln(Omega^4) = ln(F^2)
-    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
+!    lnOmega4End = 2._kp*sqrt(2._kp/3._kp)*xend
+    lnOmega4End = si_ln_omega4(xend)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'si_lnrhoreh_max: slow-roll violated!'
        

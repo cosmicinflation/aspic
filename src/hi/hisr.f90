@@ -23,6 +23,7 @@ module hisr
   use hicommon, only : hi_parametric_epsilon_one, hi_parametric_epsilon_two
   use hicommon, only : hi_parametric_epsilon_three, hi_parametric_efold_primitive
   use hicommon, only : hi_parametric_hbar_trajectory, hi_hbar_endinf
+  use hicommon, only : hi_parametric_ln_omega4
   implicit none
 
   private
@@ -32,7 +33,7 @@ module hisr
   public hi_parametric_epsilon_three, hi_hbar_endinf
   public hi_x_endinf, hi_efold_primitive, hi_x_trajectory
   public hi_norm_deriv_potential, hi_norm_deriv_second_potential 
-  public hi_x, hi_hbar
+  public hi_x, hi_hbar, hi_parametric_ln_omega4, hi_ln_omega4
 
 contains
   
@@ -90,6 +91,19 @@ contains
   end function hi_norm_deriv_second_potential
 
 
+  function hi_ln_omega4(x,xi)
+    implicit none
+    real(kp) :: hi_ln_omega4
+    real(kp), intent(in) :: x,xi
+
+    real(kp) :: hbar
+
+    hbar = hi_hbar(x,xi)
+
+    hi_ln_omega4 = hi_parametric_ln_omega4(hbar)
+
+  end function hi_ln_omega4
+  
   
   function hi_epsilon_one(x,xi)
     implicit none

@@ -16,7 +16,7 @@ module ccsi2sr
   use ccsicommon, only : ccsih_efold_primitive, ccsih_x_trajectory, ccsi_x_potmax
   use ccsicommon, only : ccsi_efold_primitive, find_ccsi_x_trajectory
   use ccsicommon, only : ccsi_x_epsoneunity, ccsi_numacc_x_epsonenull
-  use ccsicommon, only : ccsiBig
+  use ccsicommon, only : ccsiBig, ccsi_ln_omega4
   implicit none
 
   private
@@ -25,6 +25,7 @@ module ccsi2sr
   public ccsi2_efold_primitive, ccsi2_x_trajectory
   public ccsi2_norm_deriv_potential, ccsi2_norm_deriv_second_potential 
   public ccsi2_check_params, ccsi2_numacc_xinimin, ccsi2_numacc_xendmin
+  public ccsi2_ln_omega4
 
 contains
 
@@ -74,6 +75,17 @@ contains
   end function ccsi2_norm_deriv_second_potential
 
 
+  function ccsi2_ln_omega4(x)
+    implicit none
+    real(kp) :: ccsi2_ln_omega4
+    real(kp), intent(in) :: x
+
+    ccsi2_ln_omega4 = ccsi_ln_omega4(x)
+
+  end function ccsi2_ln_omega4
+  
+
+  
   
   function ccsi2_epsilon_one(x,alpha)    
     implicit none

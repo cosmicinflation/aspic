@@ -8,6 +8,7 @@ program himain
   use hicommon, only : hi_parametric_epsilon_one, hi_parametric_efold_primitive
   use hicommon, only : hi_parametric_epsilon_two, hi_parametric_epsilon_three
   use hicommon, only : hi_deriv_x, hi_deriv_second_x, hi_hbar_endinf
+  use hicommon, only : hi_parametric_ln_omega4
   
   use hisr, only : hi_norm_potential, hi_norm_deriv_potential, hi_norm_deriv_second_potential
   use hisr, only : hi_epsilon_one, hi_epsilon_two, hi_epsilon_three, hi_x_endinf  
@@ -163,7 +164,7 @@ program himain
 !get lnR from lnRrad and check that it gives the same xstar
      hbarend = hi_hbar_endinf(xistar)
      eps1end =  hi_parametric_epsilon_one(hbarend,xistar)
-     lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+     lnOmega4End = hi_parametric_ln_omega4(hbarend)
 
      VendOverVstar = hi_norm_parametric_potential(hbarend,xistar) &
           /hi_norm_parametric_potential(hbarstar,xistar)     

@@ -13,7 +13,7 @@ module rpi1sr
   use rpicommon, only : rpi_epsilon_one, rpi_epsilon_two, rpi_epsilon_three
   use rpicommon, only : rpih_efold_primitive, rpih_x_trajectory, rpi_x_potmax
   use rpicommon, only : rpi_efold_primitive, find_rpi_x_trajectory
-  use rpicommon, only : rpi_x_epsoneunity
+  use rpicommon, only : rpi_x_epsoneunity, rpi_ln_omega4
   implicit none
 
   private
@@ -21,7 +21,8 @@ module rpi1sr
   public rpi1_norm_potential, rpi1_epsilon_one, rpi1_epsilon_two, rpi1_epsilon_three
   public rpi1_x_endinf, rpi1_efold_primitive, rpi1_x_trajectory
   public rpi1_norm_deriv_potential, rpi1_norm_deriv_second_potential 
-
+  public rpi1_ln_omega4
+  
 contains
   !returns V/M^4
   function rpi1_norm_potential(y,p)
@@ -58,7 +59,16 @@ contains
   end function rpi1_norm_deriv_second_potential
 
 
+  function rpi1_ln_omega4(y)
+    implicit none
+    real(kp) :: rpi1_ln_omega4
+    real(kp), intent(in) :: y
+    
+    rpi1_ln_omega4 = rpi_ln_omega4(y)
 
+  end function rpi1_ln_omega4
+
+  
   !epsilon_one(y)
   function rpi1_epsilon_one(y,p)    
     implicit none

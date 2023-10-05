@@ -120,8 +120,9 @@ program rpi1main
      eps1end =  rpi1_epsilon_one(xend,p)
      VendOverVstar = rpi1_norm_potential(xend,p)/rpi1_norm_potential(ystar,p)
 
-     lnOmega4End = 2._kp*xend
-
+!     lnOmega4End = 2._kp*xend
+     lnOmega4End = rpi2_ln_omega4(xend)
+     
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)

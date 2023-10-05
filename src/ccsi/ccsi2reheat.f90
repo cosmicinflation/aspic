@@ -10,6 +10,7 @@ module ccsi2reheat
   use ccsi2sr, only : ccsi2_epsilon_one, ccsi2_epsilon_two, ccsi2_epsilon_three
   use ccsi2sr, only : ccsi2_norm_potential, ccsi2_efold_primitive
   use ccsi2sr, only : ccsi2_check_params, ccsi2_numacc_xinimin
+  use ccsi2sr, only : ccsi2_ln_omega4
 
   implicit none
 
@@ -112,7 +113,8 @@ contains
 
     potStar = ccsi2_norm_potential(x,alpha)
     epsOneStar = ccsi2_epsilon_one(x,alpha)
-    lnOmega4End = 2._kp*xend
+!    lnOmega4End = 2._kp*xend
+    lnOmega4End = ccsi2_ln_omega4(xend)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi2_lnrhoreh_max: slow-roll violated!'
 
