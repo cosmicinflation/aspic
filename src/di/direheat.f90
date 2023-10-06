@@ -333,11 +333,12 @@ contains
     k2potmin = di_k2_potmin(f)
 
     k2min= epsilon(1._kp)
-!avoid hang in QUARPREC
+
+!avoid hang in QUADPREC
     k2max = (1._kp - max(tolkp,toldp))*k2potmin
-
+    
     k2star = zbrent(find_di_k2_rreh,k2min,k2max,tolzbrent,diData)
-
+    
     di_k2_rreh = k2star
 
     if (present(bfoldstar)) then

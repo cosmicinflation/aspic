@@ -58,6 +58,7 @@ program dimain
   real(kp), dimension(:,:), allocatable :: eps1V, eps2V, nsV, rV
   real(kp), dimension(:,:), allocatable :: bfoldstarV, fV, lnRhoRehV
 
+  w = 0._kp
 
   f=0.01_kp
   print *,'f= ',f
@@ -92,7 +93,6 @@ program dimain
 
   xpotmin = di_x(k2potmin)
   print *,'Minimum at x= ',xpotmin
-
   
   
   if (testParametric) then
