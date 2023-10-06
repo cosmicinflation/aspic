@@ -30,6 +30,9 @@ module nmlfi1sr
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
   use nmlficommon, only : nmlfi_hbarsquare_epsoneunity, nmlfi_hbar_potmax
   use nmlficommon, only : nmlfi_numacc_hbarsquare_epsonenull, nmlfi_parametric_efold_primitive
+  use nmlficommon, only : nmlfi_parametric_ln_omega4
+  use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_parametric_epsilon_one
+  use nmlficommon, only : nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
   
   implicit none
 
@@ -43,8 +46,9 @@ module nmlfi1sr
 !for p<4 when nmlfi1 is confined at x < xVmax, some numerical issues
 !occur at the top of the potential
   public nmlfi1_numacc_hbarinimax, nmlfi1_numacc_xinimax, nmlfi1_numacc_efoldmax
-  public nmlfi1_numacc_ximax
-  
+  public nmlfi1_numacc_ximax, nmlfi1_ln_omega4
+  public nmlfi_norm_parametric_potential, nmlfi_parametric_epsilon_one
+  public nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
 
   
 contains
@@ -93,6 +97,20 @@ contains
     nmlfi1_norm_deriv_second_potential = nmlfi_norm_deriv_second_potential(x,xi,p)
 
   end function nmlfi1_norm_deriv_second_potential
+
+
+  function nmlfi1_ln_omega4(x,xi)
+    implicit none
+    real(kp) :: nmlfi1_ln_omega4
+    real(kp), intent(in) :: x,xi
+
+    real(kp) :: hbar
+
+    hbar = nmlfi_hbar(x,xi)
+
+    nmlfi1_ln_omega4 = nmlfi_parametric_ln_omega4(hbar)
+    
+  end function nmlfi1_ln_omega4
 
   
   function nmlfi1_epsilon_one(x,xi,p)

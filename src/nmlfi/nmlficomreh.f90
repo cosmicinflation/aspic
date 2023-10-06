@@ -29,7 +29,7 @@ module nmlficomreh
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
 
-  use nmlficommon, only : nmlfi_x, nmlfi_hbar
+  use nmlficommon, only : nmlfi_x, nmlfi_hbar, nmlfi_parametric_ln_omega4
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_norm_parametric_potential
   use nmlficommon, only : nmlfi_parametric_efold_primitive
   
@@ -92,8 +92,9 @@ contains
 
     primEnd = nmlfi_parametric_efold_primitive(hbarend,xi,p)
 !ln(Omega^4) = ln[(1+ hbar^2)^2]
-    lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
-
+!    lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend)
+    
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
     
     nmlfiData%real1 = xi
@@ -222,7 +223,8 @@ contains
     primEnd = nmlfi_parametric_efold_primitive(hbarend,xi,p)
 
 !ln(Omega^4) = ln[(1+ hbar^2)^2]
-    lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+!    lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend)
     
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
@@ -283,7 +285,8 @@ contains
     
     epsOneStar = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
     potStar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
-    lnOmega4End = 2._kp*log(1._kp+hbarend*hbarend)
+!    lnOmega4End = 2._kp*log(1._kp+hbarend*hbarend)
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'nmlfi_lnrhoreh_max: slow-roll violated!'
 

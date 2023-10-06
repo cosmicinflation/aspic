@@ -27,7 +27,7 @@ module nmlfi3sr
   use nmlficommon, only : nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
   use nmlficommon, only : nmlfi_hbar_potmax, nmlfi_numacc_hbarsquare_epsonenull
-  use nmlficommon, only : nmlfi_parametric_efold_primitive
+  use nmlficommon, only : nmlfi_parametric_efold_primitive, nmlfi_parametric_ln_omega4
   
   implicit none
 
@@ -40,7 +40,7 @@ module nmlfi3sr
   public nmlfi3_parametric_hbar_trajectory
 
   public nmlfi3_numacc_hbarinimin, nmlfi3_numacc_xinimin, nmlfi3_numacc_efoldmax
-  public nmlfi3_numacc_hbarendmin
+  public nmlfi3_numacc_hbarendmin, nmlfi3_ln_omega4
   
 contains
 
@@ -88,6 +88,20 @@ contains
     nmlfi3_norm_deriv_second_potential = nmlfi_norm_deriv_second_potential(x,xi,p)
 
   end function nmlfi3_norm_deriv_second_potential
+
+
+  function nmlfi3_ln_omega4(x,xi)
+    implicit none
+    real(kp) :: nmlfi3_ln_omega4
+    real(kp), intent(in) :: x,xi
+
+    real(kp) :: hbar
+
+    hbar = nmlfi_hbar(x,xi)
+
+    nmlfi3_ln_omega4 = nmlfi_parametric_ln_omega4(hbar)
+    
+  end function nmlfi3_ln_omega4
 
   
   function nmlfi3_epsilon_one(x,xi,p)

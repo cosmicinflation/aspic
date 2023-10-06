@@ -48,7 +48,7 @@ module nmlficommon
 
   public nmlfi_norm_potential, nmlfi_norm_deriv_second_potential, nmlfi_norm_deriv_potential
   public nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
-  public nmlfi_efold_primitive
+  public nmlfi_efold_primitive, nmlfi_parametric_ln_omega4
 
   
 
@@ -207,6 +207,16 @@ contains
   end function nmlfi_norm_deriv_second_parametric_potential
 
 
+  function nmlfi_parametric_ln_omega4(hbar)
+    implicit none
+    real(kp) :: nmlfi_parametric_ln_omega4
+    real(kp), intent(in) :: hbar
+
+    nmlfi_parametric_ln_omega4 = 2._kp*log(1._kp + hbar*hbar)
+
+  end function nmlfi_parametric_ln_omega4
+
+  
   
 !eps1 Einstein-Frame in terms of hbar
   function nmlfi_parametric_epsilon_one(hbar,xi,p)
