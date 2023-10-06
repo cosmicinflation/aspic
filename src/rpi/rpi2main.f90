@@ -10,6 +10,7 @@ program rpi2main
   use srreheat, only : log_energy_reheat_ingev
 
   use rpi2sr, only : rpi2_norm_potential, rpi2_numacc_efoldmax, rpi2_numacc_xendmin
+  use rpi2sr, only : rpi2_ln_omega4
   use rpi2reheat, only : rpi2_x_rreh, rpi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat

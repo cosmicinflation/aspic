@@ -169,6 +169,7 @@ contains
     endif
 
     if ((k2.gt.1._kp).or.(k2.lt.0._kp)) then
+       write(*,*)'k2= ',k2
        stop 'ellipticK: k2 > 1 or k2 < 0'
     endif
     
@@ -195,6 +196,7 @@ contains
     endif
 
     if ((k2.gt.1._kp).or.(k2.lt.0._kp)) then
+       write(*,*)'k2= ',k2
        stop 'ellipticE: k2 > 1 or k2 < 0'
     endif
     

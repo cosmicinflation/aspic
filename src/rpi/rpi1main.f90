@@ -7,7 +7,7 @@ program rpi1main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rpi1sr, only : rpi1_norm_potential, rpi1_x_endinf
+  use rpi1sr, only : rpi1_norm_potential, rpi1_x_endinf, rpi1_ln_omega4
   use rpi1reheat, only : rpi1_x_rreh, rpi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -121,7 +121,7 @@ program rpi1main
      VendOverVstar = rpi1_norm_potential(xend,p)/rpi1_norm_potential(ystar,p)
 
 !     lnOmega4End = 2._kp*xend
-     lnOmega4End = rpi2_ln_omega4(xend)
+     lnOmega4End = rpi1_ln_omega4(xend)
      
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 

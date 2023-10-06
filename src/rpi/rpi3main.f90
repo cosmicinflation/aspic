@@ -7,7 +7,7 @@ program rpi3main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use rpi3sr, only : rpi3_norm_potential, rpi3_x_endinf
+  use rpi3sr, only : rpi3_norm_potential, rpi3_x_endinf, rpi3_ln_omega4
   use rpi3reheat, only : rpi3_x_rreh, rpi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
