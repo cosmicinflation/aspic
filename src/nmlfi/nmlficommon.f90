@@ -44,7 +44,7 @@ module nmlficommon
   public nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two
   public nmlfi_parametric_epsilon_three, nmlfi_parametric_efold_primitive
   public nmlfi_parametric_hbar_trajectory, nmlfi_quartic_parametric_hbar_trajectory
-  public nmlfi_numacc_hbarsquare_epsonenull
+  public nmlfi_numacc_hbarsquare_epsonenull,nmlfi_epsilon_one_infinity
 
   public nmlfi_norm_potential, nmlfi_norm_deriv_second_potential, nmlfi_norm_deriv_potential
   public nmlfi_epsilon_one, nmlfi_epsilon_two, nmlfi_epsilon_three
@@ -258,6 +258,16 @@ contains
 
   end function nmlfi_parametric_epsilon_three
 
+
+  function nmlfi_epsilon_one_infinity(xi,p)
+    implicit none
+    real(kp) :: nmlfi_epsilon_one_infinity
+    real(kp), intent(in) :: xi,p
+
+    nmlfi_epsilon_one_infinity = 0.5_kp*(p-4._kp)**2 * xi/(1._kp+6._kp*xi)
+    
+  end function nmlfi_epsilon_one_infinity
+  
 
 !for p<4, the potential admits a maximum at this parametric value
   function nmlfi_hbar_potmax(xi,p)

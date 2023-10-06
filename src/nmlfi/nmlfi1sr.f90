@@ -30,7 +30,7 @@ module nmlfi1sr
   use nmlficommon, only : nmlfi_efold_primitive, nmlfi_parametric_hbar_trajectory
   use nmlficommon, only : nmlfi_hbarsquare_epsoneunity, nmlfi_hbar_potmax
   use nmlficommon, only : nmlfi_numacc_hbarsquare_epsonenull, nmlfi_parametric_efold_primitive
-  use nmlficommon, only : nmlfi_parametric_ln_omega4
+  use nmlficommon, only : nmlfi_parametric_ln_omega4, nmlfi_epsilon_one_infinity
   use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_parametric_epsilon_one
   use nmlficommon, only : nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
   
@@ -46,10 +46,10 @@ module nmlfi1sr
 !for p<4 when nmlfi1 is confined at x < xVmax, some numerical issues
 !occur at the top of the potential
   public nmlfi1_numacc_hbarinimax, nmlfi1_numacc_xinimax, nmlfi1_numacc_efoldmax
-  public nmlfi1_numacc_ximax, nmlfi1_ln_omega4
+  public nmlfi1_numacc_ximax, nmlfi_parametric_ln_omega4, nmlfi1_ln_omega4
   public nmlfi_norm_parametric_potential, nmlfi_parametric_epsilon_one
   public nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-
+  public nmlfi_epsilon_one_infinity
   
 contains
 
@@ -111,7 +111,7 @@ contains
     nmlfi1_ln_omega4 = nmlfi_parametric_ln_omega4(hbar)
     
   end function nmlfi1_ln_omega4
-
+  
   
   function nmlfi1_epsilon_one(x,xi,p)
     implicit none
@@ -214,7 +214,7 @@ contains
 
 !the potential has no maximum, we return a large number    
     if (p.ge.4._kp) then
-       nmlfi1_numacc_hbarinimax = hbarBig
+       nmlfi1_numacc_hbarinimax = hbarBig**(1._kp/p)
        return
     endif
     
@@ -259,10 +259,10 @@ contains
     
     hbarend = nmlfi1_hbar_endinf(xi,p)
     hbarinimax = nmlfi1_numacc_hbarinimax(xi,p)
-
+    
     nmlfi1_numacc_efoldmax = -nmlfi_parametric_efold_primitive(hbarend,xi,p) &
          + nmlfi_parametric_efold_primitive(hbarinimax,xi,p)
-
+    
   end function nmlfi1_numacc_efoldmax
 
 
@@ -350,7 +350,7 @@ contains
     hbarmin = hbarend
 
     if (p.ge.4._kp) then
-       hbarmax = hbarBig
+       hbarmax = hbarBig**(1._kp/p)
     else
        hbarmax = nmlfi_hbar_potmax(xi,p)
     end if
