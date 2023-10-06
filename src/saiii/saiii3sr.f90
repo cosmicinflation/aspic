@@ -28,6 +28,7 @@ module saiii3sr
   public saiii3_norm_potential, saiii3_norm_deriv_potential, saiii3_norm_deriv_second_potential
   public saiii3_epsilon_one, saiii3_epsilon_two, saiii3_epsilon_three
   public saiii3_x_endinf, saiii3_x_trajectory, saiii3_efold_primitive
+  public saiii3_check_params
   
 contains
 

@@ -413,11 +413,11 @@ contains
 
        mini = pi
        maxi = pi + acos(1._kp/beta)
-       stox(1) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)       
+       stox(1) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)
 
        mini = pi + acos(1._kp/beta)
        maxi = 2._kp*pi
-       stox(2) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)  
+       stox(2) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)
               
     elseif (abs(beta).lt.1._kp) then
 
@@ -444,10 +444,13 @@ contains
           stox(2) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)
 
        elseif ((alpha.lt.-1._kp/(beta+2._kp)).and.(alpha.ge.-1._kp)) then
+
           
 !the first maximum, positive, we keep it          
           mini = pi
-          maxi = pi + acos(-beta)
+!          maxi = pi + acos(-beta)
+          maxi = 2._kp*pi
+                    
           stox(1) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)
 
 !the second minimum, positive, we keep it
@@ -457,11 +460,13 @@ contains
 
           
        else
-
+          
           mini = pi
           maxi = pi + acos(beta)
           stox(1) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)
 
+
+          
           mini = 2._kp*pi
           maxi = 2._kp*pi + acos(-beta)
           stox(2) = zbrent(find_saiii_x_derivpotzero,mini,maxi,tolFind,saiiiData)
@@ -886,6 +891,7 @@ contains
             / ( (1._kp+alpha)*sinx + alpha * x *(cosx + beta) )
     endif
 
+    
   end subroutine find_saiii_efold_primitive
 
 

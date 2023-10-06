@@ -26,6 +26,7 @@ module saiii1sr
   public saiii1_epsilon_one, saiii1_epsilon_two, saiii1_epsilon_three
   public saiii1_x_endinf, saiii1_x_trajectory, saiii1_efold_primitive
   public saiii1_numacc_xinimax, saiii1_numacc_efoldmax, saiii1_numacc_mumin
+  public saiii1_check_params
 
 !numerical accuracy limitation
   real(kp), parameter :: epsnumacc = 10._kp*tolkp
