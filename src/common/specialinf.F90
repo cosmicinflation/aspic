@@ -242,7 +242,7 @@ contains
     integer :: count
     integer, parameter :: iterMax = 100000
     real(kp) :: error
-    real(kp), parameter :: errorWarn = 1d-10
+    real(kp), parameter :: errorWarn = 1d-9
 
 
     if (x.eq.-exp(-1._kp)) then

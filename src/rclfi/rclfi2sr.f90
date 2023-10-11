@@ -229,13 +229,10 @@ contains
     real(kp), intent(in) :: deltax
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi
-    type(transfert) :: rclfiData
-
-    real(kp), parameter :: junk = -1._kp
-              
+    type(transfert) :: rclfiData              
        
-    mini = 100*tolkp
-    maxi = 4._kp - 100*tolkp
+    mini = 100._kp*tolkp
+    maxi = 4._kp - 100._kp*tolkp
 
     rclfiData%real1=deltax
     
@@ -289,9 +286,19 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: rclfiData
 
-    real(kp), parameter :: junk = -1._kp
-              
-       
+    real(kp), save :: deltaxsave = 0._kp
+    real(kp), save :: psave = 0._kp
+    real(kp), save :: alphasave = 0._kp
+!$omp threadprivate(deltaxsave, psave, alphasave)
+
+    if ((deltax.eq.deltaxsave).and.(p.eq.psave)) then
+       rclfi2_numacc_alphamax_deltax = alphasave
+       return
+    else
+       deltaxsave = deltax
+       psave = p
+    end if
+    
     mini = -exp(1._kp)*(p-4._kp) + tolkp
     maxi = 1._kp/epsilon(1._kp)
 
@@ -300,7 +307,9 @@ contains
     
     rclfi2_numacc_alphamax_deltax &
          = zbrent(find_rclfi2_numacc_alphamax_deltax,mini,maxi,tolFind,rclfiData)
-        
+
+    alphasave = rclfi2_numacc_alphamax_deltax
+    
   end function rclfi2_numacc_alphamax_deltax
 
   

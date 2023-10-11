@@ -206,7 +206,7 @@ contains
 
     real(kp) :: hbarinimin, hbarendmax
     
-    hbarendmax = huge(1._kp)
+    hbarendmax = hbarBig**0.5_kp
     hbarinimin = nmlfi3_numacc_hbarinimin(xi,p)
     
     nmlfi3_numacc_efoldmax = -nmlfi_parametric_efold_primitive(hbarendmax,xi,p) &

@@ -174,6 +174,7 @@ contains
     if (arg.gt.0._kp) then
        rclfi_x_derivpotzero = (lambert(arg,0)/ppm4oa)**(1._kp/(p-4._kp))
     elseif (arg.gt.-1._kp/exp(1._kp)) then
+
        xb1 = (lambert(arg,-1)/ppm4oa)**(1._kp/(p-4._kp))
        xb0 = (lambert(arg,0)/ppm4oa)**(1._kp/(p-4._kp))
 
