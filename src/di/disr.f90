@@ -269,16 +269,20 @@ contains
 
     k2potmin = di_k2_potmin(f)
 
-    mini = tolkp
-!because our k2potmin has some errors, let's allow for some little
-!extra space after
-    maxi = k2potmin + tolkp
-    
+    mini = epsilon(1._kp)
+    maxi = k2potmin - tolkp
+
     diData%real1 = f
-    diData%real2 = lambda
+    diData%real2 = 2._kp*log(lambda)
 
+!in case of accuracy issues, force zbrent expansion staying in the
+!Elliptic functions' domain and not too far from the potential minimum
+    diData%minmax = .true.
+    diData%minmin = epsilon(1._kp)
+    diData%maxmax = k2potmin + 100000._kp*epsilon(1._kp)
+    
     di_k2_epsoneunity = zbrent(find_di_k2_epsoneunity,mini,maxi,tolFind,diData)   
-
+    
   end function di_k2_epsoneunity
 
   
@@ -287,12 +291,11 @@ contains
     real(kp) :: find_di_k2_epsoneunity
     real(kp), intent(in) :: k2
     type(transfert), optional, intent(inout) :: diData
-    real(kp) :: f,lambda
+    real(kp) :: f
 
     f = diData%real1
-    lambda = diData%real2
     
-    find_di_k2_epsoneunity = di_parametric_epsilon_one(k2,f) - lambda**2
+    find_di_k2_epsoneunity = log(di_parametric_epsilon_one(k2,f)) - diData%real2
 
   end function find_di_k2_epsoneunity
 

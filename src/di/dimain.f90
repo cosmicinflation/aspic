@@ -261,6 +261,77 @@ program dimain
   deallocate(eps1V, eps2V, nsV, rV, bfoldstarV, lnRhoRehV, fV)
   
   call aspicwrite_end()
+
+
+  call aspicwrite_header('dil',labeps12,labnsr,labbfoldreh,(/'f'/))
+  
+  fmin = 0.1
+  fmax = 1.
+
+  npts = 10
+  n = 12
+
+  allocate(eps1V(npts,n),eps2V(npts,n),nsV(npts,n),rV(npts,n) &
+       ,bfoldstarV(npts,n),lnRhoRehV(npts,n),fV(npts,n))
+
+  
+!$omp parallel do &
+!$omp default(shared) &
+!$omp private(j,f,lnRhoRehMin,lnRhoRehMax) &
+!$omp private(i,lnRhoReh,k2star,lambda,eps1,eps2,eps3) &
+!$omp private(logErehGev,Treh,ns,r,bfoldstar) &
+!$omp schedule(dynamic,1)  
+  do j=1,n
+     f = exp(log(fmin) + (log(fmax)-log(fmin))*real(j-1,kp)/real(n-1,kp))
+
+     lnRhoRehMin = lnRhoNuc
+     lnRhoRehMax = di_lnrhoreh_max(f,Pstar)
+
+     print *,'f= lnRhoRehMin= lnRhoRehMax= ',f,lnRhoRehMin,lnRhoRehMax
+
+     do i=1,npts
+
+        lnRhoReh = lnRhoRehMin + (lnRhoRehMax-lnRhoRehMin)*real(i-1,kp)/real(npts-1,kp)
+
+        k2star = di_k2_star(f,w,lnRhoReh,Pstar,bfoldstar)
+        lambda = di_lambda_star(k2star,f,Pstar)
+
+        print *,'lnRhoReh= ',lnRhoReh, 'lambda= ',lambda, 'bfoldstar= ',bfoldstar
+        
+        eps1 = di_parametric_epsilon_one(k2star,f)/lambda**2
+        eps2 = di_parametric_epsilon_two(k2star,f)/lambda**2
+        eps3 = di_parametric_epsilon_three(k2star,f)/lambda**2
+       
+        logErehGev = log_energy_reheat_ingev(lnRhoReh)
+        Treh = 10._kp**( logErehGeV -0.25_kp*log10(acos(-1._kp)**2/30._kp) )
+
+        ns = 1._kp-2._kp*eps1 - eps2
+        r = 16._kp*eps1
+
+        eps1V(i,j) = eps1
+        eps2V(i,j) = eps2
+        nsV(i,j) = ns
+        rV(i,j) = r
+        bfoldstarV(i,j) = bfoldstar
+        lnRhoRehV(i,j) = lnRhoReh
+        fV(i,j) = f
+                
+     enddo
+  enddo
+!$omp end parallel do
+
+  do j=1,n
+     do i=1,npts
+     call aspicwrite_data((/eps1V(i,j),eps2V(i,j)/),(/nsV(i,j),rV(i,j)/) &
+          ,(/abs(bfoldstarV(i,j)),lnRhoRehV(i,j)/),(/fV(i,j)/))
+  enddo
+  enddo
+
+  deallocate(eps1V, eps2V, nsV, rV, bfoldstarV, lnRhoRehV, fV)
+  
+  call aspicwrite_end()
+  
+
   
 ! Test reheating with lnRrad and lnR
 
