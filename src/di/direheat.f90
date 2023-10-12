@@ -336,6 +336,7 @@ contains
 
 !avoid hang in QUADPREC
     k2max = (1._kp - max(tolkp,toldp))*k2potmin
+
     
     k2star = zbrent(find_di_k2_rreh,k2min,k2max,tolzbrent,diData)
     
@@ -381,7 +382,6 @@ contains
 
 
     find_di_k2_rreh = find_reheat_rreh(effprimStar,effCalFend,ppotStar)  
-
 
   end function find_di_k2_rreh
   

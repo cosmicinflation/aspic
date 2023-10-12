@@ -270,7 +270,9 @@ contains
     k2potmin = di_k2_potmin(f)
 
     mini = tolkp
-    maxi = (1._kp-tolkp)*k2potmin
+!because our k2potmin has some errors, let's allow for some little
+!extra space after
+    maxi = k2potmin + tolkp
     
     diData%real1 = f
     diData%real2 = lambda

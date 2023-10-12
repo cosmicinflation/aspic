@@ -28,7 +28,7 @@ gamma		\gamma
 tenalpha	10\alpha
 alphamhalf	\alpha-1/2
 Q		Q
-f		f/M_{\mathrm{Pl}}
+f		f
 q		q
 n		n
 delta		\delta

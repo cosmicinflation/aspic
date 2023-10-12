@@ -85,7 +85,7 @@ def read_aspicfile(filename):
 
     while words[0] == '#':        
         if len(words) == 3:
-            fixParams.append( param(name=words[1],value=np.float(words[2])) )
+            fixParams.append( param(name=words[1],value=float(words[2])) )
         else:
             for word in words[1:]:
                 paramNames.append(word)
@@ -95,7 +95,7 @@ def read_aspicfile(filename):
 
     for line in f:
         values  = line.split()
-        params = [param(name = paramNames[i], value = np.float(values[i])) for i in range(len(values))]
+        params = [param(name = paramNames[i], value = float(values[i])) for i in range(len(values))]
         varParams.append(params)
 
         

@@ -170,7 +170,13 @@ program dimain
 
   end if
 
-
+!  f=0.32784491485261302_kp
+!  lnR = -0.75725299119949341_kp
+!  Pstar = 2.2459325384813403d-009
+!  k2star = di_k2_rreh(f,lnR,Pstar)
+!  lambda = di_lambda_star(k2star,f,Pstar)
+!  xend = di_k2_epsoneunity(f,lambda)
+!  print *,'debug',f,lambda,k2star,xend
 
 
 !  f=1e-3
@@ -266,6 +272,8 @@ program dimain
 
   npts = 3
 
+
+  
   do i=1,npts
 
      lnRrad = lnRradMin + (lnRradMax-lnRradMin)*real(i-1,kp)/real(npts-1,kp)
@@ -306,7 +314,7 @@ program dimain
 
 
 
-    enddo
+  enddo
 
 
 

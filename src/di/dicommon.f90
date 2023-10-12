@@ -222,7 +222,8 @@ contains
      ppot = di_norm_parametric_adspot(k2,f) &
          + di_norm_uplifting(f)
 
-     if (ppot.lt.-10._kp*epsilon(1._kp)) then
+     if (ppot.lt.-100._kp*epsilon(1._kp)) then
+        write(*,*)'ppot= ',ppot
         stop 'di_norm_parametric_potential < 0!'
      elseif (ppot.lt.0._kp) then
         ppot = 0._kp

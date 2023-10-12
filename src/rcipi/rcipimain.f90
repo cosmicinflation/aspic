@@ -171,11 +171,10 @@ program rcipimain
      
      alphamax = -alphazero - 0.01_kp
      alphamin = -alphazero
-    
-     
+         
      do i=1,nalp
         alpha = alphamin + real(i-1,kp)*(alphamax-alphamin)/real(nalp-1,kp)
-        
+
         efoldmax = rcipi_efoldmax(p,alpha,beta)
         
 
