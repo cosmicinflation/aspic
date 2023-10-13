@@ -1,8 +1,8 @@
-* version 1.4.1 (GITHUB release)
+* version 1.4.* (GITHUB release)
 - A bunch of new models
 - Python code to generate figures
 
-* version 1.1.0 (COVID release)
+* version 1.1.* (COVID release)
 
 - Change of API in essentially all reheating routines:
   By default, all reheating routines take "xend" as an argument, to be
@@ -13,15 +13,6 @@
        xend = foo_x_endinf()
 
   before any calls to reheating routines.
-
-- Support for OpenMP:
-  By default, the aspic library is compiled with "-fopenmp". Some
-  checks being super long, such as for Dual Inflation, the main test
-  programs have been parallelized. This can be disabled using:
-
-       ./configure --disable-openmp
-
-  at compilation time.
        
 - Plotting python routines added in the directory "plots". Check the
   readme file for usage.

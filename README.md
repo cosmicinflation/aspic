@@ -5,7 +5,7 @@
 ### Summary
 
 This package compiles and install the shared scientific library
-[**libaspic**](https://curl.irmp.ucl.ac.be/~chris/aspic.html), a
+[**libaspic**](https://github.com/cosmicinflation/aspic), a
 collection of fast modern fortran routines for computing various
 observable quantities used in Cosmology from definite single field
 inflationary models.
@@ -96,7 +96,7 @@ compilers. In case of incompatibility with your compiler, parallel
 processing can be deactivated with:
 
 ```bash
-  ./configure --disable-openmp
+  ./configure --disable-fopenmp
 ```
 
 In case you want to specify your own OpenMP compilation flag,
@@ -104,7 +104,7 @@ you can do:
 
 ```bash
   export FCFLAGS=" -myopenmpflag"
-  ./configure --disable-openmp
+  ./configure --disable-fopenmp
 ```
 
 ---

@@ -1,4 +1,4 @@
-AC_INIT([aspic],[1.4.1],[chris@curl.group],[],[http://curl.irmp.ucl.ac.be/~chris/aspic.html])
+AC_INIT([aspic],[1.4.3],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
 
 AM_INIT_AUTOMAKE
 
@@ -9,7 +9,7 @@ AC_PROG_CPP
 LT_INIT
 
 
-version_info="5:1:1"
+version_info="5:2:2"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
@@ -36,7 +36,7 @@ AM_COND_IF([USE_QUAD],
 
 
 AC_ARG_ENABLE(openmp,
-	[AS_HELP_STRING([--enable-openmp],[enable openmp parallel instructions in aspic])],
+	[AS_HELP_STRING([--enable-fopenmp],[enable openmp parallel instructions in aspic])],
 	ok=$enableval, ok=yes)
 AM_CONDITIONAL([USE_OPENMP],[test "$ok" = "yes"])
 AM_COND_IF([USE_OPENMP],
