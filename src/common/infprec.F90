@@ -39,6 +39,8 @@ module infprec
 !reserved
      logical :: check,update
      real(kp) :: xend
+     logical :: minmax = .false.
+     real(kp) :: minmin, maxmax
   end type transfert
 
 

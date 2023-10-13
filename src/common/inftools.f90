@@ -1085,6 +1085,10 @@ contains
             endif
             a = a - abs(a)*tolExpand
             b = b + abs(b)*tolExpand
+            if (extradata%minmax) then
+               a = max(a,extradata%minmin)
+               b = min(b,extradata%maxmax)
+            endif
             iex = iex + 1
             notbracketed = .true.
             display = .false.
