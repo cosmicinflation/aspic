@@ -9,7 +9,7 @@ AC_PROG_CPP
 LT_INIT
 
 
-version_info="5:2:2"
+version_info="6:2:2"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
