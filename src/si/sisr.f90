@@ -11,11 +11,18 @@ module sisr
 
   private
 
+!default value is false as original SI is non-minimal model. But other
+!theoretical justifications can be
+  logical, save :: minimalCoupling = .false.
+  
   public si_norm_potential, si_epsilon_one, si_epsilon_two, si_epsilon_three
   public si_x_endinf, si_efold_primitive, si_x_trajectory
   public si_norm_deriv_potential, si_norm_deriv_second_potential
-  public si_ln_omega4
- 
+  public si_ln_omega4, si_set_minimal_coupling, si_get_minimal_coupling
+
+
+
+  
 contains
 !returns V/M^4
   function si_norm_potential(x)
@@ -54,12 +61,35 @@ contains
   end function si_norm_deriv_second_potential
 
 
+  subroutine si_set_minimal_coupling(state)
+    implicit none
+    logical, intent(in) :: state
+
+    minimalCoupling = state
+
+  end subroutine  si_set_minimal_coupling
+
+  
+  function si_get_minimal_coupling()
+    implicit none
+    logical :: si_get_minimal_coupling
+
+    si_get_minimal_coupling = minimalCoupling
+
+  end function si_get_minimal_coupling
+  
+  
 !omega4 = 1/A^4 where A is the conformal factor
   function si_ln_omega4(x)
     implicit none
     real(kp) ::  si_ln_omega4
     real(kp), intent(in) :: x
 
+    if (minimalCoupling) then
+       si_ln_omega4 = 0._kp
+       return
+    end if
+       
     si_ln_omega4 = 2._kp*sqrt(2._kp/3._kp)*x
 
   end function si_ln_omega4
