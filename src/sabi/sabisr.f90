@@ -1,4 +1,4 @@
-!slow-roll functions for the SuperConformal alpha-attractor C inflation potential
+!slow-roll functions for the SuperConformal alpha-attractor B inflation potential
 !
 !V(phi) = Mo^4 [tanh(x/sqrt(6 alpha)) / ( 1 + tanh(x/sqrt(6 alpha)) )   ]^(2n)
 !
@@ -16,6 +16,10 @@ module sabisr
   public sabi_norm_potential, sabi_norm_deriv_potential, sabi_norm_deriv_second_potential
   public sabi_epsilon_one, sabi_epsilon_two, sabi_epsilon_three
   public sabi_efold_primitive, sabi_x_trajectory, sabi_x_endinf
+  public sabi_ln_omega4, sabi_set_minimal_coupling, sabi_get_minimal_coupling
+
+!by default the model is non-minimally coupled  
+  logical, save :: minimalCoupling = .false.
 
   real(kp), parameter :: sqtwothird = sqrt(2._kp/3._kp)
   
@@ -62,6 +66,42 @@ contains
     
   end function sabi_norm_deriv_second_potential
 
+
+  subroutine sabi_set_minimal_coupling(state)
+    implicit none
+    logical, intent(in) :: state
+
+    minimalCoupling = state
+
+  end subroutine sabi_set_minimal_coupling
+
+
+  function sabi_get_minimal_coupling()
+    implicit none
+    logical :: sabi_get_minimal_coupling
+
+    sabi_get_minimal_coupling = minimalCoupling
+
+  end function sabi_get_minimal_coupling
+  
+  
+  function sabi_ln_omega4(x,alpha,n)
+    implicit none
+    real(kp) :: sabi_ln_omega4
+    real(kp), intent(in) :: x,alpha,n
+    real(kp) :: tanfac
+
+    if (minimalCoupling) then
+       sabi_ln_omega4 = 0._kp
+       return
+    endif
+    
+    tanfac = tanh(x/sqrt(6._kp*alpha))
+    sabi_ln_omega4 = 2._kp*log( 1._kp - tanfac*tanfac )
+        
+  end function sabi_ln_omega4
+
+  
 !epsilon1(x)
   function sabi_epsilon_one(x,alpha,n)
     implicit none

@@ -6,7 +6,7 @@ module nmlfi1reheat
   use nmlficommon, only : nmlfi_hbar_potmax
 
   use nmlficomreh, only : nmlfi_hbar_rreh, nmlfi_hbar_star, nmlfi_hbar_rrad
-  use nmlficomreh, only : nmlfi_lnrhoreh_max
+  use nmlficomreh, only : nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
 
   use nmlfi1sr, only : nmlfi1_check_params
   
@@ -15,12 +15,13 @@ module nmlfi1reheat
   private
 
 !take as input the parametric field hbar  
-  public nmlfi1_parametric_lnrhoreh_max
+  public nmlfi1_parametric_lnrhoreh_max, nmlfi1_parametric_lnrho_endinf
   public nmlfi1_hbar_star, nmlfi1_hbar_rrad, nmlfi1_hbar_rreh
-
+  public nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
 
 !for convenience only
   public nmlfi1_x_star, nmlfi1_x_rrad, nmlfi1_x_rreh, nmlfi1_lnrhoreh_max
+  public nmlfi1_lnrho_endinf
 
 contains
 
@@ -122,10 +123,20 @@ contains
        hbarmax = nmlfi_hbar_potmax(xi,p)
     endif
     
-    nmlfi1_parametric_lnrhoreh_max = nmlfi_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
+    nmlfi1_parametric_lnrhoreh_max = nmlfi_parametric_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
 
   end function nmlfi1_parametric_lnrhoreh_max
 
+
+  function nmlfi1_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi1_parametric_lnrho_endinf
+    real(kp), intent(in) :: xi,p,hbarend,hbarstar,Pstar
+            
+    nmlfi1_parametric_lnrho_endinf = nmlfi_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+
+  end function nmlfi1_parametric_lnrho_endinf
+  
 
 
 
@@ -192,6 +203,21 @@ contains
     nmlfi1_lnrhoreh_max = nmlfi1_parametric_lnrhoreh_max(xi,p,hbarend,Pstar)
 
   end function nmlfi1_lnrhoreh_max
+
+
+  
+  function nmlfi1_lnrho_endinf(xi,p,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi1_lnrho_endinf
+    real(kp), intent(in) :: xi,p,xend,xstar,Pstar
+    real(kp) :: hbarstar, hbarend
+
+    hbarstar = nmlfi_hbar(xstar,xi)
+    hbarend = nmlfi_hbar(xend,xi)
+    
+    nmlfi1_lnrho_endinf = nmlfi1_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+
+  end function nmlfi1_lnrho_endinf
 
   
   

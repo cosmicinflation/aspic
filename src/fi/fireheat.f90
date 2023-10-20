@@ -15,7 +15,7 @@ module fireheat
   private
 
   public fi_x_star, fi_lnrhoreh_max
-  public fi_x_rrad, fi_x_rreh
+  public fi_x_rrad, fi_x_rreh, fi_lnrho_endinf
 
 contains
 
@@ -243,5 +243,25 @@ contains
   end function fi_lnrhoreh_max
 
 
+  
+  function fi_lnrho_endinf(delta,n,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: fi_lnrho_endinf
+    real(kp), intent(in) :: delta,n,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = fi_norm_potential(xend,delta,n)
+    epsOneEnd = fi_epsilon_one(xend,delta,n)
+    potStar = fi_norm_potential(xstar,delta,n)
+    epsOneStar = fi_epsilon_one(xstar,delta,n)
+
+    fi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function fi_lnrho_endinf
+
+
+  
 
 end module fireheat

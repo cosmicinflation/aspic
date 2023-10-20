@@ -14,7 +14,7 @@ module beireheat
   private
 
   public bei_x_star, bei_lnrhoreh_max,find_bei_x_star
-  public bei_x_rrad, bei_x_rreh
+  public bei_x_rrad, bei_x_rreh, bei_lnrho_endinf
 
 contains
 
@@ -258,6 +258,23 @@ contains
 
   end function bei_lnrhoreh_max
 
+
+  function bei_lnrho_endinf(lambda,beta,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: bei_lnrho_endinf
+    real(kp), intent(in) :: lambda,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = bei_norm_potential(xend,lambda,beta)
+    epsOneEnd = bei_epsilon_one(xend,lambda,beta)
+    potStar = bei_norm_potential(xstar,lambda,beta)
+    epsOneStar = bei_epsilon_one(xstar,lambda,beta)
+
+    bei_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function bei_lnrho_endinf
   
   
 end module beireheat

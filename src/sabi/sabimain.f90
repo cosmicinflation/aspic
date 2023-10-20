@@ -8,6 +8,7 @@ program sabimain
   use srreheat, only : log_energy_reheat_ingev
 
   use sabisr, only : sabi_norm_potential, sabi_x_endinf, sabi_x_trajectory
+  use sabisr, only : sabi_ln_omega4
   use sabireheat, only : sabi_x_rreh, sabi_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -35,7 +36,8 @@ program sabimain
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
-
+  real(kp) :: lnOmega4End
+  
   real(kp) :: xmin,xmax,V1,x
 
   Pstar = powerAmpScalar
@@ -295,8 +297,9 @@ end do
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  sabi_epsilon_one(xend,alpha,n)
      VendOverVstar = sabi_norm_potential(xend,alpha,n)/sabi_norm_potential(xstar,alpha,n)
-
-     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+     lnOmega4End = sabi_ln_omega4(xend,alpha,n)
+     
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      xstar = sabi_x_rreh(alpha,n,xend,lnR,bfoldstar)

@@ -16,7 +16,7 @@ module nfi1reheat
   private
 
   public nfi1_x_star, nfi1_lnrhoreh_max
-  public nfi1_x_rrad, nfi1_x_rreh
+  public nfi1_x_rrad, nfi1_x_rreh, nfi1_lnrho_endinf
 
 contains
 
@@ -102,7 +102,6 @@ contains
 
     real(kp) :: lnRhoEnd
     
-
     potEnd  = nfi1_norm_potential(xEnd,a,b)
 
     epsOneEnd = nfi1_epsilon_one(xEnd,a,b)
@@ -121,6 +120,25 @@ contains
     nfi1_lnrhoreh_max = lnRhoEnd
 
   end function nfi1_lnrhoreh_max
+
+
+
+  function nfi1_lnrho_endinf(a,b,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: nfi1_lnrho_endinf
+    real(kp), intent(in) :: a,b,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = nfi1_norm_potential(xend,a,b)
+    epsOneEnd = nfi1_epsilon_one(xend,a,b)
+    potStar = nfi1_norm_potential(xstar,a,b)
+    epsOneStar = nfi1_epsilon_one(xstar,a,b)
+
+    nfi1_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function nfi1_lnrho_endinf
 
   
 end module nfi1reheat

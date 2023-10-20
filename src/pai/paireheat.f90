@@ -15,7 +15,7 @@ module paireheat
   private
 
   public pai_x_star, pai_lnrhoreh_max
-  public pai_x_rrad, pai_x_rreh
+  public pai_x_rrad, pai_x_rreh, pai_lnrho_endinf
 
 contains
 
@@ -242,6 +242,25 @@ contains
     pai_lnrhoreh_max = lnRhoEnd
 
   end function pai_lnrhoreh_max
+
+
+
+  function pai_lnrho_endinf(mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: pai_lnrho_endinf
+    real(kp), intent(in) :: mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = pai_norm_potential(xend,mu)
+    epsOneEnd = pai_epsilon_one(xend,mu)
+    potStar = pai_norm_potential(xstar,mu)
+    epsOneStar = pai_epsilon_one(xstar,mu)
+
+    pai_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function pai_lnrho_endinf
 
   
 end module paireheat

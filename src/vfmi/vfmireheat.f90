@@ -19,7 +19,7 @@ module vfmireheat
   private
 
   public vfmi_x_star, vfmi_lnrhoreh_max
-  public vfmi_x_rrad, vfmi_x_rreh
+  public vfmi_x_rrad, vfmi_x_rreh, vfmi_lnrho_endinf
   
 contains
 
@@ -282,6 +282,24 @@ contains
 
   end function vfmi_lnrhoreh_max
 
+
+  
+  function vfmi_lnrho_endinf(alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: vfmi_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = vfmi_norm_potential(xend,alpha,beta)
+    epsOneEnd = vfmi_epsilon_one(xend,alpha,beta)
+    potStar = vfmi_norm_potential(xstar,alpha,beta)
+    epsOneStar = vfmi_epsilon_one(xstar,alpha,beta)
+
+    vfmi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function vfmi_lnrho_endinf
 
 
 end module vfmireheat

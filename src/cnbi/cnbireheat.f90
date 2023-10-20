@@ -16,7 +16,7 @@ module cnbireheat
   private
 
   public cnbi_x_star, cnbi_lnrhoreh_max 
-  public cnbi_x_rrad, cnbi_x_rreh
+  public cnbi_x_rrad, cnbi_x_rreh, cnbi_lnrho_endinf
 
 contains
 
@@ -259,6 +259,27 @@ contains
     cnbi_lnrhoreh_max = lnRhoEnd
 
   end function cnbi_lnrhoreh_max
+
+
+
+  function cnbi_lnrho_endinf(alpha,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: cnbi_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = cnbi_norm_potential(xend,alpha)
+    epsOneEnd = cnbi_epsilon_one(xend,alpha)
+    potStar = cnbi_norm_potential(xstar,alpha)
+    epsOneStar = cnbi_epsilon_one(xstar,alpha)
+
+    cnbi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function cnbi_lnrho_endinf
+  
+
 
   
 end module cnbireheat

@@ -61,12 +61,12 @@ contains
   end function rpi2_norm_deriv_second_potential
 
 
-  function rpi2_ln_omega4(y)
+  function rpi2_ln_omega4(y,p)
     implicit none
     real(kp) :: rpi2_ln_omega4
-    real(kp), intent(in) :: y
+    real(kp), intent(in) :: y,p
 
-    rpi2_ln_omega4 = rpi_ln_omega4(y)
+    rpi2_ln_omega4 = rpi_ln_omega4(y,p)
 
   end function rpi2_ln_omega4
     

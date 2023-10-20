@@ -16,7 +16,7 @@ module ahireheat
   private
 
   public ahi_x_star, ahi_lnrhoreh_max 
-  public ahi_x_rrad, ahi_x_rreh
+  public ahi_x_rrad, ahi_x_rreh, ahi_lnrho_endinf
 
 contains
 
@@ -231,6 +231,23 @@ contains
     ahi_lnrhoreh_max = lnRhoEnd
 
   end function ahi_lnrhoreh_max
+
+  function ahi_lnrho_endinf(f,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: ahi_lnrho_endinf
+    real(kp), intent(in) :: f,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ahi_norm_potential(xend,f)
+    epsOneEnd = ahi_epsilon_one(xend,f)
+    potStar = ahi_norm_potential(xstar,f)
+    epsOneStar = ahi_epsilon_one(xstar,f)
+
+    ahi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ahi_lnrho_endinf
 
   
 end module ahireheat

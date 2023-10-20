@@ -16,7 +16,7 @@ module rcqireheat
   private
 
   public rcqi_x_star, rcqi_lnrhoreh_max
-  public rcqi_x_rrad, rcqi_x_rreh
+  public rcqi_x_rrad, rcqi_x_rreh, rcqi_lnrho_endinf
 
 contains
 
@@ -222,7 +222,6 @@ contains
     x = rcqi_x_star(alpha,xend,wrad,junk,Pstar)    
     potStar = rcqi_norm_potential(x,alpha)
     epsOneStar = rcqi_epsilon_one(x,alpha)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rcqi_lnrhoreh_max: slow-roll violated!'
     
@@ -231,6 +230,25 @@ contains
     rcqi_lnrhoreh_max = lnRhoEnd
 
   end function rcqi_lnrhoreh_max
+
+
+  
+  function rcqi_lnrho_endinf(alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rcqi_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rcqi_norm_potential(xend,alpha)
+    epsOneEnd = rcqi_epsilon_one(xend,alpha)
+    potStar = rcqi_norm_potential(xstar,alpha)
+    epsOneStar = rcqi_epsilon_one(xstar,alpha)
+
+    rcqi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rcqi_lnrho_endinf
 
   
 end module rcqireheat

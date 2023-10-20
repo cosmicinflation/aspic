@@ -16,7 +16,7 @@ module sireheat
   private
 
   public si_x_star, si_lnrhoreh_max
-  public si_x_rrad, si_x_rreh
+  public si_x_rrad, si_x_rreh, si_lnrho_endinf
 
 contains
 
@@ -238,8 +238,30 @@ contains
     lnRhoEndJF = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
 
     si_lnrhoreh_max = lnRhoEndJF
-
+    
   end function si_lnrhoreh_max
+
+
+
+  function si_lnrho_endinf(xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: si_lnrho_endinf
+    real(kp), intent(in) :: xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    real(kp) :: lnOmega4End
+
+    potEnd  = si_norm_potential(xend)
+    epsOneEnd = si_epsilon_one(xend)
+    potStar = si_norm_potential(xstar)
+    epsOneStar = si_epsilon_one(xstar)
+    lnOmega4End = si_ln_omega4(xend)
+
+    si_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+    
+  end function si_lnrho_endinf
 
   
 end module sireheat

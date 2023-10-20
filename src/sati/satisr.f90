@@ -13,7 +13,11 @@ module satisr
   public sati_norm_potential, sati_norm_deriv_potential, sati_norm_deriv_second_potential
   public sati_epsilon_one, sati_epsilon_two, sati_epsilon_three
   public sati_efold_primitive, sati_x_trajectory, sati_x_endinf
-
+  public sati_ln_omega4, sati_set_minimal_coupling, sati_get_minimal_coupling
+  
+!by default the model is non-minimally coupled  
+  logical, save :: minimalCoupling = .false.
+  
 contains
 
 !returns V/M**4
@@ -52,6 +56,44 @@ contains
 
   end function sati_norm_deriv_second_potential
 
+
+
+  subroutine sati_set_minimal_coupling(state)
+    implicit none
+    logical, intent(in) :: state
+
+    minimalCoupling = state
+
+  end subroutine sati_set_minimal_coupling
+
+
+  function sati_get_minimal_coupling()
+    implicit none
+    logical :: sati_get_minimal_coupling
+
+    sati_get_minimal_coupling = minimalCoupling
+
+  end function sati_get_minimal_coupling
+  
+  
+  function sati_ln_omega4(x,alpha,n)
+    implicit none
+    real(kp) :: sati_ln_omega4
+    real(kp), intent(in) :: x,alpha,n
+    real(kp) :: tanfac
+
+    if (minimalCoupling) then
+       sati_ln_omega4 = 0._kp
+       return
+    endif
+    
+    tanfac = tanh(x/sqrt(6._kp*alpha))
+    sati_ln_omega4 = 2._kp*log( 1._kp - tanfac*tanfac )
+        
+  end function sati_ln_omega4
+
+
+  
 !epsilon1(x)
   function sati_epsilon_one(x,alpha,n)
     implicit none

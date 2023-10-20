@@ -8,6 +8,7 @@ program satimain
   use srreheat, only : log_energy_reheat_ingev
 
   use satisr, only : sati_norm_potential, sati_x_endinf, sati_x_trajectory
+  use satisr, only : sati_ln_omega4
   use satireheat, only : sati_x_rreh, sati_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -35,7 +36,8 @@ program satimain
   real(kp) :: lnRmin, lnRmax, lnR, lnRhoEnd
   real(kp) :: lnRradMin, lnRradMax, lnRrad
   real(kp) :: VendOverVstar, eps1End, xend
-
+  real(kp) :: lnOmega4End
+  
   real(kp) :: x,xmin,xmax,V1,V2
 
   Pstar = powerAmpScalar
@@ -368,8 +370,9 @@ call delete_file('sati_nsr_neq5.dat')
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  sati_epsilon_one(xend,alpha,n)
      VendOverVstar = sati_norm_potential(xend,alpha,n)/sati_norm_potential(xstar,alpha,n)
-
-     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar)
+     lnOmega4End = sati_ln_omega4(xend,alpha,n)
+     
+     lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)
      xstar = sati_x_rreh(alpha,n,xend,lnR,bfoldstar)

@@ -15,6 +15,7 @@ module rmi3reheat
   private
 
   public rmi3_x_star, rmi3_x_rrad, rmi3_x_rreh, rmi3_lnrhoreh_max
+  public rmi3_lnrho_endinf
 
 contains
 
@@ -95,7 +96,6 @@ contains
 
     x = rmi3_x_star(c,phi0,xend,wrad,junk,Pstar)  
 
-
     potStar = rmi3_norm_potential(x,c,phi0)
     epsOneStar = rmi3_epsilon_one(x,c,phi0)
     
@@ -106,6 +106,25 @@ contains
     rmi3_lnrhoreh_max = lnRhoEnd
 
   end function rmi3_lnrhoreh_max
+
+
+
+  function rmi3_lnrho_endinf(c,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rmi3_lnrho_endinf
+    real(kp), intent(in) :: c,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rmi3_norm_potential(xend,c,phi0)
+    epsOneEnd = rmi3_epsilon_one(xend,c,phi0)
+    potStar = rmi3_norm_potential(xstar,c,phi0)
+    epsOneStar = rmi3_epsilon_one(xstar,c,phi0)
+
+    rmi3_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rmi3_lnrho_endinf
 
   
 end module rmi3reheat

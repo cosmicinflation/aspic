@@ -16,7 +16,7 @@ module gdwireheat
   private
 
   public gdwi_x_star, gdwi_lnrhoreh_max
-  public gdwi_x_rrad, gdwi_x_rreh
+  public gdwi_x_rrad, gdwi_x_rreh, gdwi_lnrho_endinf
   
 
 contains
@@ -256,6 +256,25 @@ contains
     gdwi_lnrhoreh_max = lnRhoEnd
 
   end function gdwi_lnrhoreh_max
+
+
+
+  function gdwi_lnrho_endinf(p,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: gdwi_lnrho_endinf
+    real(kp), intent(in) :: p,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = gdwi_norm_potential(xend,p,phi0)
+    epsOneEnd = gdwi_epsilon_one(xend,p,phi0)
+    potStar = gdwi_norm_potential(xstar,p,phi0)
+    epsOneStar = gdwi_epsilon_one(xstar,p,phi0)
+
+    gdwi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function gdwi_lnrho_endinf
 
   
 end module gdwireheat

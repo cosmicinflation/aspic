@@ -16,7 +16,7 @@ module oripireheat
   private
 
   public oripi_x_star, oripi_lnrhoreh_max
-  public oripi_x_rrad, oripi_x_rreh
+  public oripi_x_rrad, oripi_x_rreh, oripi_lnrho_endinf
 
 contains
 
@@ -227,7 +227,6 @@ contains
 
     potStar = oripi_norm_potential(x,phi0)
     epsOneStar = oripi_epsilon_one(x,phi0)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'oripi_lnrhoreh_max: slow-roll violated!'
     
@@ -237,5 +236,24 @@ contains
 
   end function oripi_lnrhoreh_max
 
+
+  function oripi_lnrho_endinf(phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: oripi_lnrho_endinf
+    real(kp), intent(in) :: phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = oripi_norm_potential(xend,phi0)
+    epsOneEnd = oripi_epsilon_one(xend,phi0)
+    potStar = oripi_norm_potential(xstar,phi0)
+    epsOneStar = oripi_epsilon_one(xstar,phi0)
+
+    oripi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function oripi_lnrho_endinf
+
+  
   
 end module oripireheat

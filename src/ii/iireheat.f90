@@ -16,7 +16,7 @@ module iireheat
   private
 
   public ii_x_star, ii_lnrhoreh_max
-  public ii_x_rrad, ii_x_rreh
+  public ii_x_rrad, ii_x_rreh, ii_lnrho_endinf
 
 contains
 
@@ -211,8 +211,6 @@ contains
   end function find_ii_x_rreh
 
 
-
-
   function ii_lnrhoreh_max(beta,xend,Pstar) 
     implicit none
     real(kp) :: ii_lnrhoreh_max
@@ -229,14 +227,11 @@ contains
     potEnd  = ii_norm_potential(xEnd,beta)
     epsOneEnd = ii_epsilon_one(xEnd,beta)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = ii_x_star(beta,xEnd,wrad,junk,Pstar)    
     potStar = ii_norm_potential(x,beta)
     epsOneStar = ii_epsilon_one(x,beta)
-
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ii_lnrhoreh_max: slow-roll violated!'
     
@@ -245,6 +240,26 @@ contains
     ii_lnrhoreh_max = lnRhoEnd
 
   end function ii_lnrhoreh_max
+
+
+
+  function ii_lnrho_endinf(beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ii_lnrho_endinf
+    real(kp), intent(in) :: beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ii_norm_potential(xend,beta)
+    epsOneEnd = ii_epsilon_one(xend,beta)
+    potStar = ii_norm_potential(xstar,beta)
+    epsOneStar = ii_epsilon_one(xstar,beta)
+
+    ii_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ii_lnrho_endinf
+
 
   
 end module iireheat

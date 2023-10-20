@@ -191,6 +191,10 @@ contains
     real(kp), intent(in) :: p,a,b,mu
     real(kp), intent(out) :: alpha,beta,norm
     real(kp) :: M4om4
+
+    write(*,*)
+    write(*,*)'WARNING: rpqdi is a peculiar case of rcipi!'
+    write(*,*)
     
     M4om4 = 1._kp + 2*(1._kp - a)*log(mu) + 2*(1._kp + b)*log(mu)**2
     

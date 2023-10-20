@@ -16,7 +16,7 @@ module wrireheat
   private
 
   public wri_x_star, wri_lnrhoreh_max 
-  public wri_x_rrad, wri_x_rreh
+  public wri_x_rrad, wri_x_rreh, wri_lnrho_endinf
 
 contains
 
@@ -238,5 +238,25 @@ contains
     wri_lnrhoreh_max = lnRhoEnd
 
   end function wri_lnrhoreh_max
+
+
+
+  function wri_lnrho_endinf(phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: wri_lnrho_endinf
+    real(kp), intent(in) :: phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = wri_norm_potential(xend,phi0)
+    epsOneEnd = wri_epsilon_one(xend,phi0)
+    potStar = wri_norm_potential(xstar,phi0)
+    epsOneStar = wri_epsilon_one(xstar,phi0)
+
+    wri_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function wri_lnrho_endinf
+
   
 end module wrireheat

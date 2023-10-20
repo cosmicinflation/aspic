@@ -17,7 +17,7 @@ module lireheat
   private
 
   public li_x_star, li_lnrhoreh_max
-  public li_x_rrad, li_x_rreh
+  public li_x_rrad, li_x_rreh, li_lnrho_endinf
 
 contains
 
@@ -237,13 +237,11 @@ contains
     potEnd  = li_norm_potential(xEnd,alpha)
     epsOneEnd = li_epsilon_one(xEnd,alpha)
     
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = li_x_star(alpha,xend,wrad,junk,Pstar)    
     potStar = li_norm_potential(x,alpha)
     epsOneStar = li_epsilon_one(x,alpha)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'li_lnrhoreh_max: slow-roll violated!'
     
@@ -252,6 +250,24 @@ contains
     li_lnrhoreh_max = lnRhoEnd
 
   end function li_lnrhoreh_max
+
+
+  function li_lnrho_endinf(alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: li_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = li_norm_potential(xend,alpha)
+    epsOneEnd = li_epsilon_one(xend,alpha)
+    potStar = li_norm_potential(xstar,alpha)
+    epsOneStar = li_epsilon_one(xstar,alpha)
+
+    li_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function li_lnrho_endinf
 
   
 end module lireheat

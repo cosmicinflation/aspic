@@ -17,7 +17,7 @@ module gmlfireheat
   private
 
   public gmlfi_x_star, gmlfi_lnrhoreh_max
-  public gmlfi_x_rrad, gmlfi_x_rreh
+  public gmlfi_x_rrad, gmlfi_x_rreh, gmlfi_lnrho_endinf
 
 contains
 
@@ -260,5 +260,26 @@ contains
 
   end function gmlfi_lnrhoreh_max
 
+
+
+
+  function gmlfi_lnrho_endinf(p,q,alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: gmlfi_lnrho_endinf
+    real(kp), intent(in) :: p,q,alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = gmlfi_norm_potential(xend,p,q,alpha)
+    epsOneEnd = gmlfi_epsilon_one(xend,p,q,alpha)
+    potStar = gmlfi_norm_potential(xstar,p,q,alpha)
+    epsOneStar = gmlfi_epsilon_one(xstar,p,q,alpha)
+
+    gmlfi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function gmlfi_lnrho_endinf
+
+  
   
 end module gmlfireheat

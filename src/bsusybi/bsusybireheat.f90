@@ -15,7 +15,7 @@ module bsusybireheat
   private
 
   public bsusybi_x_star, bsusybi_lnrhoreh_max,find_bsusybi_x_star
-  public bsusybi_x_rrad, bsusybi_x_rreh
+  public bsusybi_x_rrad, bsusybi_x_rreh, bsusybi_lnrho_endinf
 
 contains
 
@@ -234,6 +234,25 @@ contains
     bsusybi_lnrhoreh_max = lnRhoEnd
 
   end function bsusybi_lnrhoreh_max
+
+
+
+  function bsusybi_lnrho_endinf(gammaBSUSYB,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: bsusybi_lnrho_endinf
+    real(kp), intent(in) :: gammaBSUSYB,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = bsusybi_norm_potential(xend,gammaBSUSYB)
+    epsOneEnd = bsusybi_epsilon_one(xend,gammaBSUSYB)
+    potStar = bsusybi_norm_potential(xstar,gammaBSUSYB)
+    epsOneStar = bsusybi_epsilon_one(xstar,gammaBSUSYB)
+
+    bsusybi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function bsusybi_lnrho_endinf
 
   
   

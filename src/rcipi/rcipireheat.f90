@@ -17,7 +17,7 @@ module rcipireheat
   private
 
   public rcipi_x_star, rcipi_x_rrad, rcipi_x_rreh
-  public rcipi_lnrhoreh_max
+  public rcipi_lnrhoreh_max, rcipi_lnrho_endinf
   
 contains
 
@@ -253,6 +253,24 @@ contains
 
   end function rcipi_lnrhoreh_max
 
- 
+
+  
+  function rcipi_lnrho_endinf(p,alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rcipi_lnrho_endinf
+    real(kp), intent(in) :: p,alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rcipi_norm_potential(xend,p,alpha,beta)
+    epsOneEnd = rcipi_epsilon_one(xend,p,alpha,beta)
+    potStar = rcipi_norm_potential(xstar,p,alpha,beta)
+    epsOneStar = rcipi_epsilon_one(xstar,p,alpha,beta)
+
+    rcipi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rcipi_lnrho_endinf
+
 
 end module rcipireheat

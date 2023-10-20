@@ -21,7 +21,7 @@ module twireheat
   real(kp), parameter :: epsVclamp = 2._kp
   
   public twi_x_star, twi_lnrhoreh_max
-  public twi_x_rrad, twi_x_rreh
+  public twi_x_rrad, twi_x_rreh, twi_lnrho_endinf
 
 contains
 
@@ -226,22 +226,18 @@ contains
 
     real(kp) :: lnRhoEnd
 
-
     potEnd  = twi_norm_potential(xEnd,phi0)
 
 !there are possibly slow-roll violations at the end of inflation, do
 !not feed the rho reheating equation with crap
     epsOneEnd = min(twi_epsilon_one(xEnd,phi0),epsVclamp)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = twi_x_star(phi0,xEnd,wrad,junk,Pstar)  
-
  
     potStar = twi_norm_potential(x,phi0)
     epsOneStar = twi_epsilon_one(x,phi0)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'twi_lnrhoreh_max: slow-roll violated!'
     
@@ -250,6 +246,25 @@ contains
     twi_lnrhoreh_max = lnRhoEnd
 
   end function twi_lnrhoreh_max
+
+
+  
+  function twi_lnrho_endinf(phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: twi_lnrho_endinf
+    real(kp), intent(in) :: phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = twi_norm_potential(xend,phi0)
+    epsOneEnd = twi_epsilon_one(xend,phi0)
+    potStar = twi_norm_potential(xstar,phi0)
+    epsOneStar = twi_epsilon_one(xstar,phi0)
+
+    twi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function twi_lnrho_endinf
 
   
 end module twireheat

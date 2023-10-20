@@ -17,7 +17,7 @@ module ccsi2reheat
   private
 
   public ccsi2_x_star, ccsi2_lnrhoreh_max
-  public ccsi2_x_rrad, ccsi2_x_rreh
+  public ccsi2_x_rrad, ccsi2_x_rreh, ccsi2_lnrho_endinf
 
 contains
 
@@ -114,7 +114,7 @@ contains
     potStar = ccsi2_norm_potential(x,alpha)
     epsOneStar = ccsi2_epsilon_one(x,alpha)
 !    lnOmega4End = 2._kp*xend
-    lnOmega4End = ccsi2_ln_omega4(xend)
+    lnOmega4End = ccsi2_ln_omega4(xend,alpha)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi2_lnrhoreh_max: slow-roll violated!'
 
@@ -123,6 +123,28 @@ contains
     ccsi2_lnrhoreh_max = lnRhoEnd
 
   end function ccsi2_lnrhoreh_max
+
+
+  function ccsi2_lnrho_endinf(alpha,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: ccsi2_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    real(kp) :: lnOmega4End
+
+    potEnd  = ccsi2_norm_potential(xend,alpha)
+    epsOneEnd = ccsi2_epsilon_one(xend,alpha)
+    potStar = ccsi2_norm_potential(xstar,alpha)
+    epsOneStar = ccsi2_epsilon_one(xstar,alpha)
+    lnOmega4End = ccsi2_ln_omega4(xend,alpha)
+
+    ccsi2_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+
+  end function ccsi2_lnrho_endinf
+
 
   
 end module ccsi2reheat

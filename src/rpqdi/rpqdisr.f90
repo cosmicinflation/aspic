@@ -3,6 +3,11 @@
 !V(phi) = M**4 x**2 (1- (1-alpha) ln(x**2) + (beta+1)/2 ln(x**2)**2 )
 !
 !x = phi/phi0
+!
+! DO NOT USE this module for production, it is a peculiar case of RCIPI. In
+! particular, phi0 is unobservable and fully degenerated with the
+! other parameters
+!
 
 module rpqdisr
   use infprec, only : kp,tolkp,transfert
@@ -27,7 +32,7 @@ contains
     real(kp), intent(in) :: x,phi0,alpha,beta
 
     rpqdi_norm_potential = x**2*(1._kp-(1._kp-alpha)*log(x**2)+(beta+1._kp)/2._kp*log(x**2)**2)
-
+    
   end function rpqdi_norm_potential
 
 

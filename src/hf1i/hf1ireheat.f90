@@ -16,7 +16,7 @@ module hf1ireheat
   private
 
   public hf1i_x_star, hf1i_lnrhoreh_max
-  public hf1i_x_rrad, hf1i_x_rreh
+  public hf1i_x_rrad, hf1i_x_rreh, hf1i_lnrho_endinf
 
 contains
 
@@ -202,8 +202,6 @@ contains
 
 
 
-
-
   function hf1i_lnrhoreh_max(A1,xend,Pstar) 
     implicit none
     real(kp) :: hf1i_lnrhoreh_max
@@ -225,7 +223,6 @@ contains
     x = hf1i_x_star(A1,xend,wrad,junk,Pstar)    
     potStar = hf1i_norm_potential(x,A1)
     epsOneStar = hf1i_epsilon_one(x,A1)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'hf1i_lnrhoreh_max: slow-roll violated!'
     
@@ -234,6 +231,25 @@ contains
     hf1i_lnrhoreh_max = lnRhoEnd
 
   end function hf1i_lnrhoreh_max
+
+
+
+  function hf1i_lnrho_endinf(A1,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: hf1i_lnrho_endinf
+    real(kp), intent(in) :: A1,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = hf1i_norm_potential(xend,A1)
+    epsOneEnd = hf1i_epsilon_one(xend,A1)
+    potStar = hf1i_norm_potential(xstar,A1)
+    epsOneStar = hf1i_epsilon_one(xstar,A1)
+
+    hf1i_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function hf1i_lnrho_endinf
 
   
 end module hf1ireheat

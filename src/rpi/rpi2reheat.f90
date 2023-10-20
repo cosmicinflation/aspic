@@ -19,7 +19,7 @@ module rpi2reheat
   real(kp), parameter :: Rpi2MaxiMax = 100._kp
 
   public rpi2_x_star, rpi2_lnrhoreh_max
-  public rpi2_x_rrad, rpi2_x_rreh
+  public rpi2_x_rrad, rpi2_x_rreh, rpi2_lnrho_endinf
 
 contains
 
@@ -47,7 +47,7 @@ contains
 
     primEnd = rpi2_efold_primitive(yEnd,p)
 !    lnOmega4End = 2._kp*yEnd
-    lnOmega4End = rpi2_ln_omega4(yEnd)
+    lnOmega4End = rpi2_ln_omega4(yEnd,p)
     
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
@@ -200,7 +200,7 @@ contains
 
     primEnd = rpi2_efold_primitive(yEnd,p)
 !    lnOmega4End = 2._kp*yEnd
-    lnOmega4End = rpi2_ln_omega4(yEnd)
+    lnOmega4End = rpi2_ln_omega4(yEnd,p)
     
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
@@ -281,7 +281,7 @@ contains
     epsOneStar = rpi2_epsilon_one(y,p)
 
 !    lnOmega4End = 2._kp*yEnd
-    lnOmega4End = rpi2_ln_omega4(yEnd)    
+    lnOmega4End = rpi2_ln_omega4(yEnd,p)    
     if (.not.slowroll_validity(epsOneStar)) stop 'rpi2_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
@@ -289,6 +289,27 @@ contains
     rpi2_lnrhoreh_max = lnRhoEnd
 
   end function rpi2_lnrhoreh_max
+
+
+
+  function rpi2_lnrho_endinf(p,yend,ystar,Pstar)
+    implicit none
+    real(kp) :: rpi2_lnrho_endinf
+    real(kp), intent(in) :: p,yend,ystar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd    
+    real(kp) :: x, potStar, epsOneStar
+    real(kp) :: lnOmega4End
+    
+    potEnd  = rpi2_norm_potential(yend,p)
+    epsOneEnd = rpi2_epsilon_one(yend,p)
+    lnOmega4End = rpi2_ln_omega4(yend,p)
+    potStar = rpi2_norm_potential(ystar,p)
+    epsOneStar = rpi2_epsilon_one(ystar,p)
+
+    rpi2_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+
+  end function rpi2_lnrho_endinf
 
   
 end module rpi2reheat

@@ -16,7 +16,7 @@ module deireheat
   private
 
   public dei_x_star, dei_lnrhoreh_max
-  public dei_x_rrad, dei_x_rreh
+  public dei_x_rrad, dei_x_rreh, dei_lnrho_endinf
 
 contains
 
@@ -243,6 +243,26 @@ contains
     dei_lnrhoreh_max = lnRhoEnd
 
   end function dei_lnrhoreh_max
+
+
+  
+  function dei_lnrho_endinf(beta,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: dei_lnrho_endinf
+    real(kp), intent(in) :: beta,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = dei_norm_potential(xend,beta,phi0)
+    epsOneEnd = dei_epsilon_one(xend,beta,phi0)
+    potStar = dei_norm_potential(xstar,beta,phi0)
+    epsOneStar = dei_epsilon_one(xstar,beta,phi0)
+
+    dei_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function dei_lnrho_endinf
+  
 
   
 end module deireheat

@@ -14,7 +14,7 @@ module cncireheat
   private
 
   public cnci_x_star, cnci_lnrhoreh_max,find_cnci_x_star
-  public cnci_x_rrad, cnci_x_rreh
+  public cnci_x_rrad, cnci_x_rreh, cnci_lnrho_endinf
 
 contains
 
@@ -241,4 +241,22 @@ contains
 
   
   
+  function cnci_lnrho_endinf(alpha,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: cnci_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = cnci_norm_potential(xend,alpha)
+    epsOneEnd = cnci_epsilon_one(xend,alpha)
+    potStar = cnci_norm_potential(xstar,alpha)
+    epsOneStar = cnci_epsilon_one(xstar,alpha)
+
+    cnci_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function cnci_lnrho_endinf
+  
+
 end module cncireheat

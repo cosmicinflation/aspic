@@ -16,7 +16,7 @@ module mssmireheat
   private
 
   public mssmi_x_star, mssmi_lnrhoreh_max
-  public mssmi_x_rrad, mssmi_x_rreh
+  public mssmi_x_rrad, mssmi_x_rreh, mssmi_lnrho_endinf
 
 contains
 
@@ -214,7 +214,6 @@ contains
 
 
 
-
   function mssmi_lnrhoreh_max(phi0,xend,Pstar) 
     implicit none
     real(kp) :: mssmi_lnrhoreh_max
@@ -244,6 +243,26 @@ contains
     mssmi_lnrhoreh_max = lnRhoEnd
 
   end function mssmi_lnrhoreh_max
+
+
+  
+  function mssmi_lnrho_endinf(phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: mssmi_lnrho_endinf
+    real(kp), intent(in) :: phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = mssmi_norm_potential(xend,phi0)
+    epsOneEnd = mssmi_epsilon_one(xend,phi0)
+    potStar = mssmi_norm_potential(xstar,phi0)
+    epsOneStar = mssmi_epsilon_one(xstar,phi0)
+
+    mssmi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function mssmi_lnrho_endinf
+
 
   
 end module mssmireheat

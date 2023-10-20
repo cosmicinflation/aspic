@@ -9,12 +9,13 @@ module satireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use satisr, only : sati_epsilon_one, sati_epsilon_two, sati_epsilon_three
   use satisr, only : sati_norm_potential, sati_efold_primitive, sati_x_endinf
+  use satisr, only : sati_ln_omega4
   implicit none
 
   private
 
   public sati_x_star, sati_lnrhoreh_max
-  public sati_x_rrad, sati_x_rreh
+  public sati_x_rrad, sati_x_rreh, sati_lnrho_endinf
 
 contains
 
@@ -29,7 +30,8 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
-
+    real(kp) :: lnOmega4End
+    
     type(transfert) :: satiData
     
     if (w.eq.1._kp/3._kp) then
@@ -39,8 +41,9 @@ contains
     epsOneEnd = sati_epsilon_one(xEnd,alpha,n)
     potEnd = sati_norm_potential(xEnd,alpha,n)
     primEnd = sati_efold_primitive(xEnd,alpha,n)
-
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+    lnOmega4End = sati_ln_omega4(xEnd,alpha,n)
+    
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     satiData%real1 = alpha
     satiData%real2 = n
@@ -152,7 +155,8 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
-
+    real(kp) :: lnOmega4End
+    
     type(transfert) :: satiData
     
     if (lnRreh.eq.0._kp) then
@@ -162,8 +166,9 @@ contains
     epsOneEnd = sati_epsilon_one(xEnd,alpha,n)
     potEnd = sati_norm_potential(xEnd,alpha,n)
     primEnd = sati_efold_primitive(xEnd,alpha,n)
-
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+    lnOmega4End = sati_ln_omega4(xEnd,alpha,n)
+    
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     satiData%real1 = alpha
     satiData%real2 = n
@@ -211,11 +216,12 @@ contains
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
-    real(kp) :: lnRhoEnd
+    real(kp) :: lnRhoEnd, lnOmega4End
         
     potEnd  = sati_norm_potential(xEnd,alpha,n)
     epsOneEnd = sati_epsilon_one(xEnd,alpha,n)
-       
+    lnOmega4End = sati_ln_omega4(xEnd,alpha,n)
+    
     x = sati_x_star(alpha,n,xend,wrad,junk,Pstar)
 
     potStar = sati_norm_potential(x,alpha,n)
@@ -226,11 +232,32 @@ contains
         stop 'sati_lnrhoreh_max: slow-roll violated!'
     endif
     
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
 
     sati_lnrhoreh_max = lnRhoEnd
 
   end function sati_lnrhoreh_max
+
+
+
+  function sati_lnrho_endinf(alpha,n,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: sati_lnrho_endinf
+    real(kp), intent(in) :: alpha,n,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+    real(kp) :: lnOmega4End
+
+    potEnd  = sati_norm_potential(xend,alpha,n)
+    epsOneEnd = sati_epsilon_one(xend,alpha,n)
+    lnOmega4End = sati_ln_omega4(xend,alpha,n)
+    potStar = sati_norm_potential(xstar,alpha,n)
+    epsOneStar = sati_epsilon_one(xstar,alpha,n)
+    
+    sati_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+
+  end function sati_lnrho_endinf
 
   
   

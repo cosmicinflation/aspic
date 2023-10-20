@@ -121,7 +121,7 @@ program rpi1main
      VendOverVstar = rpi1_norm_potential(xend,p)/rpi1_norm_potential(ystar,p)
 
 !     lnOmega4End = 2._kp*xend
-     lnOmega4End = rpi1_ln_omega4(xend)
+     lnOmega4End = rpi1_ln_omega4(xend,p)
      
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 

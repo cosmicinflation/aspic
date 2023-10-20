@@ -16,7 +16,7 @@ module sbireheat
   private
 
   public sbi_x_star, sbi_lnrhoreh_max
-  public sbi_x_rrad, sbi_x_rreh
+  public sbi_x_rrad, sbi_x_rreh, sbi_lnrho_endinf
 
 contains
 
@@ -235,6 +235,25 @@ contains
     sbi_lnrhoreh_max = lnRhoEnd
 
   end function sbi_lnrhoreh_max
+
+
+  
+  function sbi_lnrho_endinf(alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: sbi_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = sbi_norm_potential(xend,alpha,beta)
+    epsOneEnd = sbi_epsilon_one(xend,alpha,beta)
+    potStar = sbi_norm_potential(xstar,alpha,beta)
+    epsOneStar = sbi_epsilon_one(xstar,alpha,beta)
+
+    sbi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function sbi_lnrho_endinf
 
   
 end module sbireheat

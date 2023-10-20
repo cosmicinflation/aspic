@@ -99,16 +99,16 @@ contains
   end function nmlfi1_norm_deriv_second_potential
 
 
-  function nmlfi1_ln_omega4(x,xi)
+  function nmlfi1_ln_omega4(x,xi,p)
     implicit none
     real(kp) :: nmlfi1_ln_omega4
-    real(kp), intent(in) :: x,xi
+    real(kp), intent(in) :: x,xi,p
 
     real(kp) :: hbar
 
     hbar = nmlfi_hbar(x,xi)
 
-    nmlfi1_ln_omega4 = nmlfi_parametric_ln_omega4(hbar)
+    nmlfi1_ln_omega4 = nmlfi_parametric_ln_omega4(hbar,xi,p)
     
   end function nmlfi1_ln_omega4
   

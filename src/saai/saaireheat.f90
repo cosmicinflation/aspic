@@ -16,7 +16,7 @@ module saaireheat
   private
 
   public saai_x_star, saai_lnrhoreh_max 
-  public saai_x_rrad, saai_x_rreh
+  public saai_x_rrad, saai_x_rreh, saai_lnrho_endinf
 
 contains
 
@@ -233,6 +233,26 @@ contains
     saai_lnrhoreh_max = lnRhoEnd
 
   end function saai_lnrhoreh_max
+
+
+
+  function saai_lnrho_endinf(alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: saai_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = saai_norm_potential(xend,alpha)
+    epsOneEnd = saai_epsilon_one(xend,alpha)
+    potStar = saai_norm_potential(xstar,alpha)
+    epsOneStar = saai_epsilon_one(xstar,alpha)
+
+    saai_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function saai_lnrho_endinf
+
 
   
 end module saaireheat

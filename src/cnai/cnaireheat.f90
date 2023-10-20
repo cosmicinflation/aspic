@@ -16,7 +16,7 @@ module cnaireheat
   private
 
   public cnai_x_star, cnai_lnrhoreh_max
-  public cnai_x_rrad, cnai_x_rreh
+  public cnai_x_rrad, cnai_x_rreh, cnai_lnrho_endinf
 
 contains
 
@@ -235,6 +235,25 @@ contains
     cnai_lnrhoreh_max = lnRhoEnd
 
   end function cnai_lnrhoreh_max
+
+
+
+  function cnai_lnrho_endinf(alpha,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: cnai_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = cnai_norm_potential(xend,alpha)
+    epsOneEnd = cnai_epsilon_one(xend,alpha)
+    potStar = cnai_norm_potential(xstar,alpha)
+    epsOneStar = cnai_epsilon_one(xstar,alpha)
+
+    cnai_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function cnai_lnrho_endinf
 
   
 end module cnaireheat

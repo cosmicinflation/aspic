@@ -14,7 +14,7 @@ module csireheat
   private
 
   public csi_x_star, csi_lnrhoreh_max,find_csi_x_star
-  public csi_x_rrad, csi_x_rreh
+  public csi_x_rrad, csi_x_rreh, csi_lnrho_endinf
 
 contains
 
@@ -232,6 +232,25 @@ contains
 
   end function csi_lnrhoreh_max
 
+
   
+  function csi_lnrho_endinf(alpha,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: csi_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = csi_norm_potential(xend,alpha)
+    epsOneEnd = csi_epsilon_one(xend,alpha)
+    potStar = csi_norm_potential(xstar,alpha)
+    epsOneStar = csi_epsilon_one(xstar,alpha)
+
+    csi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function csi_lnrho_endinf
+  
+
   
 end module csireheat

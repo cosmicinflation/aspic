@@ -14,7 +14,7 @@ module oireheat
   private
 
   public oi_x_star, oi_lnrhoreh_max
-  public oi_x_rrad, oi_x_rreh
+  public oi_x_rrad, oi_x_rreh, oi_lnrho_endinf
 
 contains
 
@@ -228,7 +228,6 @@ contains
     potStar = oi_norm_potential(x,alpha,phi0)
     epsOneStar = oi_epsilon_one(x,alpha,phi0)
 
-
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar 
         stop 'oi_lnrhoreh_max: slow-roll violated!'
@@ -241,5 +240,22 @@ contains
   end function oi_lnrhoreh_max
 
   
+  function oi_lnrho_endinf(alpha,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: oi_lnrho_endinf
+    real(kp), intent(in) :: alpha,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = oi_norm_potential(xend,alpha,phi0)
+    epsOneEnd = oi_epsilon_one(xend,alpha,phi0)
+    potStar = oi_norm_potential(xstar,alpha,phi0)
+    epsOneStar = oi_epsilon_one(xstar,alpha,phi0)
+
+    oi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function oi_lnrho_endinf
+
   
 end module oireheat

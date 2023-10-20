@@ -3,7 +3,7 @@ program nmlfi3main
   use cosmopar, only : lnRhoNuc, powerAmpScalar, HiggsCoupling
   use infinout, only : delete_file, livewrite
 
-  use nmlficommon, only : pplus, pminus, nmlfi_xizero
+  use nmlficommon, only : pplus, pminus, nmlfi_xizero, nmlfi_parametric_ln_omega4
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
   use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x, nmlfi_hbar_potmax
   use nmlficomreh, only : nmlfi_gravity_mass_scale
@@ -275,7 +275,7 @@ program nmlfi3main
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  nmlfi_parametric_epsilon_one(hbarend,xi,p)
-     lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+     lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
 
      VendOverVstar = nmlfi_norm_parametric_potential(hbarend,xi,p) &
           /nmlfi_norm_parametric_potential(hbarstar,xi,p)     

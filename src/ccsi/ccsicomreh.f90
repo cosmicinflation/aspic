@@ -9,7 +9,7 @@ module ccsicomreh
   use srreheat, only : ln_rho_reheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
-  use ccsicommon, only : ccsi_epsilon_one
+  use ccsicommon, only : ccsi_epsilon_one, ccsi_ln_omega4
   use ccsicommon, only : ccsi_norm_potential, ccsi_efold_primitive
   
   implicit none
@@ -44,7 +44,7 @@ contains
 
     primEnd = ccsi_efold_primitive(xEnd,alpha)
 
-    lnOmega4End = 2._kp*xend
+    lnOmega4End = ccsi_ln_omega4(xend,alpha)
     
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
@@ -163,7 +163,7 @@ contains
 
     primEnd = ccsi_efold_primitive(xEnd,alpha)
 
-    lnOmega4End = 2._kp*xend
+    lnOmega4End = ccsi_ln_omega4(xend,alpha)
     
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 

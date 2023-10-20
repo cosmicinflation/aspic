@@ -16,7 +16,7 @@ module esireheat
   private
 
   public esi_x_star, esi_lnrhoreh_max 
-  public esi_x_rrad, esi_x_rreh
+  public esi_x_rrad, esi_x_rreh, esi_lnrho_endinf
 
 contains
 
@@ -225,7 +225,6 @@ contains
     x = esi_x_star(q,xend,wrad,junk,Pstar)    
     potStar = esi_norm_potential(x,q)
     epsOneStar = esi_epsilon_one(x,q)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'esi_lnrhoreh_max: slow-roll violated!'
     
@@ -234,6 +233,25 @@ contains
     esi_lnrhoreh_max = lnRhoEnd
 
   end function esi_lnrhoreh_max
+
+
+
+  function esi_lnrho_endinf(q,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: esi_lnrho_endinf
+    real(kp), intent(in) :: q,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = esi_norm_potential(xend,q)
+    epsOneEnd = esi_epsilon_one(xend,q)
+    potStar = esi_norm_potential(xstar,q)
+    epsOneStar = esi_epsilon_one(xstar,q)
+
+    esi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function esi_lnrho_endinf
 
   
 end module esireheat

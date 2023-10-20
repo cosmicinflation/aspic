@@ -16,7 +16,7 @@ module shireheat
   private
 
   public shi_x_star, shi_lnrhoreh_max
-  public shi_x_rrad, shi_x_rreh
+  public shi_x_rrad, shi_x_rreh, shi_lnrho_endinf
 
 contains
 
@@ -226,15 +226,12 @@ contains
 
     epsOneEnd = shi_epsilon_one(xEnd,alpha,phi0)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = shi_x_star(alpha,phi0,xend,wrad,junk,Pstar)  
-
  
     potStar = shi_norm_potential(x,alpha,phi0)
     epsOneStar = shi_epsilon_one(x,alpha,phi0)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'shi_lnrhoreh_max: slow-roll violated!'
     
@@ -243,6 +240,25 @@ contains
     shi_lnrhoreh_max = lnRhoEnd
 
   end function shi_lnrhoreh_max
+
+
+  
+  function shi_lnrho_endinf(alpha,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: shi_lnrho_endinf
+    real(kp), intent(in) :: alpha,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = shi_norm_potential(xend,alpha,phi0)
+    epsOneEnd = shi_epsilon_one(xend,alpha,phi0)
+    potStar = shi_norm_potential(xstar,alpha,phi0)
+    epsOneStar = shi_epsilon_one(xstar,alpha,phi0)
+
+    shi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function shi_lnrho_endinf
 
   
 end module shireheat

@@ -16,7 +16,7 @@ module ripireheat
   private
 
   public ripi_x_star, ripi_lnrhoreh_max
-  public ripi_x_rrad, ripi_x_rreh
+  public ripi_x_rrad, ripi_x_rreh, ripi_lnrho_endinf
 
 contains
 
@@ -236,6 +236,26 @@ contains
     ripi_lnrhoreh_max = lnRhoEnd
 
   end function ripi_lnrhoreh_max
+
+
+
+  function ripi_lnrho_endinf(phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ripi_lnrho_endinf
+    real(kp), intent(in) :: phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ripi_norm_potential(xend,phi0)
+    epsOneEnd = ripi_epsilon_one(xend,phi0)
+    potStar = ripi_norm_potential(xstar,phi0)
+    epsOneStar = ripi_epsilon_one(xstar,phi0)
+
+    ripi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ripi_lnrho_endinf
+
 
   
 end module ripireheat

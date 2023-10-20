@@ -17,7 +17,7 @@ module ccsi3reheat
   private
 
   public ccsi3_x_star, ccsi3_lnrhoreh_max
-  public ccsi3_x_rrad, ccsi3_x_rreh
+  public ccsi3_x_rrad, ccsi3_x_rreh, ccsi3_lnrho_endinf
 
 contains
 
@@ -94,9 +94,9 @@ contains
   function ccsi3_lnrhoreh_max(alpha,xend,Pstar)
     implicit none
     real(kp) :: ccsi3_lnrhoreh_max
-    real(kp), intent(in) :: alpha,Pstar
+    real(kp), intent(in) :: alpha,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -115,7 +115,7 @@ contains
     potStar = ccsi3_norm_potential(x,alpha)
     epsOneStar = ccsi3_epsilon_one(x,alpha)
 !    lnOmega4End = 2._kp*xend
-    lnOmega4End = ccsi3_ln_omega4(xend)
+    lnOmega4End = ccsi3_ln_omega4(xend,alpha)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ccsi3_lnrhoreh_max: slow-roll violated!'
     
@@ -124,6 +124,27 @@ contains
     ccsi3_lnrhoreh_max = lnRhoEnd
 
   end function ccsi3_lnrhoreh_max
+
+
+  function ccsi3_lnrho_endinf(alpha,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: ccsi3_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    real(kp) :: lnOmega4End
+
+    potEnd  = ccsi3_norm_potential(xend,alpha)
+    epsOneEnd = ccsi3_epsilon_one(xend,alpha)
+    potStar = ccsi3_norm_potential(xstar,alpha)
+    epsOneStar = ccsi3_epsilon_one(xstar,alpha)
+    lnOmega4End = ccsi3_ln_omega4(xend,alpha)
+
+    ccsi3_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+
+  end function ccsi3_lnrho_endinf
 
   
 end module ccsi3reheat

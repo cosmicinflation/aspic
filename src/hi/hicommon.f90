@@ -150,10 +150,10 @@ contains
 
 
   
-  function hi_parametric_ln_omega4(hbar)
+  function hi_parametric_ln_omega4(hbar,xi)
     implicit none
     real(kp) :: hi_parametric_ln_omega4
-    real(kp), intent(in) :: hbar
+    real(kp), intent(in) :: hbar,xi
 
     hi_parametric_ln_omega4 = 2._kp*log(1._kp+hbar*hbar)
 

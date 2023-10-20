@@ -16,7 +16,7 @@ module imireheat
   private
 
   public imi_x_star, imi_lnrhoreh_max
-  public imi_x_rrad, imi_x_rreh
+  public imi_x_rrad, imi_x_rreh, imi_lnrho_endinf
 
 contains
 
@@ -231,6 +231,26 @@ contains
     imi_lnrhoreh_max = lnRhoEnd
 
   end function imi_lnrhoreh_max
+
+
+
+  function imi_lnrho_endinf(p,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: imi_lnrho_endinf
+    real(kp), intent(in) :: p,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = imi_norm_potential(xend,p)
+    epsOneEnd = imi_epsilon_one(xend,p)
+    potStar = imi_norm_potential(xstar,p)
+    epsOneStar = imi_epsilon_one(xstar,p)
+
+    imi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function imi_lnrho_endinf
+
 
   
 end module imireheat

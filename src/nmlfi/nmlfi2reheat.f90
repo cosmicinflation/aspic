@@ -7,7 +7,7 @@ module nmlfi2reheat
   use nmlficommon, only : nmlfi_hbar_potmax
 
   use nmlficomreh, only : nmlfi_hbar_rreh, nmlfi_hbar_star, nmlfi_hbar_rrad
-  use nmlficomreh, only : nmlfi_lnrhoreh_max
+  use nmlficomreh, only : nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
   
   use nmlfi2sr, only : nmlfi2_check_params
   
@@ -16,12 +16,14 @@ module nmlfi2reheat
   private
 
 !take as input the parametric field hbar  
-  public nmlfi2_parametric_lnrhoreh_max
+  public nmlfi2_parametric_lnrhoreh_max, nmlfi2_parametric_lnrho_endinf
   public nmlfi2_hbar_star, nmlfi2_hbar_rrad, nmlfi2_hbar_rreh
-
+  public nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
+  
 !for convenience only
   public nmlfi2_x_star, nmlfi2_x_rrad, nmlfi2_x_rreh, nmlfi2_lnrhoreh_max
-
+  public nmlfi2_lnrho_endinf
+  
 contains
 
 
@@ -106,11 +108,22 @@ contains
     hbarmin = nmlfi_hbar_potmax(xi,p)
     hbarmax = hbarend
     
-    nmlfi2_parametric_lnrhoreh_max = nmlfi_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
+    nmlfi2_parametric_lnrhoreh_max = nmlfi_parametric_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
 
   end function nmlfi2_parametric_lnrhoreh_max
 
+  
+  function nmlfi2_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi2_parametric_lnrho_endinf
+    real(kp), intent(in) :: xi,p,hbarend,hbarstar,Pstar
+            
+    nmlfi2_parametric_lnrho_endinf = nmlfi_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
 
+  end function nmlfi2_parametric_lnrho_endinf
+  
+
+  
 !Convenience functions: inefficient wrapper taking as input the
 !canonical field. For computations it is better to call the parametric
 !functions directly, they work in terms of hbar rather than x to
@@ -175,5 +188,20 @@ contains
 
   end function nmlfi2_lnrhoreh_max
 
+
+  function nmlfi2_lnrho_endinf(xi,p,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi2_lnrho_endinf
+    real(kp), intent(in) :: xi,p,xend,xstar,Pstar
+    real(kp) :: hbarstar, hbarend
+
+    hbarstar = nmlfi_hbar(xstar,xi)
+    hbarend = nmlfi_hbar(xend,xi)
+    
+    nmlfi2_lnrho_endinf = nmlfi2_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+
+  end function nmlfi2_lnrho_endinf
+
+  
   
 end module nmlfi2reheat

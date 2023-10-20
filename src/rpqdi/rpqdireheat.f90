@@ -1,6 +1,3 @@
-!Generalized Mixed large field inflation reheating functions in the
-!slow-roll approximations
-
 module rpqdireheat
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
@@ -17,7 +14,7 @@ module rpqdireheat
   private
 
   public rpqdi_x_star, rpqdi_lnrhoreh_max
-  public rpqdi_x_rrad, rpqdi_x_rreh
+  public rpqdi_x_rrad, rpqdi_x_rreh, rpqdi_lnrho_endinf
 
 contains
 
@@ -249,7 +246,6 @@ contains
     x = rpqdi_x_star(phi0,alpha,beta,xend,wrad,junk,Pstar)    
     potStar = rpqdi_norm_potential(x,phi0,alpha,beta)
     epsOneStar = rpqdi_epsilon_one(x,phi0,alpha,beta)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rpqdi_lnrhoreh_max: slow-roll violated!'
     
@@ -259,5 +255,26 @@ contains
 
   end function rpqdi_lnrhoreh_max
 
+
+
+
+  function rpqdi_lnrho_endinf(phi0,alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rpqdi_lnrho_endinf
+    real(kp), intent(in) :: phi0,alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rpqdi_norm_potential(xend,phi0,alpha,beta)
+    epsOneEnd = rpqdi_epsilon_one(xend,phi0,alpha,beta)
+    potStar = rpqdi_norm_potential(xstar,phi0,alpha,beta)
+    epsOneStar = rpqdi_epsilon_one(xstar,phi0,alpha,beta)
+
+    rpqdi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rpqdi_lnrho_endinf
+  
+  
   
 end module rpqdireheat

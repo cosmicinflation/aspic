@@ -17,8 +17,7 @@ module lfireheat
 
   public lfi_x_star, lfi_lnrhoreh_max
   public lfi_xp_fromepsilon, lfi_lnrhoreh_fromepsilon 
-
-  public lfi_x_rrad, lfi_x_rreh
+  public lfi_x_rrad, lfi_x_rreh, lfi_lnrho_endinf
 
 contains
 
@@ -321,6 +320,27 @@ contains
     
   end function lfi_lnrhoreh_fromepsilon
 
+  
 
+  function lfi_lnrho_endinf(p,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: lfi_lnrho_endinf
+    real(kp), intent(in) :: p,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = lfi_norm_potential(xend,p)
+    epsOneEnd = lfi_epsilon_one(xend,p)
+    potStar = lfi_norm_potential(xstar,p)
+    epsOneStar = lfi_epsilon_one(xstar,p)
+
+    lfi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function lfi_lnrho_endinf
+
+
+
+  
 
 end module lfireheat

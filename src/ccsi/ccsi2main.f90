@@ -7,7 +7,7 @@ program ccsi2main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use ccsi2sr, only : ccsi2_norm_potential, ccsi2_numacc_xendmin,ccsi2_numacc_xinimin
+  use ccsi2sr, only : ccsi2_norm_potential, ccsi2_numacc_xendmin,ccsi2_numacc_xinimin, ccsi2_ln_omega4
   use ccsi2reheat, only : ccsi2_x_rreh, ccsi2_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -155,7 +155,7 @@ program ccsi2main
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  ccsi2_epsilon_one(xend,alpha)
      VendOverVstar = ccsi2_norm_potential(xend,alpha)/ccsi2_norm_potential(xstar,alpha)
-     lnOmega4End = 2._kp*xend
+     lnOmega4End = ccsi2_ln_omega4(xend,alpha)
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)

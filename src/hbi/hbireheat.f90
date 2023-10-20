@@ -15,7 +15,7 @@ module hbireheat
   private
 
   public hbi_x_star, hbi_lnrhoreh_max, hbi_lnrhoreh_fromepsilon, hbi_xnmu_fromepsilon
-  public hbi_x_rrad, hbi_x_rreh
+  public hbi_x_rrad, hbi_x_rreh, hbi_lnrho_endinf
 
 
 contains
@@ -314,7 +314,6 @@ contains
     epsOneStar = hbi_epsilon_one(x,n,mu)
 
     if (.not.slowroll_validity(epsOneStar)) stop 'hbi_lnrhoreh_fromepsilon: slow-roll violated!'
-
    
     deltaNstar = hbi_efold_primitive(x,n,mu) - hbi_efold_primitive(xEnd,n,mu)
 
@@ -330,5 +329,24 @@ contains
   end function hbi_lnrhoreh_fromepsilon
 
 
+  
+  function hbi_lnrho_endinf(n,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: hbi_lnrho_endinf
+    real(kp), intent(in) :: n,mu,xend,xstar,Pstar
 
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = hbi_norm_potential(xend,n,mu)
+    epsOneEnd = hbi_epsilon_one(xend,n,mu)
+    potStar = hbi_norm_potential(xstar,n,mu)
+    epsOneStar = hbi_epsilon_one(xstar,n,mu)
+
+    hbi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function hbi_lnrho_endinf
+
+
+  
 end module hbireheat

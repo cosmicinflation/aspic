@@ -12,7 +12,7 @@ module hni1reheat
   private
 
   public hni1_x_star, hni1_lnrhoreh_max
-  public hni1_x_rrad, hni1_x_rreh
+  public hni1_x_rrad, hni1_x_rreh, hni1_lnrho_endinf
 
 contains
 
@@ -118,5 +118,22 @@ contains
   end function hni1_lnrhoreh_max
 
   
+  function hni1_lnrho_endinf(alpha,f,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: hni1_lnrho_endinf
+    real(kp), intent(in) :: alpha,f,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = hni1_norm_potential(xend,alpha,f)
+    epsOneEnd = hni1_epsilon_one(xend,alpha,f)
+    potStar = hni1_norm_potential(xstar,alpha,f)
+    epsOneStar = hni1_epsilon_one(xstar,alpha,f)
+
+    hni1_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function hni1_lnrho_endinf
+
   
 end module hni1reheat

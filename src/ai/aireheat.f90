@@ -16,7 +16,7 @@ module aireheat
   private
 
   public ai_x_star, ai_lnrhoreh_max
-  public ai_x_rrad, ai_x_rreh
+  public ai_x_rrad, ai_x_rreh, ai_lnrho_endinf
 
 contains
 
@@ -246,5 +246,23 @@ contains
 
   end function ai_lnrhoreh_max
 
+
+  function ai_lnrho_endinf(mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ai_lnrho_endinf
+    real(kp), intent(in) :: mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ai_norm_potential(xend,mu)
+    epsOneEnd = ai_epsilon_one(xend,mu)
+    potStar = ai_norm_potential(xstar,mu)
+    epsOneStar = ai_epsilon_one(xstar,mu)
+
+    ai_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ai_lnrho_endinf
+  
   
 end module aireheat

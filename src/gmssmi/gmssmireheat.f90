@@ -16,7 +16,7 @@ module gmssmireheat
   private
 
   public gmssmi_x_star, gmssmi_lnrhoreh_max
-  public gmssmi_x_rrad, gmssmi_x_rreh
+  public gmssmi_x_rrad, gmssmi_x_rreh, gmssmi_lnrho_endinf
 
 contains
 
@@ -239,7 +239,6 @@ contains
     x = gmssmi_x_star(alpha,phi0,xend,wrad,junk,Pstar)    
     potStar = gmssmi_norm_potential(x,alpha,phi0)
     epsOneStar = gmssmi_epsilon_one(x,alpha,phi0)
-
     
 !    if (.not.slowroll_validity(epsOneStar)) stop 'gmssmi_lnrhoreh_max: slow-roll violated!'
     
@@ -248,6 +247,25 @@ contains
     gmssmi_lnrhoreh_max = lnRhoEnd
 
   end function gmssmi_lnrhoreh_max
+
+
+  
+  function gmssmi_lnrho_endinf(alpha,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: gmssmi_lnrho_endinf
+    real(kp), intent(in) :: alpha,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = gmssmi_norm_potential(xend,alpha,phi0)
+    epsOneEnd = gmssmi_epsilon_one(xend,alpha,phi0)
+    potStar = gmssmi_norm_potential(xstar,alpha,phi0)
+    epsOneStar = gmssmi_epsilon_one(xstar,alpha,phi0)
+
+    gmssmi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function gmssmi_lnrho_endinf
 
   
 end module gmssmireheat

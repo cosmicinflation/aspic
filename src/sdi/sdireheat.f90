@@ -16,7 +16,7 @@ module sdireheat
   private
 
   public sdi_x_star, sdi_lnrhoreh_max
-  public sdi_x_rrad, sdi_x_rreh
+  public sdi_x_rrad, sdi_x_rreh, sdi_lnrho_endinf
 
 contains
 
@@ -229,14 +229,11 @@ contains
     potEnd  = sdi_norm_potential(xEnd,mu)
     epsOneEnd = sdi_epsilon_one(xEnd,mu)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = sdi_x_star(mu,xEnd,wrad,junk,Pstar)    
     potStar = sdi_norm_potential(x,mu)
     epsOneStar = sdi_epsilon_one(x,mu)
-
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'sdi_lnrhoreh_max: slow-roll violated!'
     
@@ -245,6 +242,26 @@ contains
     sdi_lnrhoreh_max = lnRhoEnd
 
   end function sdi_lnrhoreh_max
+
+
+
+
+  function sdi_lnrho_endinf(mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: sdi_lnrho_endinf
+    real(kp), intent(in) :: mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = sdi_norm_potential(xend,mu)
+    epsOneEnd = sdi_epsilon_one(xend,mu)
+    potStar = sdi_norm_potential(xstar,mu)
+    epsOneStar = sdi_epsilon_one(xstar,mu)
+
+    sdi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function sdi_lnrho_endinf
 
   
 end module sdireheat

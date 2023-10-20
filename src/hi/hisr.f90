@@ -100,7 +100,7 @@ contains
 
     hbar = hi_hbar(x,xi)
 
-    hi_ln_omega4 = hi_parametric_ln_omega4(hbar)
+    hi_ln_omega4 = hi_parametric_ln_omega4(hbar,xi)
 
   end function hi_ln_omega4
   

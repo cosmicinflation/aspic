@@ -14,7 +14,7 @@ module tireheat
   private
 
   public ti_x_star, ti_lnrhoreh_max
-  public ti_x_rrad, ti_x_rreh
+  public ti_x_rrad, ti_x_rreh, ti_lnrho_endinf
 
 contains
 
@@ -233,6 +233,25 @@ contains
     ti_lnrhoreh_max = lnRhoEnd
 
   end function ti_lnrhoreh_max
+
+
+
+  function ti_lnrho_endinf(alpha,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ti_lnrho_endinf
+    real(kp), intent(in) :: alpha,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ti_norm_potential(xend,alpha,mu)
+    epsOneEnd = ti_epsilon_one(xend,alpha,mu)
+    potStar = ti_norm_potential(xstar,alpha,mu)
+    epsOneStar = ti_epsilon_one(xstar,alpha,mu)
+
+    ti_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ti_lnrho_endinf
 
   
   

@@ -17,7 +17,7 @@ module lpi2reheat
   private
 
   public lpi2_x_star, lpi2_lnrhoreh_max
-  public lpi2_x_rrad, lpi2_x_rreh
+  public lpi2_x_rrad, lpi2_x_rreh, lpi2_lnrho_endinf
 
 contains
 
@@ -249,7 +249,6 @@ contains
     x = lpi2_x_star(p,q,phi0,xend,wrad,junk,Pstar)    
     potStar = lpi2_norm_potential(x,p,q,phi0)
     epsOneStar = lpi2_epsilon_one(x,p,q,phi0)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'lpi2_lnrhoreh_max: slow-roll violated!'
     
@@ -258,6 +257,25 @@ contains
     lpi2_lnrhoreh_max = lnRhoEnd
 
   end function lpi2_lnrhoreh_max
+
+
+
+  function lpi2_lnrho_endinf(p,q,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: lpi2_lnrho_endinf
+    real(kp), intent(in) :: p,q,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = lpi2_norm_potential(xend,p,q,phi0)
+    epsOneEnd = lpi2_epsilon_one(xend,p,q,phi0)
+    potStar = lpi2_norm_potential(xstar,p,q,phi0)
+    epsOneStar = lpi2_epsilon_one(xstar,p,q,phi0)
+
+    lpi2_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function lpi2_lnrho_endinf
 
   
 end module lpi2reheat

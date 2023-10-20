@@ -18,7 +18,7 @@ module rclfi4reheat
   private
 
   public rclfi4_x_star, rclfi4_lnrhoreh_max
-  public rclfi4_x_rrad, rclfi4_x_rreh
+  public rclfi4_x_rrad, rclfi4_x_rreh, rclfi4_lnrho_endinf
 
 contains
 
@@ -262,5 +262,25 @@ contains
 
   end function rclfi4_lnrhoreh_max
 
+
+
+  function rclfi4_lnrho_endinf(p,alpha,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rclfi4_lnrho_endinf
+    real(kp), intent(in) :: p,alpha,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rclfi4_norm_potential(xend,p,alpha,mu)
+    epsOneEnd = rclfi4_epsilon_one(xend,p,alpha,mu)
+    potStar = rclfi4_norm_potential(xstar,p,alpha,mu)
+    epsOneStar = rclfi4_epsilon_one(xstar,p,alpha,mu)
+
+    rclfi4_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rclfi4_lnrho_endinf
+
+  
   
 end module rclfi4reheat

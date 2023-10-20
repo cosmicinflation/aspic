@@ -13,7 +13,7 @@ module ssbi4reheat
   private
 
   public ssbi4_x_star, ssbi4_lnrhoreh_max
-  public ssbi4_x_rrad, ssbi4_x_rreh
+  public ssbi4_x_rrad, ssbi4_x_rreh, ssbi4_lnrho_endinf
 
 contains
 
@@ -92,11 +92,9 @@ contains
 
     epsOneEnd = ssbi4_epsilon_one(xEnd,alpha,beta)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = ssbi4_x_star(alpha,beta,xend,wrad,junk,Pstar)  
-
 
     potStar = ssbi4_norm_potential(x,alpha,beta)
     epsOneStar = ssbi4_epsilon_one(x,alpha,beta)
@@ -108,6 +106,26 @@ contains
     ssbi4_lnrhoreh_max = lnRhoEnd
 
   end function ssbi4_lnrhoreh_max
+
+
+
+  
+  function ssbi4_lnrho_endinf(alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ssbi4_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ssbi4_norm_potential(xend,alpha,beta)
+    epsOneEnd = ssbi4_epsilon_one(xend,alpha,beta)
+    potStar = ssbi4_norm_potential(xstar,alpha,beta)
+    epsOneStar = ssbi4_epsilon_one(xstar,alpha,beta)
+
+    ssbi4_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ssbi4_lnrho_endinf
 
   
 end module ssbi4reheat

@@ -17,7 +17,7 @@ module rcmireheat
   private
 
   public rcmi_x_star, rcmi_lnrhoreh_max
-  public rcmi_x_rrad, rcmi_x_rreh
+  public rcmi_x_rrad, rcmi_x_rreh, rcmi_lnrho_endinf
 
 contains
 
@@ -227,7 +227,6 @@ contains
     epsOneStar = rcmi_epsilon_one(x,alpha)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rcmi_lnrhoreh_max: slow-roll violated!'
-
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsEnd,potEnd/potStar)
 
@@ -236,6 +235,23 @@ contains
   end function rcmi_lnrhoreh_max
 
   
+  function rcmi_lnrho_endinf(alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rcmi_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rcmi_norm_potential(xend,alpha)
+    epsOneEnd = rcmi_epsilon_one(xend,alpha)
+    potStar = rcmi_norm_potential(xstar,alpha)
+    epsOneStar = rcmi_epsilon_one(xstar,alpha)
+
+    rcmi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rcmi_lnrho_endinf
+
 
     
 end module rcmireheat

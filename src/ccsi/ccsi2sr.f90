@@ -75,12 +75,12 @@ contains
   end function ccsi2_norm_deriv_second_potential
 
 
-  function ccsi2_ln_omega4(x)
+  function ccsi2_ln_omega4(x,alpha)
     implicit none
     real(kp) :: ccsi2_ln_omega4
-    real(kp), intent(in) :: x
+    real(kp), intent(in) :: x,alpha
 
-    ccsi2_ln_omega4 = ccsi_ln_omega4(x)
+    ccsi2_ln_omega4 = ccsi_ln_omega4(x,alpha)
 
   end function ccsi2_ln_omega4
   

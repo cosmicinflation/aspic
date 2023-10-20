@@ -16,7 +16,7 @@ module nclireheat
   private
 
   public ncli_x_star, ncli_lnrhoreh_max
-  public ncli_x_rrad, ncli_x_rreh
+  public ncli_x_rrad, ncli_x_rreh, ncli_lnrho_endinf
 
 contains
 
@@ -247,5 +247,25 @@ contains
 
   end function ncli_lnrhoreh_max
 
+
+  
+  function ncli_lnrho_endinf(alpha,phi0,n,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ncli_lnrho_endinf
+    real(kp), intent(in) :: alpha,phi0,n,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ncli_norm_potential(xend,alpha,phi0,n)
+    epsOneEnd = ncli_epsilon_one(xend,alpha,phi0,n)
+    potStar = ncli_norm_potential(xstar,alpha,phi0,n)
+    epsOneStar = ncli_epsilon_one(xstar,alpha,phi0,n)
+
+    ncli_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ncli_lnrho_endinf
+
+  
 
 end module nclireheat

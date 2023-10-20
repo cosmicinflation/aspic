@@ -120,7 +120,7 @@ program rpi3main
      eps1end =  rpi3_epsilon_one(xend,p)
      VendOverVstar = rpi3_norm_potential(xend,p)/rpi3_norm_potential(ystar,p)
 !     lnOmega4End = 2._kp*xEnd
-     lnOmega4End = rpi3_ln_omega4(xEnd)
+     lnOmega4End = rpi3_ln_omega4(xEnd,p)
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)

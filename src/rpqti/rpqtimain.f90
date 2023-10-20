@@ -119,7 +119,11 @@ program rpqtimain
         end do
 
       end do
-  
+
+    write(*,*)
+    write(*,*)'WARNING: rpqti is a peculiar case of rcipi!'
+    write(*,*)
+      
    end do
 
    call aspicwrite_end()

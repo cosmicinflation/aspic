@@ -15,7 +15,7 @@ module bireheat
   private
 
   public bi_x_star, bi_lnrhoreh_max
-  public bi_x_rrad, bi_x_rreh
+  public bi_x_rrad, bi_x_rreh, bi_lnrho_endinf
 
 
 contains
@@ -250,5 +250,21 @@ contains
   end function bi_lnrhoreh_max
 
   
+  function bi_lnrho_endinf(p,mu,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: bi_lnrho_endinf
+    real(kp), intent(in) :: p,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = bi_norm_potential(xend,p,mu)
+    epsOneEnd = bi_epsilon_one(xend,p,mu)
+    potStar = bi_norm_potential(xstar,p,mu)
+    epsOneStar = bi_epsilon_one(xstar,p,mu)
+
+    bi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function bi_lnrho_endinf
  
 end module bireheat

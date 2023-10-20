@@ -17,7 +17,7 @@ module rpqtireheat
   private
 
   public rpqti_x_star, rpqti_lnrhoreh_max
-  public rpqti_x_rrad, rpqti_x_rreh
+  public rpqti_x_rrad, rpqti_x_rreh, rpqti_lnrho_endinf
 
 contains
 
@@ -249,7 +249,6 @@ contains
     x = rpqti_x_star(phi0,alpha,beta,xend,wrad,junk,Pstar)    
     potStar = rpqti_norm_potential(x,phi0,alpha,beta)
     epsOneStar = rpqti_epsilon_one(x,phi0,alpha,beta)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'rpqti_lnrhoreh_max: slow-roll violated!'
     
@@ -258,6 +257,26 @@ contains
     rpqti_lnrhoreh_max = lnRhoEnd
 
   end function rpqti_lnrhoreh_max
+
+
+
+  function rpqti_lnrho_endinf(phi0,alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rpqti_lnrho_endinf
+    real(kp), intent(in) :: phi0,alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rpqti_norm_potential(xend,phi0,alpha,beta)
+    epsOneEnd = rpqti_epsilon_one(xend,phi0,alpha,beta)
+    potStar = rpqti_norm_potential(xstar,phi0,alpha,beta)
+    epsOneStar = rpqti_epsilon_one(xstar,phi0,alpha,beta)
+
+    rpqti_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rpqti_lnrho_endinf
+  
 
   
 end module rpqtireheat

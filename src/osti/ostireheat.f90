@@ -16,7 +16,7 @@ module ostireheat
   private
 
   public osti_x_star, osti_lnrhoreh_max 
-  public osti_x_rrad, osti_x_rreh
+  public osti_x_rrad, osti_x_rreh, osti_lnrho_endinf
 
 contains
 
@@ -238,5 +238,26 @@ contains
     osti_lnrhoreh_max = lnRhoEnd
 
   end function osti_lnrhoreh_max
+
+
+  
+  function osti_lnrho_endinf(phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: osti_lnrho_endinf
+    real(kp), intent(in) :: phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = osti_norm_potential(xend,phi0)
+    epsOneEnd = osti_epsilon_one(xend,phi0)
+    potStar = osti_norm_potential(xstar,phi0)
+    epsOneStar = osti_epsilon_one(xstar,phi0)
+
+    osti_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function osti_lnrho_endinf
+
+
   
 end module ostireheat

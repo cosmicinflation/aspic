@@ -18,6 +18,7 @@ module rmi4reheat
 
 
   public rmi4_x_star, rmi4_x_rrad, rmi4_x_rreh, rmi4_lnrhoreh_max
+  public rmi4_lnrho_endinf
 
 contains
 
@@ -96,11 +97,9 @@ contains
 
     epsOneEnd = rmi4_epsilon_one(xEnd,c,phi0)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = rmi4_x_star(c,phi0,xend,wrad,junk,Pstar)  
-
 
     potStar = rmi4_norm_potential(x,c,phi0)
     epsOneStar = rmi4_epsilon_one(x,c,phi0)
@@ -112,6 +111,25 @@ contains
     rmi4_lnrhoreh_max = lnRhoEnd
 
   end function rmi4_lnrhoreh_max
+
+
+
+  function rmi4_lnrho_endinf(c,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rmi4_lnrho_endinf
+    real(kp), intent(in) :: c,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rmi4_norm_potential(xend,c,phi0)
+    epsOneEnd = rmi4_epsilon_one(xend,c,phi0)
+    potStar = rmi4_norm_potential(xstar,c,phi0)
+    epsOneStar = rmi4_epsilon_one(xstar,c,phi0)
+
+    rmi4_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rmi4_lnrho_endinf
 
   
 end module rmi4reheat

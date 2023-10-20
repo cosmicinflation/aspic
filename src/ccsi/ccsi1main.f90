@@ -7,7 +7,7 @@ program ccsi1main
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use ccsi1sr, only : ccsi1_norm_potential, ccsi1_x_endinf
+  use ccsi1sr, only : ccsi1_norm_potential, ccsi1_x_endinf, ccsi1_ln_omega4
   use ccsi1sr, only : ccsi1_norm_deriv_potential, ccsi1_norm_deriv_second_potential
   use ccsi1reheat, only : ccsi1_x_rreh, ccsi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
@@ -157,7 +157,7 @@ program ccsi1main
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  ccsi1_epsilon_one(xend,alpha)
      VendOverVstar = ccsi1_norm_potential(xend,alpha)/ccsi1_norm_potential(xstar,alpha)
-     lnOmega4End = 2._kp*xend
+     lnOmega4End = ccsi1_ln_omega4(xend,alpha)
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)

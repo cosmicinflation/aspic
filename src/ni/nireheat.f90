@@ -16,7 +16,7 @@ module nireheat
   private
 
   public ni_x_star, ni_lnrhoreh_max
-  public ni_x_rrad, ni_x_rreh
+  public ni_x_rrad, ni_x_rreh, ni_lnrho_endinf
 
 contains
 
@@ -233,7 +233,25 @@ contains
 
   end function ni_lnrhoreh_max
 
+
   
+  function ni_lnrho_endinf(f,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ni_lnrho_endinf
+    real(kp), intent(in) :: f,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ni_norm_potential(xend,f)
+    epsOneEnd = ni_epsilon_one(xend,f)
+    potStar = ni_norm_potential(xstar,f)
+    epsOneStar = ni_epsilon_one(xstar,f)
+
+    ni_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ni_lnrho_endinf
+
 
     
 end module nireheat

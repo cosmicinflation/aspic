@@ -15,7 +15,7 @@ module cndireheat
   private
 
   public cndi_x_star, cndi_lnrhoreh_max 
-  public cndi_x_rrad, cndi_x_rreh
+  public cndi_x_rrad, cndi_x_rreh, cndi_lnrho_endinf
 
 contains
 
@@ -247,6 +247,28 @@ contains
     cndi_lnrhoreh_max = lnRhoEnd
 
   end function cndi_lnrhoreh_max
+
+
+
+
+  function cndi_lnrho_endinf(alpha,beta,xend,xstar,Pstar) 
+    implicit none
+    real(kp) :: cndi_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = cndi_norm_potential(xend,alpha,beta)
+    epsOneEnd = cndi_epsilon_one(xend,alpha,beta)
+    potStar = cndi_norm_potential(xstar,alpha,beta)
+    epsOneStar = cndi_epsilon_one(xstar,alpha,beta)
+
+    cndi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function cndi_lnrho_endinf
+  
+
 
   
 end module cndireheat

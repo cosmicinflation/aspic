@@ -16,7 +16,7 @@ module gripireheat
   private
 
   public gripi_x_star, gripi_lnrhoreh_max 
-  public gripi_x_rrad, gripi_x_rreh
+  public gripi_x_rrad, gripi_x_rreh, gripi_lnrho_endinf
 
 contains
 
@@ -231,8 +231,7 @@ contains
     x = gripi_x_star(alpha,phi0,xend,wrad,junk,Pstar)    
     potStar = gripi_norm_potential(x,alpha,phi0)
     epsOneStar = gripi_epsilon_one(x,alpha,phi0)
-
-    
+   
 !    if (.not.slowroll_validity(epsOneStar)) stop 'gripi_lnrhoreh_max: slow-roll violated!'
     
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
@@ -241,5 +240,25 @@ contains
 
   end function gripi_lnrhoreh_max
 
+
+
+  function gripi_lnrho_endinf(alpha,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: gripi_lnrho_endinf
+    real(kp), intent(in) :: alpha,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = gripi_norm_potential(xend,alpha,phi0)
+    epsOneEnd = gripi_epsilon_one(xend,alpha,phi0)
+    potStar = gripi_norm_potential(xstar,alpha,phi0)
+    epsOneStar = gripi_epsilon_one(xstar,alpha,phi0)
+
+    gripi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function gripi_lnrho_endinf
+
+  
   
 end module gripireheat

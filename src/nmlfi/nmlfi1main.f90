@@ -4,7 +4,7 @@ program nmlfi1main
   use infinout, only : delete_file, livewrite
 
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
-  use nmlficommon, only : nmlfi_x, nmlfi_norm_parametric_potential, pplus
+  use nmlficommon, only : nmlfi_x, nmlfi_norm_parametric_potential, pplus, nmlfi_parametric_ln_omega4
   
   use nmlfi1sr, only : nmlfi1_norm_potential, nmlfi1_norm_deriv_potential, nmlfi1_norm_deriv_second_potential
   use nmlfi1sr, only : nmlfi1_epsilon_one, nmlfi1_epsilon_two, nmlfi1_epsilon_three, nmlfi1_x_endinf  
@@ -149,9 +149,9 @@ program nmlfi1main
      if (p.ge.pplus) then
         print *,'ximaxth= ',nmlfi1_ximax(p)
         ximax = min(ximax,nmlfi1_ximax(p))
+     else
+        ximax = min(ximax,nmlfi1_numacc_ximax(efoldMin,p))
      endif
-     
-     ximax = min(ximax,nmlfi1_numacc_ximax(efoldMin,p))
      print *,'ximin, ximax= ',ximin,ximax
      
      do j=1,nxi
@@ -223,13 +223,14 @@ program nmlfi1main
      
      ximin = 1d-5
      ximax = 1d2
-
+     
      if (p.ge.pplus) then
         print *,'ximaxth= ',nmlfi1_ximax(p)
         ximax = min(ximax,nmlfi1_ximax(p))
+     else
+        ximax = min(ximax,nmlfi1_numacc_ximax(efoldMin,p))
      endif
-     
-     ximax = min(ximax,nmlfi1_numacc_ximax(efoldMin,p))
+
      print *,'ximin, ximax= ',ximin,ximax
      
      do j=nxi,1,-1
@@ -313,7 +314,7 @@ program nmlfi1main
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  nmlfi_parametric_epsilon_one(hbarend,xi,p)
-     lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+     lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
 
      VendOverVstar = nmlfi_norm_parametric_potential(hbarend,xi,p) &
           /nmlfi_norm_parametric_potential(hbarstar,xi,p)     

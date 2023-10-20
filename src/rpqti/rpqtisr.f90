@@ -3,7 +3,11 @@
 !V(phi) = M**4 x**4 (1- 2(1-alpha) ln(x**2) + 2(beta+1) ln(x**2)**2 )
 !
 !x = phi/phi0
-
+!
+! DO NOT USE this module for production, it is a peculiar case of RCIPI. In
+! particular, phi0 is unobservable and fully degenerated with the
+! other parameters
+!
 module rpqtisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent, QuarticRoots, Sort
@@ -29,6 +33,8 @@ contains
     rpqti_norm_potential = x**4*(1._kp-2._kp*(1._kp-alpha)*log(x**2)+ &
                             2._kp*(beta+1._kp)*log(x**2)**2)
 
+    write(*,*)'rpqti_norm_potential: check out rcipi instead!'
+    
   end function rpqti_norm_potential
 
 

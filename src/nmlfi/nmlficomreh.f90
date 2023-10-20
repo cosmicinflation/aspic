@@ -38,7 +38,7 @@ module nmlficomreh
   private
 
 !take as input the parametric field hbar  
-  public nmlfi_lnrhoreh_max
+  public nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
   public nmlfi_hbar_star, nmlfi_hbar_rrad, nmlfi_hbar_rreh
   public nmlfi_gravity_mass_scale
 
@@ -93,7 +93,7 @@ contains
     primEnd = nmlfi_parametric_efold_primitive(hbarend,xi,p)
 !ln(Omega^4) = ln[(1+ hbar^2)^2]
 !    lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
-    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend)
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
     
     calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
     
@@ -224,7 +224,7 @@ contains
 
 !ln(Omega^4) = ln[(1+ hbar^2)^2]
 !    lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
-    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend)
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
     
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
@@ -264,9 +264,9 @@ contains
   end function find_nmlfi_hbar_rreh
   
 !jordan frame
-  function nmlfi_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
+  function nmlfi_parametric_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
     implicit none
-    real(kp) :: nmlfi_lnrhoreh_max
+    real(kp) :: nmlfi_parametric_lnrhoreh_max
     real(kp), intent(in) :: xi,p,hbarend,hbarmin,hbarmax,Pstar
 
 !trick to return rhoreh=rhoend    
@@ -286,16 +286,38 @@ contains
     epsOneStar = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
     potStar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
 !    lnOmega4End = 2._kp*log(1._kp+hbarend*hbarend)
-    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend)
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
     
-    if (.not.slowroll_validity(epsOneStar)) stop 'nmlfi_lnrhoreh_max: slow-roll violated!'
+    if (.not.slowroll_validity(epsOneStar)) stop 'nmlfi_parametric_lnrhoreh_max: slow-roll violated!'
 
 !Jordan frame
     lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
     
-    nmlfi_lnrhoreh_max = lnRhoEnd
+    nmlfi_parametric_lnrhoreh_max = lnRhoEnd
 
-  end function nmlfi_lnrhoreh_max
+  end function nmlfi_parametric_lnrhoreh_max
+
+
+  function nmlfi_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi_parametric_lnrho_endinf
+    real(kp), intent(in) :: xi,p,hbarend,hbarstar,Pstar
+
+    real(kp) :: potStar, potEnd
+    real(kp) :: epsOneStar, lnRhoEnd, epsOneEnd, lnOmega4End
+
+    potEnd = nmlfi_norm_parametric_potential(hbarend,xi,p)
+!should be one
+    epsOneEnd = nmlfi_parametric_epsilon_one(hbarend,xi,p)
+    
+    epsOneStar = nmlfi_parametric_epsilon_one(hbarstar,xi,p)
+    potStar = nmlfi_norm_parametric_potential(hbarstar,xi,p)
+
+    lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
+    
+    nmlfi_parametric_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+    
+  end function nmlfi_parametric_lnrho_endinf
 
   
 end module nmlficomreh

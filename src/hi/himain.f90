@@ -164,7 +164,7 @@ program himain
 !get lnR from lnRrad and check that it gives the same xstar
      hbarend = hi_hbar_endinf(xistar)
      eps1end =  hi_parametric_epsilon_one(hbarend,xistar)
-     lnOmega4End = hi_parametric_ln_omega4(hbarend)
+     lnOmega4End = hi_parametric_ln_omega4(hbarend,xistar)
 
      VendOverVstar = hi_norm_parametric_potential(hbarend,xistar) &
           /hi_norm_parametric_potential(hbarstar,xistar)     

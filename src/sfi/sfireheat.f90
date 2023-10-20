@@ -15,7 +15,7 @@ module sfireheat
   private
 
   public sfi_x_star, sfi_lnrhoreh_max, sfi_lnrhoreh_fromepsilon, sfi_xpmu_fromepsilon
-  public sfi_x_rrad, sfi_x_rreh
+  public sfi_x_rrad, sfi_x_rreh, sfi_lnrho_endinf
 
 
 contains
@@ -376,5 +376,24 @@ contains
   end function sfi_lnrhoreh_fromepsilon
 
 
+
+  function sfi_lnrho_endinf(p,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: sfi_lnrho_endinf
+    real(kp), intent(in) :: p,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = sfi_norm_potential(xend,p,mu)
+    epsOneEnd = sfi_epsilon_one(xend,p,mu)
+    potStar = sfi_norm_potential(xstar,p,mu)
+    epsOneStar = sfi_epsilon_one(xstar,p,mu)
+
+    sfi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function sfi_lnrho_endinf
+
+  
 
 end module sfireheat

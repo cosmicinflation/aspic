@@ -9,12 +9,13 @@ module sabireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use sabisr, only : sabi_epsilon_one, sabi_epsilon_two, sabi_epsilon_three
   use sabisr, only : sabi_norm_potential, sabi_efold_primitive, sabi_x_endinf
+  use sabisr, only : sabi_ln_omega4
   implicit none
 
   private
 
   public sabi_x_star, sabi_lnrhoreh_max
-  public sabi_x_rrad, sabi_x_rreh
+  public sabi_x_rrad, sabi_x_rreh, sabi_lnrho_endinf
 
 contains
 
@@ -29,6 +30,7 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
+    real(kp) :: lnOmega4End
 
     type(transfert) :: sabiData
 
@@ -39,8 +41,9 @@ contains
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
     potEnd = sabi_norm_potential(xEnd,alpha,n)
     primEnd = sabi_efold_primitive(xEnd,alpha,n)
+    lnOmega4End = sabi_ln_omega4(xend,alpha,n)
 
-    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd)
+    calF = get_calfconst(lnRhoReh,Pstar,w,epsOneEnd,potEnd,lnOmega4End)
 
     sabiData%real1 = alpha
     sabiData%real2 = n
@@ -66,7 +69,7 @@ contains
     type(transfert), optional, intent(inout) :: sabiData
 
     real(kp) :: primStar,alpha,n,w,CalFplusPrimEnd,potStar,epsOneStar
-
+    
     alpha=sabiData%real1
     n=sabiData%real2
     w = sabiData%real3
@@ -91,7 +94,8 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
-
+    real(kp) :: lnOmega4End
+    
     type(transfert) :: sabiData
 
     if (lnRrad.eq.0._kp) then
@@ -101,7 +105,7 @@ contains
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
     potEnd = sabi_norm_potential(xEnd,alpha,n)
     primEnd = sabi_efold_primitive(xEnd,alpha,n)
-
+    
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
 
     sabiData%real1 = alpha
@@ -152,7 +156,8 @@ contains
     real(kp), parameter :: tolFind=tolkp
     real(kp) :: mini,maxi,calF,x
     real(kp) :: primEnd,epsOneEnd,potEnd
-
+    real(kp) :: lnOmega4End
+    
     type(transfert) :: sabiData
 
     if (lnRreh.eq.0._kp) then
@@ -162,8 +167,9 @@ contains
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
     potEnd = sabi_norm_potential(xEnd,alpha,n)
     primEnd = sabi_efold_primitive(xEnd,alpha,n)
-
-    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd)
+    lnOmega4End = sabi_ln_omega4(xend,alpha,n)
+    
+    calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     sabiData%real1 = alpha
     sabiData%real2 = n
@@ -212,7 +218,7 @@ contains
 
     real(kp), parameter :: wrad = 1._kp/3._kp
     real(kp), parameter :: junk= 0._kp
-    real(kp) :: lnRhoEnd
+    real(kp) :: lnRhoEnd, lnOmega4End
 
     potEnd  = sabi_norm_potential(xEnd,alpha,n)
     epsOneEnd = sabi_epsilon_one(xEnd,alpha,n)
@@ -221,18 +227,40 @@ contains
 
     potStar = sabi_norm_potential(x,alpha,n)
     epsOneStar = sabi_epsilon_one(x,alpha,n)
-
+    lnOmega4End = sabi_ln_omega4(xend,alpha,n)
+    
     if (.not.slowroll_validity(epsOneStar)) then
         print*,'xstar=',x,'  epsOneStar=',epsOneStar
         stop 'sabi_lnrhoreh_max: slow-roll violated!'
     endif
 
-    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+    lnRhoEnd = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
 
     sabi_lnrhoreh_max = lnRhoEnd
 
   end function sabi_lnrhoreh_max
 
 
+
+  function sabi_lnrho_endinf(alpha,n,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: sabi_lnrho_endinf
+    real(kp), intent(in) :: alpha,n,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+    real(kp) :: lnOmega4End
+
+    potEnd  = sabi_norm_potential(xend,alpha,n)
+    epsOneEnd = sabi_epsilon_one(xend,alpha,n)
+    lnOmega4End = sabi_ln_omega4(xend,alpha,n)
+    potStar = sabi_norm_potential(xstar,alpha,n)
+    epsOneStar = sabi_epsilon_one(xstar,alpha,n)
+    
+    sabi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+
+  end function sabi_lnrho_endinf
+
+  
 
 end module sabireheat

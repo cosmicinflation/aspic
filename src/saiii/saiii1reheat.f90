@@ -14,7 +14,7 @@ module saiii1reheat
   private
 
   public saiii1_x_star, saiii1_lnrhoreh_max
-  public saiii1_x_rrad, saiii1_x_rreh
+  public saiii1_x_rrad, saiii1_x_rreh, saiii1_lnrho_endinf
 
 contains
 
@@ -109,6 +109,26 @@ contains
     saiii1_lnrhoreh_max = lnRhoEnd
 
   end function saiii1_lnrhoreh_max
+
+
+
+  
+  function saiii1_lnrho_endinf(alpha,beta,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: saiii1_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = saiii1_norm_potential(xend,alpha,beta,mu)
+    epsOneEnd = saiii1_epsilon_one(xend,alpha,beta,mu)
+    potStar = saiii1_norm_potential(xstar,alpha,beta,mu)
+    epsOneStar = saiii1_epsilon_one(xstar,alpha,beta,mu)
+
+    saiii1_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function saiii1_lnrho_endinf
 
   
 end module saiii1reheat

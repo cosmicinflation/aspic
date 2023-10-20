@@ -17,7 +17,7 @@ module lmi2reheat
   private
 
   public lmi2_x_star, lmi2_lnrhoreh_max
-  public lmi2_x_rrad, lmi2_x_rreh
+  public lmi2_x_rrad, lmi2_x_rreh, lmi2_lnrho_endinf
 
 contains
 
@@ -228,7 +228,6 @@ contains
 
     potStar = lmi2_norm_potential(x,gam,beta)
     epsOneStar = lmi2_epsilon_one(x,gam,beta)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'lmi2_lnrhoreh_max: slow-roll violated!'
     
@@ -237,6 +236,26 @@ contains
     lmi2_lnrhoreh_max = lnRhoEnd
 
   end function lmi2_lnrhoreh_max
+
+  
+  function lmi2_lnrho_endinf(gam,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: lmi2_lnrho_endinf
+    real(kp), intent(in) :: gam,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = lmi2_norm_potential(xend,gam,beta)
+    epsOneEnd = lmi2_epsilon_one(xend,gam,beta)
+    potStar = lmi2_norm_potential(xstar,gam,beta)
+    epsOneStar = lmi2_epsilon_one(xstar,gam,beta)
+
+    lmi2_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function lmi2_lnrho_endinf
+
+
 
   
 end module lmi2reheat

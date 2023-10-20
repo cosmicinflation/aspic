@@ -18,7 +18,7 @@ module lmi1reheat
   private
 
   public lmi1_x_star, lmi1_lnrhoreh_max
-  public lmi1_x_rrad, lmi1_x_rreh
+  public lmi1_x_rrad, lmi1_x_rreh, lmi1_lnrho_endinf
 
 contains
 
@@ -234,11 +234,9 @@ contains
 
     epsOneEnd = lmi1_epsilon_one(xEnd,gam,beta)
 
-
 !   Trick to return x such that rho_reh=rho_end
 
     x = lmi1_x_star(gam,beta,xend,wrad,junk,Pstar)  
-
 
     potStar = lmi1_norm_potential(x,gam,beta)
     epsOneStar = lmi1_epsilon_one(x,gam,beta)
@@ -250,6 +248,27 @@ contains
     lmi1_lnrhoreh_max = lnRhoEnd
 
   end function lmi1_lnrhoreh_max
+
+
+  function lmi1_lnrho_endinf(gam,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: lmi1_lnrho_endinf
+    real(kp), intent(in) :: gam,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = lmi1_norm_potential(xend,gam,beta)
+    epsOneEnd = lmi1_epsilon_one(xend,gam,beta)
+    potStar = lmi1_norm_potential(xstar,gam,beta)
+    epsOneStar = lmi1_epsilon_one(xstar,gam,beta)
+
+    lmi1_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function lmi1_lnrho_endinf
+
+
+
 
   
 end module lmi1reheat

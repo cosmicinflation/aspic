@@ -15,7 +15,7 @@ module rmi1reheat
   private
 
   public rmi1_x_star, rmi1_lnrhoreh_max
-  public rmi1_x_rrad, rmi1_x_rreh
+  public rmi1_x_rrad, rmi1_x_rreh, rmi1_lnrho_endinf
 
 contains
 
@@ -107,6 +107,25 @@ contains
     rmi1_lnrhoreh_max = lnRhoEnd
 
   end function rmi1_lnrhoreh_max
+
+
+
+  function rmi1_lnrho_endinf(c,phi0,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rmi1_lnrho_endinf
+    real(kp), intent(in) :: c,phi0,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rmi1_norm_potential(xend,c,phi0)
+    epsOneEnd = rmi1_epsilon_one(xend,c,phi0)
+    potStar = rmi1_norm_potential(xstar,c,phi0)
+    epsOneStar = rmi1_epsilon_one(xstar,c,phi0)
+
+    rmi1_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rmi1_lnrho_endinf
 
   
 end module rmi1reheat

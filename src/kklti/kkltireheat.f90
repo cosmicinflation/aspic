@@ -15,7 +15,7 @@ module kkltireheat
   private
 
   public kklti_x_star, kklti_lnrhoreh_max
-  public kklti_x_rrad, kklti_x_rreh
+  public kklti_x_rrad, kklti_x_rreh, kklti_lnrho_endinf
 
 
 contains
@@ -248,6 +248,26 @@ contains
     kklti_lnrhoreh_max = lnRhoEnd
 
   end function kklti_lnrhoreh_max
+
+
+  function kklti_lnrho_endinf(p,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: kklti_lnrho_endinf
+    real(kp), intent(in) :: p,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = kklti_norm_potential(xend,p,mu)
+    epsOneEnd = kklti_epsilon_one(xend,p,mu)
+    potStar = kklti_norm_potential(xstar,p,mu)
+    epsOneStar = kklti_epsilon_one(xstar,p,mu)
+
+    kklti_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function kklti_lnrho_endinf
+
+
 
   
  

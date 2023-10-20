@@ -10,7 +10,7 @@ program ccsi3main
   use srreheat, only : log_energy_reheat_ingev
 
   use ccsicommon, only : ccsi_xmax
-  use ccsi3sr, only : ccsi3_norm_potential, ccsi3_x_endinf, ccsi3_alphamin
+  use ccsi3sr, only : ccsi3_norm_potential, ccsi3_x_endinf, ccsi3_alphamin, ccsi3_ln_omega4
   use ccsi3reheat, only : ccsi3_x_rreh, ccsi3_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -179,7 +179,7 @@ program ccsi3main
      !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  ccsi3_epsilon_one(xend,alpha)
      VendOverVstar = ccsi3_norm_potential(xend,alpha)/ccsi3_norm_potential(xstar,alpha)
-     lnOmega4End = 2._kp*xend
+     lnOmega4End = ccsi3_ln_omega4(xend,alpha)
      lnRhoEnd = ln_rho_endinf(Pstar,eps1,eps1End,VendOverVstar,lnOmega4End)
 
      lnR = get_lnrreh_rrad(lnRrad,lnRhoEnd)

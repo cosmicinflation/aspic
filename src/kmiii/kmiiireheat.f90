@@ -16,7 +16,7 @@ module kmiiireheat
   private
 
   public kmiii_x_star, kmiii_lnrhoreh_max
-  public kmiii_x_rrad, kmiii_x_rreh
+  public kmiii_x_rrad, kmiii_x_rreh, kmiii_lnrho_endinf
 
 contains
 
@@ -237,6 +237,26 @@ contains
     kmiii_lnrhoreh_max = lnRhoEnd
 
   end function kmiii_lnrhoreh_max
+
+
+
+  function kmiii_lnrho_endinf(alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: kmiii_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = kmiii_norm_potential(xend,alpha,beta)
+    epsOneEnd = kmiii_epsilon_one(xend,alpha,beta)
+    potStar = kmiii_norm_potential(xstar,alpha,beta)
+    epsOneStar = kmiii_epsilon_one(xstar,alpha,beta)
+
+    kmiii_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function kmiii_lnrho_endinf
+
 
   
 end module kmiiireheat

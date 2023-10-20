@@ -57,6 +57,7 @@ module hireheat
   public hi_lnrhoreh_max, HiggsCoupling
   public hi_hbar_star, hi_hbar_rrad, hi_hbar_rreh
   public hi_x_star, hi_x_rrad, hi_x_rreh
+  public hi_lnrho_endinf, hi_parametric_lnrho_endinf
 
 contains
 
@@ -109,6 +110,21 @@ contains
   end function hi_x_rreh
 
 
+  function hi_lnrho_endinf(xistar,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: hi_lnrho_endinf
+    real(kp), intent(in) :: xistar,xend,xstar,Pstar
+
+    real(kp) :: hbarstar, hbarend
+    
+    hbarstar = hi_hbar(xstar,xistar)
+    hbarend =  hi_hbar(xend,xistar)
+    
+    hi_lnrho_endinf = hi_parametric_lnrho_endinf(xistar,hbarend,hbarstar,Pstar)
+        
+  end function hi_lnrho_endinf
+  
+  
 
 !return xistar, matching the CMB normalisation, from any input values
 !of hbar (not necessarily solution of the reheating equation that we
@@ -477,7 +493,7 @@ contains
 !should be one
     epsOneEnd = hi_parametric_epsilon_one(hbarend,xistar)
 
-    lnOmega4End = hi_parametric_ln_omega4(hbarend)
+    lnOmega4End = hi_parametric_ln_omega4(hbarend,xistar)
     
     if (.not.slowroll_validity(epsOneStar)) stop 'hi_lnrhoreh_max: slow-roll violated!'
 !Jordan frame
@@ -487,6 +503,28 @@ contains
 
   end function hi_lnrhoreh_max
 
+
+  function hi_parametric_lnrho_endinf(xistar,hbarend,hbarstar,Pstar)
+    implicit none
+    real(kp) :: hi_parametric_lnrho_endinf
+    real(kp), intent(in) :: xistar,hbarend,hbarstar,Pstar
+
+    real(kp) :: potStar, potEnd
+    real(kp) :: epsOneStar, lnRhoEnd, epsOneEnd, lnOmega4End
+    
+    epsOneStar = hi_parametric_epsilon_one(hbarstar,xistar)
+    potStar = hi_norm_parametric_potential(hbarstar,xistar)
+
+    potEnd = hi_norm_parametric_potential(hbarend,xistar)
+!should be one
+    epsOneEnd = hi_parametric_epsilon_one(hbarend,xistar)
+
+    lnOmega4End = hi_parametric_ln_omega4(hbarend,xistar)
+    
+    hi_parametric_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar,lnOmega4End)
+        
+  end function hi_parametric_lnrho_endinf
+  
   
 
 end module hireheat

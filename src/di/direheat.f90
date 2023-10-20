@@ -32,7 +32,7 @@ module direheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use dicommon, only : di_parametric_epsilon_one, di_norm_parametric_potential
   use dicommon, only : di_parametric_efold_primitive, di_k2_potmin
-  use disr, only : di_x, di_k2_epsoneunity
+  use disr, only : di_x, di_k2, di_k2_epsoneunity
   
   implicit none
 
@@ -45,6 +45,7 @@ module direheat
   public di_lambda_star, di_lnrhoreh_max
   public di_k2_star, di_k2_rrad, di_k2_rreh
   public di_x_star, di_x_rrad, di_x_rreh
+  public di_parametric_lnrho_endinf, di_lnrho_endinf
 
 contains
 
@@ -98,6 +99,21 @@ contains
   end function di_x_rreh
 
 
+  function di_lnrho_endinf(f,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: di_lnrho_endinf
+    real(kp), intent(in) :: f, xend,xstar,Pstar
+
+    real(kp) :: k2star, k2end
+
+    k2star = di_k2(xstar)
+    k2end = di_k2(xend)
+    
+    di_lnrho_endinf = di_parametric_lnrho_endinf(f,k2end,k2star,Pstar)
+
+  end function di_lnrho_endinf
+
+  
 
 !return lambda from k2, f and Pstar(CMB normalised only for k2=k2star)
   function di_lambda_star(k2,f,Pstar)
@@ -111,8 +127,8 @@ contains
 
     di_lambda_star = (24._kp*pi**4*Pstar*peps/ppot/f/f)**sixth
 
-  end function di_lambda_star
-
+  end function di_lambda_star   
+  
 
 !returns k2star given potential parameters, scalar power, wreh and
 !lnrhoreh
@@ -425,5 +441,37 @@ contains
 
   end function di_lnrhoreh_max
 
+
+  function di_parametric_lnrho_endinf(f,k2end,k2star,Pstar)
+    implicit none
+    real(kp) :: di_parametric_lnrho_endinf
+    real(kp), intent(in) :: f, k2end,k2star,Pstar
+
+    real(kp) :: pi4Pstar24
+    real(kp) :: lambdaStar
+    real(kp) :: ppotStar, pepsOneStar, ppotEnd
+    real(kp) :: epsOneStar, lnRhoEnd, epsOneEnd
+
+    pi4Pstar24 = 24._kp*pi**4*Pstar
+
+    pepsOneStar = di_parametric_epsilon_one(k2star,f)
+    ppotStar = di_norm_parametric_potential(k2star,f)
+    !numacc towards minimum
+    if (ppotStar.eq.0._kp) ppotStar = epsilon(1._kp)
+
+    lambdaStar = (pi4Pstar24*pepsOneStar/ppotStar/f/f)**sixth
+
+    ppotEnd = di_norm_parametric_potential(k2end,f)
+
+    epsOneStar = pepsOneStar/lambdaStar/lambdaStar
+    epsOneEnd = di_parametric_epsilon_one(k2end,f)/lambdaStar/lambdaStar
+
+    di_parametric_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,ppotEnd/ppotStar)
+
+  end function di_parametric_lnrho_endinf
+
+  
+
+  
 
 end module direheat

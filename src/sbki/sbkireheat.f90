@@ -16,7 +16,7 @@ module sbkireheat
   private
 
   public sbki_x_star, sbki_lnrhoreh_max 
-  public sbki_x_rrad, sbki_x_rreh
+  public sbki_x_rrad, sbki_x_rreh, sbki_lnrho_endinf
 
 contains
 
@@ -240,5 +240,25 @@ contains
 
   end function sbki_lnrhoreh_max
 
+
+
+  function sbki_lnrho_endinf(alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: sbki_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = sbki_norm_potential(xend,alpha)
+    epsOneEnd = sbki_epsilon_one(xend,alpha)
+    potStar = sbki_norm_potential(xstar,alpha)
+    epsOneStar = sbki_epsilon_one(xstar,alpha)
+
+    sbki_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function sbki_lnrho_endinf
+
+  
   
 end module sbkireheat

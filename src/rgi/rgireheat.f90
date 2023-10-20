@@ -17,7 +17,7 @@ module rgireheat
 
   public rgi_x_star, rgi_lnrhoreh_max 
   public rgi_xp_fromepsilon, rgi_lnrhoreh_fromepsilon 
-  public rgi_x_rrad, rgi_x_rreh
+  public rgi_x_rrad, rgi_x_rreh,rgi_lnrho_endinf
 
 contains
 
@@ -317,6 +317,24 @@ contains
     
   end function rgi_lnrhoreh_fromepsilon
 
+
+  
+  function rgi_lnrho_endinf(alpha,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rgi_lnrho_endinf
+    real(kp), intent(in) :: alpha,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rgi_norm_potential(xend,alpha)
+    epsOneEnd = rgi_epsilon_one(xend,alpha)
+    potStar = rgi_norm_potential(xstar,alpha)
+    epsOneStar = rgi_epsilon_one(xstar,alpha)
+
+    rgi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rgi_lnrho_endinf
 
 
 end module rgireheat

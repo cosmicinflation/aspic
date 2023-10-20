@@ -7,7 +7,7 @@ module nmlfi3reheat
   use nmlficommon, only : nmlfi_hbar_potmax
   
   use nmlficomreh, only : nmlfi_hbar_rreh, nmlfi_hbar_star, nmlfi_hbar_rrad
-  use nmlficomreh, only : nmlfi_lnrhoreh_max
+  use nmlficomreh, only : nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
 
   use nmlfi3sr, only : nmlfi3_check_params
   
@@ -16,12 +16,14 @@ module nmlfi3reheat
   private
 
 !take as input the parametric field hbar  
-  public nmlfi3_parametric_lnrhoreh_max
+  public nmlfi3_parametric_lnrhoreh_max, nmlfi3_parametric_lnrho_endinf
   public nmlfi3_hbar_star, nmlfi3_hbar_rrad, nmlfi3_hbar_rreh
-
+  public nmlfi_parametric_lnrhoreh_max, nmlfi_parametric_lnrho_endinf
+  
 !for convenience only
   public nmlfi3_x_star, nmlfi3_x_rrad, nmlfi3_x_rreh, nmlfi3_lnrhoreh_max
-
+  public nmlfi3_lnrho_endinf
+  
 contains
 
 
@@ -104,10 +106,20 @@ contains
     hbarmin = nmlfi_hbar_potmax(xi,p)
     hbarmax = hbarend
     
-    nmlfi3_parametric_lnrhoreh_max = nmlfi_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
+    nmlfi3_parametric_lnrhoreh_max = nmlfi_parametric_lnrhoreh_max(xi,p,Pstar,hbarend,hbarmin,hbarmax)
 
   end function nmlfi3_parametric_lnrhoreh_max
 
+  
+  function nmlfi3_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi3_parametric_lnrho_endinf
+    real(kp), intent(in) :: xi,p,hbarend,hbarstar,Pstar
+            
+    nmlfi3_parametric_lnrho_endinf = nmlfi_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+
+  end function nmlfi3_parametric_lnrho_endinf
+  
 
 
 
@@ -175,5 +187,20 @@ contains
 
   end function nmlfi3_lnrhoreh_max
   
+
+
+  function nmlfi3_lnrho_endinf(xi,p,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: nmlfi3_lnrho_endinf
+    real(kp), intent(in) :: xi,p,xend,xstar,Pstar
+    real(kp) :: hbarstar, hbarend
+
+    hbarstar = nmlfi_hbar(xstar,xi)
+    hbarend = nmlfi_hbar(xend,xi)
+    
+    nmlfi3_lnrho_endinf = nmlfi3_parametric_lnrho_endinf(xi,p,hbarend,hbarstar,Pstar)
+
+  end function nmlfi3_lnrho_endinf
+
   
 end module nmlfi3reheat

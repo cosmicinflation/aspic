@@ -16,7 +16,7 @@ module nckireheat
   private
 
   public ncki_x_star, ncki_lnrhoreh_max
-  public ncki_x_rrad, ncki_x_rreh
+  public ncki_x_rrad, ncki_x_rreh, ncki_lnrho_endinf
   
 
 contains
@@ -249,8 +249,6 @@ contains
     x = ncki_x_star(alpha,beta,xend,wrad,junk,Pstar)    
     potStar = ncki_norm_potential(x,alpha,beta)
     epsOneStar = ncki_epsilon_one(x,alpha,beta)
-
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'ncki_lnrhoreh_max: slow-roll violated!'
     
@@ -259,6 +257,25 @@ contains
     ncki_lnrhoreh_max = lnRhoEnd
 
   end function ncki_lnrhoreh_max
+
+
+
+  function ncki_lnrho_endinf(alpha,beta,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: ncki_lnrho_endinf
+    real(kp), intent(in) :: alpha,beta,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = ncki_norm_potential(xend,alpha,beta)
+    epsOneEnd = ncki_epsilon_one(xend,alpha,beta)
+    potStar = ncki_norm_potential(xstar,alpha,beta)
+    epsOneStar = ncki_epsilon_one(xstar,alpha,beta)
+
+    ncki_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function ncki_lnrho_endinf
 
   
 end module nckireheat

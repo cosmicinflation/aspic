@@ -16,7 +16,7 @@ module rchireheat
   private
 
   public rchi_x_star, rchi_lnrhoreh_max
-  public rchi_x_rrad, rchi_x_rreh
+  public rchi_x_rrad, rchi_x_rreh, rchi_lnrho_endinf
 
 contains
 
@@ -242,6 +242,25 @@ contains
     rchi_lnrhoreh_max = lnRhoEnd
 
   end function rchi_lnrhoreh_max
+
+
+
+  function rchi_lnrho_endinf(AI,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: rchi_lnrho_endinf
+    real(kp), intent(in) :: AI,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = rchi_norm_potential(xend,AI)
+    epsOneEnd = rchi_epsilon_one(xend,AI)
+    potStar = rchi_norm_potential(xstar,AI)
+    epsOneStar = rchi_epsilon_one(xstar,AI)
+
+    rchi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function rchi_lnrho_endinf
 
   
 end module rchireheat

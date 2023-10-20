@@ -16,7 +16,7 @@ module dsireheat
   private
 
   public dsi_x_star, dsi_lnrhoreh_max 
-  public dsi_x_rrad, dsi_x_rreh
+  public dsi_x_rrad, dsi_x_rreh, dsi_lnrho_endinf
 
 contains
 
@@ -237,8 +237,6 @@ contains
     x = dsi_x_star(p,mu,xEnd,wrad,junk,Pstar)    
     potStar = dsi_norm_potential(x,p,mu)
     epsOneStar = dsi_epsilon_one(x,p,mu)
-
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'dsi_lnrhoreh_max: slow-roll violated!'
     
@@ -248,5 +246,25 @@ contains
 
   end function dsi_lnrhoreh_max
 
+
+
+  function dsi_lnrho_endinf(p,mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: dsi_lnrho_endinf
+    real(kp), intent(in) :: p,mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = dsi_norm_potential(xend,p,mu)
+    epsOneEnd = dsi_epsilon_one(xend,p,mu)
+    potStar = dsi_norm_potential(xstar,p,mu)
+    epsOneStar = dsi_epsilon_one(xstar,p,mu)
+
+    dsi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function dsi_lnrho_endinf
+
+  
   
 end module dsireheat

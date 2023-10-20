@@ -16,7 +16,7 @@ module cwireheat
   private
 
   public cwi_x_star, cwi_lnrhoreh_max
-  public cwi_x_rrad, cwi_x_rreh
+  public cwi_x_rrad, cwi_x_rreh, cwi_lnrho_endinf
 
 contains
 
@@ -244,5 +244,22 @@ contains
 
   end function cwi_lnrhoreh_max
 
+
+  function cwi_lnrho_endinf(alpha,Q,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: cwi_lnrho_endinf
+    real(kp), intent(in) :: alpha,Q,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = cwi_norm_potential(xend,alpha,Q)
+    epsOneEnd = cwi_epsilon_one(xend,alpha,Q)
+    potStar = cwi_norm_potential(xstar,alpha,Q)
+    epsOneStar = cwi_epsilon_one(xstar,alpha,Q)
+
+    cwi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function cwi_lnrho_endinf
   
 end module cwireheat

@@ -16,7 +16,7 @@ module mhireheat
   private
 
   public mhi_x_star, mhi_lnrhoreh_max
-  public mhi_x_rrad, mhi_x_rreh
+  public mhi_x_rrad, mhi_x_rreh, mhi_lnrho_endinf
 
 contains
 
@@ -215,9 +215,9 @@ contains
   function mhi_lnrhoreh_max(mu,xend,Pstar) 
     implicit none
     real(kp) :: mhi_lnrhoreh_max
-    real(kp), intent(in) :: mu,Pstar
+    real(kp), intent(in) :: mu,xend,Pstar
 
-    real(kp) :: xEnd, potEnd, epsOneEnd
+    real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
 
     real(kp),parameter :: wrad=1._kp/3._kp
@@ -235,7 +235,6 @@ contains
 
     potStar = mhi_norm_potential(x,mu)
     epsOneStar = mhi_epsilon_one(x,mu)
-
     
     if (.not.slowroll_validity(epsOneStar)) stop 'mhi_lnrhoreh_max: slow-roll violated!'
     
@@ -245,5 +244,25 @@ contains
 
   end function mhi_lnrhoreh_max
 
+
+
+  function mhi_lnrho_endinf(mu,xend,xstar,Pstar)
+    implicit none
+    real(kp) :: mhi_lnrho_endinf
+    real(kp), intent(in) :: mu,xend,xstar,Pstar
+
+    real(kp) :: potEnd, epsOneEnd
+    real(kp) :: x, potStar, epsOneStar
+
+    potEnd  = mhi_norm_potential(xend,mu)
+    epsOneEnd = mhi_epsilon_one(xend,mu)
+    potStar = mhi_norm_potential(xstar,mu)
+    epsOneStar = mhi_epsilon_one(xstar,mu)
+
+    mhi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
+
+  end function mhi_lnrho_endinf
+
+  
   
 end module mhireheat

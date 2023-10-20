@@ -6,6 +6,7 @@ program nmlfi2main
   use nmlficommon, only : pplus, pminus, nmlfi_xizero
   use nmlficommon, only : nmlfi_parametric_epsilon_one, nmlfi_parametric_epsilon_two, nmlfi_parametric_epsilon_three
   use nmlficommon, only : nmlfi_norm_parametric_potential, nmlfi_x, nmlfi_hbar_potmax
+  use nmlficommon, only : nmlfi_parametric_ln_omega4
   
   use nmlfi2sr, only : nmlfi2_norm_potential, nmlfi2_norm_deriv_potential, nmlfi2_norm_deriv_second_potential
   use nmlfi2sr, only : nmlfi2_epsilon_one, nmlfi2_epsilon_two, nmlfi2_epsilon_three, nmlfi2_x_endinf  
@@ -150,7 +151,7 @@ program nmlfi2main
 !consistency test
 !get lnR from lnRrad and check that it gives the same xstar
      eps1end =  nmlfi_parametric_epsilon_one(hbarend,xi,p)
-     lnOmega4End = 2._kp*log(1._kp + hbarend*hbarend)
+     lnOmega4End = nmlfi_parametric_ln_omega4(hbarend,xi,p)
 
      VendOverVstar = nmlfi_norm_parametric_potential(hbarend,xi,p) &
           /nmlfi_norm_parametric_potential(hbarstar,xi,p)     
