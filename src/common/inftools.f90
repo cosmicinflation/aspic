@@ -1108,6 +1108,7 @@ contains
          write(*,*)'x1=',a,'f(x1)=',fa
          write(*,*)'x2=',b,'f(x2)=',fb            
          write(*,*)'zbrent: interval expansion number: ',iex
+         write(*,*)'msg: ',trim(extradata%msg)
          write(*,*)'------------------------------------------------------'
          write(*,*)
       endif
