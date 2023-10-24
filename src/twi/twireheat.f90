@@ -256,12 +256,14 @@ contains
 
     real(kp) :: potEnd, epsOneEnd
     real(kp) :: x, potStar, epsOneStar
+!in case of SR violations at the end of inflation
+    real(kp), parameter :: epsEndMax = 2.0_kp
 
     potEnd  = twi_norm_potential(xend,phi0)
-    epsOneEnd = twi_epsilon_one(xend,phi0)
+    epsOneEnd = min(epsEndMax,twi_epsilon_one(xend,phi0))
     potStar = twi_norm_potential(xstar,phi0)
     epsOneStar = twi_epsilon_one(xstar,phi0)
-
+    
     twi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
   end function twi_lnrho_endinf
