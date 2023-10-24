@@ -141,8 +141,9 @@ contains
     real(kp) :: phi0
 
     phi0 = twiData%real1
-    
-    find_twi_x_epsoneunity = twi_epsilon_one(x,phi0) - 1._kp
+
+!    find_twi_x_epsoneunity = twi_epsilon_one(x,phi0) - 1._kp
+    find_twi_x_epsoneunity = log(twi_epsilon_one(x,phi0)) - 0._kp
   
   end function find_twi_x_epsoneunity
 
