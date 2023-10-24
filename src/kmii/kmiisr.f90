@@ -160,6 +160,7 @@ contains
   
     kmiiData%real1 = alpha
     kmiiData%real2 = -bfold + kmii_efold_primitive(xend,alpha)
+    kmiiData%msg = 'kmii_x_trajectory'
     
     kmii_x_trajectory = zbrent(find_kmii_x_trajectory,mini,maxi,tokmiind,kmiiData)
        

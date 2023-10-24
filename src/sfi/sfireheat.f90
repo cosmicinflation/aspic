@@ -50,7 +50,8 @@ contains
     sfiData%real2 = mu
     sfiData%real3 = w
     sfiData%real4 = calF + primEnd
-
+    sfiData%msg = 'sfi_x_star'
+    
     mini = 0._kp
     maxi = xEnd + epsilon(1._kp)
 
@@ -117,7 +118,8 @@ contains
     sfiData%real1 = p
     sfiData%real2 = mu
     sfiData%real3 = calF + primEnd
-
+    sfiData%msg = 'sfi_x_rrad'
+    
     mini = 0._kp
     maxi = xEnd + epsilon(1._kp)
 
@@ -184,7 +186,8 @@ contains
     sfiData%real1 = p
     sfiData%real2 = mu
     sfiData%real3 = calF + primEnd
-
+    sfiData%msg = 'sfi_x_rreh'
+    
     mini = 0._kp
     maxi = xEnd + epsilon(1._kp)
 

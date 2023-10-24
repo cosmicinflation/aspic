@@ -50,7 +50,8 @@ contains
     nckiData%real2 = beta
     nckiData%real3 = w
     nckiData%real4 = calF + primEnd
-
+    nckiData%msg = 'ncki_x_star'
+    
     mini=xEnd
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0       
@@ -119,7 +120,8 @@ contains
     nckiData%real1 = alpha 
     nckiData%real2 = beta
     nckiData%real3 = calF + primEnd
-
+    nckiData%msg = 'ncki_x_rrad'
+    
     mini=xEnd
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0       
@@ -188,7 +190,8 @@ contains
     nckiData%real1 = alpha 
     nckiData%real2 = beta
     nckiData%real3 = calF + primEnd
-
+    nckiData%msg = 'ncki_x_rreh'
+    
     mini=xEnd
     if (beta.lt.0._kp) then
 !position of the maximum of the potential if beta<0       

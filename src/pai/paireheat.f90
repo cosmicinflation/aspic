@@ -48,7 +48,8 @@ contains
     paiData%real2 = xEnd
     paiData%real3 = w
     paiData%real4 = calF + primEnd
-
+    paiData%msg = 'pai_x_star'
+    
     mini = xend
     maxi = pai_numacc_xinimax(mu)
 
@@ -112,7 +113,8 @@ contains
     paiData%real1 = mu 
     paiData%real2 = xEnd
     paiData%real3 = calF + primEnd
-
+    paiData%msg = 'pai_x_rrad'
+    
     mini = xEnd
     maxi = pai_numacc_xinimax(mu)
 
@@ -176,7 +178,8 @@ contains
     paiData%real1 = mu 
     paiData%real2 = xEnd
     paiData%real3 = calF + primEnd
-
+    paiData%msg = 'pai_x_rreh'
+    
     mini = xEnd
     maxi = pai_numacc_xinimax(mu)
 

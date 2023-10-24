@@ -132,6 +132,7 @@ contains
 
     shiData%real1 = alpha
     shiData%real2 = phi0	
+    shiData%msg = 'shi_x_endinf'
     
     shi_x_endinf = zbrent(find_shi_x_endinf,mini,maxi,tolFind,shiData)
 
@@ -216,6 +217,7 @@ contains
     shiData%real1 = alpha
     shiData%real2 = phi0	
     shiData%real3 = -bfold + shi_efold_primitive(xend,alpha,phi0)
+    shiData%msg = 'shi_x_trajectory'
     
     shi_x_trajectory = zbrent(find_shi_x_trajectory,mini,maxi,tolFind,shiData)
        

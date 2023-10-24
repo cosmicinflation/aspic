@@ -127,7 +127,7 @@ contains
     maxi=10._kp**(3._kp)
 
     ssbi1Data%real1 = beta
-
+    ssbi1Data%msg = 'ssbi1_alphamin'
 
 !In that case inflation ends by slow roll violation for any value of alpha
     if(beta .gt. 0.251_kp) then
@@ -181,6 +181,7 @@ contains
 
     ssbi1Data%real1 = alpha
     ssbi1Data%real2 = beta
+    ssbi1Data%msg = 'ssbi1_x_endinf'
     
     ssbi1_x_endinf = zbrent(find_ssbi1_x_endinf,mini,maxi,tolFind,ssbi1Data)
 
@@ -229,6 +230,7 @@ contains
     ssbi1Data%real1 = alpha
     ssbi1Data%real2 = beta
     ssbi1Data%real3 = -bfold + ssbi1_efold_primitive(xend,alpha,beta)
+    ssbi1Data%msg = 'ssbi1_x_trajectory'
     
     ssbi1_x_trajectory = zbrent(find_ssbi_x_trajectory,mini,maxi,tolFind,ssbi1Data)
        

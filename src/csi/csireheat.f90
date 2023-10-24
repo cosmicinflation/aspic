@@ -46,7 +46,8 @@ contains
     csiData%real1 = alpha
     csiData%real2 = w
     csiData%real3 = calF + primEnd
-
+    csiData%msg = 'csi_x_star'
+    
     mini = xend
     maxi = csi_x_epsoneunity(alpha)    !Value of x such that epsilon1=1 above which inflation cannot proceed
 
@@ -110,7 +111,8 @@ contains
 
     csiData%real1 = alpha
     csiData%real2 = calF + primEnd
-
+    csiData%msg = 'csi_x_rrad'
+    
     mini = xend
     maxi = csi_x_epsoneunity(alpha)
 
@@ -170,7 +172,8 @@ contains
 
     csiData%real1 = alpha
     csiData%real2 = calF + primEnd
-
+    csiData%msg = 'csi_x_rreh'
+    
     mini = xend
     maxi = csi_x_epsoneunity(alpha)
 

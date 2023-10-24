@@ -48,6 +48,7 @@ contains
     sbkiData%real1 = alpha    
     sbkiData%real2 = w
     sbkiData%real3 = calF + primEnd
+    sbkiData%msg = 'sbki_x_star'
 
     xplus = sbki_xinimax(alpha)
 
@@ -111,7 +112,8 @@ contains
 
     sbkiData%real1 = alpha
     sbkiData%real2 = calF + primEnd
-
+    sbkiData%msg = 'sbki_x_rrad'
+    
     xplus = sbki_xinimax(alpha)
 
     mini = xEnd*(1._kp+epsilon(1._kp))
@@ -174,7 +176,8 @@ contains
 
     sbkiData%real1 = alpha
     sbkiData%real2 = calF + primEnd
-
+    sbkiData%msg = 'sbki_x_rreh'
+    
     xplus = sbki_xinimax(alpha)
 
     mini = xEnd*(1._kp+epsilon(1._kp))

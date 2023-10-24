@@ -50,7 +50,8 @@ contains
     dsiData%real3 = xEnd
     dsiData%real4 = w
     dsiData%real5 = calF + primEnd
-
+    dsiData%msg = 'dsi_x_star'
+    
     mini=dsi_xinimin(p,mu)
     maxi = xend
 
@@ -115,7 +116,8 @@ contains
     dsiData%real2 = mu
     dsiData%real3 = xEnd
     dsiData%real4 = calF + primEnd
-
+    dsiData%msg = 'dsi_x_rrad'
+    
     mini=dsi_xinimin(p,mu)
     maxi = xend
 
@@ -180,7 +182,8 @@ contains
     dsiData%real2 = mu
     dsiData%real3 = xEnd
     dsiData%real4 = calF + primEnd
-
+    dsiData%msg = 'dsi_x_rreh'
+    
     mini=dsi_xinimin(p,mu)
     maxi = xend
 

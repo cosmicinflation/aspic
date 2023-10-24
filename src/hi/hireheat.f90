@@ -223,6 +223,7 @@ contains
     hiData%real1 = calF
     hiData%real2 = Pstar
     hiData%real3 = w
+    hiData%msg = 'hi_hbar_star'
     
     hbarmin= hbarSmall
     hbarmax = hbarBig
@@ -316,6 +317,7 @@ contains
 !calF(Vend=1). Missing parts added in find()
     hiData%real1 = calF
     hiData%real2 = Pstar
+    hiData%msg = 'hi_hbar_rrad'
     
     hbarmin= sqrt(epsilon(1._kp))
     hbarmax = hbarBig
@@ -406,6 +408,7 @@ contains
 !calF(Vend=1). Missing parts added in find()
     hiData%real1 = calF
     hiData%real2 = Pstar
+    hiData%msg = 'hi_hbar_rreh'
     
     hbarmin= 0.1_kp
     hbarmax = hbarBig

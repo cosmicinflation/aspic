@@ -53,7 +53,8 @@ contains
     gmlfiData%real4 = xEnd
     gmlfiData%real5 = w
     gmlfiData%real6 = calF + primEnd
-
+    gmlfiData%msg = 'gmlfi_x_star'
+    
     mini = xend
     maxi = xend*10._kp**(6._kp)
 
@@ -122,7 +123,8 @@ contains
     gmlfiData%real3 = q
     gmlfiData%real4 = xEnd
     gmlfiData%real5 = calF + primEnd
-
+    gmlfiData%msg = 'gmlfi_x_rrad'
+    
     mini = xend
     maxi = xend*10._kp**(6._kp)
 
@@ -190,7 +192,8 @@ contains
     gmlfiData%real3 = q
     gmlfiData%real4 = xEnd
     gmlfiData%real5 = calF + primEnd
-
+    gmlfiData%msg = 'gmlfi_x_rreh'
+    
     mini = xend
     maxi = xend*10._kp**(6._kp)
 

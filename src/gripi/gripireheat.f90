@@ -49,7 +49,8 @@ contains
     gripiData%real2 = phi0 
     gripiData%real3 = w
     gripiData%real4 = calF + primEnd
-
+    gripiData%msg = 'gripi_x_star'
+    
     mini = xend
     maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
 
@@ -112,7 +113,8 @@ contains
     gripiData%real1 = alpha
     gripiData%real2 = phi0
     gripiData%real3 = calF + primEnd
-
+    gripiData%msg = 'gripi_x_rrad'
+    
     mini = xend
     maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
     
@@ -175,7 +177,8 @@ contains
     gripiData%real1 = alpha
     gripiData%real2 = phi0
     gripiData%real3 = calF + primEnd
-
+    gripiData%msg = 'gripi_x_rreh'
+    
     mini = xend
     maxi = gripi_x_epsonemin(alpha,phi0) - epsilon(1._kp)
     

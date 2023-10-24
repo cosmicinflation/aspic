@@ -125,6 +125,7 @@ contains
     mini = twi_x_epsonemax(phi0) !second maximum of eps1
 
     twiData%real1 = phi0
+    twiData%msg = 'twi_x_epsoneunity'
     
     twi_x_epsoneunity = zbrent(find_twi_x_epsoneunity,mini,maxi,tolFind,twiData)
 
@@ -163,6 +164,7 @@ contains
     mini = twi_x_epsonemax(phi0) !second maximum of eps1
 
     twiData%real1 = phi0
+    twiData%msg = 'twi_x_epstwounity'
     
     twi_x_epstwounity = zbrent(find_twi_x_epstwounity,mini,maxi,tolFind,twiData)
 
@@ -198,6 +200,7 @@ contains
     mini = 2._kp*phi0*(1._kp+epsilon(1._kp)) !minimum of the potential (where eps1=0)
 
     twiData%real1 = phi0
+    twiData%msg = 'twi_x_epsonemax'
     
     twi_x_epsonemax = zbrent(find_twi_x_epsonemax,mini,maxi,tolFind,twiData)
 
@@ -250,6 +253,7 @@ contains
 
     twiData%real1 = phi0
     twiData%real2 = -bfold + twi_efold_primitive(xend,phi0)
+    twiData%msg = 'twi_x_trajectory'
     
     twi_x_trajectory = zbrent(find_twi_x_trajectory,mini,maxi,tolFind,twiData)
        

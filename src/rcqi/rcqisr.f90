@@ -112,7 +112,8 @@ contains
     maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
 
     rcqiData%real1 = alpha
-
+    rcqiData%msg = 'rcqi_x_endinf'
+    
     rcqi_x_endinf = zbrent(find_rcqi_x_endinf,mini,maxi,tolFind,rcqiData)
    
   end function rcqi_x_endinf
@@ -165,6 +166,7 @@ contains
 
     rcqiData%real1 = alpha
     rcqiData%real2 = -bfold + rcqi_efold_primitive(xend,alpha)
+    rcqiData%msg = 'rcqi_x_trajectory'
     
     rcqi_x_trajectory = zbrent(find_rcqi_x_trajectory,mini,maxi,tolFind,rcqiData)
        

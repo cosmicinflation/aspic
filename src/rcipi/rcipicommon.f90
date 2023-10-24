@@ -356,7 +356,8 @@ contains
     rcipiData%real1 = p
     rcipiData%real2 = alpha
     rcipiData%real3 = beta
-
+    rcipiData%msg = 'rcipi_x_epsoneunity'
+    
 !the potential is piecewise positive    
     if (rcipi_check_potzero(alpha,beta)) then
 

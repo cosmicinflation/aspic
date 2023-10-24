@@ -49,7 +49,8 @@ contains
     lfiData%real1 = p    
     lfiData%real2 = w
     lfiData%real3 = calF + primEnd
-
+    lfiData%msg = 'lfi_x_star'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -111,7 +112,8 @@ contains
 
     lfiData%real1 = p    
     lfiData%real2 = calF + primEnd
-
+    lfiData%msg = 'lfi_x_rrad'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -174,7 +176,8 @@ contains
 
     lfiData%real1 = p    
     lfiData%real2 = calF + primEnd
-
+    lfiData%msg = 'lfi_x_rreh'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 

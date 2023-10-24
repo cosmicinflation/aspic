@@ -1,4 +1,4 @@
-AC_INIT([aspic],[1.5.0],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
+AC_INIT([aspic],[1.5.1],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
 
 AM_INIT_AUTOMAKE
 
@@ -9,7 +9,7 @@ AC_PROG_CPP
 LT_INIT
 
 
-version_info="7:0:3"
+version_info="7:1:3"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC

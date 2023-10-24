@@ -164,7 +164,8 @@ contains
 
     rpi1Data%real1 = p
     rpi1Data%real2 = -bfold + rpi1_efold_primitive(yend,p)
-
+    rpi1Data%msg = 'rpi1_x_trajectory'
+    
     rpi1_x_trajectory = zbrent(find_rpi_x_trajectory,mini,maxi,tolFind,rpi1Data)
 
   end function rpi1_x_trajectory

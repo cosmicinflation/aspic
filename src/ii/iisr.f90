@@ -137,6 +137,7 @@ contains
 
     iiData%real1 = beta
     iiData%real2 = -bfold + ii_efold_primitive(xend,beta)
+    iiData%msg = 'ii_x_trajectory'
     
     ii_x_trajectory = zbrent(find_ii_x_trajectory,mini,maxi,tolFind,iiData)
        

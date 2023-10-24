@@ -208,6 +208,7 @@ contains
 
     liData%real1 = alpha
     liData%real2 = -bfold + li_efold_primitive(xend,alpha)
+    liData%msg = 'li_x_trajectory'
     
     li_x_trajectory = zbrent(find_li_x_trajectory,mini,maxi,tolFind,liData)
        
@@ -250,7 +251,8 @@ contains
     maxi = alphaNumAccNeg
     
     liData%real1 = efold
-
+    liData%msg = 'li_alphamin'
+    
     li_alphamin = zbrent(find_li_alphamin,mini,maxi,tolFind,liData)
 
     efoldSave = efold

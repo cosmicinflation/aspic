@@ -50,7 +50,8 @@ contains
     rgiData%real1 = alpha    
     rgiData%real2 = w
     rgiData%real3 = calF + primEnd
-
+    rgiData%msg = 'rgi_x_star'
+    
     mini = xEnd
     maxi = rgi_numacc_x_epsonenull(alpha)
 
@@ -111,7 +112,8 @@ contains
 
     rgiData%real1 = alpha    
     rgiData%real2 = calF + primEnd
-
+    rgiData%msg = 'rgi_x_rrad'
+    
     mini = xEnd
     maxi = rgi_numacc_x_epsonenull(alpha)
 
@@ -173,7 +175,8 @@ contains
 
     rgiData%real1 = alpha    
     rgiData%real2 = calF + primEnd
-
+    rgiData%msg = 'rgi_x_rreh'
+    
     mini = xEnd
     maxi = rgi_numacc_x_epsonenull(alpha)
 

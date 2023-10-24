@@ -49,7 +49,8 @@ contains
     lmi2Data%real2 = beta
     lmi2Data%real3 = w
     lmi2Data%real4 = calF + primEnd
-
+    lmi2Data%msg = 'lmi2_x_star'
+    
     mini = lmi2_xinimin(gam,beta)
     maxi = xEnd
 
@@ -111,7 +112,8 @@ contains
     lmi2Data%real1 = gam
     lmi2Data%real2 = beta
     lmi2Data%real3 = calF + primEnd
-
+    lmi2Data%msg = 'lmi2_x_rrad'
+    
     mini = lmi2_xinimin(gam,beta)
     maxi = xEnd
 
@@ -173,7 +175,8 @@ contains
     lmi2Data%real1 = gam
     lmi2Data%real2 = beta
     lmi2Data%real3 = calF + primEnd
-
+    lmi2Data%msg = 'lmi2_x_rreh'
+    
     mini = lmi2_xinimin(gam,beta)
     maxi = xEnd
 

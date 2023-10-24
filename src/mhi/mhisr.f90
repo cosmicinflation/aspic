@@ -134,7 +134,8 @@ contains
     mhiData%real1 = bfold
     mhiData%real2 = xend
     mhiData%real3 = mu
-
+    mhiData%msg = 'mhi_x_trajectory'
+    
     mini = xend
     maxi = 100._kp
     

@@ -110,7 +110,8 @@ contains
     maxi=exp(-0.5_kp)*(1._kp-epsilon(1._kp)) !Potential Maxiphi0m, where eps1 vanishes
 
     ostiData%real1=phi0
-
+    ostiData%msg = 'osti_x_endinf'
+    
     osti_x_endinf = zbrent(find_osti_x_endinf,mini,maxi,tolFind,ostiData)
 
 
@@ -154,7 +155,8 @@ contains
     ostiData%real1 = bfold
     ostiData%real2 = xend
     ostiData%real3 = phi0
-
+    ostiData%msg = 'osti_x_trajectory'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = exp(-0.5_kp)*(1._kp-epsilon(1._kp))
     

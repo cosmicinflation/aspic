@@ -153,7 +153,8 @@ contains
     maxi= xepsonemax
 
     aiData%real1 = mu
-
+    aiData%msg = 'ai_x_endinf'
+    
     ai_x_endinf=zbrent(find_ai_x_endinf,mini,maxi,tolFind,aiData)
 
    
@@ -199,7 +200,7 @@ contains
     aiData%real1 = bfold
     aiData%real2 = xend
     aiData%real3 = mu
-
+    aiData%msg = 'ai_x_trajectory'
 
     xinimin = ai_numacc_xinimin(mu)
 

@@ -160,6 +160,7 @@ contains
 
     vhiData%real1 = p
     vhiData%real2 = mu
+    vhiData%msg = 'vhi_x_epsoneunity'
 
     if (p.lt.1._kp) then
 !only one root as eps1 blows up for x->0
@@ -377,7 +378,8 @@ contains
        vhiData%real1 = p
        vhiData%real2 = mu
        vhiData%real3 = -bfold + vhi_efold_primitive(xend,p,mu)
-
+       vhiData%msg = 'vhi_x_trajectory'
+       
        vhi_x_trajectory = zbrent(find_vhi_x_trajectory,mini,maxi,tolFind,vhiData)
 
     end if

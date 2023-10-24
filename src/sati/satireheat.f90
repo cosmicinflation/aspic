@@ -49,6 +49,7 @@ contains
     satiData%real2 = n
     satiData%real3 = w
     satiData%real4 = calF + primEnd
+    satiData%msg = 'sati_x_star'
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = sqrt(6._kp*alpha)/2._kp*log(8._kp*n*200._kp/(3._kp*alpha))
@@ -110,7 +111,8 @@ contains
     satiData%real1 = alpha
     satiData%real2 = n
     satiData%real3 = calF + primEnd
-
+    satiData%msg = 'sati_x_rrad'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = sqrt(6._kp*alpha)/2._kp*log(8._kp*n*200._kp/(3._kp*alpha))
 
@@ -173,7 +175,8 @@ contains
     satiData%real1 = alpha
     satiData%real2 = n
     satiData%real3 = calF + primEnd
-
+    satiData%msg = 'sati_x_rreh'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = sqrt(6._kp*alpha)/2._kp*log(8._kp*n*200._kp/(3._kp*alpha))
 

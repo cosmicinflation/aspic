@@ -115,7 +115,8 @@ contains
 
     kkltiData%real1 = p
     kkltiData%real2 = mu
-
+    kkltiData%msg = 'kklti_x_epsoneunity'
+    
     kklti_x_epsoneunity = zbrent(find_kklti_x_epsoneunity,mini,maxi,tolFind,kkltiData)
    
   end function kklti_x_epsoneunity
@@ -150,7 +151,8 @@ contains
 
     kkltiData%real1 = p
     kkltiData%real2 = mu
-
+    kkltiData%msg = 'kklti_x_epstwounity'
+    
     kklti_x_epstwounity = zbrent(find_kklti_x_epstwounity,mini,maxi,tolFind,kkltiData)
    
   end function kklti_x_epstwounity
@@ -189,6 +191,7 @@ contains
     kkltiData%real1 = p
     kkltiData%real2 = mu
     kkltiData%real3 = -bfold + kklti_efold_primitive(xend,p,mu)
+    kkltiData%msg = 'kklti_x_trajectory'
     
     kklti_x_trajectory = zbrent(find_kklti_x_trajectory,mini,maxi,tolFind,kkltiData)
     

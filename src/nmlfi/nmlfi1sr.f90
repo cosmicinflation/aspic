@@ -298,6 +298,7 @@ contains
 
     nmlfi1Data%real1 = efold
     nmlfi1Data%real2 = p
+    nmlfi1Data%msg = 'nmlfi_numacc_ximax'
     
     nmlfi1_numacc_ximax = zbrent(find_nmlfi1_ximax,mini,maxi,tolFind,nmlfi1Data)
 

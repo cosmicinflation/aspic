@@ -227,6 +227,7 @@ contains
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = mu
+    rclfiData%msg = 'rclfi1_x_endinf'
     
     rclfi1_x_endinf = zbrent(find_rclfi_x_endinf,mini,maxi,tolFind,rclfiData)
    
@@ -311,7 +312,8 @@ contains
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = efold
-
+    rclfiData%msg = 'rclfi1_numacc_mumin'
+    
     if (rclfi1_numacc_efoldmax(p,alpha,mubig).lt.efold) then
        stop 'rclfi1_numacc_mumin: mubig too small!'
     endif
@@ -400,7 +402,8 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = -bfold + rclfi1_efold_primitive(xend,p,alpha,mu)
-
+    rclfiData%msg = 'rclfi1_x_trajectory'
+    
     rclfi1_x_trajectory = zbrent(find_rclfi1_x_trajectory,mini,maxi,tolFind,rclfiData)
     
   end function rclfi1_x_trajectory

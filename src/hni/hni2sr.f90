@@ -237,7 +237,8 @@ contains
     hni2Data%real1 = alpha
     hni2Data%real2 = f
     hni2Data%real3 = -bfold + hni_efold_primitive(xend,alpha,f)
-
+    hni2Data%msg = 'hni2_x_trajectory'
+    
     hni2_x_trajectory = zbrent(find_hni_x_trajectory,mini,maxi,tolFind,hni2Data)
 
   end function hni2_x_trajectory

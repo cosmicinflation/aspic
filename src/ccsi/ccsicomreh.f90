@@ -51,7 +51,8 @@ contains
     ccsiData%real1 = alpha
     ccsiData%real2 = w
     ccsiData%real3 = calF + primEnd
-
+    ccsiData%msg = 'ccsi_x_star'
+    
     x = zbrent(find_ccsi_x_star,xmin,xmax,tolzbrent,ccsiData)
     ccsi_x_star = x
 
@@ -109,7 +110,8 @@ contains
 
     ccsiData%real1 = alpha
     ccsiData%real2 = calF + primEnd
-
+    ccsiData%msg = 'ccsi_x_rrad'
+    
     x = zbrent(find_ccsi_x_rrad,xmin,xmax,tolzbrent,ccsiData)
     ccsi_x_rrad = x
 
@@ -169,7 +171,8 @@ contains
 
     ccsiData%real1 = alpha
     ccsiData%real2 = calF + primEnd
-
+    ccsiData%msg = 'ccsi_x_rreh'
+    
     x = zbrent(find_ccsi_x_rreh,xmin,xmax,tolzbrent,ccsiData)
     ccsi_x_rreh = x
 

@@ -101,6 +101,7 @@ contains
     nmlfiData%real2 = p
     nmlfiData%real3 = w
     nmlfiData%real4 = calF + primEnd
+    nmlfiData%msg = 'nmlfi_hbar_star'
     
     hbarstar = zbrent(find_nmlfi_hbar_star,hbarmin,hbarmax,tolzbrent,nmlfiData)
 
@@ -164,7 +165,8 @@ contains
     nmlfiData%real1 = xi
     nmlfiData%real2 = p
     nmlfiData%real3 = calF + primEnd
-         
+    nmlfiData%msg = 'nmlfi_hbar_rrad'
+    
     hbarstar = zbrent(find_nmlfi_hbar_rrad,hbarmin,hbarmax,tolzbrent,nmlfiData)
 
     nmlfi_hbar_rrad = hbarstar
@@ -231,7 +233,8 @@ contains
     nmlfiData%real1 = xi
     nmlfiData%real2 = p
     nmlfiData%real3 = calF + primEnd   
-         
+    nmlfiData%msg = 'nmlfi_hbar_rreh'
+    
     hbarstar = zbrent(find_nmlfi_hbar_rreh,hbarmin,hbarmax,tolzbrent,nmlfiData)
 
     nmlfi_hbar_rreh = hbarstar        

@@ -41,6 +41,7 @@ module infprec
      real(kp) :: xend
      logical :: minmax = .false.
      real(kp) :: minmin, maxmax
+     character(len=32) :: msg = ''
   end type transfert
 
 

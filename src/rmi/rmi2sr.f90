@@ -131,6 +131,7 @@ contains
     rmi2Data%real1 = c
     rmi2Data%real2 = phi0
     rmi2Data%real3 = -bfold + rmi2_efold_primitive(xend,c,phi0)
+    rmi2Data%msg = 'rmi2_x_trajectory'
     
     rmi2_x_trajectory = zbrent(find_rmi_x_trajectory,mini,maxi,tolFind,rmi2Data)
        

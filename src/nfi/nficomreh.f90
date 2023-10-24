@@ -19,6 +19,8 @@ module nficomreh
 
   public nfi_x_star, nfi_x_rrad, nfi_x_rreh
 
+  logical, parameter :: debug = .false.
+  
 contains
 
 !returns x such given potential parameters, scalar power, wreh and
@@ -51,7 +53,8 @@ contains
     nfiData%real2 = b
     nfiData%real3 = w
     nfiData%real4 = calF + primEnd
-
+    nfiData%msg = 'nfi_x_star'
+    
     x = zbrent(find_nfi_x_star,xmin,xmax,tolzbrent,nfiData)
     nfi_x_star = x
 
@@ -111,7 +114,8 @@ contains
     nfiData%real1 = a
     nfiData%real2 = b
     nfiData%real3 = calF + primEnd
-
+    nfiData%msg = 'nfi_x_rrad'
+    
     x = zbrent(find_nfi_x_rrad,xmin,xmax,tolzbrent,nfiData)
     nfi_x_rrad = x
 
@@ -171,20 +175,23 @@ contains
     nfiData%real1 = a
     nfiData%real2 = b
     nfiData%real3 = calF + primEnd
+    nfiData%msg = 'nfi_x_rreh'
 
-    !DEBUGGING, TO REMOVE...
-    if (find_nfi_x_rreh(xmin,nfiData)*find_nfi_x_rreh(xmax,nfiData).gt.0.) then
-      print*, 'a=',a,'b=',b
-      print*, 'xmin=',xmin,'fmin=',find_nfi_x_rreh(xmin,nfiData)
-      print*, 'xmax=',xmax,'fmax=',find_nfi_x_rreh(xmax,nfiData)
-      print*, 'primStarmin=',nfi_efold_primitive(xmin,a,b)
-      print*, 'primStarmax=',nfi_efold_primitive(xmax,a,b)
-      print*, 'potStarmin=',nfi_norm_potential(xmin,a,b)
-      print*, 'potStarmax=',nfi_norm_potential(xmax,a,b)
-      print*, 'calFplusNuEnd=', calF + primEnd
-      print*, 'calF=',calF
+    
+    if (debug) then
+       if (find_nfi_x_rreh(xmin,nfiData)*find_nfi_x_rreh(xmax,nfiData).gt.0.) then
+          print*, 'a=',a,'b=',b
+          print*, 'xmin=',xmin,'fmin=',find_nfi_x_rreh(xmin,nfiData)
+          print*, 'xmax=',xmax,'fmax=',find_nfi_x_rreh(xmax,nfiData)
+          print*, 'primStarmin=',nfi_efold_primitive(xmin,a,b)
+          print*, 'primStarmax=',nfi_efold_primitive(xmax,a,b)
+          print*, 'potStarmin=',nfi_norm_potential(xmin,a,b)
+          print*, 'potStarmax=',nfi_norm_potential(xmax,a,b)
+          print*, 'calFplusNuEnd=', calF + primEnd
+          print*, 'calF=',calF
+       endif
     endif
-
+       
     x = zbrent(find_nfi_x_rreh,xmin,xmax,tolzbrent,nfiData)
     nfi_x_rreh = x
 

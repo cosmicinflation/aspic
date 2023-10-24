@@ -8,7 +8,6 @@
 
 module sbkisr
   use infprec, only : kp, tolkp, transfert
-  use inftools, only : zbrent
   use specialinf, only : log_otherbranchcut
   implicit none
 

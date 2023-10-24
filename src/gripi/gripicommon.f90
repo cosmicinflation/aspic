@@ -269,7 +269,8 @@ contains
        maxi = xAlphaEpsTwoMin + epsilon(1._kp)
 
        gripiData%real1 = alpha
-
+       gripiData%msg = 'gripi_x_epstwomin'
+       
        gripi_x_epstwomin = zbrent(find_gripi_x_epstwomin,mini,maxi,tolFind,gripiData)
 
     endif
@@ -314,7 +315,8 @@ contains
 
     gripiData%real1 = alpha
     gripiData%real2 = phi0
-
+    gripiData%msg = 'gripi_x_endinf'
+    
     gripi_x_endinf = zbrent(find_gripi_x_endinf,mini,maxi,tolFind,gripiData)
 
 

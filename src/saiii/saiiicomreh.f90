@@ -52,6 +52,7 @@ contains
     saiiiData%real3 = mu
     saiiiData%real4 = w
     saiiiData%real5 = calF + primEnd
+    saiiiData%msg = 'saiii_x_star'
     
     x = zbrent(find_saiii_x_star,xmin,xmax,tolzbrent,saiiiData)
     saiii_x_star = x
@@ -114,7 +115,8 @@ contains
     saiiiData%real2 = beta
     saiiiData%real3 = mu
     saiiiData%real4 = calF + primEnd
-
+    saiiiData%msg = 'saiii_x_rrad'
+    
     x = zbrent(find_saiii_x_rrad,xmin,xmax,tolzbrent,saiiiData)
     saiii_x_rrad = x
 
@@ -176,6 +178,7 @@ contains
     saiiiData%real2 = beta
     saiiiData%real3 = mu
     saiiiData%real4 = calF + primEnd
+    saiiiData%msg = 'saiii_x_rreh'
 
     x = zbrent(find_saiii_x_rreh,xmin,xmax,tolzbrent,saiiiData)
     saiii_x_rreh = x

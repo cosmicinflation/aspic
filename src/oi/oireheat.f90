@@ -47,7 +47,8 @@ contains
     oiData%real2 = phi0
     oiData%real3 = w
     oiData%real4 = calF + primEnd
-
+    oiData%msg = 'oi_x_star'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = mini/epsilon(1._kp)
 
@@ -111,7 +112,8 @@ contains
     oiData%real1 = alpha
     oiData%real2 = phi0
     oiData%real3 = calF + primEnd
-
+    oiData%msg = 'oi_x_rrad'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = mini/epsilon(1._kp)
 
@@ -174,7 +176,8 @@ contains
     oiData%real1 = alpha
     oiData%real2 = phi0
     oiData%real3 = calF + primEnd
-
+    oiData%msg = 'oi_x_rreh'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = mini/epsilon(1._kp)
 

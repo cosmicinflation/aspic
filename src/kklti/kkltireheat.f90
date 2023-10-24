@@ -50,7 +50,8 @@ contains
     kkltiData%real2 = mu
     kkltiData%real3 = w
     kkltiData%real4 = calF + primEnd
-
+    kkltiData%msg = 'kklti_x_star'
+    
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 
@@ -117,7 +118,8 @@ contains
     kkltiData%real1 = p
     kkltiData%real2 = mu
     kkltiData%real3 = calF + primEnd
-
+    kkltiData%msg = 'kklti_x_rrad'
+    
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 
@@ -184,7 +186,8 @@ contains
     kkltiData%real1 = p
     kkltiData%real2 = mu
     kkltiData%real3 = calF + primEnd
-
+    kkltiData%msg = 'kklti_x_rreh'
+    
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 

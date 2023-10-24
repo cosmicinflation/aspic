@@ -48,7 +48,8 @@ contains
     ahiData%real1 = f    
     ahiData%real2 = w
     ahiData%real3 = calF + primEnd
-
+    ahiData%msg = 'ahi_x_star'
+    
     mini = xEnd*(1._kp+tolkp)
     maxi = pi*(1._kp-tolkp)
 
@@ -109,7 +110,8 @@ contains
 
     ahiData%real1 = f
     ahiData%real2 = calF + primEnd
-
+    ahiData%msg = 'ahi_x_rrad'
+    
     mini = xEnd*(1._kp+tolkp)
     maxi = pi*(1._kp-tolkp)
 
@@ -170,7 +172,8 @@ contains
 
     ahiData%real1 = f
     ahiData%real2 = calF + primEnd
-
+    ahiData%msg = 'ahi_x_rreh'
+    
     mini = xEnd*(1._kp+tolkp)
     maxi = pi*(1._kp-tolkp)
 

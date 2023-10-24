@@ -122,7 +122,8 @@ contains
 
     sfiData%real1 = p
     sfiData%real2 = mu
-
+    sfiData%msg = 'sfi_x_endinf'
+    
     sfi_x_endinf = zbrent(find_sfi_x_endinf,mini,maxi,tolFind,sfiData)
    
   end function sfi_x_endinf
@@ -159,6 +160,7 @@ contains
     sfiData%real1 = p
     sfiData%real2 = mu
     sfiData%real3 = -bfold + sfi_efold_primitive(xend,p,mu)
+    sfiData%msg = 'sfi_x_trajectory'
     
     sfi_x_trajectory = zbrent(find_sfi_x_trajectory,mini,maxi,tolFind,sfiData)
     
@@ -195,7 +197,8 @@ contains
     sfiData%real1 = p
     sfiData%real2 = mu
     sfiData%real3 = eps2
-
+    sfiData%msg = 'sfi_x_fromepstwo'
+    
    sfi_x_fromepstwo = zbrent(find_sfi_x_fromepstwo,mini,maxi,tolFind,sfiData)
    
  end function sfi_x_fromepstwo

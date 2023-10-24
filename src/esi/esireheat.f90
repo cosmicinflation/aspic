@@ -48,7 +48,8 @@ contains
     esiData%real1 = q    
     esiData%real2 = w
     esiData%real3 = calF + primEnd
-
+    esiData%msg = 'esi_x_star'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -109,7 +110,8 @@ contains
 
     esiData%real1 = q
     esiData%real2 = calF + primEnd
-
+    esiData%msg = 'esi_x_rrad'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -170,7 +172,8 @@ contains
 
     esiData%real1 = q
     esiData%real2 = calF + primEnd
-
+    esiData%msg = 'esi_x_rreh'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 

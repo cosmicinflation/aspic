@@ -151,6 +151,7 @@ contains
 
     bsusybiData%real1 = gammaBSUSYB
     bsusybiData%real2 = -bfold + bsusybi_efold_primitive(xend,gammaBSUSYB)
+    bsusybiData%msg = 'bsusybi_x_trajectory'
     
     bsusybi_x_trajectory = zbrent(find_bsusybi_x_trajectory,mini,maxi &
          ,tolFind,bsusybiData)

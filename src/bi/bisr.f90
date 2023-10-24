@@ -116,7 +116,8 @@ contains
 
     biData%real1 = p
     biData%real2 = mu
-
+    biData%msg = 'bi_x_epsoneunity'
+    
     bi_x_epsoneunity = zbrent(find_bi_x_epsoneunity,mini,maxi,tolFind,biData)
    
   end function bi_x_epsoneunity
@@ -152,7 +153,8 @@ contains
 
     biData%real1 = p
     biData%real2 = mu
-
+    biData%msg = 'bi_x_epstwounity'
+    
     bi_x_epstwounity = zbrent(find_bi_x_epstwounity,mini,maxi,tolFind,biData)
    
   end function bi_x_epstwounity
@@ -190,6 +192,7 @@ contains
     biData%real1 = p
     biData%real2 = mu
     biData%real3 = -bfold + bi_efold_primitive(xend,p,mu)
+    biData%msg = 'bi_x_trajectory'
     
     bi_x_trajectory = zbrent(find_bi_x_trajectory,mini,maxi,tolFind,biData)
     

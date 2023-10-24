@@ -51,7 +51,8 @@ contains
 
     siData%real1 = w
     siData%real2 = calF + primEnd
-
+    siData%msg = 'si_x_star'
+    
     mini = si_x_endinf()
     maxi = 1./epsilon(1._kp)
 
@@ -111,7 +112,8 @@ contains
     calF = get_calfconst_rrad(lnRrad,Pstar,epsOneEnd,potEnd)
 
     siData%real1 = calF + primEnd
-
+    siData%msg = 'si_x_rrad'
+    
     mini = si_x_endinf()
     maxi = 1./epsilon(1._kp)
 
@@ -173,7 +175,8 @@ contains
     calF = get_calfconst_rreh(lnRreh,epsOneEnd,potEnd,lnOmega4End)
 
     siData%real1 = calF + primEnd
-
+    siData%msg = 'si_x_rreh'
+    
     mini = si_x_endinf()
     maxi = 1./epsilon(1._kp)
 

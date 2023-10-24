@@ -58,7 +58,8 @@ contains
     rpqtiData%real4 = xEnd
     rpqtiData%real5 = w
     rpqtiData%real6 = calF + primEnd
-
+    rpqtiData%msg = 'rpqdi_x_star'
+    
     x = zbrent(find_rpqti_x_star,mini,maxi,tolzbrent,rpqtiData)
     rpqti_x_star = x  
 
@@ -127,7 +128,8 @@ contains
     rpqtiData%real3 = beta
     rpqtiData%real4 = xEnd
     rpqtiData%real5 = calF + primEnd
-
+    rpqtiData%msg = 'rpqdi_x_rrad'
+    
     x = zbrent(find_rpqti_x_rrad,mini,maxi,tolzbrent,rpqtiData)
     rpqti_x_rrad = x  
 
@@ -196,6 +198,7 @@ contains
     rpqtiData%real3 = beta
     rpqtiData%real4 = xEnd
     rpqtiData%real5 = calF + primEnd
+    rpqtiData%msg = 'rpqdi_x_rreh'
 
     x = zbrent(find_rpqti_x_rreh,mini,maxi,tolzbrent,rpqtiData)
     rpqti_x_rreh = x  

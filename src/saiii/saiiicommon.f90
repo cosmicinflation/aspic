@@ -301,6 +301,7 @@ contains
        stobeta = beta
     endif
 
+    saiiiData%msg = 'saiii_alpha_potneg'
     
     if (beta.gt.0._kp) then
 
@@ -408,6 +409,7 @@ contains
 
     saiiiData%real1 = alpha
     saiiiData%real2 = beta
+    saiiiData%msg = 'saiii_x_derivpotzero'
     
     if ((beta.ge.1._kp).or.((beta.le.-1._kp).and.(alpha.ge.-1._kp))) then
 
@@ -547,6 +549,7 @@ contains
 
     saiiiData%real1 = alpha
     saiiiData%real2 = beta
+    saiiiData%msg = 'saiii_alpha_potzero'
     
     if (hasNotMinimum) then
     
@@ -692,7 +695,7 @@ contains
     saiiiData%real1 = alpha
     saiiiData%real2 = beta
     saiiiData%real3 = mu
-
+    saiiiData%msg = 'saiii_x_epsoneunity'
 
     if (.not.hasMinima) then
 !brent should give the lowest root, but oscillating non-extremal

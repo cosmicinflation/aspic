@@ -142,6 +142,7 @@ contains
        stoalpha = alpha
     endif
     
+    saiiData%msg = 'saii_x_potzero'
     
     if (alpha.gt.0._kp) then
 
@@ -204,7 +205,8 @@ contains
     else
        stoalpha = alpha
     endif
-    
+
+    saiiData%msg = 'saii_x_derivpotzero'
     
     if (alpha.gt.0._kp) then
 
@@ -275,7 +277,8 @@ contains
 
     saiiData%real1 = alpha
     saiiData%real2 = mu
-
+    saiiData%msg = 'saii_x_epsoneunity'
+    
     xVzero = saii_x_potzero(alpha,mu)
     
     if (alpha.ge.-0.5_kp) then

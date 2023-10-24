@@ -174,7 +174,8 @@ contains
 
     oripiData%real1 = phi0
     oripiData%real2 = -bfold + oripi_efold_primitive(xend,phi0)
-
+    oripiData%msg = 'oripi_x_trajectory'
+    
     oripi_x_trajectory = zbrent(find_oripi_x_trajectory,mini,maxi,tolFind,oripiData)
 
   end function oripi_x_trajectory

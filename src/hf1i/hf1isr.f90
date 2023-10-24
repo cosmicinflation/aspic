@@ -7,7 +7,6 @@
 module hf1isr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei
-  use inftools, only : zbrent
   implicit none
 
   private

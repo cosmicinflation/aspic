@@ -50,7 +50,8 @@ contains
     mhiData%real1 = mu
     mhiData%real2 = w
     mhiData%real3 = calF + primEnd
-
+    mhiData%msg = 'mhi_x_star'
+    
     mini = xEnd
 !Assuming bfold>-120, otherwise if one uses too much big maxi values, numerical explosion
     maxi=mhi_x_trajectory(-efoldMax,xEnd,mu)
@@ -114,7 +115,8 @@ contains
 
     mhiData%real1 = mu
     mhiData%real2 = calF + primEnd
-
+    mhiData%msg = 'mhi_x_rrad'
+    
     mini = xEnd
 !Assuming bfold>-120, otherwise if one uses too much big maxi values, numerical explosion
     maxi=mhi_x_trajectory(-efoldMax,xEnd,mu)
@@ -177,7 +179,8 @@ contains
 
     mhiData%real1 = mu
     mhiData%real2 = calF + primEnd
-
+    mhiData%msg = 'mhi_x_rreh'
+    
     mini = xEnd
 !Assuming bfold>-120, otherwise if one uses too much big maxi values, numerical explosion
     maxi=mhi_x_trajectory(-efoldMax,xEnd,mu)

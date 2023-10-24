@@ -49,6 +49,7 @@ contains
     wriData%real1 = phi0
     wriData%real2 = w
     wriData%real3 = calF + primEnd
+    wriData%msg = 'wri_x_star'
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi =  wri_x_trajectory(-200._kp,xend,phi0) !Position 200 efolds before the end of inflation 
@@ -112,6 +113,7 @@ contains
 
     wriData%real1 = phi0
     wriData%real2 = calF + primEnd
+    wriData%msg = 'wri_x_rrad'
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi =  wri_x_trajectory(-200._kp,xend,phi0) !Position 200 efolds before the end of inflation 
@@ -175,6 +177,7 @@ contains
 
     wriData%real1 = phi0
     wriData%real2 = calF + primEnd
+    wriData%msg = 'wri_x_rreh'
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi =  wri_x_trajectory(-200._kp,xend,phi0) !Position 200 efolds before the end of inflation 

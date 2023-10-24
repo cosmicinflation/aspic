@@ -50,7 +50,8 @@ contains
     rcmiData%real1 = alpha
     rcmiData%real2 = w
     rcmiData%real3 = calF + primEnd
-
+    rcmiData%msg = 'rcmi_x_star'
+    
     mini = xEnd
     maxi = min(xPotMax,1._kp/epsilon(1._kp))
 
@@ -111,7 +112,8 @@ contains
 
     rcmiData%real1 = alpha
     rcmiData%real2 = calF + primEnd
-
+    rcmiData%msg = 'rcmi_x_rrad'
+    
     mini = xEnd
     maxi = min(xPotMax,1._kp/epsilon(1._kp))
 
@@ -171,7 +173,8 @@ contains
 
     rcmiData%real1 = alpha
     rcmiData%real2 = calF + primEnd
-
+    rcmiData%msg = 'rcmi_x_rreh'
+    
     mini = xEnd
     maxi = min(xPotMax,1._kp/epsilon(1._kp))
 

@@ -149,6 +149,7 @@ contains
 
     ssbi4Data%real1 = alpha
     ssbi4Data%real2 = beta
+    ssbi4Data%msg = 'ssbi4_x_endinf'
     
     ssbi4_x_endinf = zbrent(find_ssbi4_x_endinf,mini,maxi,tolFind,ssbi4Data)
 
@@ -197,6 +198,7 @@ contains
     ssbi4Data%real1 = alpha
     ssbi4Data%real2 = beta
     ssbi4Data%real3 = -bfold + ssbi4_efold_primitive(xend,alpha,beta)
+    ssbi4Data%msg = 'ssbi4_x_trajectory'
     
     ssbi4_x_trajectory = zbrent(find_ssbi_x_trajectory,mini,maxi,tolFind,ssbi4Data)
        

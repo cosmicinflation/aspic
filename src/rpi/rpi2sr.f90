@@ -200,7 +200,8 @@ contains
     
     rpi2Data%real1 = p
     rpi2Data%real2 = -bfold + rpi2_efold_primitive(yend,p)
-
+    rpi2Data%msg = 'rpi2_x_trajectory'
+    
     rpi2_x_trajectory = zbrent(find_rpi_x_trajectory,mini,maxi,tolFind,rpi2Data)
 
   end function rpi2_x_trajectory

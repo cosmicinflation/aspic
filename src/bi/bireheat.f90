@@ -50,7 +50,8 @@ contains
     biData%real2 = mu
     biData%real3 = w
     biData%real4 = calF + primEnd
-
+    biData%msg = 'bi_x_star'
+    
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 
@@ -117,7 +118,8 @@ contains
     biData%real1 = p
     biData%real2 = mu
     biData%real3 = calF + primEnd
-
+    biData%msg = 'bi_x_rrad'
+    
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 
@@ -184,7 +186,8 @@ contains
     biData%real1 = p
     biData%real2 = mu
     biData%real3 = calF + primEnd
-
+    biData%msg = 'bi_x_rreh'
+    
     mini = xend
     maxi = 1._kp/epsilon(1._kp)
 

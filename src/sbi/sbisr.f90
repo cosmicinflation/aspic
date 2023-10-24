@@ -180,6 +180,7 @@ contains
 
     sbiData%real1 = alpha
     sbiData%real2 = beta
+    sbiData%msg = 'sbi_x_endinf'
     
     sbi_x_endinf = zbrent(find_sbi_x_endinf,mini,maxi,tolFind,sbiData)
    
@@ -233,6 +234,7 @@ contains
     sbiData%real1 = alpha
     sbiData%real2 = beta
     sbiData%real3 = -bfold + sbi_efold_primitive(xend,alpha,beta)
+    sbiData%msg = 'sbi_x_trajectory'
     
     sbi_x_trajectory = zbrent(find_sbi_x_trajectory,mini,maxi,tolFind,sbiData)
        

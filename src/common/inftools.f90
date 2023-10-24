@@ -1101,6 +1101,7 @@ contains
          write(*,*)'x1=',a,'f(x1)=',fa
          write(*,*)'x2=',b,'f(x2)=',fb            
          write(*,*)'zbrent: expanding interval!'
+         write(*,*)'msg: ',trim(extradata%msg)
          stop 'root must be bracketed for zbrent'
       elseif(iex.ne.0) then
          write(*,*)
@@ -1169,6 +1170,7 @@ contains
      enddo
      !stop 'zbrent exceeding maximum iterations'
      write(*,*) 'zbrent exceeding maximum iterations ITMAX=',ITMAX
+     write(*,*) 'msg: ',trim(extradata%msg)
      zbrent=b
      return
    end function zbrent

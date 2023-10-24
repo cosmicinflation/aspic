@@ -51,6 +51,7 @@ contains
     ssbiData%real2 = beta
     ssbiData%real3 = w
     ssbiData%real4 = calF + primEnd
+    ssbiData%msg = 'ssbi_x_star'
 
     x = zbrent(find_ssbi_x_star,xmin,xmax,tolzbrent,ssbiData)
     ssbi_x_star = x
@@ -111,6 +112,7 @@ contains
     ssbiData%real1 = alpha
     ssbiData%real2 = beta
     ssbiData%real3 = calF + primEnd
+    ssbiData%msg = 'ssbi_x_rrad'
 
     x = zbrent(find_ssbi_x_rrad,xmin,xmax,tolzbrent,ssbiData)
     ssbi_x_rrad = x
@@ -171,6 +173,7 @@ contains
     ssbiData%real1 = alpha
     ssbiData%real2 = beta
     ssbiData%real3 = calF + primEnd
+    ssbiData%msg = 'ssbi_x_rreh'
 
     x = zbrent(find_ssbi_x_rreh,xmin,xmax,tolzbrent,ssbiData)
     ssbi_x_rreh = x

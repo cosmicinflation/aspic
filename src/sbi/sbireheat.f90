@@ -49,7 +49,8 @@ contains
     sbiData%real2 = beta
     sbiData%real3 = w
     sbiData%real4 = calF + primEnd
-
+    sbiData%msg = 'sbi_x_star'
+    
     maxi = xEnd*(1._kp-epsilon(1._kp))
     mini = epsilon(1._kp)
 
@@ -111,7 +112,8 @@ contains
     sbiData%real1 = alpha 
     sbiData%real2 = beta
     sbiData%real3 = calF + primEnd
-
+    sbiData%msg = 'sbi_x_rrad'
+    
     maxi = xEnd*(1._kp-epsilon(1._kp))
     mini = epsilon(1._kp)
 
@@ -172,7 +174,8 @@ contains
     sbiData%real1 = alpha 
     sbiData%real2 = beta
     sbiData%real3 = calF + primEnd
-
+    sbiData%msg = 'sbi_x_rreh'
+    
     maxi = xEnd*(1._kp-epsilon(1._kp))
     mini = epsilon(1._kp)
 

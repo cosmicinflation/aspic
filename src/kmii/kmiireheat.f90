@@ -48,7 +48,8 @@ contains
     kmiiData%real1 = alpha    
     kmiiData%real2 = w
     kmiiData%real3 = calF + primEnd
-
+    kmiiData%msg = 'kmii_x_star'
+    
     !Assuming that inflation proceeds from the right to the left,
     !from initial high values of the field compared with the Planck mass
     mini = xEnd
@@ -110,7 +111,8 @@ contains
 
     kmiiData%real1 = alpha    
     kmiiData%real2 = calF + primEnd
-
+    kmiiData%msg = 'kmii_x_rrad'
+    
     !Assuming that inflation proceeds from the right to the left,
     !from initial high values of the field compared with the Planck mass
     mini = xEnd
@@ -171,7 +173,8 @@ contains
 
     kmiiData%real1 = alpha    
     kmiiData%real2 = calF + primEnd
-
+    kmiiData%msg = 'kmii_x_rreh'
+    
     !Assuming that inflation proceeds from the right to the left,
     !from initial high values of the field compared with the Planck mass
     mini = xEnd

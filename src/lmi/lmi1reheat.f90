@@ -53,7 +53,8 @@ contains
     lmi1Data%real2 = beta
     lmi1Data%real3 = w
     lmi1Data%real4 = calF + primEnd
-
+    lmi1Data%msg = 'lmi1_x_star'
+    
     maxi = xvMax
     mini = xEnd
 
@@ -118,7 +119,8 @@ contains
     lmi1Data%real1 = gam
     lmi1Data%real2 = beta
     lmi1Data%real3 = calF + primEnd
-
+    lmi1Data%msg = 'lmi1_x_rrad'
+    
     maxi = xvMax
     mini = xEnd
 
@@ -183,7 +185,8 @@ contains
     lmi1Data%real1 = gam
     lmi1Data%real2 = beta
     lmi1Data%real3 = calF + primEnd
-
+    lmi1Data%msg = 'lmi1_x_rreh'
+    
     maxi = xvMax
     mini = xEnd
 

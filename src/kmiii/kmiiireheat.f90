@@ -49,7 +49,8 @@ contains
     kmiiiData%real2 = beta  
     kmiiiData%real3 = w
     kmiiiData%real4 = calF + primEnd
-
+    kmiiiData%msg = 'kmiii_x_star'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -112,7 +113,8 @@ contains
     kmiiiData%real1 = alpha    
     kmiiiData%real2 = beta  
     kmiiiData%real3 = calF + primEnd
-
+    kmiiiData%msg = 'kmiii_x_rrad'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -173,7 +175,8 @@ contains
     kmiiiData%real1 = alpha    
     kmiiiData%real2 = beta  
     kmiiiData%real3 = calF + primEnd
-
+    kmiiiData%msg = 'kmiii_x_rreh'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 

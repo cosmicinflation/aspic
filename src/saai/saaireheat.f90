@@ -48,6 +48,7 @@ contains
     saaiData%real1 = alpha    
     saaiData%real2 = w
     saaiData%real3 = calF + primEnd
+    saaiData%msg = 'saai_x_star'
 
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = 2._kp*sqrt(2._kp/(3._kp*alpha))*200._kp
@@ -109,7 +110,8 @@ contains
 
     saaiData%real1 = alpha
     saaiData%real2 = calF + primEnd
-
+    saaiData%msg = 'saai_x_rrad'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = 2._kp*sqrt(2._kp/(3._kp*alpha))*200._kp
 
@@ -170,6 +172,7 @@ contains
 
     saaiData%real1 = alpha
     saaiData%real2 = calF + primEnd
+    saaiData%msg = 'saai_x_rreh'
 
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = 2._kp*sqrt(2._kp/(3._kp*alpha))*200._kp

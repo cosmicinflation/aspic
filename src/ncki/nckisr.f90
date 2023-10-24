@@ -151,7 +151,8 @@ contains
 
     nckiData%real1 = alpha
     nckiData%real2 = beta
-
+    nckiData%msg = 'ncki_x_endinf'
+    
     ncki_x_endinf = zbrent(find_ncki_x_endinf,mini,maxi,tolFind,nckiData)
 
   end function ncki_x_endinf
@@ -211,7 +212,8 @@ contains
     nckiData%real1 = alpha
     nckiData%real2 = beta
     nckiData%real3 = -bfold + ncki_efold_primitive(xend,alpha,beta)
-
+    nckiData%msg = 'ncki_x_trajectory'
+    
     ncki_x_trajectory = zbrent(find_ncki_x_trajectory,mini,maxi,tolFind,nckiData)
 
   end function ncki_x_trajectory

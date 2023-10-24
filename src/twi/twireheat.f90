@@ -55,7 +55,8 @@ contains
     twiData%real1 = phi0
     twiData%real2 = w
     twiData%real3 = calF + primEnd
-
+    twiData%msg = 'twi_x_star'
+    
     mini = xEnd
     maxi=TwiMaxFactor*phi0 
 
@@ -118,7 +119,8 @@ contains
 
     twiData%real1 = phi0
     twiData%real2 = calF + primEnd
-
+    twiData%msg = 'twi_x_rrad'
+    
     mini = xEnd
     maxi=TwiMaxFactor*phi0 
 
@@ -180,6 +182,7 @@ contains
 
     twiData%real1 = phi0
     twiData%real2 = calF + primEnd
+    twiData%msg = 'twi_x_rreh'
 
     mini = xEnd
     maxi=TwiMaxFactor*phi0 

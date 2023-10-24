@@ -147,6 +147,7 @@ contains
     deiData%real1 = beta
     deiData%real2 = phi0	
     deiData%real3 = -bfold + dei_efold_primitive(xend,beta,phi0)
+    deiData%msg = 'dei_x_trajectory'
     
     dei_x_trajectory = zbrent(find_dei_x_trajectory,mini,maxi,tolFind,deiData)
        

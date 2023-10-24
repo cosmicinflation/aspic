@@ -211,7 +211,8 @@ contains
 
     fiData%real1 = delta
     fiData%real2 = n
-
+    fiData%msg = 'fi_x_epstwozero'
+    
     fi_x_epstwozero = zbrent(find_fi_x_epstwozero,mini,maxi,tolFind,fiData)
 
   end function fi_x_epstwozero
@@ -262,7 +263,8 @@ contains
 
     fiData%real1 = delta
     fiData%real2 = n
-
+    fiData%msg = 'fi_x_epsoneunity'
+    
     mini = xthirdbranch
     maxi = xepstwonull
 
@@ -389,7 +391,8 @@ contains
     fiData%real1 = delta
     fiData%real2 = n
     fiData%real3 = -bfold + fi_efold_primitive(xend,delta,n)
-
+    fiData%msg = 'fi_x_trajectory'
+    
     fi_x_trajectory = zbrent(find_fi_x_trajectory,mini,maxi,tolFind,fiData)
 
   end function fi_x_trajectory

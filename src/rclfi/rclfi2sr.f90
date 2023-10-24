@@ -304,6 +304,7 @@ contains
 
     rclfiData%real1=deltax
     rclfiData%real2=p
+    rclfiData%msg = 'rclfi2_numacc_alphamax_deltax'
     
     rclfi2_numacc_alphamax_deltax &
          = zbrent(find_rclfi2_numacc_alphamax_deltax,mini,maxi,tolFind,rclfiData)
@@ -408,7 +409,8 @@ contains
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = efold
-
+    rclfiData%msg = 'rclfi2_numacc_mumin'
+    
     if (rclfi2_numacc_efoldmax(p,alpha,mubig).lt.efold) then
        write(*,*)'max efold= ',rclfi2_numacc_efoldmax(p,alpha,mubig)
        stop 'rclfi2_numacc_mumin: mubig too small!'
@@ -500,7 +502,8 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = -bfold + rclfi2_efold_primitive(xend,p,alpha,mu)
-
+    rclfiData%msg = 'rclfi2_x_trajectory'
+    
     rclfi2_x_trajectory = zbrent(find_rclfi2_x_trajectory,mini,maxi,tolFind,rclfiData)
     
   end function rclfi2_x_trajectory

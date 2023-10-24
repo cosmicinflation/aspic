@@ -280,6 +280,7 @@ contains
     diData%minmax = .true.
     diData%minmin = epsilon(1._kp)
     diData%maxmax = k2potmin + 100000._kp*epsilon(1._kp)
+    diData%msg = 'di_k2_epsoneunity'
     
     di_k2_epsoneunity = zbrent(find_di_k2_epsoneunity,mini,maxi,tolFind,diData)   
     
@@ -351,7 +352,8 @@ contains
     diData%real1 = f
     diData%real2 = lambda
     diData%real3 = -bfold + lambda*lambda*di_parametric_efold_primitive(k2end,f)
-
+    diData%msg = 'di_k2_trajectory'
+    
     di_k2_trajectory = zbrent(find_di_k2_trajectory,mini,maxi,tolFind,diData)
 
   end function di_k2_trajectory

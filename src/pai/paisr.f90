@@ -120,7 +120,8 @@ contains
     maxi = pai_numacc_xinimax(mu)
 
     paiData%real1 = mu
-
+    paiData%msg = 'pai_x_endinf'
+    
     pai_x_endinf = zbrent(find_pai_x_endinf,mini,maxi,tolFind,paiData)
     
   end function pai_x_endinf
@@ -168,7 +169,8 @@ contains
 
     paiData%real1 = mu
     paiData%real2 = -bfold + pai_efold_primitive(xend,mu)
-
+    paiData%msg = 'pai_x_trajectory'
+    
     pai_x_trajectory = zbrent(find_pai_x_trajectory,mini,maxi,tolFind,paiData)
 
   end function pai_x_trajectory

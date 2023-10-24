@@ -55,7 +55,7 @@ contains
     rpi1Data%real1 = p
     rpi1Data%real2 = w
     rpi1Data%real3 = calF + primEnd
-    
+    rpi1Data%msg = 'rpi1_x_star'
 
     if (p.eq.1._kp) then !Starobinsky Inflation Model (SI)
 
@@ -135,8 +135,9 @@ contains
 
     rpi1Data%real1 = p
     rpi1Data%real2 = calF + primEnd
+    rpi1Data%msg = 'rpi1_x_rrad'
     
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+    if (p.eq.1._kp) then 
 
        mini = yEnd
        maxi=rpiBig !to avoid numerical explosion
@@ -216,6 +217,7 @@ contains
 
     rpi1Data%real1 = p
     rpi1Data%real2 = calF + primEnd
+    rpi1Data%msg = 'rpi1_x_rreh'
     
     if (p.eq.1._kp) then !SI
 

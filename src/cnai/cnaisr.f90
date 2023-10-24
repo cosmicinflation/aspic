@@ -131,7 +131,8 @@ contains
     maxi = cnai_x_potzero(alpha) * (1._kp-epsilon(1._kp))
 
     cnaiData%real1 = alpha
-
+    cnaiData%msg = 'cnai_x_endinf'
+    
     cnai_x_endinf = zbrent(find_cnai_x_endinf,mini,maxi,tolFind,cnaiData)
    
   end function cnai_x_endinf
@@ -183,6 +184,7 @@ contains
 
     cnaiData%real1 = alpha
     cnaiData%real2 = -bfold + cnai_efold_primitive(xend,alpha)
+    cnaiData%msg = 'cnai_x_trajectory'
     
     cnai_x_trajectory = zbrent(find_cnai_x_trajectory,mini,maxi,tolFind,cnaiData)
        

@@ -152,6 +152,7 @@ end function cwi_xplus_positive_potential
 
     cwiData%real1 = alpha
     cwiData%real2 = Q	
+    cwiData%msg = 'cwi_x_endinf'
     
     cwi_x_endinf = zbrent(find_cwi_x_endinf,mini,maxi,tolFind,cwiData)
 
@@ -209,6 +210,7 @@ end function cwi_xplus_positive_potential
     cwiData%real1 = alpha
     cwiData%real2 = Q	
     cwiData%real3 = -bfold + cwi_efold_primitive(xend,alpha,Q)
+    cwiData%msg = 'cwi_x_trajectory'
     
     cwi_x_trajectory = zbrent(find_cwi_x_trajectory,mini,maxi,tolFind,cwiData)
        

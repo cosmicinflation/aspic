@@ -48,7 +48,8 @@ contains
     rcqiData%real1 = alpha    
     rcqiData%real2 = w
     rcqiData%real3 = calF + primEnd
-
+    rcqiData%msg = 'rcqi_x_star'
+    
     mini = xEnd
     maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
 
@@ -109,7 +110,8 @@ contains
 
     rcqiData%real1 = alpha    
     rcqiData%real2 = calF + primEnd
-
+    rcqiData%msg = 'rcqi_x_rrad'
+    
     mini = xEnd
     maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
 
@@ -168,7 +170,8 @@ contains
 
     rcqiData%real1 = alpha    
     rcqiData%real2 = calF + primEnd
-
+    rcqiData%msg = 'rcqi_x_rreh'
+    
     mini = xEnd
     maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
 

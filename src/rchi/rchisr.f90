@@ -171,6 +171,7 @@ contains
        endif
 
        rchiData%real1 = AI
+       rchiData%msg = 'rchi_x_endinf'
        xendinf = zbrent(find_rchi_x_endinf,mini,maxi,tolFind,rchiData)
 
     else
@@ -246,7 +247,8 @@ contains
 
     rchiData%real1 = AI
     rchiData%real2 = -bfold + rchi_efold_primitive(xend,AI)
-
+    rchiData%msg = 'rchi_x_trajectory'
+    
     rchi_x_trajectory = zbrent(find_rchi_x_trajectory,mini,maxi,tolFind,rchiData)
 
   end function rchi_x_trajectory

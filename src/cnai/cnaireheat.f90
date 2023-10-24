@@ -48,6 +48,7 @@ contains
     cnaiData%real1 = alpha    
     cnaiData%real2 = w
     cnaiData%real3 = calF + primEnd
+    cnaiData%msg = 'cnai_x_star'
 
     mini = epsilon(1._kp)
     maxi = xEnd*(1._kp-epsilon(1._kp))
@@ -109,7 +110,8 @@ contains
 
     cnaiData%real1 = alpha    
     cnaiData%real2 = calF + primEnd
-
+    cnaiData%msg = 'cnai_x_rrad'
+    
     mini = epsilon(1._kp)
     maxi = xEnd*(1._kp-epsilon(1._kp))
 
@@ -170,7 +172,8 @@ contains
 
     cnaiData%real1 = alpha    
     cnaiData%real2 = calF + primEnd
-
+    cnaiData%msg = 'cnai_x_rreh'
+    
     mini = epsilon(1._kp)
     maxi = xEnd*(1._kp-epsilon(1._kp))
 

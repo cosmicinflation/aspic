@@ -104,6 +104,8 @@ contains
 
     hiData%real1 = exp(x)
     hiData%real2 = xi
+    hiData%msg = 'hi_hbar'
+    
     hbar2 = zbrent(find_hi_hbar2,mini,maxi,tolFind,hiData)
 
     hbar = sqrt(hbar2)
@@ -349,7 +351,8 @@ contains
 
     hiData%real1 = xi
     hiData%real2 = -bfold + hi_parametric_efold_primitive(hbarend,xi)
-
+    hiData%msg = 'hi_parametric_hbar_trajectory'
+    
     hi_parametric_hbar_trajectory = zbrent(find_hi_parametric_hbar_trajectory,mini,maxi,tolFind,hiData)
 
   end function hi_parametric_hbar_trajectory

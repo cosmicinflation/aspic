@@ -155,7 +155,8 @@ contains
     saiiiData%real2 = beta
     saiiiData%real3 = mu
     saiiiData%real4 = -bfold + saiii3_efold_primitive(xend,alpha,beta,mu)
-
+    saiiiData%msg = 'saiii3_x_trajectory'
+    
     saiii3_x_trajectory = zbrent(find_saiii_x_trajectory,xend,saiiiXBig,tolFind,saiiiData)
 
   end function saiii3_x_trajectory

@@ -50,6 +50,7 @@ contains
     shiData%real2 = phi0
     shiData%real3 = w
     shiData%real4 = calF + primEnd
+    shiData%msg = 'shi_x_star'
 
     mini = tolkp
     maxi = shi_x_endinf(alpha,phi0)
@@ -113,6 +114,7 @@ contains
     shiData%real1 = alpha
     shiData%real2 = phi0
     shiData%real3 = calF + primEnd
+    shiData%msg = 'shi_x_rrad'
 
     mini = tolkp
     maxi = shi_x_endinf(alpha,phi0)
@@ -175,6 +177,7 @@ contains
     shiData%real1 = alpha
     shiData%real2 = phi0
     shiData%real3 = calF + primEnd
+    shiData%msg = 'shi_x_rreh'
 
     mini = tolkp
     maxi = shi_x_endinf(alpha,phi0)

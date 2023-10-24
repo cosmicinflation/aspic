@@ -202,7 +202,7 @@ contains
     cndiData%real1 = alpha
     cndiData%real2 = beta
     cndiData%real3 = -bfold + cndi_efold_primitive(xend,alpha,beta)
-
+    cndiData%msg = 'cndi_x_trajectory'
 
     if (bfold .lt. 0._kp) then
       maxi = cndi_xinimax(alpha,beta)

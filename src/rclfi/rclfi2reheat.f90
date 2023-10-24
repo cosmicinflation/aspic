@@ -53,7 +53,8 @@ contains
     rclfiData%real3 = mu
     rclfiData%real4 = w
     rclfiData%real5 = calF + primEnd
-
+    rclfiData%msg = 'rclfi2_x_star'
+    
     mini = rclfi2_numacc_xinimin(p,alpha,mu)
     maxi = xend
 
@@ -121,7 +122,8 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = calF + primEnd
-
+    rclfiData%msg = 'rclfi2_x_rrad'
+    
     mini = rclfi2_numacc_xinimin(p,alpha,mu)
     maxi = xend
 
@@ -190,7 +192,8 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = calF + primEnd
-
+    rclfiData%msg = 'rclfi2_x_rreh'
+    
     mini = rclfi2_numacc_xinimin(p,alpha,mu)
     maxi = xend
 

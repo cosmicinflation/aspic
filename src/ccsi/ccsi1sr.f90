@@ -178,6 +178,8 @@ contains
     maxi = 1._kp
 
     ccsi1Data%real1 = efoldMax
+    ccsi1Data%msg = 'ccsi1_numacc_alphamax'
+    
     ccsi1_numacc_alphamax  = zbrent(find_ccsi1_alphamax,mini,maxi,tolFind,ccsi1Data)
 
     alphamaxSave = ccsi1_numacc_alphamax
@@ -267,7 +269,8 @@ contains
 
     ccsi1Data%real1 = alpha
     ccsi1Data%real2 = -bfold + ccsi1_efold_primitive(xend,alpha)
-
+    ccsi1Data%msg = 'ccsi1_x_trajectory'
+    
     ccsi1_x_trajectory = zbrent(find_ccsi_x_trajectory,mini,maxi,tolFind,ccsi1Data)
 
   end function ccsi1_x_trajectory

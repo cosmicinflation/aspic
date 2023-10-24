@@ -54,7 +54,8 @@ contains
     rclfiData%real3 = mu
     rclfiData%real4 = w
     rclfiData%real5 = calF + primEnd
-
+    rclfiData%msg = 'rclfi4_x_star'
+    
     mini = xend
     maxi = rclfixBig
     
@@ -122,7 +123,8 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = calF + primEnd
-
+    rclfiData%msg = 'rclfi4_x_rrad'
+    
     mini = xend
     maxi = rclfixBig
 
@@ -191,6 +193,7 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = calF + primEnd
+    rclfiData%msg = 'rclfi4_x_rreh'
 
     mini = xend
     maxi = rclfixBig

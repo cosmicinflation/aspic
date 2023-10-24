@@ -48,7 +48,8 @@ contains
     aiData%real1 = mu
     aiData%real2 = w
     aiData%real3 = calF + primEnd
-
+    aiData%msg = 'ai_x_star'
+    
 !    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
 !    maxi = xend*(1._kp-epsilon(1._kp))
     mini = ai_numacc_xinimin(mu)
@@ -114,7 +115,8 @@ contains
 
     aiData%real1 = mu
     aiData%real2 = calF + primEnd
-
+    aiData%msg = 'ai_x_rrad'
+    
 !    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
 !    maxi = xend*(1._kp-epsilon(1._kp))
     mini = ai_numacc_xinimin(mu)
@@ -179,6 +181,7 @@ contains
 
     aiData%real1 = mu
     aiData%real2 = calF + primEnd
+    aiData%msg = 'ai_x_rreh'
 
 !    mini = -mu**(-2._kp/3._kp)*10._kp**(10._kp)
 !    maxi = xend*(1._kp-epsilon(1._kp))

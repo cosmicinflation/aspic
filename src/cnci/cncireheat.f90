@@ -46,7 +46,8 @@ contains
     cnciData%real1 = alpha
     cnciData%real2 = w
     cnciData%real3 = calF + primEnd
-
+    cnciData%msg = 'cnci_x_star'
+    
     maxi = xend*(1._kp-epsilon(1._kp))
 
 !Value of x such that epsilon1=1 below which inflation cannot proceed
@@ -110,7 +111,8 @@ contains
 
     cnciData%real1 = alpha
     cnciData%real2 = calF + primEnd
-
+    cnciData%msg = 'cnci_x_rrad'
+    
     maxi = xend*(1._kp-epsilon(1._kp))
 
 !Value of x such that epsilon1=1 below which inflation cannot proceed
@@ -173,7 +175,8 @@ contains
 
     cnciData%real1 = alpha
     cnciData%real2 = calF + primEnd
-
+    cnciData%msg = 'cnci_x_rreh'
+    
     maxi = xend*(1._kp-epsilon(1._kp))
 
 !Value of x such that epsilon1=1 below which inflation cannot proceed

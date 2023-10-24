@@ -51,7 +51,8 @@ contains
     cndiData%real3 = xEnd
     cndiData%real4 = w
     cndiData%real5 = calF + primEnd
-
+    cndiData%msg = 'cndi_x_star'
+    
     maxi = cndi_xinimax(alpha,beta)
     mini = xend
 
@@ -116,7 +117,8 @@ contains
     cndiData%real2 = beta
     cndiData%real3 = xEnd
     cndiData%real4 = calF + primEnd
-
+    cndiData%msg = 'cndi_x_rrad'
+    
     maxi = cndi_xinimax(alpha,beta)
     mini = xend
 
@@ -180,7 +182,8 @@ contains
     cndiData%real2 = beta
     cndiData%real3 = xEnd
     cndiData%real4 = calF + primEnd
-
+    cndiData%msg = 'cndi_x_rreh'
+    
     maxi = cndi_xinimax(alpha,beta)
     mini = xend
 

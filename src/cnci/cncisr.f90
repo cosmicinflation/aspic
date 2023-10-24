@@ -122,7 +122,8 @@ contains
     maxi = (log(12._kp/alpha)+log(4._kp*alpha))/(sqrt(2._kp*alpha))*10._kp**(3.)
 
     cnciData%real1 = alpha
-
+    cnciData%msg = 'cnci_x_epsoneunity'
+    
     cnci_x_epsoneunity=zbrent(find_cnci_x_epsoneunity,mini,maxi,tolFind,cnciData)
 
 
@@ -177,6 +178,7 @@ contains
 
     cnciData%real1 = alpha
     cnciData%real2 = -bfold + cnci_efold_primitive(xend,alpha)
+    cnciData%msg = 'cnci_x_trajectory'
     
     cnci_x_trajectory = zbrent(find_cnci_x_trajectory,mini,maxi,tolFind,cnciData)
        

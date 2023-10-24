@@ -138,6 +138,7 @@ contains
     lpi3Data%real1 = p
     lpi3Data%real2 = q
     lpi3Data%real3 = phi0
+    lpi3Data%msg = 'lpi3_x_endinf'
     
     lpi3_x_endinf = zbrent(find_lpi3_x_endinf,mini,maxi,tolFind,lpi3Data)
       
@@ -201,6 +202,7 @@ contains
     lpi3Data%real2 = q
     lpi3Data%real3 = phi0
     lpi3Data%real4 = -bfold + lpi_efold_primitive(xend,p,q,phi0)
+    lpi3Data%msg = 'lpi3_x_trajectory'
     
     lpi3_x_trajectory = zbrent(find_lpi_x_trajectory,mini,maxi,tolFind,lpi3Data)
        

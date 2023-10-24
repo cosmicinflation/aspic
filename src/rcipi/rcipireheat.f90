@@ -52,6 +52,7 @@ contains
     rcipiData%real3 = beta
     rcipiData%real4 = w
     rcipiData%real5 = calF + primEnd
+    rcipiData%msg = 'rcipi_x_star'
 
     mini = xend
     maxi = rcipi_xinimax(p,alpha,beta)
@@ -121,7 +122,8 @@ contains
     rcipiData%real2 = alpha
     rcipiData%real3 = beta
     rcipiData%real4 = calF + primEnd
-
+    rcipiData%msg = 'rcipi_x_rrad'
+    
     mini = xend
     maxi = rcipi_xinimax(p,alpha,beta)
 
@@ -187,7 +189,8 @@ contains
     rcipiData%real2 = alpha
     rcipiData%real3 = beta
     rcipiData%real4 = calF + primEnd
-
+    rcipiData%msg = 'rcipi_x_rreh'
+    
     mini = xend
     maxi = rcipi_xinimax(p,alpha,beta)
 

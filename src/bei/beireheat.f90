@@ -50,7 +50,8 @@ contains
     beiData%real2 = beta
     beiData%real3 = w
     beiData%real4 = calF + primEnd
-
+    beiData%msg = 'bei_x_star'
+    
     maxi = xEnd*(1._kp-epsilon(1._kp))
     mini=maxi-1000._kp
 
@@ -120,7 +121,8 @@ contains
     beiData%real1 = lambda
     beiData%real2 = beta
     beiData%real3 = calF + primEnd
-
+    beiData%msg = 'bei_x_rrad'
+    
     maxi = xEnd*(1._kp-epsilon(1._kp))
     mini=maxi-1000._kp
 
@@ -185,7 +187,8 @@ contains
     beiData%real1 = lambda
     beiData%real2 = beta
     beiData%real3 = calF + primEnd
-
+    beiData%msg = 'bei_x_rreh'
+    
     maxi = xEnd*(1._kp-epsilon(1._kp))
     mini=maxi-1000._kp
 

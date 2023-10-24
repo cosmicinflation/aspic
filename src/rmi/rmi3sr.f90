@@ -133,6 +133,7 @@ contains
     rmi3Data%real1 = c
     rmi3Data%real2 = phi0
     rmi3Data%real3 = -bfold + rmi3_efold_primitive(xend,c,phi0)
+    rmi3Data%msg = 'rmi3_x_trajectory'
     
     rmi3_x_trajectory = zbrent(find_rmi_x_trajectory,mini,maxi,tolFind,rmi3Data)
        

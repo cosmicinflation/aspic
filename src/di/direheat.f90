@@ -162,6 +162,7 @@ contains
     diData%real2 = calF - log(pi4Pstar24/f/f)*(1._kp+3._kp*w)/(18._kp*(1._kp+w))
     diData%real3 = pi4Pstar24
     diData%real4 = w
+    diData%msg = 'di_k2_star'
 
     k2potmin = di_k2_potmin(f)
 
@@ -257,7 +258,8 @@ contains
     diData%real1 = f
     diData%real2 = calF - log(pi4Pstar24/f/f)/12._kp
     diData%real3 = pi4Pstar24
-  
+    diData%msg = 'di_k2_rrad'
+    
     k2potmin = di_k2_potmin(f)
 
     k2min= epsilon(1._kp)
@@ -345,7 +347,8 @@ contains
     diData%real1 = f
     diData%real2 = calF
     diData%real3 = pi4Pstar24
-  
+    diData%msg = 'di_k2_rreh'
+    
     k2potmin = di_k2_potmin(f)
 
     k2min= epsilon(1._kp)

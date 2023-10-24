@@ -233,7 +233,8 @@ contains
     saiii2Data%real1 = alpha
     saiii2Data%real2 = beta
     saiii2Data%real3 = efold
-
+    saiii2Data%msg = 'saiii2_numacc_mumin'
+    
     saiii2_numacc_mumin = zbrent(find_saiii2_numacc_mumin,mini,maxi,tolFind,saiii2Data)
 
   end function saiii2_numacc_mumin
@@ -292,7 +293,8 @@ contains
     saiiiData%real2 = beta
     saiiiData%real3 = mu
     saiiiData%real4 = -bfold + saiii2_efold_primitive(xend,alpha,beta,mu)
-
+    saiiiData%msg = 'saiii2_x_trajectory'
+    
     saiii2_x_trajectory = zbrent(find_saiii_x_trajectory,xinimin,xend,tolFind,saiiiData)
 
   end function saiii2_x_trajectory

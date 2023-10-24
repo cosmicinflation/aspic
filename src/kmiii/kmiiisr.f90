@@ -122,10 +122,11 @@ contains
 
     kmiiiData%real1 = alpha
     kmiiiData%real2 = beta
-
-   mini = kmiii_x_potzero(alpha,beta)
-   maxi = 1._kp/epsilon(1._kp)
-   kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
+    kmiiiData%msg = 'kmiii_x_endinf'
+    
+    mini = kmiii_x_potzero(alpha,beta)
+    maxi = 1._kp/epsilon(1._kp)
+    kmiii_x_endinf = zbrent(find_kmiii_x_endinf,mini,maxi,tolFind,kmiiiData)
 
   end function kmiii_x_endinf
 
@@ -241,6 +242,7 @@ contains
     kmiiiData%real1 = alpha
     kmiiiData%real2 = beta
     kmiiiData%real3 = -bfold + kmiii_efold_primitive(xend,alpha,beta)
+    kmiiiData%msg = 'kmiii_x_trajectory'
     
     kmiii_x_trajectory = zbrent(find_kmiii_x_trajectory,mini,maxi,tolFind,kmiiiData)
        

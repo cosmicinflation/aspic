@@ -51,7 +51,8 @@ contains
     ncliData%real3 = n
     ncliData%real4 = w
     ncliData%real5 = calF + primEnd
-
+    ncliData%msg = 'ncli_x_star'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = xNumAccMax
 
@@ -118,7 +119,8 @@ contains
     ncliData%real2 = phi0
     ncliData%real3 = n
     ncliData%real4 = calF + primEnd
-
+    ncliData%msg = 'ncli_x_rrad'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = xNumAccMax
 
@@ -182,7 +184,8 @@ contains
     ncliData%real2 = phi0
     ncliData%real3 = n
     ncliData%real4 = calF + primEnd
-
+    ncliData%msg = 'ncli_x_rreh'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = xNumAccMax
 

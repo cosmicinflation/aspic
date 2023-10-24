@@ -48,6 +48,7 @@ contains
     vhiData%real2 = mu
     vhiData%real3 = w
     vhiData%real4 = calF + primEnd
+    vhiData%msg = 'vhi_x_star'
     
     mini = xEnd -epsilon(1._kp)
     maxi = vhi_xinimax(p,mu) + epsilon(1._kp)
@@ -111,6 +112,7 @@ contains
     vhiData%real1 = p
     vhiData%real2 = mu
     vhiData%real3 = calF + primEnd
+    vhiData%msg = 'vhi_x_rrad'
     
     mini = xEnd -epsilon(1._kp)
     maxi = vhi_xinimax(p,mu) + epsilon(1._kp)
@@ -175,6 +177,7 @@ contains
     vhiData%real1 = p
     vhiData%real2 = mu
     vhiData%real3 = calF + primEnd
+    vhiData%msg = 'vhi_x_rreh'
     
     mini = xEnd -epsilon(1._kp)
     maxi = vhi_xinimax(p,mu) + epsilon(1._kp)

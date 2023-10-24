@@ -144,6 +144,7 @@ contains
 
     mssmiData%real1 = phi0
     mssmiData%real2 = -bfold + mssmi_efold_primitive(xend,phi0)
+    mssmiData%msg = 'mssmi_x_trajectory'
     
     mssmi_x_trajectory = zbrent(find_mssmi_x_trajectory,mini,maxi,tolFind,mssmiData)
        

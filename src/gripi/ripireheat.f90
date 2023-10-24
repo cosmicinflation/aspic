@@ -48,7 +48,8 @@ contains
     ripiData%real1 = phi0
     ripiData%real2 = w
     ripiData%real3 = calF + primEnd
-
+    ripiData%msg = 'ripi_x_star'
+    
     mini = xEnd +epsilon(1._kp)
     maxi = 1._kp - epsilon(1._kp) !Position of the flat inflection point
 
@@ -109,7 +110,8 @@ contains
 
     ripiData%real1 = phi0
     ripiData%real2 = calF + primEnd
-
+    ripiData%msg = 'ripi_x_rrad'
+    
     mini = xEnd +epsilon(1._kp)
     maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 
@@ -170,7 +172,8 @@ contains
 
     ripiData%real1 = phi0
     ripiData%real2 = calF + primEnd
-
+    ripiData%msg = 'ripi_x_rreh'
+    
     mini = xEnd +epsilon(1._kp)
     maxi = 1._kp-epsilon(1._kp) !Position of the flat inflection point
 

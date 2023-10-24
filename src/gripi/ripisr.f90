@@ -150,7 +150,8 @@ contains
 
     ripiData%real1 = phi0
     ripiData%real2 = -bfold + ripi_efold_primitive(xend,phi0)
-
+    ripiData%msg = 'ripi_x_trajectory'
+    
     ripi_x_trajectory = zbrent(find_ripi_x_trajectory,mini,maxi,tolFind,ripiData)
 
   end function ripi_x_trajectory

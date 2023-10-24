@@ -49,7 +49,8 @@ contains
     mssmiData%real2 = xEnd
     mssmiData%real3 = w
     mssmiData%real4 = calF + primEnd
-
+    mssmiData%msg = 'mssmi_x_star'
+    
     mini = xend
     maxi = mssmi_x_epsonemin(phi0) -epsilon(1._kp)
 
@@ -114,7 +115,8 @@ contains
     mssmiData%real1 = phi0 
     mssmiData%real2 = xEnd
     mssmiData%real3 = calF + primEnd
-
+    mssmiData%msg = 'mssmi_x_rrad'
+    
     mini = xend
     maxi = mssmi_x_epsonemin(phi0)-epsilon(1._kp)
 
@@ -178,7 +180,8 @@ contains
     mssmiData%real1 = phi0 
     mssmiData%real2 = xEnd
     mssmiData%real3 = calF + primEnd
-
+    mssmiData%msg = 'mssmi_x_rreh'
+    
     mini = xend
     maxi = mssmi_x_epsonemin(phi0)-epsilon(1._kp)
 

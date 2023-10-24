@@ -117,7 +117,8 @@ contains
     maxi = pi*(1._kp-tolkp)
 
     ahiData%real1 = f
-
+    ahiData%msg = 'ahi_x_endinf'
+    
     ahi_x_endinf = zbrent(find_ahi_x_endinf,mini,maxi,tolFind,ahiData)
     
   end function ahi_x_endinf
@@ -200,7 +201,8 @@ contains
 
     ahiData%real1 = f
     ahiData%real2 = -bfold + ahi_efold_primitive(xend,f)
-
+    ahiData%msg = 'ahi_x_trajectory'
+    
     ahi_x_trajectory = zbrent(find_ahi_x_trajectory,mini,maxi,tolFind,ahiData)
 
   end function ahi_x_trajectory

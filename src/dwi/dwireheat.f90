@@ -50,7 +50,8 @@ contains
     dwiData%real1 = phi0
     dwiData%real2 = w
     dwiData%real3 = calF + primEnd
-
+    dwiData%msg = 'dwi_x_star'
+    
     mini = epsilon(1._kp)
 
     maxi = xEnd
@@ -116,7 +117,8 @@ contains
 
     dwiData%real1 = phi0
     dwiData%real2 = calF + primEnd
-
+    dwiData%msg = 'dwi_x_rrad'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
    
@@ -179,7 +181,8 @@ contains
 
     dwiData%real1 = phi0
     dwiData%real2 = calF + primEnd
-
+    dwiData%msg = 'dwi_x_rreh'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
    

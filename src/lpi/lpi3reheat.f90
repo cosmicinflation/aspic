@@ -53,7 +53,8 @@ contains
     lpi3Data%real3 = phi0
     lpi3Data%real4 = w
     lpi3Data%real5 = calF + primEnd
-
+    lpi3Data%msg = 'lpi3_x_star'
+    
     mini = xend
     maxi = lpi_x_potmax(p,q,phi0)
 
@@ -123,7 +124,8 @@ contains
     lpi3Data%real2 = q
     lpi3Data%real3 = phi0
     lpi3Data%real4 = calF + primEnd
-
+    lpi3Data%msg = 'lpi3_x_rrad'
+    
     mini = xend
     maxi = lpi_x_potmax(p,q,phi0)
 
@@ -191,7 +193,8 @@ contains
     lpi3Data%real2 = q
     lpi3Data%real3 = phi0
     lpi3Data%real4 = calF + primEnd
-
+    lpi3Data%msg = 'lpi3_x_rreh'
+    
     mini = xend
     maxi = lpi_x_potmax(p,q,phi0)
 

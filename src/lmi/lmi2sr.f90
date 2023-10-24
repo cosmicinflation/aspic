@@ -182,6 +182,7 @@ contains
       
     lmi2Data%real1 = gam
     lmi2Data%real2 = beta
+    lmi2Data%msg = 'lmi2_x_epsoneunity'
     
     lmi2_x_epsoneunity &
          = zbrent(find_lmi2_x_epsoneunity,mini,maxi,tolFind,lmi2Data)
@@ -271,6 +272,7 @@ contains
     lmiData%real1 = gam
     lmiData%real2 = beta
     lmiData%real3 = -bfold + lmi_efold_primitive(xend,gam,beta)
+    lmiData%msg = 'lmi2_x_trajectory'
     
     lmi2_x_trajectory = zbrent(find_lmi_x_trajectory,mini,maxi,tolFind,lmiData)
 
@@ -309,7 +311,8 @@ contains
     endif
 
     lmi2Data%real1 = beta
-
+    lmi2Data%msg = 'lmi2_gammin'
+    
     lmi2_gammin = zbrent(find_lmi2_gammin,epsilon(1._kp) &
          ,1._kp-epsilon(1._kp),tolFind,lmi2Data)
 

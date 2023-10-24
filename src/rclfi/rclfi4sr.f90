@@ -148,6 +148,7 @@ contains
     rclfiData%real1 = alpha
     rclfiData%real2 = p
     rclfiData%real3 = mu
+    rclfiData%msg = 'rclfi4_x_endinf'
     
     rclfi4_x_endinf = zbrent(find_rclfi_x_endinf,mini,maxi,tolFind,rclfiData)
     
@@ -203,7 +204,8 @@ contains
     rclfiData%real2 = p
     rclfiData%real3 = mu
     rclfiData%real4 = -bfold + rclfi4_efold_primitive(xend,p,alpha,mu)
-
+    rclfiData%msg = 'rclfi4_x_trajectory'
+    
     rclfi4_x_trajectory = zbrent(find_rclfi4_x_trajectory,mini,maxi,tolFind,rclfiData)
     
   end function rclfi4_x_trajectory

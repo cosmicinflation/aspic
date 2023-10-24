@@ -47,7 +47,8 @@ contains
     bsusybiData%real1 = gammaBSUSYB
     bsusybiData%real2 = w
     bsusybiData%real3 = calF + primEnd
-
+    bsusybiData%msg = 'bsusybi_x_star'
+    
     mini = xend
     maxi = bsusybi_x_epsoneunity(gammaBSUSYB)
 
@@ -108,7 +109,8 @@ contains
 
     bsusybiData%real1 = gammaBSUSYB
     bsusybiData%real2 = calF + primEnd
-
+    bsusybiData%msg = 'bsusybi_x_rrad'
+    
     mini = xend
     maxi = bsusybi_x_epsoneunity(gammaBSUSYB)
 
@@ -169,7 +171,8 @@ contains
 
     bsusybiData%real1 = gammaBSUSYB
     bsusybiData%real2 = calF + primEnd
-
+    bsusybiData%msg = 'bsusybi_x_rreh'
+    
     mini = xend
     maxi = bsusybi_x_epsoneunity(gammaBSUSYB)
 

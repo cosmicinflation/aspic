@@ -279,7 +279,8 @@ contains
     ncliData%real1 = alpha
     ncliData%real2 = phi0
     ncliData%real3 = n
-
+    ncliData%msg = 'ncli_x_epstwozero'
+    
     mini = x * (1._kp + 10._kp*epsilon(1._kp))
     maxi = xNumAccMax
 
@@ -371,7 +372,8 @@ contains
     ncliData%real1 = alpha
     ncliData%real2 = phi0
     ncliData%real3 = n
-
+    ncliData%msg = 'ncli_x_epsoneunity'
+    
 !eps1->infty in 0, there is only one root in these cases only
     oneroot = ((eps1min.gt.1._kp).and.(eps1max.gt.1._kp)) &
          .or. ((eps1min.lt.1._kp).and.(eps1max.lt.1._kp))
@@ -592,7 +594,8 @@ contains
     ncliData%real2 = phi0
     ncliData%real3 = n
     ncliData%real4 = -bfold + ncli_efold_primitive(xend,alpha,phi0,n)
-
+    ncliData%msg = 'ncli_x_trajectory'
+    
     ncli_x_trajectory = zbrent(find_ncli_x_trajectory,mini,maxi,tolFind,ncliData)
 
   end function ncli_x_trajectory

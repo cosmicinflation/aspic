@@ -7,7 +7,6 @@
 
 module lpicommon
   use infprec, only : kp,tolkp,transfert
-  use inftools, only : zbrent
   use specialinf, only : ei
 
   implicit none

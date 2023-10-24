@@ -48,7 +48,8 @@ contains
     niData%real1 = f
     niData%real2 = w
     niData%real3 = calF + primEnd
-
+    niData%msg = ' ni_x_star'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
 
@@ -109,7 +110,8 @@ contains
 
     niData%real1 = f
     niData%real2 = calF + primEnd
-
+    niData%msg = ' ni_x_rrad'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
 
@@ -169,7 +171,8 @@ contains
 
     niData%real1 = f
     niData%real2 = calF + primEnd
-
+    niData%msg = ' ni_x_rreh'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
 

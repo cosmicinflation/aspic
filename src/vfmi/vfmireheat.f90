@@ -62,6 +62,7 @@ contains
     vfmiData%real2 = beta
     vfmiData%real3 = w
     vfmiData%real4 = calF + primEnd
+    vfmiData%msg = 'vfmi_x_star'
 
     if (alpha.le.2._kp) then
 
@@ -137,6 +138,7 @@ contains
     vfmiData%real1 = alpha
     vfmiData%real2 = beta
     vfmiData%real3 = calF + primEnd
+    vfmiData%msg = 'vfmi_x_rrad'
 
     if (alpha.le.2._kp) then
 
@@ -211,6 +213,7 @@ contains
     vfmiData%real1 = alpha
     vfmiData%real2 = beta
     vfmiData%real3 = calF + primEnd
+    vfmiData%msg = 'vfmi_x_rreh'
 
     if (alpha.le.2._kp) then
 

@@ -299,6 +299,7 @@ contains
     rpqtiData%real1 = phi0
     rpqtiData%real2 = alpha
     rpqtiData%real3 = beta
+    rpqtiData%msg = 'rpqdi_x_endinf'
     
     rpqti_x_endinf = zbrent(find_rpqti_x_endinf,mini,maxi,tolFind,rpqtiData)
 
@@ -362,6 +363,7 @@ contains
     rpqtiData%real2 = alpha
     rpqtiData%real3 = beta
     rpqtiData%real4 = -bfold + rpqti_efold_primitive(xend,phi0,alpha,beta)
+    rpqtiData%msg = 'rpqdi_x_trajectory'
     
     rpqti_x_trajectory = zbrent(find_rpqti_x_trajectory,mini,maxi,tolFind,rpqtiData)
        

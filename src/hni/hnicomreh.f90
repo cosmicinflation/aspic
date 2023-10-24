@@ -47,7 +47,8 @@ contains
     hniData%real2 = f
     hniData%real3 = w
     hniData%real4 = calF + primEnd
-
+    hniData%msg = 'hni_x_star'
+    
     x = zbrent(find_hni_x_star,xmin,xmax,tolFind,hniData)
     hni_x_star = x
 
@@ -106,7 +107,8 @@ contains
     hniData%real1 = alpha
     hniData%real2 = f
     hniData%real3 = calF + primEnd
-
+    hniData%msg = 'hni_x_rrad'
+    
     x = zbrent(find_hni_x_rrad,xmin,xmax,tolFind,hniData)
     hni_x_rrad = x
 
@@ -165,7 +167,8 @@ contains
     hniData%real1 = alpha
     hniData%real2 = f
     hniData%real3 = calF + primEnd
-
+    hniData%msg = 'hni_x_rreh'
+    
     x = zbrent(find_hni_x_rreh,xmin,xmax,tolFind,hniData)
     hni_x_rreh = x
 

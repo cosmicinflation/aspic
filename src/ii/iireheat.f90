@@ -49,7 +49,8 @@ contains
     iiData%real2 = xEnd
     iiData%real3 = w
     iiData%real4 = calF + primEnd
-
+    iiData%msg = 'ii_x_star'
+    
     mini = sqrt(beta/2._kp*(1._kp+beta/3._kp+sqrt(1._kp+4._kp*beta/9._kp)))
     maxi = xEnd
 
@@ -113,7 +114,8 @@ contains
     iiData%real1 = beta 
     iiData%real2 = xEnd
     iiData%real3 = calF + primEnd
-
+    iiData%msg = 'ii_x_rrad'
+    
     mini = sqrt(beta/2._kp*(1._kp+beta/3._kp+sqrt(1._kp+4._kp*beta/9._kp)))
     maxi = xEnd
 
@@ -177,7 +179,8 @@ contains
     iiData%real1 = beta 
     iiData%real2 = xEnd
     iiData%real3 = calF + primEnd
-
+    iiData%msg = 'ii_x_rreh'
+    
     mini = sqrt(beta/2._kp*(1._kp+beta/3._kp+sqrt(1._kp+4._kp*beta/9._kp)))
     maxi = xEnd
 

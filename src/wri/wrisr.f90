@@ -9,7 +9,6 @@
 module wrisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
-  use inftools, only : zbrent
   implicit none
 
   private

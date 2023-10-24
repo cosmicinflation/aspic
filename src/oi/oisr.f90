@@ -115,6 +115,7 @@ contains
 
     oiData%real1 = alpha
     oiData%real2 = phi0
+    oiData%msg = 'oi_x_endinf'
     
     oi_x_endinf = zbrent(find_oi_x_endinf,mini,maxi,tolFind,oiData)
 
@@ -175,6 +176,7 @@ contains
     oiData%real1 = alpha
     oiData%real2 = phi0
     oiData%real3 = -bfold + oi_efold_primitive(xend,alpha,phi0)
+    oiData%msg = 'oi_x_trajectory'
     
     oi_x_trajectory = zbrent(find_oi_x_trajectory,mini,maxi,tolFind,oiData)
     

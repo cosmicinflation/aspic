@@ -12,7 +12,6 @@ module ccsicommon
 #ifdef NOF08
   use specialinf, only : atanh
 #endif
-  use inftools, only : zbrent
   implicit none
 
   private

@@ -137,7 +137,7 @@ contains
     maxi=2._kp*sqrt(beta)*(1._kp-1000._kp*epsilon(1._kp))
 
     ssbi6Data%real1 = beta
-
+    ssbi6Data%msg = 'ssbi6_absalphamin'
 
      if (ssbi6_epsilon_one(ssbi6_x_epsonemax(-mini,beta),-mini,beta) .gt. 1._kp ) then !In that case inflation ends by slow roll violation for any value of alpha
         ssbi6_absalphamin = 0._kp
@@ -201,6 +201,7 @@ contains
 
     ssbi6Data%real1 = alpha
     ssbi6Data%real2 = beta
+    ssbi6Data%msg = 'ssbi6_x_endinf'
     
     ssbi6_x_endinf = zbrent(find_ssbi6_x_endinf,mini,maxi,tolFind,ssbi6Data)
 
@@ -249,6 +250,7 @@ contains
     ssbi6Data%real1 = alpha
     ssbi6Data%real2 = beta
     ssbi6Data%real3 = -bfold + ssbi6_efold_primitive(xend,alpha,beta)
+    ssbi6Data%msg = 'ssbi6_x_trajectory'
     
     ssbi6_x_trajectory = zbrent(find_ssbi_x_trajectory,mini,maxi,tolFind,ssbi6Data)
        

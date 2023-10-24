@@ -49,7 +49,8 @@ contains
     ostiData%real1 = phi0
     ostiData%real2 = w
     ostiData%real3 = calF + primEnd
-
+    ostiData%msg = 'osti_x_star'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = exp(-0.5_kp)*(1._kp-epsilon(1._kp))
 
@@ -112,7 +113,8 @@ contains
 
     ostiData%real1 = phi0
     ostiData%real2 = calF + primEnd
-
+    ostiData%msg = 'osti_x_rrad'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = exp(-0.5_kp)*(1._kp-epsilon(1._kp))
 
@@ -175,6 +177,7 @@ contains
 
     ostiData%real1 = phi0
     ostiData%real2 = calF + primEnd
+    ostiData%msg = 'osti_x_rreh'
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = exp(-0.5_kp)*(1._kp-epsilon(1._kp))

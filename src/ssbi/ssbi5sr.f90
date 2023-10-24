@@ -161,7 +161,8 @@ contains
     maxi=2._kp*sqrt(beta)*(1._kp-100._kp*epsilon(1._kp))
 
     ssbi5Data%real1 = beta
-
+    ssbi5Data%msg = 'ssbi5_absalphamin'
+    
     ssbi5_absalphamin = zbrent(find_ssbi5_absalphamin,mini,maxi,tolFind,ssbi5Data)
 
     
@@ -204,6 +205,7 @@ contains
 
     ssbi5Data%real1 = alpha
     ssbi5Data%real2 = beta
+    ssbi5Data%msg = 'ssbi5_x_endinf'
     
     ssbi5_x_endinf = zbrent(find_ssbi5_x_endinf,mini,maxi,tolFind,ssbi5Data)
 
@@ -252,6 +254,7 @@ contains
     ssbi5Data%real1 = alpha
     ssbi5Data%real2 = beta
     ssbi5Data%real3 = -bfold + ssbi5_efold_primitive(xend,alpha,beta)
+    ssbi5Data%msg = 'ssbi5_x_trajectory'
     
     ssbi5_x_trajectory = zbrent(find_ssbi_x_trajectory,mini,maxi,tolFind,ssbi5Data)
        

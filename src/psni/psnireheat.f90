@@ -49,7 +49,8 @@ contains
     psniData%real2 = f
     psniData%real3 = w
     psniData%real4 = calF + primEnd
-
+    psniData%msg = 'psni_x_star'
+    
     mini=epsilon(1._kp)
     maxi = xEnd
 
@@ -111,7 +112,8 @@ contains
     psniData%real1 = alpha 
     psniData%real2 = f
     psniData%real3 = calF + primEnd
-
+    psniData%msg = 'psni_x_rrad'
+    
     mini=epsilon(1._kp)
     maxi = xEnd
 
@@ -173,7 +175,8 @@ contains
     psniData%real1 = alpha 
     psniData%real2 = f
     psniData%real3 = calF + primEnd
-
+    psniData%msg = 'psni_x_rreh'
+    
     mini=epsilon(1._kp)
     maxi = xEnd
 

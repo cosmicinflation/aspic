@@ -144,6 +144,7 @@ contains
 
     lmi1Data%real1 = gam
     lmi1Data%real2 = beta
+    lmi1Data%msg = 'lmi1_x_endinf'
     
     lmi1_x_endinf = zbrent(find_lmi1_x_endinf,mini,maxi,tolFind,lmi1Data)
 
@@ -197,6 +198,7 @@ contains
     lmiData%real1 = gam
     lmiData%real2 = beta
     lmiData%real3 = -bfold + lmi_efold_primitive(xend,gam,beta)
+    lmiData%msg = 'lmi1_x_trajectory'
     
     lmi1_x_trajectory = zbrent(find_lmi_x_trajectory,mini,maxi,tolFind,lmiData)
        

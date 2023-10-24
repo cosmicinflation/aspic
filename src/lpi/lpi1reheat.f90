@@ -54,7 +54,8 @@ contains
     lpi1Data%real3 = phi0
     lpi1Data%real4 = w
     lpi1Data%real5 = calF + primEnd
-
+    lpi1Data%msg = 'lpi1_x_star'
+    
     mini = xend
     maxi = xBig
 
@@ -124,7 +125,8 @@ contains
     lpi1Data%real2 = q
     lpi1Data%real3 = phi0
     lpi1Data%real4 = calF + primEnd
-
+    lpi1Data%msg = 'lpi1_x_rrad'
+    
     mini = xend
     maxi = xBig
 
@@ -193,7 +195,8 @@ contains
     lpi1Data%real2 = q
     lpi1Data%real3 = phi0
     lpi1Data%real4 = calF + primEnd
-
+    lpi1Data%msg = 'lpi1_x_rreh'
+    
     mini = xend
     maxi = xBig
 

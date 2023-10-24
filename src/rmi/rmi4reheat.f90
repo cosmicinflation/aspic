@@ -2,7 +2,6 @@
 
 module rmi4reheat
   use infprec, only : kp, tolkp, transfert
-  use inftools, only : zbrent
   use srreheat, only : get_calfconst, find_reheat, slowroll_validity
   use srreheat, only : display, pi, Nzero, ln_rho_endinf
   use srreheat, only : ln_rho_reheat

@@ -91,6 +91,7 @@ contains
     gmssmiData%real1 = alpha
     gmssmiData%real2 = phi0
     gmssmiData%real3 = -bfold + gmssmi_efold_primitive(xend,alpha,phi0)
+    gmssmiData%msg = 'gmssmi_x_trajectory'
     
     gmssmi_x_trajectory = zbrent(find_gmssmi_x_trajectory,mini,maxi,tolFind,gmssmiData)
        

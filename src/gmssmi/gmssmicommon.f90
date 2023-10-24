@@ -236,7 +236,8 @@ contains
        maxi = xAlphaEpsTwoMin + epsilon(1._kp)
 
        gmssmiData%real1 = alpha
-
+       gmssmiData%msg = 'gmssmi_x_epstwomin'
+       
        gmssmi_x_epstwomin = zbrent(find_gmssmi_x_epstwomin,mini,maxi,tolFind,gmssmiData)
 
     endif
@@ -279,7 +280,8 @@ contains
 
     gmssmiData%real1 = alpha
     gmssmiData%real2 = phi0
-
+    gmssmiData%msg = 'gmssmi_x_endinf'
+    
     gmssmi_x_endinf = zbrent(find_gmssmi_x_endinf,mini,maxi,tolFind,gmssmiData)
 
 

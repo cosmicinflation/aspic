@@ -48,7 +48,8 @@ contains
     fiData%real2 = n
     fiData%real3 = w
     fiData%real4 = calF + primEnd
-
+    fiData%msg = 'fi_x_star'
+    
     xepsone = fi_x_epsoneunity(delta,n)
 
     mini = xend*(1._kp+epsilon(1._kp))
@@ -112,7 +113,8 @@ contains
     fiData%real1 = delta
     fiData%real2 = n
     fiData%real3 = calF + primEnd
-
+    fiData%msg = 'fi_x_rrad'
+    
     xepsone = fi_x_epsoneunity(delta,n)
 
     mini = xend*(1._kp+epsilon(1._kp))
@@ -176,7 +178,8 @@ contains
     fiData%real1 = delta
     fiData%real2 = n
     fiData%real3 = calF + primEnd
-
+    fiData%msg = 'fi_x_rreh'
+    
     xepsone = fi_x_epsoneunity(delta,n)
 
     mini = xend*(1._kp+epsilon(1._kp))

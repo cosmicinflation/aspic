@@ -15,7 +15,6 @@
 
 module ssbicommon
   use infprec, only : kp,tolkp,transfert
-  use inftools, only : zbrent
   implicit none
 
   private

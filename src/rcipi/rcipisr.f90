@@ -214,7 +214,8 @@ contains
     rcipiData%real2 = alpha
     rcipiData%real3 = beta
     rcipiData%real4 = -bfold + rcipi_efold_primitive(xend,p,alpha,beta)
-
+    rcipiData%msg = 'rcipi_x_trajectory'
+    
     rcipi_x_trajectory = zbrent(find_rcipi_x_trajectory,mini,maxi,tolFind,rcipiData)
 
   end function rcipi_x_trajectory

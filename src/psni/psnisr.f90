@@ -109,6 +109,7 @@ contains
 
     psniData%real1 = alpha
     psniData%real2 = f
+    psniData%msg = 'psni_x_endinf'
     
     psni_x_endinf = zbrent(find_psni_x_endinf,mini,maxi,tolFind,psniData)
    
@@ -161,6 +162,7 @@ contains
     psniData%real1 = alpha
     psniData%real2 = f
     psniData%real3 = -bfold + psni_efold_primitive(xend,alpha,f)
+    psniData%msg = 'psni_x_trajectory'
     
     psni_x_trajectory = zbrent(find_psni_x_trajectory,mini,maxi,tolFind,psniData)
        

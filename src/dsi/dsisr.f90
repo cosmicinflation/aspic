@@ -113,6 +113,7 @@ contains
 
     dsiData%real1 = p
     dsiData%real2 = mu
+    dsiData%msg = 'dsi_x_epsoneunity'
     
     dsi_x_epsoneunity = zbrent(find_dsi_x_epsoneunity,mini,maxi,tolFind,dsiData)
     
@@ -222,6 +223,7 @@ contains
     dsiData%real1 = p
     dsiData%real2 = mu
     dsiData%real3 = -bfold + dsi_efold_primitive(xend,p,mu)
+    dsiData%msg = 'dsi_x_trajectory'
     
     dsi_x_trajectory = zbrent(find_dsi_x_trajectory,mini,maxi,tolFind,dsiData)
        

@@ -48,7 +48,8 @@ contains
     imiData%real1 = p    
     imiData%real2 = w
     imiData%real3 = calF + primEnd
-
+    imiData%msg = 'imi_x_star'
+    
     mini = imi_x_epsoneunity(p)
     maxi = xEnd
 
@@ -108,7 +109,8 @@ contains
 
     imiData%real1 = p    
     imiData%real2 = calF + primEnd
-
+    imiData%msg = 'imi_x_rrad'
+    
     mini = imi_x_epsoneunity(p)
     maxi = xEnd
 
@@ -168,7 +170,8 @@ contains
 
     imiData%real1 = p    
     imiData%real2 = calF + primEnd
-
+    imiData%msg = 'imi_x_rreh'
+    
     mini = imi_x_epsoneunity(p)
     maxi = xEnd
 

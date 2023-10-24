@@ -51,7 +51,8 @@ contains
     gdwiData%real2 = phi0
     gdwiData%real3 = w
     gdwiData%real4 = calF + primEnd
-
+    gdwiData%msg = 'gdwi_x_star'
+    
     mini = epsilon(1._kp)
 
     maxi = xEnd
@@ -119,7 +120,8 @@ contains
     gdwiData%real1 = p
     gdwiData%real2 = phi0
     gdwiData%real3 = calF + primEnd
-
+    gdwiData%msg = 'gdwi_x_rrad'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
    
@@ -184,7 +186,8 @@ contains
     gdwiData%real1 = p
     gdwiData%real2 = phi0
     gdwiData%real3 = calF + primEnd
-
+    gdwiData%msg = 'gdwi_x_rreh'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
    

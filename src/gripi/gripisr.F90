@@ -91,7 +91,8 @@ contains
     gripiData%real1 = alpha
     gripiData%real2 = phi0
     gripiData%real3 = -bfold + gripi_efold_primitive(xend,alpha,phi0)
-
+    gripiData%msg = 'gripi_x_trajectory'
+    
     gripi_x_trajectory = zbrent(find_gripi_x_trajectory,mini,maxi,tolFind,gripiData)
 
   end function gripi_x_trajectory

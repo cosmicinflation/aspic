@@ -50,7 +50,8 @@ contains
     cwiData%real2 = Q
     cwiData%real3 = w
     cwiData%real4 = calF + primEnd
-
+    cwiData%msg = 'cwi_x_star'
+    
     mini = epsilon(1._kp)
     maxi = cwi_x_endinf(alpha,Q)
 
@@ -113,7 +114,8 @@ contains
     cwiData%real1 = alpha
     cwiData%real2 = Q
     cwiData%real3 = calF + primEnd
-
+    cwiData%msg = 'cwi_x_rrad'
+    
     mini = epsilon(1._kp)
     maxi = cwi_x_endinf(alpha,Q)
 
@@ -175,7 +177,8 @@ contains
     cwiData%real1 = alpha
     cwiData%real2 = Q
     cwiData%real3 = calF + primEnd
-
+    cwiData%msg = 'cwi_x_rreh'
+    
     mini = epsilon(1._kp)
     maxi = cwi_x_endinf(alpha,Q)
 

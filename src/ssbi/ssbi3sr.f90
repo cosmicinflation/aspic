@@ -148,6 +148,7 @@ contains
     maxi=10._kp**(4._kp)
 
     ssbi3Data%real1 = beta
+    ssbi3Data%msg = 'ssbi3_alphamin'
     ssbi3_alphamin = zbrent(find_ssbi3_alphamin,mini,maxi,tolFind,ssbi3Data)
     
   end function ssbi3_alphamin
@@ -185,6 +186,7 @@ contains
 
     ssbi3Data%real1 = alpha
     ssbi3Data%real2 = beta
+    ssbi3Data%msg = 'ssbi3_x_endinf'
     
     ssbi3_x_endinf = zbrent(find_ssbi3_x_endinf,mini,maxi,tolFind,ssbi3Data)
 
@@ -233,6 +235,7 @@ contains
     ssbi3Data%real1 = alpha
     ssbi3Data%real2 = beta
     ssbi3Data%real3 = -bfold + ssbi3_efold_primitive(xend,alpha,beta)
+    ssbi3Data%msg = 'ssbi3_x_trajectory'
     
     ssbi3_x_trajectory = zbrent(find_ssbi_x_trajectory,mini,maxi,tolFind,ssbi3Data)
        

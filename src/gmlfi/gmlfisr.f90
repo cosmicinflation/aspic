@@ -113,6 +113,7 @@ contains
     gmlfiData%real1 = alpha
     gmlfiData%real2 = p
     gmlfiData%real3 = q
+    gmlfiData%msg = 'gmlfi_x_endinf'
     
     gmlfi_x_endinf = zbrent(find_gmlfi_x_endinf,mini,maxi,tolFind,gmlfiData)
    
@@ -165,6 +166,7 @@ contains
     gmlfiData%real2 = p
     gmlfiData%real3 = q
     gmlfiData%real4 = -bfold + gmlfi_efold_primitive(xend,p,q,alpha)
+    gmlfiData%msg = 'gmlfi_x_trajectory'
     
     gmlfi_x_trajectory = zbrent(find_gmlfi_x_trajectory,mini,maxi,tolFind,gmlfiData)
        

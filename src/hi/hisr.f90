@@ -16,7 +16,6 @@
 
 module hisr
   use infprec, only : kp,pi,tolkp,transfert
-  use inftools, only : zbrent, easydverk
   use hicommon, only : hi_x, hi_hbar, hi_deriv_x, hi_deriv_second_x
   use hicommon, only : hi_norm_parametric_potential, hi_norm_deriv_parametric_potential
   use hicommon, only : hi_norm_deriv_second_parametric_potential

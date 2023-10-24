@@ -50,7 +50,8 @@ contains
     deiData%real2 = phi0
     deiData%real3 = w
     deiData%real4 = calF + primEnd
-
+    deiData%msg = 'dei_x_star'
+    
     mini = tolkp
     maxi = dei_x_endinf(beta,phi0)*(1._kp-epsilon(1._kp))
 
@@ -113,7 +114,8 @@ contains
     deiData%real1 = beta
     deiData%real2 = phi0
     deiData%real3 = calF + primEnd
-
+    deiData%msg = 'dei_x_rrad'
+    
     mini = tolkp
     maxi = dei_x_endinf(beta,phi0)*(1._kp-epsilon(1._kp))
 
@@ -175,7 +177,8 @@ contains
     deiData%real1 = beta
     deiData%real2 = phi0
     deiData%real3 = calF + primEnd
-
+    deiData%msg = 'dei_x_rreh'
+    
     mini = tolkp
     maxi = dei_x_endinf(beta,phi0)*(1._kp-epsilon(1._kp))
 

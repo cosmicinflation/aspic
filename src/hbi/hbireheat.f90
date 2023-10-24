@@ -51,7 +51,8 @@ contains
     hbiData%real2 = mu
     hbiData%real3 = w
     hbiData%real4 = calF + primEnd
-
+    hbiData%msg = 'hbi_x_star'
+    
     mini = xEnd + epsilon(1._kp)
     maxi = hbi_numacc_x_potbig(n)
     
@@ -117,7 +118,8 @@ contains
     hbiData%real1 = n
     hbiData%real2 = mu
     hbiData%real3 = calF + primEnd
-
+    hbiData%msg = 'hbi_x_rrad'
+    
     mini = xEnd + epsilon(1._kp)
     maxi = hbi_numacc_x_potbig(n)
 
@@ -184,7 +186,8 @@ contains
     hbiData%real1 = n
     hbiData%real2 = mu
     hbiData%real3 = calF + primEnd
-
+    hbiData%msg = 'hbi_x_rreh'
+    
     mini = xEnd
     maxi = hbi_numacc_x_potbig(n)
 

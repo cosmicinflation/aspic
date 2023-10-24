@@ -127,7 +127,8 @@ contains
     maxi = rcmi_x_potmax(alpha) - epsilon(1._kp)
 
     rcmiData%real1 = alpha
-
+    rcmiData%msg = 'rcmi_x_endinf'
+    
     rcmi_x_endinf = zbrent(find_rcmi_x_endinf,mini,maxi,tolFind,rcmiData)
    
   end function rcmi_x_endinf
@@ -231,6 +232,7 @@ contains
 
     rcmiData%real1 = alpha
     rcmiData%real2 = -bfold + rcmi_efold_primitive(xend,alpha)
+    rcmiData%msg = 'rcmi_x_trajectory'
     
     rcmi_x_trajectory = zbrent(find_rcmi_x_trajectory,mini,maxi,tolFind,rcmiData)
        

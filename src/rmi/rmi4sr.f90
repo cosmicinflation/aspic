@@ -133,6 +133,7 @@ contains
     rmi4Data%real1 = c
     rmi4Data%real2 = phi0
     rmi4Data%real3 = -bfold + rmi4_efold_primitive(xend,c,phi0)
+    rmi4Data%msg = 'rmi4_x_trajectory'
     
     rmi4_x_trajectory = zbrent(find_rmi_x_trajectory,mini,maxi,tolFind,rmi4Data)
        
@@ -155,7 +156,8 @@ contains
     
     rmi4Data%real1 = c
     rmi4Data%real2 = phi0
-
+    rmi4Data%msg = 'rmi4_x_epsonemax'
+    
     mini = 1._kp
     maxi = 1._kp/epsilon(1._kp)
 

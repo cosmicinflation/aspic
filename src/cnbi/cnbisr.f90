@@ -194,7 +194,8 @@ contains
     maxi = xeps1Min
 
     cnbiData%real1 = alpha
-
+    cnbiData%msg = 'cnbi_x_epsoneunity'
+    
     cnbi_x_epsoneunity(1) = zbrent(find_cnbi_x_epsoneunity,mini,maxi,tolFind,cnbiData)
 
 !second root
@@ -283,6 +284,7 @@ contains
 
     cnbiData%real1 = alpha
     cnbiData%real2 = -bfold + cnbi_efold_primitive(xend,alpha)
+    cnbiData%msg = 'cnbi_x_trajectory'
     
     cnbi_x_trajectory = zbrent(find_cnbi_x_trajectory,mini,maxi,tolFind,cnbiData)
        

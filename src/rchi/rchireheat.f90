@@ -48,7 +48,8 @@ contains
     rchiData%real1 = AI    
     rchiData%real2 = w
     rchiData%real3 = calF + primEnd
-
+    rchiData%msg = 'rchi_x_star'
+    
     mini=xend*(1._kp+epsilon(1._kp))
     if (rchi_potmax_exists(AI)) then !maximum of the potential
       maxi=min(rchi_x_potmax(AI),xend + RchiDeltaXendMax)
@@ -112,7 +113,8 @@ contains
 
     rchiData%real1 = AI    
     rchiData%real2 = calF + primEnd
-
+    rchiData%msg = 'rchi_x_rrad'
+    
     mini=xend*(1._kp+epsilon(1._kp))
     if (rchi_potmax_exists(AI)) then !maximum of the potential
       maxi=min(rchi_x_potmax(AI),xend + RchiDeltaXendMax)
@@ -175,6 +177,7 @@ contains
 
     rchiData%real1 = AI    
     rchiData%real2 = calF + primEnd
+    rchiData%msg = 'rchi_x_rreh'
 
     mini=xend*(1._kp+epsilon(1._kp))
     if (rchi_potmax_exists(AI)) then !maximum of the potential

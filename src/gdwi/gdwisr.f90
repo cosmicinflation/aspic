@@ -111,7 +111,8 @@ contains
 
     gdwiData%real1 = p
     gdwiData%real2 = phi0
-
+    gdwiData%msg = 'gdwi_x_epsoneunity'
+    
     mini = 0._kp
     maxi = 1._kp - epsilon(1._kp)
 
@@ -201,7 +202,8 @@ contains
     gdwiData%real1 = p
     gdwiData%real2 = phi0
     gdwiData%real3 = -bfold + gdwi_efold_primitive(xend,p,phi0)
-
+    gdwiData%msg = 'gdwi_x_trajectory'
+    
     gdwi_x_trajectory = zbrent(find_gdwi_x_trajectory,mini,maxi,tolFind,gdwiData)
 
   end function gdwi_x_trajectory

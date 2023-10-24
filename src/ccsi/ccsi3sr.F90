@@ -182,6 +182,8 @@ contains
     maxi = -epsilon(1._kp)
 
     ccsi3Data%real1 = efoldMax
+    ccsi3Data%msg = 'ccsi3_alphamin'
+    
     ccsi3_alphamin  = zbrent(find_ccsi3_alphamin,mini,maxi,tolFind,ccsi3Data)
 
     alphaminSave = ccsi3_alphamin
@@ -277,7 +279,8 @@ contains
        
     ccsi3Data%real1 = alpha
     ccsi3Data%real2 = -bfold + ccsi3_efold_primitive(xend,alpha)
-
+    ccsi3Data%msg = 'ccsi3_x_trajectory'
+    
     ccsi3_x_trajectory = zbrent(find_ccsi_x_trajectory,mini,maxi,tolFind,ccsi3Data)
 
   end function ccsi3_x_trajectory

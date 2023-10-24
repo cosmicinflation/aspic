@@ -50,7 +50,8 @@ contains
     pliData%real1 = alpha    
     pliData%real2 = w
     pliData%real3 = calF + primEnd
-
+    pliData%msg = 'pli_x_star'
+    
     mini = pliXmin
     maxi = xend
 
@@ -109,7 +110,7 @@ contains
 
     pliData%real1 = alpha    
     pliData%real2 = calF + primEnd
-
+    pliData%msg = 'pli_x_rrad'
 
     mini = pliXmin
     maxi = xend
@@ -169,7 +170,7 @@ contains
 
     pliData%real1 = alpha    
     pliData%real2 = calF + primEnd
-
+    pliData%msg = 'pli_x_rreh'
 
     mini = pliXmin
     maxi = xend

@@ -49,6 +49,7 @@ contains
     sabiData%real2 = n
     sabiData%real3 = w
     sabiData%real4 = calF + primEnd
+    sabiData%msg = 'sabi_x_star'
 
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = sqrt(6._kp*alpha)/2._kp*log(4._kp*n*200._kp/(3._kp*alpha))
@@ -111,7 +112,8 @@ contains
     sabiData%real1 = alpha
     sabiData%real2 = n
     sabiData%real3 = calF + primEnd
-
+    sabiData%msg = 'sabi_x_rrad'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     maxi = sqrt(6._kp*alpha)/2._kp*log(4._kp*n*200._kp/(3._kp*alpha))
 
@@ -174,7 +176,8 @@ contains
     sabiData%real1 = alpha
     sabiData%real2 = n
     sabiData%real3 = calF + primEnd
-
+    sabiData%msg = 'sabi_x_rreh'
+    
     mini = xend*(1._kp+epsilon(1._kp))
     !maxi = sqrt(6._kp*alpha)/2._kp*log(4._kp*n*200._kp/(3._kp*alpha))
     maxi = 100._kp*sqrt(alpha)

@@ -53,7 +53,8 @@ contains
     cnbiData%real1 = alpha
     cnbiData%real2 = w
     cnbiData%real3 = calF + primEnd
-
+    cnbiData%msg = 'cnbi_x_star'
+    
     mini = xEnd + epsilon(1._kp)
     maxi = xEps1(2) + epsilon(1._kp)
 
@@ -120,7 +121,8 @@ contains
 
     cnbiData%real1 = alpha
     cnbiData%real2 = calF + primEnd
-
+    cnbiData%msg = 'cnbi_x_rrad'
+    
     mini = xEnd + epsilon(1._kp)
     maxi = xEps1(2) + epsilon(1._kp)
 
@@ -188,7 +190,8 @@ contains
 
     cnbiData%real1 = alpha
     cnbiData%real2 = calF + primEnd
-
+    cnbiData%msg = 'cnbi_x_rreh'
+    
     mini = xEnd + epsilon(1._kp)
     maxi = xEps1(2) + epsilon(1._kp)
 

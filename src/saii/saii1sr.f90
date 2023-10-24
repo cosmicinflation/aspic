@@ -191,7 +191,8 @@ contains
     
     saii1Data%real1 = alpha
     saii1Data%real2 = efold
-
+    saii1Data%msg = 'saii1_numacc_mumin'
+    
     saii1_numacc_mumin = zbrent(find_saii1_numacc_mumin,mini,maxi,tolFind,saii1Data)
 
   end function saii1_numacc_mumin
@@ -248,7 +249,8 @@ contains
     saiiData%real1 = alpha
     saiiData%real2 = mu
     saiiData%real3 = -bfold + saii1_efold_primitive(xend,alpha,mu)
-
+    saiiData%msg = 'saii1_x_trajectory'
+    
     saii1_x_trajectory = zbrent(find_saii_x_trajectory,xend,xinimax,tolFind,saiiData)
 
   end function saii1_x_trajectory

@@ -218,7 +218,8 @@ contains
 
     ccsi2Data%real1 = alpha
     ccsi2Data%real2 = -bfold + ccsi2_efold_primitive(xend,alpha)
-
+    ccsi2Data%msg = 'ccsi2_x_trajectory'
+    
     ccsi2_x_trajectory = zbrent(find_ccsi_x_trajectory,mini,maxi,tolFind,ccsi2Data)
 
   end function ccsi2_x_trajectory

@@ -48,6 +48,7 @@ contains
     oripiData%real1 = phi0
     oripiData%real2 = w
     oripiData%real3 = calF + primEnd
+    oripiData%msg = 'oripi_x_star'
 
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
@@ -109,7 +110,8 @@ contains
 
     oripiData%real1 = phi0
     oripiData%real2 = calF + primEnd
-
+    oripiData%msg = 'oripi_x_rrad'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
 
@@ -170,7 +172,8 @@ contains
 
     oripiData%real1 = phi0
     oripiData%real2 = calF + primEnd
-
+    oripiData%msg = 'oripi_x_rreh'
+    
     mini = xEnd*(1._kp+epsilon(1._kp))
     maxi = oripi_x_derivpotzero(phi0)*(1._kp-epsilon(1._kp)) !Position of the flat inflection point
 

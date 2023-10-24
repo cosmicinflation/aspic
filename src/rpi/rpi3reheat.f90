@@ -54,9 +54,9 @@ contains
     rpi3Data%real1 = p
     rpi3Data%real2 = w
     rpi3Data%real3 = calF + primEnd
-    
+    rpi3Data%msg = 'rpi3_x_star'
 
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+    if (p.eq.1._kp) then !SI
 
        mini = yEnd
        maxi= rpiBig !to avoid numerical explosion
@@ -135,8 +135,9 @@ contains
 
     rpi3Data%real1 = p
     rpi3Data%real2 = calF + primEnd
+    rpi3Data%msg = 'rpi3_x_rrad'
     
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+    if (p.eq.1._kp) then !SI
 
        mini = yEnd
        maxi=rpiBig !to avoid numerical explosion
@@ -213,8 +214,9 @@ contains
 
     rpi3Data%real1 = p
     rpi3Data%real2 = calF + primEnd
+    rpi3Data%msg = 'rpi3_x_rreh'
     
-    if (p.eq.1._kp) then !Higgs Inflation Model (HI)
+    if (p.eq.1._kp) then !SI
 
        mini = yEnd
        maxi= rpiBig !to avoid numerical explosion

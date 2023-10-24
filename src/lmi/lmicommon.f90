@@ -214,6 +214,7 @@ contains
        
     lmiData%real1 = gam
     lmiData%real2 = beta
+    lmiData%msg = 'lmi2_x_epstwounity'
     
     lmi_x_epstwounity &
          = zbrent(find_lmi_x_epstwounity,mini,maxi,tolFind,lmiData)

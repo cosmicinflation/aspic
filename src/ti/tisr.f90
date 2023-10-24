@@ -167,7 +167,8 @@ contains
     tiData%real1 = alpha
     tiData%real2 = mu
     tiData%real3 = -bfold + ti_efold_primitive(xend,alpha,mu)
-
+    tiData%msg = 'ti_x_trajectory'
+    
     ti_x_trajectory = zbrent(find_ti_x_trajectory,mini,maxi,tolFind,tiData)
 
   end function ti_x_trajectory

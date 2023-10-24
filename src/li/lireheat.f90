@@ -49,7 +49,8 @@ contains
     liData%real1 = alpha
     liData%real2 = w
     liData%real3 = calF + primEnd
-
+    liData%msg = 'li_x_star'
+    
     xepsones = li_x_epsoneunity(alpha)
 
     if (alpha .gt. 0._kp) then
@@ -115,7 +116,8 @@ contains
 
     liData%real1 = alpha
     liData%real2 = calF + primEnd
-
+    liData%msg = 'li_x_rrad'
+    
     xepsones = li_x_epsoneunity(alpha)
 
     if (alpha .gt. 0._kp) then
@@ -181,7 +183,8 @@ contains
 
     liData%real1 = alpha
     liData%real2 = calF + primEnd
-
+    liData%msg = 'li_x_rreh'
+    
     xepsones = li_x_epsoneunity(alpha)
 
     if (alpha .gt. 0._kp) then

@@ -119,6 +119,8 @@ contains
     maxi = 1._kp
 
     diData%real1 = x
+    diData%msg = 'di_k2'
+    
     di_k2 = zbrent(find_di_k2,mini,maxi,tolFind,diData)
 
   end function di_k2
@@ -315,6 +317,7 @@ contains
     maxi = 1._kp
 
     diData%real1 = f
+    diData%msg = 'di_k2_nunull'
     di_k2_nunull = zbrent(find_di_k2_nunull,mini,maxi,tolFind,diData)
 
     fdone = f
@@ -441,6 +444,7 @@ contains
     maxi = 1._kp
 
     diData%real1 = f
+    diData%msg = 'di_k2_potmin'
     di_k2_potmin = zbrent(find_di_k2_potmin,mini,maxi,tolFind,diData)
     
   end function di_k2_potmin

@@ -48,6 +48,7 @@ contains
     rmiData%real2 = phi0
     rmiData%real3 = w
     rmiData%real4 = calF + primEnd
+    rmiData%msg = 'rmi_x_star'
 
     x = zbrent(find_rmi_x_star,xmin,xmax,tolzbrent,rmiData)
     rmi_x_star = x
@@ -108,7 +109,8 @@ contains
     rmiData%real1 = c
     rmiData%real2 = phi0
     rmiData%real3 = calF + primEnd
-
+    rmiData%msg = 'rmi_x_rrad'
+    
     x = zbrent(find_rmi_x_rrad,xmin,xmax,tolzbrent,rmiData)
     rmi_x_rrad = x
 
@@ -168,7 +170,8 @@ contains
     rmiData%real1 = c
     rmiData%real2 = phi0
     rmiData%real3 = calF + primEnd
-
+    rmiData%msg = 'rmi_x_rreh'
+    
     x = zbrent(find_rmi_x_rreh,xmin,xmax,tolzbrent,rmiData)
     rmi_x_rreh = x
 

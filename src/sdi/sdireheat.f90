@@ -49,7 +49,8 @@ contains
     sdiData%real2 = xEnd
     sdiData%real3 = w
     sdiData%real4 = calF + primEnd
-
+    sdiData%msg = 'sdi_x_star'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
 
@@ -113,7 +114,8 @@ contains
     sdiData%real1 = mu 
     sdiData%real2 = xEnd
     sdiData%real3 = calF + primEnd
-
+    sdiData%msg = 'sdi_x_rrad'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
 
@@ -177,7 +179,8 @@ contains
     sdiData%real1 = mu 
     sdiData%real2 = xEnd
     sdiData%real3 = calF + primEnd
-
+    sdiData%msg = 'sdi_x_rreh'
+    
     mini = epsilon(1._kp)
     maxi = xEnd
 

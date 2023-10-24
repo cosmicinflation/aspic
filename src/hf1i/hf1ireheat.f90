@@ -48,7 +48,8 @@ contains
     hf1iData%real1 = A1    
     hf1iData%real2 = w
     hf1iData%real3 = calF + primEnd
-
+    hf1iData%msg = 'hf1i_x_star'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -108,7 +109,8 @@ contains
 
     hf1iData%real1 = A1    
     hf1iData%real2 = calF + primEnd
-
+    hf1iData%msg = 'hf1i_x_rrad'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
@@ -169,7 +171,8 @@ contains
 
     hf1iData%real1 = A1    
     hf1iData%real2 = calF + primEnd
-
+    hf1iData%msg = 'hf1i_x_rreh'
+    
     mini = xEnd
     maxi = 1._kp/epsilon(1._kp)
 
