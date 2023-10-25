@@ -52,7 +52,7 @@ contains
     sabiData%msg = 'sabi_x_star'
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = sqrt(6._kp*alpha)/2._kp*log(4._kp*n*200._kp/(3._kp*alpha))
+    maxi = -log(tiny(1._kp))
 
     x = zbrent(find_sabi_x_star,mini,maxi,tolFind,sabiData)
     sabi_x_star = x
@@ -115,7 +115,7 @@ contains
     sabiData%msg = 'sabi_x_rrad'
     
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = sqrt(6._kp*alpha)/2._kp*log(4._kp*n*200._kp/(3._kp*alpha))
+    maxi = -log(tiny(1._kp))
 
     x = zbrent(find_sabi_x_rrad,mini,maxi,tolFind,sabiData)
     sabi_x_rrad = x
@@ -179,8 +179,7 @@ contains
     sabiData%msg = 'sabi_x_rreh'
     
     mini = xend*(1._kp+epsilon(1._kp))
-    !maxi = sqrt(6._kp*alpha)/2._kp*log(4._kp*n*200._kp/(3._kp*alpha))
-    maxi = 100._kp*sqrt(alpha)
+    maxi = -log(tiny(1._kp))
 
     x = zbrent(find_sabi_x_rreh,mini,maxi,tolFind,sabiData)
     sabi_x_rreh = x
