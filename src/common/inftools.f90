@@ -1061,6 +1061,7 @@ contains
       end interface
 
       if (x1.gt.x2) then
+         write(*,*)'msg: ',trim(extradata%msg)
          stop 'zbrent: min > max on input!'
       endif
       
