@@ -51,7 +51,7 @@ contains
     saaiData%msg = 'saai_x_star'
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = 2._kp*sqrt(2._kp/(3._kp*alpha))*200._kp
+    maxi = log(huge(1._kp))
 
     x = zbrent(find_saai_x_star,mini,maxi,tolzbrent,saaiData)
     saai_x_star = x
@@ -113,7 +113,7 @@ contains
     saaiData%msg = 'saai_x_rrad'
     
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = 2._kp*sqrt(2._kp/(3._kp*alpha))*200._kp
+    maxi = log(huge(1._kp))
 
     x = zbrent(find_saai_x_rrad,mini,maxi,tolzbrent,saaiData)
     saai_x_rrad = x
@@ -175,7 +175,7 @@ contains
     saaiData%msg = 'saai_x_rreh'
 
     mini = xEnd*(1._kp+epsilon(1._kp))
-    maxi = 2._kp*sqrt(2._kp/(3._kp*alpha))*200._kp
+    maxi = log(huge(1._kp))
 
     x = zbrent(find_saai_x_rreh,mini,maxi,tolzbrent,saaiData)
     saai_x_rreh = x
