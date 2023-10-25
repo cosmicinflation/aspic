@@ -154,20 +154,23 @@ contains
 
   end function hni_x_epsoneunity
 
-
+    
 !returns the two solutions of epsilon1=epsMini in [0,pi]
   function hni_numacc_x_epsonenull(alpha,f)
     implicit none
     real(kp), dimension(2) ::  hni_numacc_x_epsonenull
     real(kp), intent(in) :: alpha,f
 
-    real(kp) :: sqrteps
+    real(kp) :: fsqrteps
 
-    sqrteps = sqrt(hniSmall)
+    fsqrteps = f*sqrt(hniSmall)
 
-!let's be clever
-    hni_numacc_x_epsonenull = hni_x_epsoneunity(alpha,f*sqrteps)
-
+    if (alpha.ge.hni_alpha(fsqrteps)) then
+       hni_numacc_x_epsonenull = hni_x_epsoneunity(alpha,fsqrteps)
+    else
+       hni_numacc_x_epsonenull = hni_x_epsoneunity(hni_alpha(fsqrteps),fsqrteps)
+    endif
+    
   end function hni_numacc_x_epsonenull
 
 
