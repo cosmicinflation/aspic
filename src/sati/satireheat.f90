@@ -52,7 +52,7 @@ contains
     satiData%msg = 'sati_x_star'
 
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = sqrt(6._kp*alpha)/2._kp*log(8._kp*n*200._kp/(3._kp*alpha))
+    maxi = huge(1._kp)
 
     x = zbrent(find_sati_x_star,mini,maxi,tolFind,satiData)
     sati_x_star = x
@@ -114,7 +114,7 @@ contains
     satiData%msg = 'sati_x_rrad'
     
     mini = xend*(1._kp+epsilon(1._kp))
-    maxi = sqrt(6._kp*alpha)/2._kp*log(8._kp*n*200._kp/(3._kp*alpha))
+    maxi = huge(1._kp)
 
     x = zbrent(find_sati_x_rrad,mini,maxi,tolFind,satiData)
     sati_x_rrad = x
@@ -176,10 +176,10 @@ contains
     satiData%real2 = n
     satiData%real3 = calF + primEnd
     satiData%msg = 'sati_x_rreh'
-    
-    mini = xend*(1._kp+epsilon(1._kp))
-    maxi = sqrt(6._kp*alpha)/2._kp*log(8._kp*n*200._kp/(3._kp*alpha))
 
+    mini = xend*(1._kp+epsilon(1._kp))
+    maxi = huge(1._kp)
+    
     x = zbrent(find_sati_x_rreh,mini,maxi,tolFind,satiData)
     sati_x_rreh = x
 
