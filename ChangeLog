@@ -1,3 +1,462 @@
+commit 3d938cca224d44bc5c313daf722fa49e70696ef1 (HEAD -> master)
+Date:   Wed Oct 25 17:52:01 2023 +0200
+
+    Fix the missed case alpha < hni_alpha
+
+ src/hni/hnicommon.f90 | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+commit b97141d15870e42085ba645e259f2ca4b57797a8
+Date:   Wed Oct 25 13:29:45 2023 +0200
+
+    Fix saai reheating max bound depending on alpha
+
+ src/saai/saaireheat.f90 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 6f0e7079e9e791d012524b9708fed2b37817be80
+Date:   Wed Oct 25 11:20:19 2023 +0200
+
+    Fix sabi reheating max values depending on alpha
+
+ src/sabi/sabireheat.f90 | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+commit a0d770be45df45240d05bc320d3a356e8cd791b0
+Date:   Wed Oct 25 11:07:36 2023 +0200
+
+    Fix sati reheating leading to max<min for large alpha
+
+ src/sati/satireheat.f90 | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit 8da49cf702f13c6e60ab830f80bf2ac9f39cfe61
+Date:   Wed Oct 25 08:31:58 2023 +0200
+
+    Add error message
+
+ src/common/inftools.f90 | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 7a9fdb4695c10bd6de7b67693625dc169b145027
+Date:   Tue Oct 24 18:56:52 2023 +0200
+
+    log msg in expansion number as well
+
+ src/common/inftools.f90 | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 7862bc34a0909de8a5c02709cb8e223c6018aca7 (tag: 1.5.1)
+Date:   Tue Oct 24 18:26:46 2023 +0200
+
+    Monster edition, add log capability to transfert type and use it
+
+ configure.ac                  |  4 ++--
+ src/ahi/ahireheat.f90         |  9 ++++++---
+ src/ahi/ahisr.f90             |  6 ++++--
+ src/ai/aireheat.f90           |  7 +++++--
+ src/ai/aisr.f90               |  5 +++--
+ src/bei/beireheat.f90         |  9 ++++++---
+ src/bi/bireheat.f90           |  9 ++++++---
+ src/bi/bisr.f90               |  7 +++++--
+ src/bsusybi/bsusybireheat.f90 |  9 ++++++---
+ src/bsusybi/bsusybisr.f90     |  1 +
+ src/ccsi/ccsi1sr.f90          |  5 ++++-
+ src/ccsi/ccsi2sr.f90          |  3 ++-
+ src/ccsi/ccsi3sr.F90          |  5 ++++-
+ src/ccsi/ccsicommon.F90       |  1 -
+ src/ccsi/ccsicomreh.f90       |  9 ++++++---
+ src/cnai/cnaireheat.f90       |  7 +++++--
+ src/cnai/cnaisr.f90           |  4 +++-
+ src/cnbi/cnbireheat.f90       |  9 ++++++---
+ src/cnbi/cnbisr.f90           |  4 +++-
+ src/cnci/cncireheat.f90       |  9 ++++++---
+ src/cnci/cncisr.f90           |  4 +++-
+ src/cndi/cndireheat.f90       |  9 ++++++---
+ src/cndi/cndisr.f90           |  2 +-
+ src/common/infprec.F90        |  1 +
+ src/common/inftools.f90       |  2 ++
+ src/csi/csireheat.f90         |  9 ++++++---
+ src/csi/csisr.f90             |  1 -
+ src/cwi/cwireheat.f90         |  9 ++++++---
+ src/cwi/cwisr.f90             |  2 ++
+ src/dei/deireheat.f90         |  9 ++++++---
+ src/dei/deisr.f90             |  1 +
+ src/di/dicommon.f90           |  4 ++++
+ src/di/direheat.f90           |  7 +++++--
+ src/di/disr.f90               |  4 +++-
+ src/dsi/dsireheat.f90         |  9 ++++++---
+ src/dsi/dsisr.f90             |  2 ++
+ src/dwi/dwireheat.f90         |  9 ++++++---
+ src/esi/esireheat.f90         |  9 ++++++---
+ src/fi/fireheat.f90           |  9 ++++++---
+ src/fi/fisr.f90               |  9 ++++++---
+ src/gdwi/gdwireheat.f90       |  9 ++++++---
+ src/gdwi/gdwisr.f90           |  6 ++++--
+ src/gmlfi/gmlfireheat.f90     |  9 ++++++---
+ src/gmlfi/gmlfisr.f90         |  2 ++
+ src/gmssmi/gmssmicommon.f90   |  6 ++++--
+ src/gmssmi/gmssmireheat.f90   |  9 ++++++---
+ src/gmssmi/gmssmisr.F90       |  1 +
+ src/gmssmi/mssmireheat.f90    |  9 ++++++---
+ src/gmssmi/mssmisr.f90        |  1 +
+ src/gripi/gripicommon.f90     |  6 ++++--
+ src/gripi/gripireheat.f90     |  9 ++++++---
+ src/gripi/gripisr.F90         |  3 ++-
+ src/gripi/ripireheat.f90      |  9 ++++++---
+ src/gripi/ripisr.f90          |  3 ++-
+ src/hbi/hbireheat.f90         |  9 ++++++---
+ src/hf1i/hf1ireheat.f90       |  9 ++++++---
+ src/hf1i/hf1isr.f90           |  1 -
+ src/hi/hicommon.f90           |  5 ++++-
+ src/hi/hireheat.f90           |  3 +++
+ src/hi/hisr.f90               |  1 -
+ src/hni/hni1sr.f90            |  3 ++-
+ src/hni/hni2sr.f90            |  3 ++-
+ src/hni/hnicomreh.f90         |  9 ++++++---
+ src/ii/iireheat.f90           |  9 ++++++---
+ src/ii/iisr.f90               |  1 +
+ src/imi/imireheat.f90         |  9 ++++++---
+ src/kklti/kkltireheat.f90     |  9 ++++++---
+ src/kklti/kkltisr.f90         |  7 +++++--
+ src/kmii/kmiireheat.f90       |  9 ++++++---
+ src/kmii/kmiisr.f90           |  1 +
+ src/kmiii/kmiiireheat.f90     |  9 ++++++---
+ src/kmiii/kmiiisr.f90         | 10 ++++++----
+ src/lfi/lfireheat.f90         |  9 ++++++---
+ src/li/lireheat.f90           |  9 ++++++---
+ src/li/lisr.f90               |  4 +++-
+ src/lmi/lmi1reheat.f90        |  9 ++++++---
+ src/lmi/lmi1sr.f90            |  2 ++
+ src/lmi/lmi2reheat.f90        |  9 ++++++---
+ src/lmi/lmi2sr.f90            |  5 ++++-
+ src/lmi/lmicommon.f90         |  1 +
+ src/lpi/lpi1reheat.f90        |  9 ++++++---
+ src/lpi/lpi1sr.f90            |  2 ++
+ src/lpi/lpi2reheat.f90        |  9 ++++++---
+ src/lpi/lpi2sr.f90            |  2 ++
+ src/lpi/lpi3reheat.f90        |  9 ++++++---
+ src/lpi/lpi3sr.f90            |  2 ++
+ src/lpi/lpicommon.f90         |  1 -
+ src/mhi/mhireheat.f90         |  9 ++++++---
+ src/mhi/mhisr.f90             |  3 ++-
+ src/ncki/nckireheat.f90       |  9 ++++++---
+ src/ncki/nckisr.f90           |  6 ++++--
+ src/ncli/nclireheat.f90       |  9 ++++++---
+ src/ncli/nclisr.f90           |  9 ++++++---
+ src/nfi/nficomreh.f90         | 37 ++++++++++++++++++++++---------------
+ src/ni/nireheat.f90           |  9 ++++++---
+ src/nmlfi/nmlfi1sr.f90        |  1 +
+ src/nmlfi/nmlficomreh.f90     |  7 +++++--
+ src/oi/oireheat.f90           |  9 ++++++---
+ src/oi/oisr.f90               |  2 ++
+ src/oripi/oripireheat.f90     |  7 +++++--
+ src/oripi/oripisr.f90         |  3 ++-
+ src/osti/ostireheat.f90       |  7 +++++--
+ src/osti/ostisr.f90           |  6 ++++--
+ src/pai/paireheat.f90         |  9 ++++++---
+ src/pai/paisr.f90             |  6 ++++--
+ src/pli/plireheat.f90         |  7 ++++---
+ src/psni/psnireheat.f90       |  9 ++++++---
+ src/psni/psnisr.f90           |  2 ++
+ src/rchi/rchireheat.f90       |  7 +++++--
+ src/rchi/rchisr.f90           |  4 +++-
+ src/rcipi/rcipicommon.f90     |  3 ++-
+ src/rcipi/rcipireheat.f90     |  7 +++++--
+ src/rcipi/rcipisr.f90         |  3 ++-
+ src/rclfi/rclfi1reheat.f90    |  9 ++++++---
+ src/rclfi/rclfi1sr.f90        |  7 +++++--
+ src/rclfi/rclfi2reheat.f90    |  9 ++++++---
+ src/rclfi/rclfi2sr.f90        |  7 +++++--
+ src/rclfi/rclfi3reheat.f90    |  9 ++++++---
+ src/rclfi/rclfi3sr.f90        |  4 +++-
+ src/rclfi/rclfi4reheat.f90    |  7 +++++--
+ src/rclfi/rclfi4sr.f90        |  4 +++-
+ src/rclfi/rclficommon.f90     |  1 -
+ src/rcmi/rcmireheat.f90       |  9 ++++++---
+ src/rcmi/rcmisr.F90           |  4 +++-
+ src/rcqi/rcqireheat.f90       |  9 ++++++---
+ src/rcqi/rcqisr.f90           |  4 +++-
+ src/rgi/rgireheat.f90         |  9 ++++++---
+ src/rmi/rmi1reheat.f90        |  1 -
+ src/rmi/rmi1sr.f90            |  1 +
+ src/rmi/rmi2reheat.f90        |  1 -
+ src/rmi/rmi2sr.f90            |  1 +
+ src/rmi/rmi3reheat.f90        |  1 -
+ src/rmi/rmi3sr.f90            |  1 +
+ src/rmi/rmi4reheat.f90        |  1 -
+ src/rmi/rmi4sr.f90            |  4 +++-
+ src/rmi/rmicomreh.f90         |  7 +++++--
+ src/rpi/rpi1reheat.f90        |  6 ++++--
+ src/rpi/rpi1sr.f90            |  3 ++-
+ src/rpi/rpi2reheat.f90        | 12 ++++++------
+ src/rpi/rpi2sr.f90            |  3 ++-
+ src/rpi/rpi3reheat.f90        | 10 ++++++----
+ src/rpi/rpi3sr.f90            |  3 ++-
+ src/rpi/rpicommon.f90         |  1 -
+ src/rpqdi/rpqdireheat.f90     |  9 ++++++---
+ src/rpqdi/rpqdisr.f90         |  2 ++
+ src/rpqti/rpqtireheat.f90     |  7 +++++--
+ src/rpqti/rpqtisr.f90         |  2 ++
+ src/saai/saaireheat.f90       |  5 ++++-
+ src/sabi/sabireheat.f90       |  7 +++++--
+ src/saii/saii1sr.f90          |  6 ++++--
+ src/saii/saii2sr.f90          |  6 ++++--
+ src/saii/saiicommon.f90       |  7 +++++--
+ src/saii/saiicomreh.f90       |  7 +++++--
+ src/saiii/saiii1sr.f90        |  6 ++++--
+ src/saiii/saiii2sr.f90        |  6 ++++--
+ src/saiii/saiii3sr.f90        |  3 ++-
+ src/saiii/saiiicommon.f90     |  5 ++++-
+ src/saiii/saiiicomreh.f90     |  5 ++++-
+ src/sati/satireheat.f90       |  7 +++++--
+ src/sbi/sbireheat.f90         |  9 ++++++---
+ src/sbi/sbisr.f90             |  2 ++
+ src/sbki/sbkireheat.f90       |  7 +++++--
+ src/sbki/sbkisr.f90           |  1 -
+ src/sdi/sdireheat.f90         |  9 ++++++---
+ src/sfi/sfireheat.f90         |  9 ++++++---
+ src/sfi/sfisr.f90             |  7 +++++--
+ src/shi/shireheat.f90         |  3 +++
+ src/shi/shisr.f90             |  2 ++
+ src/si/sireheat.f90           |  9 ++++++---
+ src/ssbi/ssbi1sr.f90          |  4 +++-
+ src/ssbi/ssbi2sr.f90          |  2 ++
+ src/ssbi/ssbi3sr.f90          |  3 +++
+ src/ssbi/ssbi4sr.f90          |  2 ++
+ src/ssbi/ssbi5sr.f90          |  5 ++++-
+ src/ssbi/ssbi6sr.f90          |  4 +++-
+ src/ssbi/ssbicommon.f90       |  1 -
+ src/ssbi/ssbicomreh.f90       |  3 +++
+ src/ti/tireheat.f90           |  3 +++
+ src/ti/tisr.f90               |  3 ++-
+ src/twi/twireheat.f90         |  7 +++++--
+ src/twi/twisr.f90             |  4 ++++
+ src/vfmi/vfmireheat.f90       |  3 +++
+ src/vhi/vhireheat.f90         |  3 +++
+ src/vhi/vhisr.f90             |  4 +++-
+ src/wri/wrireheat.f90         |  3 +++
+ src/wri/wrisr.f90             |  1 -
+ 186 files changed, 722 insertions(+), 323 deletions(-)
+
+commit a996871df08e110f5c1636972ccb40a050ec021a
+Date:   Tue Oct 24 08:28:26 2023 +0200
+
+    Safe guard in twi rhoendinf
+
+ src/twi/twireheat.f90 | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit a483dc62a4fb406dd4903762d4c0a98198be3004
+Date:   Tue Oct 24 08:25:57 2023 +0200
+
+    Twi hardening
+
+ src/twi/twisr.f90 | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit ab5a4e57f5e51d42e83dd19e936544518ac3ae37 (tag: 1.5.0)
+Date:   Fri Oct 20 18:13:05 2023 +0200
+
+    Bump version
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 6a9cac16dca087e3255ddf9064ee89ef79bd80b1
+Date:   Fri Oct 20 14:36:19 2023 +0200
+
+    Massive edition: new reheat function foo_lnrho_endinf returning JF rhoend
+
+ configure.ac                  |  2 ++
+ src/Makefile.am               |  4 +++-
+ src/ahi/ahireheat.f90         | 19 ++++++++++++++++++-
+ src/ai/aireheat.f90           | 20 +++++++++++++++++++-
+ src/bei/beireheat.f90         | 19 ++++++++++++++++++-
+ src/bi/bireheat.f90           | 18 +++++++++++++++++-
+ src/bsusybi/bsusybireheat.f90 | 21 ++++++++++++++++++++-
+ src/ccsi/ccsi1main.f90        |  4 ++--
+ src/ccsi/ccsi1reheat.f90      | 27 +++++++++++++++++++++++++--
+ src/ccsi/ccsi1sr.f90          |  6 +++---
+ src/ccsi/ccsi2main.f90        |  4 ++--
+ src/ccsi/ccsi2reheat.f90      | 26 ++++++++++++++++++++++++--
+ src/ccsi/ccsi2sr.f90          |  6 +++---
+ src/ccsi/ccsi3main.f90        |  4 ++--
+ src/ccsi/ccsi3reheat.f90      | 29 +++++++++++++++++++++++++----
+ src/ccsi/ccsi3sr.F90          |  6 +++---
+ src/ccsi/ccsicommon.F90       |  4 ++--
+ src/ccsi/ccsicomreh.f90       |  6 +++---
+ src/cnai/cnaireheat.f90       | 21 ++++++++++++++++++++-
+ src/cnbi/cnbireheat.f90       | 23 ++++++++++++++++++++++-
+ src/cnci/cncireheat.f90       | 20 +++++++++++++++++++-
+ src/cndi/cndireheat.f90       | 24 +++++++++++++++++++++++-
+ src/csi/csireheat.f90         | 21 ++++++++++++++++++++-
+ src/cwi/cwireheat.f90         | 19 ++++++++++++++++++-
+ src/dei/deireheat.f90         | 22 +++++++++++++++++++++-
+ src/di/direheat.f90           | 54 +++++++++++++++++++++++++++++++++++++++++++++++++++---
+ src/dsi/dsireheat.f90         | 24 +++++++++++++++++++++---
+ src/dwi/dwireheat.f90         | 27 +++++++++++++++++++++++----
+ src/esi/esireheat.f90         | 22 ++++++++++++++++++++--
+ src/fi/fireheat.f90           | 22 +++++++++++++++++++++-
+ src/gdwi/gdwireheat.f90       | 21 ++++++++++++++++++++-
+ src/gmlfi/gmlfireheat.f90     | 23 ++++++++++++++++++++++-
+ src/gmssmi/gmssmireheat.f90   | 22 ++++++++++++++++++++--
+ src/gmssmi/mssmireheat.f90    | 23 +++++++++++++++++++++--
+ src/gripi/gripireheat.f90     | 25 ++++++++++++++++++++++---
+ src/gripi/ripireheat.f90      | 22 +++++++++++++++++++++-
+ src/hbi/hbireheat.f90         | 22 ++++++++++++++++++++--
+ src/hf1i/hf1ireheat.f90       | 24 ++++++++++++++++++++----
+ src/hi/hicommon.f90           |  4 ++--
+ src/hi/himain.f90             |  2 +-
+ src/hi/hireheat.f90           | 40 +++++++++++++++++++++++++++++++++++++++-
+ src/hi/hisr.f90               |  2 +-
+ src/hni/hni1reheat.f90        | 19 ++++++++++++++++++-
+ src/hni/hni2reheat.f90        | 21 ++++++++++++++++++++-
+ src/ii/iireheat.f90           | 27 +++++++++++++++++++++------
+ src/imi/imireheat.f90         | 22 +++++++++++++++++++++-
+ src/kklti/kkltireheat.f90     | 22 +++++++++++++++++++++-
+ src/kmii/kmiireheat.f90       | 21 ++++++++++++++++++++-
+ src/kmiii/kmiiireheat.f90     | 22 +++++++++++++++++++++-
+ src/lfi/lfireheat.f90         | 24 ++++++++++++++++++++++--
+ src/li/lireheat.f90           | 22 +++++++++++++++++++---
+ src/lmi/lmi1reheat.f90        | 25 ++++++++++++++++++++++---
+ src/lmi/lmi2reheat.f90        | 23 +++++++++++++++++++++--
+ src/lpi/lpi1reheat.f90        | 24 ++++++++++++++++++++++--
+ src/lpi/lpi2reheat.f90        | 22 ++++++++++++++++++++--
+ src/lpi/lpi3reheat.f90        | 23 +++++++++++++++++++++--
+ src/mhi/mhireheat.f90         | 27 +++++++++++++++++++++++----
+ src/ncki/nckireheat.f90       | 23 ++++++++++++++++++++---
+ src/ncli/nclireheat.f90       | 22 +++++++++++++++++++++-
+ src/nfi/nfi1reheat.f90        | 22 ++++++++++++++++++++--
+ src/nfi/nfi2reheat.f90        | 21 ++++++++++++++++++++-
+ src/nfi/nfi3reheat.f90        | 21 ++++++++++++++++++++-
+ src/nfi/nfi4reheat.f90        | 21 ++++++++++++++++++++-
+ src/ni/nireheat.f90           | 20 +++++++++++++++++++-
+ src/nmlfi/nmlfi1main.f90      | 15 ++++++++-------
+ src/nmlfi/nmlfi1reheat.f90    | 34 ++++++++++++++++++++++++++++++----
+ src/nmlfi/nmlfi1sr.f90        |  6 +++---
+ src/nmlfi/nmlfi2main.f90      |  3 ++-
+ src/nmlfi/nmlfi2reheat.f90    | 38 +++++++++++++++++++++++++++++++++-----
+ src/nmlfi/nmlfi2sr.f90        |  6 +++---
+ src/nmlfi/nmlfi3main.f90      |  4 ++--
+ src/nmlfi/nmlfi3reheat.f90    | 37 ++++++++++++++++++++++++++++++++-----
+ src/nmlfi/nmlfi3sr.f90        |  6 +++---
+ src/nmlfi/nmlficommon.f90     |  4 ++--
+ src/nmlfi/nmlficomreh.f90     | 40 +++++++++++++++++++++++++++++++---------
+ src/oi/oireheat.f90           | 20 ++++++++++++++++++--
+ src/oripi/oripireheat.f90     | 22 ++++++++++++++++++++--
+ src/osti/ostireheat.f90       | 23 ++++++++++++++++++++++-
+ src/pai/paireheat.f90         | 21 ++++++++++++++++++++-
+ src/pli/plireheat.f90         | 23 +++++++++++++++++++++--
+ src/psni/psnireheat.f90       | 23 ++++++++++++++++++++---
+ src/rchi/rchireheat.f90       | 21 ++++++++++++++++++++-
+ src/rcipi/rcipireheat.f90     | 22 ++++++++++++++++++++--
+ src/rclfi/rclfi1reheat.f90    | 22 +++++++++++++++++++++-
+ src/rclfi/rclfi2reheat.f90    | 21 ++++++++++++++++++++-
+ src/rclfi/rclfi3reheat.f90    | 21 ++++++++++++++++++++-
+ src/rclfi/rclfi4reheat.f90    | 22 +++++++++++++++++++++-
+ src/rcmi/rcmireheat.f90       | 20 ++++++++++++++++++--
+ src/rcqi/rcqireheat.f90       | 22 ++++++++++++++++++++--
+ src/rgi/rgireheat.f90         | 20 +++++++++++++++++++-
+ src/rmi/rmi1reheat.f90        | 21 ++++++++++++++++++++-
+ src/rmi/rmi2reheat.f90        | 22 +++++++++++++++++++++-
+ src/rmi/rmi3reheat.f90        | 21 ++++++++++++++++++++-
+ src/rmi/rmi4reheat.f90        | 22 ++++++++++++++++++++--
+ src/rpi/rpi1main.f90          |  2 +-
+ src/rpi/rpi1reheat.f90        | 30 ++++++++++++++++++++++++++----
+ src/rpi/rpi1sr.f90            |  6 +++---
+ src/rpi/rpi2main.f90          |  2 +-
+ src/rpi/rpi2reheat.f90        | 29 +++++++++++++++++++++++++----
+ src/rpi/rpi2sr.f90            |  6 +++---
+ src/rpi/rpi3main.f90          |  2 +-
+ src/rpi/rpi3reheat.f90        | 29 +++++++++++++++++++++++++----
+ src/rpi/rpi3sr.f90            |  6 +++---
+ src/rpi/rpicommon.f90         |  4 ++--
+ src/rpqdi/aspic_rpqdi.3       |  4 ++--
+ src/rpqdi/rpqdimain.f90       |  4 ++++
+ src/rpqdi/rpqdireheat.f90     | 27 ++++++++++++++++++++++-----
+ src/rpqdi/rpqdisr.f90         |  7 ++++++-
+ src/rpqti/aspic_rpqti.3       |  4 ++--
+ src/rpqti/rpqtimain.f90       |  6 +++++-
+ src/rpqti/rpqtireheat.f90     | 23 +++++++++++++++++++++--
+ src/rpqti/rpqtisr.f90         |  8 +++++++-
+ src/saai/saaireheat.f90       | 22 +++++++++++++++++++++-
+ src/sabi/sabimain.f90         |  9 ++++++---
+ src/sabi/sabireheat.f90       | 50 +++++++++++++++++++++++++++++++++++++++-----------
+ src/sabi/sabisr.f90           | 42 +++++++++++++++++++++++++++++++++++++++++-
+ src/saii/saii1reheat.f90      | 22 +++++++++++++++++++++-
+ src/saii/saii2reheat.f90      | 22 +++++++++++++++++++++-
+ src/saiii/saiii1reheat.f90    | 22 +++++++++++++++++++++-
+ src/saiii/saiii2reheat.f90    | 22 +++++++++++++++++++++-
+ src/saiii/saiii3reheat.f90    | 22 +++++++++++++++++++++-
+ src/sati/satimain.f90         |  9 ++++++---
+ src/sati/satireheat.f90       | 47 +++++++++++++++++++++++++++++++++++++----------
+ src/sati/satisr.f90           | 44 +++++++++++++++++++++++++++++++++++++++++++-
+ src/sbi/sbireheat.f90         | 21 ++++++++++++++++++++-
+ src/sbki/sbkireheat.f90       | 22 +++++++++++++++++++++-
+ src/sdi/sdireheat.f90         | 25 +++++++++++++++++++++----
+ src/sfi/sfireheat.f90         | 21 ++++++++++++++++++++-
+ src/shi/shireheat.f90         | 24 ++++++++++++++++++++----
+ src/si/sireheat.f90           | 26 ++++++++++++++++++++++++--
+ src/ssbi/ssbi1reheat.f90      | 24 +++++++++++++++++++++---
+ src/ssbi/ssbi2reheat.f90      | 23 ++++++++++++++++++++---
+ src/ssbi/ssbi3reheat.f90      | 24 +++++++++++++++++++++---
+ src/ssbi/ssbi4reheat.f90      | 24 +++++++++++++++++++++---
+ src/ssbi/ssbi5reheat.f90      | 24 +++++++++++++++++++++---
+ src/ssbi/ssbi6reheat.f90      | 24 +++++++++++++++++++++---
+ src/ti/tireheat.f90           | 21 ++++++++++++++++++++-
+ src/twi/twireheat.f90         | 25 ++++++++++++++++++++-----
+ src/vfmi/vfmireheat.f90       | 20 +++++++++++++++++++-
+ src/vhi/vhireheat.f90         | 23 ++++++++++++++++++++---
+ src/wri/wrireheat.f90         | 22 +++++++++++++++++++++-
+ 141 files changed, 2469 insertions(+), 306 deletions(-)
+
+commit 64f1def1de22f1e78b6e8ea778bfa28c724623ce
+Date:   Fri Oct 20 14:35:03 2023 +0200
+
+    Delete obsolete and unused sfbi (kksf) model
+
+ src/sfbi/Makefile.am    |  22 -----------------
+ src/sfbi/sfbimain.f90   |  61 -----------------------------------------------
+ src/sfbi/sfbireheat.f90 | 101 -----------------------------------------------------------------------------
+ src/sfbi/sfbisr.f90     | 139 ----------------------------------------------------------------------------------------------------------
+ 4 files changed, 323 deletions(-)
+
+commit 1096e0c3978dedb027b22e96d4f7ee61ca728005
+Date:   Thu Oct 19 11:50:00 2023 +0200
+
+    Add minimal coupling option to SI
+
+ src/si/sisr.f90 | 34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
+
+commit 3eb217090990bec36608a7df906284191d8069b1
+Date:   Wed Oct 18 10:40:51 2023 +0200
+
+    Fix typo in man
+
+ src/di/aspic_di.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3344c407610d58a38924af0fa4b4960c0c902384 (tag: 1.4.3.1)
+Date:   Tue Oct 17 16:12:35 2023 +0200
+
+    Fix libtool versionning
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fea1edca00a4420e0e72fec0506fe710922e610b (tag: 1.4.3, gh-sources)
+Date:   Fri Oct 13 17:59:06 2023 +0200
+
+    Update libtool version and logs
+
+ ChangeLog    | 269 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS         |  13 +-----
+ README.md    |   6 +--
+ configure.ac |   6 +--
+ 4 files changed, 277 insertions(+), 17 deletions(-)
+
 commit 599346cde64822f1c740dff7e1b58f1ffc6521e7 (HEAD -> master)
 Date:   Fri Oct 13 17:44:26 2023 +0200
 

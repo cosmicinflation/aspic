@@ -9,7 +9,7 @@ module rcqireheat
   use srreheat, only : find_reheat_rrad, find_reheat_rreh
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use rcqisr, only : rcqi_epsilon_one, rcqi_epsilon_two, rcqi_epsilon_three
-  use rcqisr, only : rcqi_norm_potential
+  use rcqisr, only : rcqi_norm_potential, rcqi_x_potmax, rcqi_x_potzero
   use rcqisr, only : rcqi_x_endinf, rcqi_efold_primitive
   implicit none
 
@@ -51,7 +51,7 @@ contains
     rcqiData%msg = 'rcqi_x_star'
     
     mini = xEnd
-    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
+    maxi = min(1._kp/epsilon(1._kp),rcqi_x_potmax(alpha))
 
     x = zbrent(find_rcqi_x_star,mini,maxi,tolzbrent,rcqiData)
     rcqi_x_star = x
@@ -113,7 +113,7 @@ contains
     rcqiData%msg = 'rcqi_x_rrad'
     
     mini = xEnd
-    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
+    maxi = min(1._kp/epsilon(1._kp),rcqi_x_potmax(alpha))
 
     x = zbrent(find_rcqi_x_rrad,mini,maxi,tolzbrent,rcqiData)
     rcqi_x_rrad = x
@@ -173,11 +173,13 @@ contains
     rcqiData%msg = 'rcqi_x_rreh'
     
     mini = xEnd
-    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
-
+    maxi = min(1._kp/epsilon(1._kp),rcqi_x_potmax(alpha))   
+        
     x = zbrent(find_rcqi_x_rreh,mini,maxi,tolzbrent,rcqiData)
     rcqi_x_rreh = x
 
+!    print *,'bug',x,xEnd,alpha,primEnd,rcqi_efold_primitive(x,alpha)
+    
     if (present(bfoldstar)) then
        bfoldstar = - (rcqi_efold_primitive(x,alpha) - primEnd)
     endif
@@ -248,7 +250,7 @@ contains
     epsOneEnd = rcqi_epsilon_one(xend,alpha)
     potStar = rcqi_norm_potential(xstar,alpha)
     epsOneStar = rcqi_epsilon_one(xstar,alpha)
-
+    
     rcqi_lnrho_endinf = ln_rho_endinf(Pstar,epsOneStar,epsOneEnd,potEnd/potStar)
 
   end function rcqi_lnrho_endinf

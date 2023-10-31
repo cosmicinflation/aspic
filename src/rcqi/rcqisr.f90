@@ -12,10 +12,13 @@ module rcqisr
 
   private
 
-  public  rcqi_norm_potential, rcqi_epsilon_one, rcqi_epsilon_two, rcqi_epsilon_three
-  public  rcqi_x_endinf, rcqi_efold_primitive, rcqi_x_trajectory
-  public  rcqi_norm_deriv_potential, rcqi_norm_deriv_second_potential
- 
+  public rcqi_norm_potential, rcqi_epsilon_one, rcqi_epsilon_two, rcqi_epsilon_three
+  public rcqi_x_endinf, rcqi_efold_primitive, rcqi_x_trajectory
+  public rcqi_norm_deriv_potential, rcqi_norm_deriv_second_potential
+  public rcqi_x_potmax, rcqi_x_potzero
+
+  real(kp), parameter :: yLarge = log(1._kp/epsilon(1._kp))
+  
 contains
 !returns V/M^4
   function rcqi_norm_potential(x,alpha)
@@ -99,6 +102,26 @@ contains
   end function rcqi_epsilon_three
 
 
+  function rcqi_x_potmax(alpha)
+    implicit none
+    real(kp) :: rcqi_x_potmax
+    real(kp), intent(in) :: alpha
+
+    rcqi_x_potmax = exp(-0.25_kp+1._kp/alpha)
+
+  end function rcqi_x_potmax
+   
+
+  function rcqi_x_potzero(alpha)
+    implicit none
+    real(kp) :: rcqi_x_potzero
+    real(kp), intent(in) :: alpha
+
+    rcqi_x_potzero = exp(1._kp/alpha)
+
+  end function rcqi_x_potzero
+  
+
 !returns x at the end of inflation defined as epsilon1=1
   function rcqi_x_endinf(alpha)
     implicit none
@@ -109,7 +132,7 @@ contains
     type(transfert) :: rcqiData
 
     mini = epsilon(1._kp)
-    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
+    maxi = min(1._kp/epsilon(1._kp),rcqi_x_potmax(alpha))
 
     rcqiData%real1 = alpha
     rcqiData%msg = 'rcqi_x_endinf'
@@ -135,17 +158,47 @@ contains
   end function find_rcqi_x_endinf
 
 
+!alpha -> 0 is singular for ei and exp but not for their product
+  function rcqi_numacc_eioexp(x,alpha)
+    implicit none
+    real(kp) :: rcqi_numacc_eioexp
+    real(kp), intent(in) :: x,alpha
+    real(kp) :: y,beta
+
+    real(kp), parameter :: argLarge = log(epsilon(1._kp)*huge(1._kp))
+
+    beta = 0.5_kp-2._kp/alpha
+    y = beta + 2._kp*log(x)
+    
+    if (abs(y).gt.argLarge) then
+       rcqi_numacc_eioexp = 1._kp/y
+       return
+    endif
+
+    rcqi_numacc_eioexp = ei(y)*exp(-y)
+    
+
+  end function rcqi_numacc_eioexp
+  
+
 !this is integral[V(phi)/V'(phi) dphi]
   function rcqi_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
     real(kp) :: rcqi_efold_primitive
 
+    real(kp) :: y, test
+        
     if (alpha.eq.0._kp) stop 'rcqi_efold_primitive: alpha=0!'
 
-    rcqi_efold_primitive = 1._kp/16._kp*(2._kp*x**2-exp(-0.5_kp+2._kp/alpha) &
-         *ei(0.5_kp-2._kp/alpha+2._kp*log(x)))
+    y = 0.5_kp-2._kp/alpha+2._kp*log(x)
 
+! NaN land for |y| large  
+!    rcqi_efold_primitive = 1._kp/16._kp*(2._kp*x**2 - exp(-0.5_kp+2._kp/alpha) &
+!         *ei(y) )
+
+    rcqi_efold_primitive = 1._kp/16._kp*x*x*(2._kp - rcqi_numacc_eioexp(x,alpha))
+    
   end function rcqi_efold_primitive
 
 
@@ -160,10 +213,8 @@ contains
 
   
     mini = xEnd
-    maxi = min(1._kp/epsilon(1._kp),exp(-0.25_kp+1._kp/alpha))
+    maxi = min(1._kp/epsilon(1._kp),rcqi_x_potmax(alpha))
   
-
-
     rcqiData%real1 = alpha
     rcqiData%real2 = -bfold + rcqi_efold_primitive(xend,alpha)
     rcqiData%msg = 'rcqi_x_trajectory'
