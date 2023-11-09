@@ -48,7 +48,7 @@ contains
     tiData%real4 = calF + primEnd
     tiData%msg = 'ti_x_star'
 
-    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
+    mini=ti_x_potmax(alpha,mu)
     maxi = xEnd*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ti_x_star,mini,maxi,tolFind,tiData)
@@ -110,7 +110,7 @@ contains
     tiData%real3 = calF + primEnd
     tiData%msg = 'ti_x_rrad'
 
-    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
+    mini=ti_x_potmax(alpha,mu)
     maxi = xEnd*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ti_x_rrad,mini,maxi,tolFind,tiData)
@@ -172,7 +172,8 @@ contains
     tiData%real3 = calF + primEnd
     tiData%msg = 'ti_x_rreh'
 
-    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
+!    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
+    mini = ti_x_potmax(alpha,mu)
     maxi = xEnd*(1._kp-epsilon(1._kp))
 
     x = zbrent(find_ti_x_rreh,mini,maxi,tolFind,tiData)
