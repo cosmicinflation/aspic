@@ -14,7 +14,7 @@ module tisr
   public ti_norm_potential, ti_norm_deriv_potential, ti_norm_deriv_second_potential
   public ti_epsilon_one, ti_epsilon_two,ti_epsilon_three
   public ti_efold_primitive, ti_x_trajectory,ti_x_endinf,ti_x_potmax
-
+  public ti_numacc_xinimin, ti_numacc_efoldmax
 
 contains
 !returns V/M**4
@@ -130,20 +130,56 @@ contains
   end function ti_x_endinf
 
 
+  function ti_numacc_xinimin(alpha,mu)
+    implicit none
+    real(kp) :: ti_numacc_xinimin
+    real(kp), intent(in) :: alpha,mu
+!cos x
+    real(kp) :: ymin
+
+    if (alpha.le.0.5_kp) then
+       ymin = 1._kp - epsilon(1._kp)
+    else
+       ymin = 0.5_kp/alpha + epsilon(1._kp)
+    endif
+        
+    ti_numacc_xinimin = acos(ymin)
+    
+  end function ti_numacc_xinimin
+  
+
+  function ti_numacc_efoldmax(alpha,mu)
+    implicit none
+    real(kp) :: ti_numacc_efoldmax
+    real(kp), intent(in) :: alpha,mu
+    real(kp) :: xini,xend
+    
+    xini = ti_numacc_xinimin(alpha,mu)
+    xend = ti_x_endinf(alpha,mu)
+
+    ti_numacc_efoldmax = - ti_efold_primitive(xend,alpha,mu) + ti_efold_primitive(xini,alpha,mu) 
+
+  end function ti_numacc_efoldmax
+  
+
 !this is integral[V(phi)/V'(phi) dphi]
   function ti_efold_primitive(x,alpha,mu)
     implicit none
     real(kp), intent(in) :: x,alpha,mu
     real(kp) :: ti_efold_primitive
 
+    real(kp) :: y
+
+    y = cos(x)
+    
     if (alpha.eq.0.5_kp)  then 
 
-       ti_efold_primitive = mu**2*(1._kp/(1._kp-cos(x))-0.5_kp*log(1._kp-cos(x)))
+       ti_efold_primitive = mu**2*(1._kp/(1._kp-y)-0.5_kp*log(1._kp-y))
 
     else
 
        ti_efold_primitive = mu**2*((2._kp*alpha+1._kp)/(2._kp*(1._kp-2._kp*alpha))* &
-            log(abs(-2._kp*alpha*cos(x)+1._kp))+log(1-cos(x))/(2._kp*alpha-1._kp))
+            log(abs(-2._kp*alpha*y+1._kp))+log(1-y)/(2._kp*alpha-1._kp))
 
     endif
 
@@ -161,8 +197,8 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: tiData
 
-    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini= ti_numacc_xinimin(alpha,mu)
+    maxi = xEnd
 
     tiData%real1 = alpha
     tiData%real2 = mu

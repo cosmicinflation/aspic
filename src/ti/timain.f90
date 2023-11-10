@@ -7,7 +7,7 @@ program timain
   use infinout, only : delete_file, livewrite
   use srreheat, only : log_energy_reheat_ingev
 
-  use tisr, only : ti_norm_potential, ti_x_endinf
+  use tisr, only : ti_norm_potential, ti_x_endinf, ti_numacc_efoldmax
   use tireheat, only : ti_x_rreh, ti_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -56,7 +56,10 @@ program timain
   w=0._kp
   !  w = 1._kp/3._kp
 
-
+  mu = 0.01_kp
+  alpha = 0.49999_kp
+  print *,'efoldmax= ',ti_numacc_efoldmax(alpha,mu)
+  
   
   call delete_file('ti_predic.dat')
   call delete_file('ti_nsr.dat')

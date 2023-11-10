@@ -9,6 +9,7 @@ module tireheat
   use srreheat, only : get_calfconst_rrad, get_calfconst_rreh
   use tisr, only : ti_epsilon_one, ti_epsilon_two, ti_epsilon_three
   use tisr, only : ti_norm_potential,ti_efold_primitive,ti_x_endinf,ti_x_potmax
+  use tisr, only : ti_numacc_xinimin
   implicit none
 
   private
@@ -48,8 +49,8 @@ contains
     tiData%real4 = calF + primEnd
     tiData%msg = 'ti_x_star'
 
-    mini=ti_x_potmax(alpha,mu)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini = ti_numacc_xinimin(alpha,mu)
+    maxi = xEnd
 
     x = zbrent(find_ti_x_star,mini,maxi,tolFind,tiData)
     ti_x_star = x
@@ -110,8 +111,8 @@ contains
     tiData%real3 = calF + primEnd
     tiData%msg = 'ti_x_rrad'
 
-    mini=ti_x_potmax(alpha,mu)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini=ti_numacc_xinimin(alpha,mu)
+    maxi = xEnd
 
     x = zbrent(find_ti_x_rrad,mini,maxi,tolFind,tiData)
     ti_x_rrad = x
@@ -172,9 +173,8 @@ contains
     tiData%real3 = calF + primEnd
     tiData%msg = 'ti_x_rreh'
 
-!    mini=ti_x_potmax(alpha,mu) *(1._kp+epsilon(1._kp)) !potential maximum
-    mini = ti_x_potmax(alpha,mu)
-    maxi = xEnd*(1._kp-epsilon(1._kp))
+    mini = ti_numacc_xinimin(alpha,mu)
+    maxi = xEnd
 
     x = zbrent(find_ti_x_rreh,mini,maxi,tolFind,tiData)
     ti_x_rreh = x
