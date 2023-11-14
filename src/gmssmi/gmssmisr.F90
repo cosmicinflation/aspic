@@ -15,6 +15,7 @@ module gmssmisr
   use gmssmicommon, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
   use gmssmicommon, only : gmssmi_x_endinf, gmssmi_x_epsonemin
   use gmssmicommon, only : gmssmi_x_epstwomin, gmssmi_epstwomin
+  use gmssmicommon, only : mssmi_x_trajectory, mssmi_efold_primitive
   implicit none
 
   private
@@ -42,7 +43,7 @@ contains
 
     elseif (alpha.eq.1._kp) then
 
-       stop 'gmssmi_efold_primitive: you must use mssmi for alpha=1!'
+       gmssmi_efold_primitive = mssmi_efold_primitive(x,phi0)
 
     else
        
@@ -77,14 +78,15 @@ contains
 
        maxi = 1._kp/epsilon(1._kp)
 
-    elseif (alpha.eq.1._kp) then
+    elseif (alpha.gt.1._kp) then
 
-       stop 'gmssmi_x_trajectory: you must use mssmi for alpha=1!'
+       maxi = gmssmi_x_epsonemin(alpha,phi0) !local maximum of the potential
 
-    else
+    else !alpha==1
 
-	maxi = gmssmi_x_epsonemin(alpha,phi0) !local maximum of the potential
-
+       gmssmi_x_trajectory = mssmi_x_trajectory(bfold,xend,phi0)
+       return
+       
     endif
 
 

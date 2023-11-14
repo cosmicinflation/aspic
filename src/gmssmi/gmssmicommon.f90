@@ -19,7 +19,8 @@ module gmssmicommon
   public gmssmi_x_epsonemin, gmssmi_x_endinf
   public gmssmi_x_epsonezero, gmssmi_x_epstwozero
   public gmssmi_x_epstwomin, gmssmi_epstwomin  
-
+  public mssmi_x_trajectory, mssmi_efold_primitive
+  
   logical, parameter :: verbose = .true.
 
 
@@ -301,6 +302,59 @@ contains
 
   end function find_gmssmi_x_endinf
 
+
+
+
+!this is integral[V(phi)/V'(phi) dphi]
+  function mssmi_efold_primitive(x,phi0)
+    implicit none
+    real(kp), intent(in) :: x,phi0
+    real(kp) :: mssmi_efold_primitive
+
+    mssmi_efold_primitive = phi0**2*(x**2/20._kp-1._kp/15._kp*x**2/(x**4-1._kp) &
+               + 2._kp/15._kp * atanh(x**2))
+
+  end function mssmi_efold_primitive
+
+
+
+!returns x at bfold=-efolds before the end of inflation, ie N-Nend
+  function mssmi_x_trajectory(bfold,xend,phi0)
+    implicit none
+    real(kp), intent(in) :: bfold, phi0, xend
+    real(kp) :: mssmi_x_trajectory
+    real(kp), parameter :: tolFind=tolkp
+    real(kp) :: mini,maxi
+    type(transfert) :: mssmiData
+
+  
+    mini = xend
+    maxi = gmssmi_x_epsonemin(alpha=1._kp,phi0=phi0) *(1._kp-epsilon(1._kp))
+
+    mssmiData%real1 = phi0
+    mssmiData%real2 = -bfold + mssmi_efold_primitive(xend,phi0)
+    mssmiData%msg = 'mssmi_x_trajectory'
+    
+    mssmi_x_trajectory = zbrent(find_mssmi_x_trajectory,mini,maxi,tolFind,mssmiData)
+       
+  end function mssmi_x_trajectory
+
+  function find_mssmi_x_trajectory(x,mssmiData)    
+    implicit none
+    real(kp), intent(in) :: x   
+    type(transfert), optional, intent(inout) :: mssmiData
+    real(kp) :: find_mssmi_x_trajectory
+    real(kp) :: phi0,NplusNuend
+
+    phi0= mssmiData%real1
+    NplusNuend = mssmiData%real2
+
+    find_mssmi_x_trajectory = mssmi_efold_primitive(x,phi0) - NplusNuend
+   
+  end function find_mssmi_x_trajectory
+
+
+  
 
 end module gmssmicommon
 
