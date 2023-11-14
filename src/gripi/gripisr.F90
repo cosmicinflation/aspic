@@ -16,6 +16,7 @@ module gripisr
   use gripicommon, only : gripi_x_epsonemin, gripi_x_endinf
   use gripicommon, only : gripi_x_epstwozero,gripi_x_epsonezero
   use gripicommon, only : gripi_x_epstwomin, gripi_epstwomin
+  use gripicommon, only : ripi_x_trajectory, ripi_efold_primitive
   implicit none
 
   private
@@ -44,7 +45,7 @@ contains
 
     elseif (alpha.eq.1._kp) then
 
-       stop 'gripi_efold_primitive: you must use ripi for alpha=1!'
+       gripi_efold_primitive = ripi_efold_primitive(x,phi0)
 
     else
 
@@ -78,14 +79,15 @@ contains
 
        maxi = 1._kp/epsilon(1._kp)
 
-    elseif (alpha.eq.1._kp) then
-
-       stop 'gripi_x_trajectory: you must use ripi for alpha=1!'
-
-    else
+    elseif (alpha.gt.1._kp) then
 
        maxi = gripi_x_epsonemin(alpha,phi0) !local maximum of the potential
 
+    else !alpha==1
+       
+       gripi_x_trajectory = ripi_x_trajectory(bfold,xend,phi0)
+       return
+       
     endif
 
     gripiData%real1 = alpha
