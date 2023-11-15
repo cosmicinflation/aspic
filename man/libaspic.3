@@ -5,7 +5,7 @@
 .\"   $Log$
 .\"
 
-.TH libaspic 3 "March 24, 2023" "version 1.4.0" "Aspic usage"
+.TH libaspic 3 "November 15, 2023" "version 1.5.6" "Aspic usage"
 
 .SH NAME
 libaspic - a scientific
@@ -221,7 +221,7 @@ and the number of e-folds
 before the end of inflation at which you want this value.
 
 
-.SS REHEATING MODULES
+.SS REHEATING AND FLOW MODULES
 
 The
 .B fooreheat
@@ -450,39 +450,111 @@ directory 'src/common/'. In particular, the module has the public
 of kind
 .I real(kp)
 .IP
-.BR scalar_spectral_index (epsH)
+.BR scalar_spectral_index (epsV)
 .RE
 .RS
-.BR tensor_to_scalar_ratio (epsH)
+.BR tensor_to_scalar_ratio (epsV)
 .RE
 .RS
-.BR scalar_running (epsH)
+.BR scalar_running (epsV)
 .RE
 .P
 All of these functions take as input a
 .IP
 .I real(kp), dimension (:) ::
-epsH
+epsV
 .RS
 .RE
 .P
-vector assumed to contain the value of the successive Hubble flow
-parameters 'epsilonH_i', with 'i' increasing. The calculations are
+vector assumed to contain the value of the successive slow-roll
+parameters 'epsilonV_i', with 'i' increasing. The calculations are
 consistent with the size of the input vector. For instance, calling
 .BR scalar_spectral_index ()
-with a dimension two vector containing the values of the first and
-second Hubble flow parameters returns the spectral index computed at
+with a dimension-two vector containing the values of the first and
+second slow-roll parameters returns the spectral index computed at
 first order in a Hubble flow expansion. If you input a dimension three
 vector, the calculations are performed at second order. The same holds
 for the tensor-to-scalar ratio and the running of the spectral index
 (which is non-zero at second order only).
+.P
+In practice, this module has an internal
+.I function
+of kind
+.I real(kp)
+.IP
+.BR slowroll_to_hubble (epsV)
+.P
+which outputs a vector of Hubble flow functions 'epsH_i' from a vector
+of slow-roll parameters 'epsV_i'. The computation of the power-law
+quantities (spectral index, running, running of running...) is
+delegated to another module, named
+.B srflow
+and which contains all the routines needed to compute the power-law parameters
+from the Hubble-flow functions (see huflow.f90 in the same directory).
+
+The
+.B eosflow
+module provides some potentially useful functions for all models built
+upon postulating the 'equation-of-state'
+.B w(N)
+as a function of the number
+of efolds. For these, all the Hubble flow functions are exactly known,
+as well as a parametric form of the potential (these models are
+strictly equivalent to a single scalar field). In particular, the
+.B eosflow
+module has the public
+.I functions
+of kind
+.I real(kp)
+.IP
+.BR eos_x (psqrwp1)
+.RE
+.RS
+.BR eos_norm_potential (pwp1,wp1)
+.RE
+.RS
+.BR eos_norm_deriv_potential (pwp1,wp1,dwp1)
+.RE
+.RS
+.BR eos_norm_deriv_second_potential (pwp1,wp1,dwp1,d2wp1)
+.RE
+.P
+All of these functions take as input
+.B real(kp)
+variables. They are, in respective order, the primitive
+of 'sqrt[w(N)+1)]', the primitive of 'w(N)+1', the equation-of-state
+parameter plus one 'w(N)+1', the derivative of 'w(N)+1' w.r.t 'N', and
+the second derivative of 'w(N)+1'.
+In the same module, we also provide the following functions
+of kind
+.I real(kp)
+.IP
+.BR eos_epsilon_one (wp1)
+.RE
+.RS
+.BR eos_epsilon_two (wp1,dwp1)
+.RE
+.RS
+.BR eos_epsilon_three (wp1,dwp1,d2wp1)
+.RE
+.P
+which are the
+.B exact
+Hubble flow functions. They take as input the equation-of-state
+parameter 'w(N)+1' and its derivatives.
+
 
 .B References:
 .IP
+.UR https://arxiv.org/abs/1609.04739
+arXiv:1609.04739 (section V)
+.UE
+.RS
 .UR http://arxiv.org/abs/1303.3787
 arXiv:1303.3787 (section 2.2)
 .UE
 .RS
+.RE
 .UR http://arxiv.org/abs/1302.6013
 arXiv:1302.6013 (section 2.2)
 .UE
@@ -831,16 +903,19 @@ brane inflation
 Kachru Kallosh Linde Trivedi inflation
 .TQ
 .I nfi1
-N-formalism inflation I
+N-formalism inflation 1
 .TQ
 .I nfi3
-N-formalism inflation III
+N-formalism inflation 3
 .TQ
 .I ccsi2
 cublicly corrected Starobinski inflation II
 .TQ
-.I hni
-hybrid natural inflation
+.I hni1
+hybrid natural inflation I
+.TQ
+.I saii
+string axion inflation I
 .TQ
 .I vfmi
 Viatcheslav Fyodorovich Mukhanov inflation
@@ -897,7 +972,7 @@ logarithmic potential inflation
 .I cndi
 constant spectral index inflation D
 .TQ
-.I saii3
+.I saiii
 string axion inflation II
 .TQ
 .I rclfi
@@ -909,8 +984,11 @@ non-renormalizable corrected loop inflation
 .I hni
 hybrid natural inflation
 .TQ
-.I nfi
-N-formalism inflation
+.I nfi2
+N-formalism inflation 2
+.TQ
+.I nfi4
+N-formalism inflation 4
 .TQ
 .I rcipi
 radiatively corrected inflection point inflation
