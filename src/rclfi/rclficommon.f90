@@ -269,8 +269,9 @@ contains
               
        xp = x**p
        x4 = x**4
-       lnx = log(x)
-
+!       lnx = log(x)
+       lnx = log(abs(x))
+       
        yprime(1) = x*(xp+alpha*x4*lnx)/( p*xp+alpha*x4*(1._kp+4._kp*lnx) )
       
     endif
