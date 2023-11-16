@@ -367,6 +367,8 @@ contains
     xpotmax = rclfi1_x_potmax(p,alpha,mu)
 
     if ((x.ge.xpotmax).or.(x.lt.0._kp)) then
+       write(*,*)'p= alpha= mu= ',p,alpha,mu
+       write(*,*)'x= xpotmax= ',x,xpotmax
        stop 'rclfi1_efold_primitive: x not in [0,xpotmax[!'
     endif
 
