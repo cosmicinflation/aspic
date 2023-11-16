@@ -199,17 +199,17 @@ contains
 !the maximal number of efold computable at the current numerical
 !accuracy. This is not necessarily huge as eps1 can be not small
 !asymptotically
-  function nmlfi3_numacc_efoldmax(xi,p)
+  function nmlfi3_numacc_efoldmax(xi,p,hbarend)
     implicit none
     real(kp) :: nmlfi3_numacc_efoldmax
-    real(kp), intent(in) :: xi,p
+    real(kp), intent(in) :: xi,p,hbarend
 
-    real(kp) :: hbarinimin, hbarendmax
+    real(kp) :: hbarinimin
     
-    hbarendmax = hbarBig**0.5_kp
+!    hbarendmax = hbarBig**0.5_kp
     hbarinimin = nmlfi3_numacc_hbarinimin(xi,p)
     
-    nmlfi3_numacc_efoldmax = -nmlfi_parametric_efold_primitive(hbarendmax,xi,p) &
+    nmlfi3_numacc_efoldmax = -nmlfi_parametric_efold_primitive(hbarend,xi,p) &
          + nmlfi_parametric_efold_primitive(hbarinimin,xi,p)
     
   end function nmlfi3_numacc_efoldmax
