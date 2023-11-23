@@ -702,7 +702,7 @@ contains
 !potential may have a lot of eps-1 roots at higher value. Inflation
 !would actually ends and starts a few times before reaching the
 !computed root here and slow-roll violation should be expected before.
-       mini = xpotzero(1) + tolkp
+       mini = xpotzero(1) + epsilon(1._kp)
        maxi = saiiiXBig
        saiiiData%real4 = +1._kp
        xeps(1:2)=zbrent(find_saiii_x_epsoneunity,mini,maxi,tolFind,saiiiData)
