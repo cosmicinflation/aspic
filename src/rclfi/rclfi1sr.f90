@@ -242,21 +242,29 @@ contains
     implicit none
     real(kp) :: rclfi1_numacc_xinimax
     real(kp), intent(in) :: p,alpha,mu
-
-    real(kp), parameter :: dx = 100._kp*epsnumacc
-    real(kp) :: xpotmax, dlnVodx
+    real(kp), save :: dx
+    real(kp) :: xpotmax, dlnVodx, dV
     
     if (.not.rclfi1_check_params(p,alpha,mu)) then
        stop 'rclfi1_numacc_xinimax: no maximum!'
     endif
 
     xpotmax = rclfi1_x_potmax(p,alpha,mu)
+
+    dx = 100._kp*epsnumacc
     
     if (rclfi1_norm_potential(xpotmax-dx,p,alpha,mu).lt.0._kp) then
        write(*,*)'alpha= p= ',p,alpha
        stop 'rclfi1_numacc_xinimax: dx too large!'
     endif
 
+    dV = rclfi1_norm_deriv_potential(xpotmax-dx,p,alpha,mu)
+
+    do while (dV == 0._kp .and. dx < xpotmax)
+       dx = 2._kp*dx
+       dV = rclfi1_norm_deriv_potential(xpotmax-dx,p,alpha,mu)
+    end do
+        
     dlnVodx = abs(rclfi1_norm_deriv_potential(xpotmax-dx,p,alpha,mu) &
          /rclfi1_norm_potential(xpotmax,p,alpha,mu)/dx)
     

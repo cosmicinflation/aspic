@@ -9,6 +9,7 @@ program rclfi1main
   use rclfi1sr, only : rclfi1_norm_potential, rclfi1_x_endinf, rclfi1_x_potmax, rclfi1_numacc_pmax
   use rclfi1sr, only : rclfi1_norm_deriv_potential, rclfi1_norm_deriv_second_potential
   use rclfi1sr, only : rclfi1_numacc_mumin, rclfi1_numacc_efoldmax, rclfi1_numacc_alphamax
+  use rclfi1sr, only : rclfi1_efold_primitive, rclfi1_numacc_xinimax
   use rclfi1reheat, only : rclfi1_x_rreh, rclfi1_x_rrad
   use srreheat, only : get_lnrrad_rreh, get_lnrreh_rrad, ln_rho_endinf
   use srreheat, only : get_lnrrad_rhow, get_lnrreh_rhow, ln_rho_reheat
@@ -54,7 +55,6 @@ program rclfi1main
   real(kp) :: VendOverVstar, eps1End, xend
 
   real(kp) :: V1,x,V,V2
-
 
   
   Pstar = powerAmpScalar
