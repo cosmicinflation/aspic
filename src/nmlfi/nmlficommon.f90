@@ -28,7 +28,7 @@ module nmlficommon
   real(kp), parameter :: pminus = 2._kp*(2._kp - sqrt(3._kp))
 
   real(kp), parameter :: hbarBig = epsilon(1._kp)*huge(1._kp)
-  real(kp), parameter :: nmlfiSmall = epsilon(1._kp)
+  real(kp), parameter :: nmlfiSmall = 10._kp * epsilon(1._kp)
   
   
   private

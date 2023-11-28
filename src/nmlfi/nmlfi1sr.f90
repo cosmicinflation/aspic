@@ -229,6 +229,7 @@ contains
 
 !safety check
     if (nmlfi1_numacc_hbarinimax.gt.nmlfi_hbar_potmax(xi,p)) then
+       write(*,*)'xi= p= hbar2null= ',xi,p,hbar2null(:)
        stop 'nmlfi1_numacc_hbarinimax: hbarinimax > hbarpotmax!?'
     endif
 
