@@ -16,7 +16,7 @@ program vfmimain
   use vfmisr, only : vfmi_epsilon_one, vfmi_epsilon_two,vfmi_epsilon_three
   use vfmisr, only : vfmi_norm_potential, vfmi_x_endinf, vfmi_numacc_betamax
   use vfmisr, only : vfmi_norm_deriv_potential, vfmi_norm_deriv_second_potential
-  use vfmisr, only : vfmi_x_trajectory, vfmi_x_endinf
+  use vfmisr, only : vfmi_x_trajectory, vfmi_x_endinf, vfmi_deriv_ln_potential
   use vfmireheat, only : vfmi_lnrhoreh_max, vfmi_x_star
   use vfmireheat, only : vfmi_x_rreh, vfmi_x_rrad
 
@@ -40,7 +40,7 @@ program vfmimain
 
   real(kp) :: bfold, bfoldMax, bfoldMin
   real(kp) :: wp1, dwp1, d2wp1, pwp1, psqrtwp1
-  real(kp) :: x, xvfmi, V, dV, d2V
+  real(kp) :: x, xvfmi, V, dV, d2V, dlnV
 
   real(kp) :: alpha, beta, w, bfoldstar
   real(kp) :: alphamin, alphamax, betamin, betamax
@@ -92,7 +92,9 @@ program vfmimain
         V = vfmi_norm_potential(x,alpha,beta)
         dV = vfmi_norm_deriv_potential(x,alpha,beta)
         d2V = vfmi_norm_deriv_second_potential(x,alpha,beta)
-
+        dlnV = vfmi_deriv_ln_potential(x,alpha,beta)
+        print *,'zero= ',dlnV-dV/V
+       
         call livewrite('potential.dat',x,V,dV,d2V)
 
         eps1 = eos_epsilon_one(wp1)

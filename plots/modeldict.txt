@@ -271,13 +271,17 @@ sabi12		\mathrm{SABI}_{1/2}
 sabi1		\mathrm{SABI}_{1}
 sabi32		\mathrm{SABI}_{3/2}
 sabi2		\mathrm{SABI}_{2}
+sabi52		\mathrm{SABI}_{5/2}
+sabi3		\mathrm{SABI}_{3}
 sati		\mathrm{SATI}
 satione		\mathrm{SATI}_{1}
 sati13		\mathrm{SATI}_{1/3}
 sati12		\mathrm{SATI}_{1/2}
 sati1		\mathrm{SATI}_{1}
 sati2		\mathrm{SATI}_{2}
+sati3		\mathrm{SATI}_{3}
 sati32		\mathrm{SATI}_{3/2}
+sati52		\mathrm{SATI}_{5/2}
 sbi		\mathrm{SBI}
 sbiamin		\mathrm{SBI}_{\alpha_{\min}}
 sbialphamin	\mathrm{SBI}_{\alpha_{\min}}
