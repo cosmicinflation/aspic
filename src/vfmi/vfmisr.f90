@@ -26,6 +26,7 @@ module vfmisr
   public vfmi_norm_potential, vfmi_norm_deriv_potential
   public vfmi_norm_deriv_second_potential, vfmi_deriv_ln_potential
   public vfmi_epsilon_one, vfmi_epsilon_two, vfmi_epsilon_three
+  public vfmi_srepsilon_one, vfmi_srepsilon_two
   public vfmi_efold_primitive, vfmi_x_trajectory, vfmi_x_endinf
   public vfmi_x_potmax, vfmi_numacc_betamax
 
@@ -189,7 +190,31 @@ contains
   end function vfmi_deriv_ln_potential
 
 
-!first hubble flow function
+!first epsilon1V function (for test)
+  function vfmi_srepsilon_one(x,alpha,beta)
+    implicit none
+    real(kp), intent(in) :: x,alpha,beta
+    real(kp) :: vfmi_srepsilon_one
+
+    vfmi_srepsilon_one = 0.5_kp*vfmi_deriv_ln_potential(x,alpha,beta)**2
+
+  end function vfmi_srepsilon_one
+
+  
+  function vfmi_srepsilon_two(x,alpha,beta)
+    implicit none
+    real(kp), intent(in) :: x,alpha,beta
+    real(kp) :: vfmi_srepsilon_two
+
+    vfmi_srepsilon_two = 2._kp * vfmi_deriv_ln_potential(x,alpha,beta)**2 &
+         - 2._kp*( vfmi_norm_deriv_second_potential(x,alpha,beta) &
+         /vfmi_norm_potential(x,alpha,beta) )**2
+
+  end function vfmi_srepsilon_two
+  
+
+  
+!first hubble flow function (exact)
   function vfmi_epsilon_one(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
@@ -211,7 +236,7 @@ contains
 
 
 
-!second hubble flow function
+!second hubble flow function (exact)
   function vfmi_epsilon_two(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
@@ -233,7 +258,7 @@ contains
 
 
 
-!third (and all higher order) hubble flow function
+!third (and all higher order) hubble flow function (exact)
   function vfmi_epsilon_three(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
