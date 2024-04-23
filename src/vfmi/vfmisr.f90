@@ -26,7 +26,7 @@ module vfmisr
   public vfmi_norm_potential, vfmi_norm_deriv_potential
   public vfmi_norm_deriv_second_potential, vfmi_deriv_ln_potential
   public vfmi_epsilon_one, vfmi_epsilon_two, vfmi_epsilon_three
-  public vfmi_srepsilon_one, vfmi_srepsilon_two
+  public vfmi_srepsilon_one, vfmi_srepsilon_two, vfmi_srepsilon_three
   public vfmi_efold_primitive, vfmi_x_trajectory, vfmi_x_endinf
   public vfmi_x_potmax, vfmi_numacc_betamax
 
@@ -206,11 +206,45 @@ contains
     real(kp), intent(in) :: x,alpha,beta
     real(kp) :: vfmi_srepsilon_two
 
-    vfmi_srepsilon_two = 2._kp * vfmi_deriv_ln_potential(x,alpha,beta)**2 &
-         - 2._kp*( vfmi_norm_deriv_second_potential(x,alpha,beta) &
-         /vfmi_norm_potential(x,alpha,beta) )**2
+    real(kp) :: z
 
+    if (alpha.eq.2._kp) then
+       z = exp(x/sqrt(3._kp*beta))
+    else
+       z = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**(2._kp/(2._kp-alpha))
+    endif
+    
+
+    vfmi_srepsilon_two = (2._kp*alpha*sqrt(beta)*z**(-1._kp - alpha/2._kp)*(-3._kp*beta**2._kp*z &
+         - 2._kp*z**(2._kp*alpha)*(2._kp+alpha+6._kp*z) + beta*z**alpha*(2._kp-alpha+12._kp*z))) &
+         / ((-6._kp*sqrt(beta) + sqrt(3._kp)*(-2._kp+alpha)*x)*(beta-2._kp*z**alpha)**2._kp)
+
+        
   end function vfmi_srepsilon_two
+
+
+  function vfmi_srepsilon_three(x,alpha,beta)
+    implicit none
+    real(kp), intent(in) :: x, alpha,beta
+    real(kp) :: vfmi_srepsilon_three
+
+    real(kp) :: z
+
+    if (alpha.eq.2._kp) then
+       z = exp(x/sqrt(3._kp*beta))
+    else
+       z = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**(2._kp/(2._kp-alpha))
+    endif
+    
+    vfmi_srepsilon_three = (2._kp*sqrt(beta)*z**(-1._kp-alpha/2._kp) &
+         * (-3._kp*beta*z+z**alpha*(alpha+6._kp*z))*(-3._kp*beta**3._kp*z+8._kp*z**(3._kp*alpha) &
+         * (2._kp+alpha+3._kp*z) + beta**2._kp*z**alpha*((-2._kp+alpha)**2._kp+18._kp*z) &
+         - 2._kp*beta*z**(2._kp*alpha)*(8._kp-alpha*(2._kp+3._kp*alpha)+18._kp*z))) &
+         / ((6._kp*sqrt(beta)-sqrt(3._kp)*(-2._kp+alpha)*x)*(beta-2._kp*z**alpha)**2._kp &
+         * (3._kp*beta**2._kp*z+2._kp*z**(2._kp*alpha)*(2._kp+alpha+6._kp*z) &
+         - beta*z**alpha*(2._kp-alpha+12._kp*z)))
+
+  end function vfmi_srepsilon_three
   
 
   
