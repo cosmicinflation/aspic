@@ -17,6 +17,7 @@ module srflow
   public scalar_running, tensor_running
   public scalar_running_running, tensor_running_running
   public slowroll_corrections, ln_slowroll_corrections
+  public epsilonV_to_epsilonH
 
 ! because 1/slowroll_corrections >< inverse_slowroll_corrections
 ! it is better to numerically stick to one choice only
@@ -32,11 +33,6 @@ contains
     real(kp), dimension(size(epsV,1)) :: slowroll_to_hubble
     real(kp), dimension(size(epsV,1)) :: epsH
 
-!epsH(n) depends on epsV(1:n+1); but epsV(n+1) appears in the power
-!spectra expanded at order n, at order n+1, so it can be neglected
-!(for the power spectra!!!!!!)
-    real(kp), parameter :: epsVnp1 = 0._kp
-
     integer :: neps
 
     neps = size(epsV,1)
@@ -48,40 +44,58 @@ contains
        return
     endif
     
-    select case (neps)
-    
-       case (1,2)
-          epsH = epsV
-
-       case (3)
-          epsH(1) = epsV(1) * (1._kp - epsV(2)/3._kp)
-          epsH(2) = epsV(2) * (1._kp - epsV(2)/6._kp - epsV(3)/3._kp)
-          epsH(3) = epsV(3) * (1._kp - epsV(2)/3._kp - epsVnp1/3._kp)
-
-       case (4)
-          epsH(1) = epsV(1) * (1._kp - epsV(2)/3._kp) &
-               - epsV(1)**2*epsV(2)/9._kp + (5._kp/36._kp)*epsV(1)*epsV(2)**2 &
-               + epsV(1)*epsV(2)*epsV(3)/9._kp
-          epsH(2) = epsV(2) * (1._kp - epsV(2)/6._kp - epsV(3)/3._kp) &
-               - epsV(1)*epsV(2)**2/6._kp + epsV(2)**3/18._kp - epsV(1)*epsV(2)*epsV(3)/9._kp &
-               + (5._kp/18._kp)*epsV(2)**2*epsV(3) + epsV(2)*epsV(3)**2/9._kp &
-               + epsV(2)*epsV(3)*epsV(4)/9._kp
-          epsH(3) = epsV(3) * (1._kp - epsV(2)/3._kp - epsV(4)/3._kp) &
-               - epsV(1)*epsV(2)**2/6 - epsV(1)*epsV(2)*epsV(3)/3._kp + epsV(2)**2*epsV(3)/6._kp &
-               + (5._kp/18._kp)*epsV(2)*epsV(3)**2 - epsV(1)*epsV(3)*epsV(4)/9._kp &
-               + (5._kp/18._kp)*epsV(2)*epsV(3)*epsV(4) + epsV(3)**2*epsV(4)/9._kp &
-               + epsV(3)*epsV(4)**2/9._kp + epsV(3)*epsV(4)*epsVnp1/9._kp
-       case default
-          stop 'slowroll_to_hubble: order not implemented!'
-       end select
-
-       slowroll_to_hubble =  epsH
-
+    slowroll_to_hubble = epsilonV_to_epsilonH(size(epsV,1),epsV)
 
   end function slowroll_to_hubble
 
 
+  
+  function epsilonV_to_epsilonH(neps,epsV)
+    implicit none
+    integer, intent(in) :: neps
+    real(kp), dimension(neps), intent(in) :: epsV
+    real(kp), dimension(neps) :: epsilonV_to_epsilonH
+    real(kp), dimension(neps) :: epsH
 
+    !epsH(n) depends on epsV(1:n+1); but epsV(n+1) appears in the power
+    !spectra expanded at order n, at order n+1, so it can be neglected
+    !(for the power spectra!!!!!!)
+    real(kp), parameter :: epsVnp1 = 0._kp
+
+
+    select case (neps)
+
+    case (1,2)
+       epsH = epsV
+
+    case (3)
+       epsH(1) = epsV(1) * (1._kp - epsV(2)/3._kp)
+       epsH(2) = epsV(2) * (1._kp - epsV(2)/6._kp - epsV(3)/3._kp)
+       epsH(3) = epsV(3) * (1._kp - epsV(2)/3._kp - epsVnp1/3._kp)
+
+    case (4)
+       epsH(1) = epsV(1) * (1._kp - epsV(2)/3._kp) &
+            - epsV(1)**2*epsV(2)/9._kp + (5._kp/36._kp)*epsV(1)*epsV(2)**2 &
+            + epsV(1)*epsV(2)*epsV(3)/9._kp
+       epsH(2) = epsV(2) * (1._kp - epsV(2)/6._kp - epsV(3)/3._kp) &
+            - epsV(1)*epsV(2)**2/6._kp + epsV(2)**3/18._kp - epsV(1)*epsV(2)*epsV(3)/9._kp &
+            + (5._kp/18._kp)*epsV(2)**2*epsV(3) + epsV(2)*epsV(3)**2/9._kp &
+            + epsV(2)*epsV(3)*epsV(4)/9._kp
+       epsH(3) = epsV(3) * (1._kp - epsV(2)/3._kp - epsV(4)/3._kp) &
+            - epsV(1)*epsV(2)**2/6 - epsV(1)*epsV(2)*epsV(3)/3._kp + epsV(2)**2*epsV(3)/6._kp &
+            + (5._kp/18._kp)*epsV(2)*epsV(3)**2 - epsV(1)*epsV(3)*epsV(4)/9._kp &
+            + (5._kp/18._kp)*epsV(2)*epsV(3)*epsV(4) + epsV(3)**2*epsV(4)/9._kp &
+            + epsV(3)*epsV(4)**2/9._kp + epsV(3)*epsV(4)*epsVnp1/9._kp
+    case default
+       stop 'slowroll_to_hubble: order not implemented!'
+    end select
+
+    epsilonV_to_epsilonH =  epsH
+
+
+  end function epsilonV_to_epsilonH
+
+  
 
   function slowroll_violated(epsV)
     implicit none
