@@ -24,8 +24,11 @@ contains
     real(kp) :: psni_norm_potential
     real(kp), intent(in) :: x,alpha
     real(kp), intent(in) :: f
+    real(kp) :: logcosx
 
-    psni_norm_potential = 1._kp + alpha*log(cos(x))
+    logcosx = 0.5_kp*log(cos(x)**2)
+    
+    psni_norm_potential = 1._kp + alpha*logcosx
 
   end function psni_norm_potential
 
@@ -62,8 +65,11 @@ contains
     implicit none
     real(kp) :: psni_epsilon_one
     real(kp), intent(in) :: x,alpha,f
-    
-    psni_epsilon_one =0.5_kp*(alpha/f*tan(x)/(1._kp+alpha*log(cos(x))))**2
+    real(kp) :: logcosx
+
+    logcosx = 0.5_kp*log(cos(x)**2)
+
+    psni_epsilon_one =0.5_kp*(alpha/f*tan(x)/(1._kp+alpha*logcosx ))**2
     
   end function psni_epsilon_one
 
@@ -73,9 +79,12 @@ contains
     implicit none
     real(kp) :: psni_epsilon_two
     real(kp), intent(in) :: x,alpha,f
+    real(kp) :: logcosx
+
+    logcosx = 0.5_kp*log(cos(x)**2)
     
-    psni_epsilon_two =2._kp*alpha/(f**2)*(1._kp+alpha+alpha*log(cos(x))-alpha*cos(x)**2)/ &
-                      (1._kp+alpha*log(cos(x)))**2/(cos(x)**2)
+    psni_epsilon_two = 2._kp*alpha/(f**2)*(1._kp+alpha+alpha*logcosx-alpha*cos(x)**2)/ &
+         (1._kp+alpha*logcosx)**2/(cos(x)**2)
     
   end function psni_epsilon_two
 
@@ -85,10 +94,13 @@ contains
     implicit none
     real(kp) :: psni_epsilon_three
     real(kp), intent(in) :: x,alpha,f
+    real(kp) :: logcosx
+
+    logcosx = 0.5_kp*log(cos(x)**2)
     
     psni_epsilon_three = alpha*tan(x)**2*(2._kp+3._kp*alpha+alpha**2-alpha**2*cos(2._kp*x)+ &
-                         alpha*(4._kp+3._kp*alpha)*log(cos(x))+2._kp*alpha**2*log(cos(x))**2)/ &
-                         ((1._kp+alpha*log(cos(x)))**2*(1._kp+alpha*log(cos(x))+alpha*sin(x)**2))/(f**2)
+                         alpha*(4._kp+3._kp*alpha)*logcosx+2._kp*alpha**2*logcosx**2)/ &
+                         ((1._kp+alpha*logcosx)**2*(1._kp+alpha*logcosx+alpha*sin(x)**2))/(f**2)
     
   end function psni_epsilon_three
 
@@ -136,10 +148,14 @@ contains
     implicit none
     real(kp), intent(in) :: x,alpha,f
     real(kp) :: psni_efold_primitive
+    real(kp) :: logcosx, logsinx
 
+    logcosx = 0.5_kp*log(cos(x)**2)
+    logsinx = 0.5_kp*log(sin(x)**2)
+    
     if (alpha.eq.0._kp) stop 'psni_efold_primitive: alpha=0 !'
 
-    psni_efold_primitive = -f**2/alpha*((1._kp+alpha*log(cos(x)))*log(sin(x))+ &
+    psni_efold_primitive = -f**2/alpha*((1._kp+alpha*logcosx)*logsinx+ &
          0.25_kp*alpha*real(polylog(cmplx(cos(x)**2,0._kp,kp),cmplx(2._kp,0._kp,kp)),kp))
 
 
