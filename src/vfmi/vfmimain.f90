@@ -17,7 +17,8 @@ program vfmimain
   use vfmisr, only : vfmi_norm_potential, vfmi_x_endinf, vfmi_numacc_betamax
   use vfmisr, only : vfmi_norm_deriv_potential, vfmi_norm_deriv_second_potential
   use vfmisr, only : vfmi_x_trajectory, vfmi_x_endinf, vfmi_deriv_ln_potential
-  use vfmisr, only : vfmi_srepsilon_one, vfmi_srepsilon_two
+  use vfmisr, only : vfmi_x_potmax, vfmi_x_epsoneunity
+  use vfmisr, only : vfmi_srepsilon_one, vfmi_srepsilon_two, vfmi_srepsilon_three
   use vfmireheat, only : vfmi_lnrhoreh_max, vfmi_x_star
   use vfmireheat, only : vfmi_x_rreh, vfmi_x_rrad
 
@@ -42,6 +43,7 @@ program vfmimain
   real(kp) :: bfold, bfoldMax, bfoldMin
   real(kp) :: wp1, dwp1, d2wp1, pwp1, psqrtwp1
   real(kp) :: x, xvfmi, V, dV, d2V, dlnV
+  real(kp), dimension(2) :: xepsone
 
   real(kp) :: alpha, beta, w, bfoldstar
   real(kp) :: alphamin, alphamax, betamin, betamax
@@ -59,7 +61,7 @@ program vfmimain
 
   if (testParametric) then
 
-     alpha = 1.9_kp
+     alpha = 2.5_kp
      beta = 0.8_kp
 
      bfoldMin = -140._kp
@@ -72,6 +74,8 @@ program vfmimain
      call delete_file('potential.dat')
      call delete_file('slowroll.dat')
 
+     call delete_file('epsilonv.dat')
+
      do i=1,n
         bfold = bfoldMin - real(i-1,kp)*bfoldMin/real(n-1,kp)        
         
@@ -83,7 +87,10 @@ program vfmimain
 
         x = eos_x(psqrtwp1)
         xend = vfmi_x_endinf(alpha,beta)
-        xvfmi = vfmi_x_trajectory(bfold,xend,alpha,beta)
+        xepsone = vfmi_x_epsoneunity(alpha,beta)
+        print *,'xend= xeps= ',xend,xepsone
+        if (alpha.gt.2._kp) print *,'xvmax=',vfmi_x_potmax(alpha,beta)
+        xvfmi = vfmi_x_trajectory(bfold,xepsone(1),alpha,beta)
         call livewrite('parametric_field.dat',bfold,x,xvfmi)
 
         V = eos_norm_potential(pwp1,wp1)
@@ -102,8 +109,6 @@ program vfmimain
          /vfmi_norm_potential(x,alpha,beta) )
         print *,'zero2v= ',buffer-vfmi_srepsilon_two(x,alpha,beta)
 
-
-
             
         call livewrite('potential.dat',x,V,dV,d2V)
 
@@ -112,17 +117,24 @@ program vfmimain
         eps3 = eos_epsilon_three(wp1,dwp1,d2wp1)
 
         call livewrite('parametric_slowroll.dat',x,eps1,eps2,eps3)
-
+        
         eps1 = vfmi_epsilon_one(x,alpha,beta)
         eps2 = vfmi_epsilon_two(x,alpha,beta)
         eps3 = vfmi_epsilon_three(x,alpha,beta)
 
         call livewrite('slowroll.dat',x,eps1,eps2,eps3)
 
+        xvfmi = vfmi_x_trajectory(bfold,xepsone(2),alpha,beta)
+        eps1 = vfmi_srepsilon_one(xvfmi,alpha,beta)
+        eps2 = vfmi_srepsilon_two(xvfmi,alpha,beta)
+        eps3 = vfmi_srepsilon_three(xvfmi,alpha,beta)
+
+        call livewrite('epsilonv.dat',xvfmi,eps1,eps2,eps3)
+        
      enddo
 
   end if
-
+  stop
   npts = 20
   
   call aspicwrite_header('vfmi',labeps12,labnsr,labbfoldreh,(/'beta ','alpha'/))

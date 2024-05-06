@@ -27,7 +27,7 @@ module vfmisr
   public vfmi_norm_deriv_second_potential, vfmi_deriv_ln_potential
   public vfmi_epsilon_one, vfmi_epsilon_two, vfmi_epsilon_three
   public vfmi_srepsilon_one, vfmi_srepsilon_two, vfmi_srepsilon_three
-  public vfmi_efold_primitive, vfmi_x_trajectory, vfmi_x_endinf
+  public vfmi_efold_primitive, vfmi_x_trajectory, vfmi_x_endinf, vfmi_x_epsoneunity
   public vfmi_x_potmax, vfmi_numacc_betamax
 
 contains
@@ -181,7 +181,7 @@ contains
     if (alpha.eq.2._kp) then
        z = exp(x/sqrt(3._kp*beta))
     else
-       z = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**(2._kp/(2._kp-alpha))
+       z = ( (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2 )**(1._kp/(2._kp-alpha))
     endif
        
     vfmi_deriv_ln_potential = (sqrt(beta)*z**(-1_kp - alpha/2._kp)*(3._kp*beta*z &
@@ -211,7 +211,7 @@ contains
     if (alpha.eq.2._kp) then
        z = exp(x/sqrt(3._kp*beta))
     else
-       z = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**(2._kp/(2._kp-alpha))
+       z = ( (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2 )**(1._kp/(2._kp-alpha))
     endif
     
 
@@ -219,7 +219,10 @@ contains
          - 2._kp*z**(2._kp*alpha)*(2._kp+alpha+6._kp*z) + beta*z**alpha*(2._kp-alpha+12._kp*z))) &
          / ((-6._kp*sqrt(beta) + sqrt(3._kp)*(-2._kp+alpha)*x)*(beta-2._kp*z**alpha)**2._kp)
 
-        
+    if ((alpha.gt.2._kp).and.(x.gt.vfmi_x_potmax(alpha,beta))) then
+       vfmi_srepsilon_two = -vfmi_srepsilon_two
+    endif
+    
   end function vfmi_srepsilon_two
 
 
@@ -233,7 +236,7 @@ contains
     if (alpha.eq.2._kp) then
        z = exp(x/sqrt(3._kp*beta))
     else
-       z = (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**(2._kp/(2._kp-alpha))
+       z = ( (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2)**(1._kp/(2._kp-alpha))
     endif
     
     vfmi_srepsilon_three = (2._kp*sqrt(beta)*z**(-1._kp-alpha/2._kp) &
@@ -244,6 +247,10 @@ contains
          * (3._kp*beta**2._kp*z+2._kp*z**(2._kp*alpha)*(2._kp+alpha+6._kp*z) &
          - beta*z**alpha*(2._kp-alpha+12._kp*z)))
 
+    if ((alpha.gt.2._kp).and.(x.gt.vfmi_x_potmax(alpha,beta))) then
+       vfmi_srepsilon_three = -vfmi_srepsilon_three
+    endif
+    
   end function vfmi_srepsilon_three
   
 
@@ -303,23 +310,45 @@ contains
   end function vfmi_epsilon_three
 
 
-
-!returns the field value at which inflation ends
-  function vfmi_x_endinf(alpha,beta)
+  function vfmi_x_epsoneunity(alpha,beta)
     implicit none
     real(kp), intent(in) :: alpha,beta
-    real(kp) :: vfmi_x_endinf
-    
+    real(kp), dimension(2) :: vfmi_x_epsoneunity
+
     if (alpha.eq.2._kp) then
-       vfmi_x_endinf = 0.5_kp*sqrt(3._kp*beta)*log(1.5_kp*beta)
+       vfmi_x_epsoneunity = 0.5_kp*sqrt(3._kp*beta)*log(1.5_kp*beta)
        return
     endif
 
-    vfmi_x_endinf = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
+    vfmi_x_epsoneunity(1) = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
          * ((1.5_kp*beta)**((2._kp-alpha)/alpha/2._kp) - 1._kp)
+
+    if (alpha.gt.2._kp) then
+       vfmi_x_epsoneunity(2) = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
+            * (-(1.5_kp*beta)**((2._kp-alpha)/alpha/2._kp) - 1._kp)
+    else
+       vfmi_x_epsoneunity(2) = vfmi_x_epsoneunity(1)
+    endif
+        
+  end function vfmi_x_epsoneunity
+  
+
+
+!returns the field value at which inflation ends (left of the potential)
+  function vfmi_x_endinf(alpha,beta)
+    implicit none
+    real(kp), intent(in) :: alpha,beta
+    real(kp), dimension(2) :: xepsone
+    real(kp) :: vfmi_x_endinf
+    
+    xepsone = vfmi_x_epsoneunity(alpha,beta)
+
+    vfmi_x_endinf = xepsone(1)
 
   end function vfmi_x_endinf
 
+
+  
 
 !return the field value at which the potential is maximal (exist only
 !for alpha > 2)
@@ -361,22 +390,32 @@ contains
 
 
 
-
+!if you enter xend>xvmax with alpha>2, the trajectory describes the
+!upper branch
   function vfmi_x_trajectory(bfold,xend,alpha,beta)
     implicit none
     real(kp), intent(in) :: bfold,xend,alpha,beta
     real(kp) :: vfmi_x_trajectory
+    real(kp) :: csign
 
     if (alpha.eq.2._kp) then
        vfmi_x_trajectory = sqrt(3._kp*beta)*log(sqrt(1.5_kp*beta) - bfold)
        return
     endif
 
-   vfmi_x_trajectory = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
-        * ( ((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha) - 1._kp )
+    csign = 1._kp
 
-  end function vfmi_x_trajectory
-  
+!increasing field trajectory at x>xvmax    
+    if ((alpha.gt.2._kp).and.(xend.gt.vfmi_x_potmax(alpha,beta))) then
+       csign = -1._kp
+    end if
+           
+    vfmi_x_trajectory = 2._kp*sqrt(3._kp*beta)/(2._kp-alpha) &
+         * ( csign*((1.5_kp*beta)**(1._kp/alpha) - bfold)**(1._kp-0.5_kp*alpha) - 1._kp )
+
+ end function vfmi_x_trajectory
+
+
 
 
 end module vfmisr
