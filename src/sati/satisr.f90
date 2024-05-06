@@ -1,4 +1,4 @@
-!slow-roll functions for the SuperConformal alpha-attractor B inflation potential
+!slow-roll functions for the SuperConformal alpha-attractor T inflation potential
 !
 !V(phi) =M^4 tanh^(2n) ( x/sqrt(6 alpha) )
 !
