@@ -21,7 +21,7 @@ module cosmopar
 !  real(kp), parameter :: RelatDofRatio = 1._kp
 
 !standard model dof
-  real(kp), parameter :: RelatDofRatio = 0.388._kp
+  real(kp), parameter :: RelatDofRatio = 0.388_kp
 
   
   real(kp), parameter :: lnMpcToKappa = 130.282_kp
