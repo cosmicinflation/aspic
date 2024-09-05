@@ -184,7 +184,7 @@ contains
        z = ( (1._kp + x * (2._kp-alpha)/sqrt(3._kp*beta)/2._kp)**2 )**(1._kp/(2._kp-alpha))
     endif
        
-    vfmi_deriv_ln_potential = (sqrt(beta)*z**(-1_kp - alpha/2._kp)*(3._kp*beta*z &
+    vfmi_deriv_ln_potential = (sqrt(beta)*z**(-1._kp - alpha/2._kp)*(3._kp*beta*z &
          - z**alpha*(alpha + 6._kp*z)))/(sqrt(3._kp)*(beta - 2._kp*z**alpha))
 
   end function vfmi_deriv_ln_potential
