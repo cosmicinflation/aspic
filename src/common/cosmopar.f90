@@ -16,9 +16,14 @@ module cosmopar
 !g: number of relativistic energy dof
 !RelatDofRatio is: qo^(4/3)/go x greh/qreh^4/3
 !If q=g this is  : (go/greh)^1/3
-  real(kp), parameter :: RelatDofRatio = 1._kp
+!
+!legacy value for versions < 1.6.0
+!  real(kp), parameter :: RelatDofRatio = 1._kp
 
+!standard model dof
+  real(kp), parameter :: RelatDofRatio = 0.388_kp
 
+  
   real(kp), parameter :: lnMpcToKappa = 130.282_kp
 
   real(kp), parameter :: lnMpinGeV = 42.334_kp
