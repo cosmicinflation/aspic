@@ -1,3 +1,247 @@
+commit f12d287246425f32ffaadef3b08ee82a06fd6714
+Date:   Wed Jan 15 16:49:52 2025 +0100
+
+    Update configure version
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ba020bf32fb732c9d5fd7108413d9fb4abd78e39
+Date:   Thu Sep 5 12:34:39 2024 +0200
+
+    Fix precision for ix86
+
+ src/vfmi/vfmisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a82f40bb036765643554bbdf87f4fccd27d7bdf8
+Date:   Mon May 13 15:09:03 2024 +0200
+
+    fix misprint
+
+ src/common/cosmopar.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c2b436a3943e5f1b40a5ee645e90042229cf0efb
+Date:   Mon May 13 15:08:05 2024 +0200
+
+    Update rdof to SM value
+
+ src/common/cosmopar.f90 | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+commit 36922f240938abadb682913b9e63f35fbe912f31
+Date:   Mon May 6 15:43:53 2024 +0200
+
+    Add support for vfmi trajectories at increasing field values
+
+ src/vfmi/vfmimain.f90 | 26 +++++++++++++-----
+ src/vfmi/vfmisr.f90   | 73 +++++++++++++++++++++++++++++++++++++++------------
+ 2 files changed, 75 insertions(+), 24 deletions(-)
+
+commit 30d7bd08fa205aa257131b0bd63748701fdbe99f
+Date:   Mon May 6 15:43:30 2024 +0200
+
+    Fix typo in comment
+
+ src/sati/satisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b22bc28e75411dd6f59e09ec7e57fc39a8d27478
+Date:   Mon May 6 12:00:43 2024 +0200
+
+    Harden psni
+
+ src/psni/psnisr.f90 | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
+
+commit 6bd0c35ba19ee0d547dd04f1f61f00cfe4137233
+Date:   Fri Apr 26 15:54:31 2024 +0200
+
+    Split hubble flow calculations in two functions
+
+ src/common/srflow.f90 | 80 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 47 insertions(+), 33 deletions(-)
+
+commit bffa506ea7cabe7fb6d7e48ff71aaa87961dbbd1
+Date:   Tue Apr 23 17:46:35 2024 +0200
+
+    Add sr eps3 to vfmi
+
+ src/vfmi/vfmimain.f90 | 14 ++++++++++++--
+ src/vfmi/vfmisr.f90   | 42 ++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 50 insertions(+), 6 deletions(-)
+
+commit 68beb4a4a2e3d7d7d5b0774903eac312d8ac80f3
+Date:   Mon Apr 22 11:21:52 2024 +0200
+
+    Add 2nd sr function for vfmi
+
+ src/vfmi/vfmisr.f90 | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+commit 00809cd53bf73eca5a68e303bc448c322ac3c0a6
+Date:   Fri Apr 19 16:37:12 2024 +0200
+
+    Add deriv of ln V for vfmi
+
+ plots/modeldict.txt   |  4 ++++
+ src/vfmi/vfmimain.f90 |  8 +++++---
+ src/vfmi/vfmisr.f90   | 20 +++++++++++++++++++-
+ 3 files changed, 28 insertions(+), 4 deletions(-)
+
+commit 4159d0e3f5ac2f5f883e634ff26712ae1825e49e
+Date:   Fri Mar 15 18:14:28 2024 +0100
+
+    Fix comment
+
+ src/saai/saaisr.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 594b0a183b0fce109a72291c2b57792df9080302
+Date:   Wed Mar 13 10:50:23 2024 +0100
+
+    Fix some model LaTeX names
+
+ plots/modeldict.txt | 167 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 82 insertions(+), 85 deletions(-)
+
+commit deb040fe6c2b92ddab7e8988aed178fd423c07fb
+Date:   Fri Feb 23 18:46:00 2024 +0100
+
+    All submodels added in modeldict
+
+ plots/modeldict.txt | 218 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 207 insertions(+), 11 deletions(-)
+
+commit 9f059d714a2647f4481e653747dbb132d57c0455
+Date:   Tue Nov 28 15:04:44 2023 +0100
+
+    Increase a bit nmlfismall to fix bayaspic numacc error
+
+ src/nmlfi/nmlfi1sr.f90    | 1 +
+ src/nmlfi/nmlficommon.f90 | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+commit c11eae398c9382e83bd83de7cc98cc63b282f4ee
+Author: chris <chris@ringeval.com>
+Date:   Fri Nov 24 17:30:23 2023 +0100
+
+    Fix sneaky bug where dx is actually too small and dV=0
+
+ src/rclfi/rclfi1main.f90 |  2 +-
+ src/rclfi/rclfi1sr.f90   | 14 +++++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+commit c46dfaa3c8bbb328eb92d6ecb91c76f115034adf
+Date:   Thu Nov 23 08:02:11 2023 +0100
+
+    Push precision to max for saiii
+
+ src/saiii/saiiicommon.f90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f760d998ce8f112103c69fb0b3cd2cde83f8ed09
+Date:   Thu Nov 16 17:07:30 2023 +0100
+
+    Add more log for rclfi1
+
+ src/rclfi/rclfi1sr.f90 | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit df23ecaf823a27b066175eac708a9c8a99bacb9e
+Date:   Thu Nov 16 15:48:15 2023 +0100
+
+    Hardening rclfi for round of error near 0
+
+ src/rclfi/rclficommon.f90 | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 245b19948e456d31dc049ae4e2c8c018a71807ed
+Date:   Thu Nov 16 14:56:10 2023 +0100
+
+    Change numacc function for nmlfi3 to take hend as argument
+
+ src/nmlfi/nmlfi3sr.f90 | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit fdf0d32782c4aa8378e0a41b428be2750f312ff4
+Author: chris <chris@ringeval.com>
+Date:   Wed Nov 15 12:00:44 2023 +0100
+
+    Add missing documentation in the libaspic man
+
+ man/libaspic.3 | 112 ++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 95 insertions(+), 17 deletions(-)
+
+commit 7692420b4c155b269265d849510edbaa19e45609
+Date:   Wed Nov 15 11:15:20 2023 +0100
+
+    Fix typo in hi man
+
+ src/hi/aspic_hi.3 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 87c2b4d2ed93784af68bfe2966aaf6329e51542b
+Date:   Tue Nov 14 14:00:51 2023 +0100
+
+    Include the case alpha=1 (mssmi) within gmssmi to harden bayaspic
+
+ src/gmssmi/gmssmicommon.f90 | 56 ++++++++++++++++++++++++++++++++++++++++++++-
+ src/gmssmi/gmssmisr.F90     | 14 +++++++-----
+ src/gmssmi/mssmisr.f90      | 51 +----------------------------------------
+ 3 files changed, 64 insertions(+), 57 deletions(-)
+
+commit b27b57e78752806ded87d5742e0aa9ad2c8327d5
+Date:   Tue Nov 14 13:50:43 2023 +0100
+
+    Include the case alpha=1 (ripi) within gripi to harden bayaspic
+
+ src/gripi/gripicommon.f90 | 60 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/gripi/gripisr.F90     | 14 ++++++-----
+ src/gripi/ripisr.f90      | 59 +---------------------------------------------
+ 3 files changed, 69 insertions(+), 64 deletions(-)
+
+commit fee00c6e09da465701f31d427b17f36431ea7f70
+Date:   Fri Nov 10 13:09:26 2023 +0100
+
+    Add numerical accuracy routines for ti when inflation occurs too close to Vmax
+
+ src/ti/timain.f90   |  7 +++++--
+ src/ti/tireheat.f90 | 14 +++++++-------
+ src/ti/tisr.f90     | 46 +++++++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 53 insertions(+), 14 deletions(-)
+
+commit 90967ae43dbcb9de3937a8a04efba6c5e06634f3
+Date:   Thu Nov 9 17:47:30 2023 +0100
+
+    Set ti min at potmax (fix bug in bayaspic)
+
+ src/ti/tireheat.f90 | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit f224027cebe33697f1ca1b30a072bd03c758fb63
+Author: chris <chris@ringeval.com>
+Date:   Tue Oct 31 11:15:14 2023 +0100
+
+    update configure to next version
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit b1234fa855b2f9453ab4b75970597574f48e4199
+Date:   Tue Oct 31 11:14:32 2023 +0100
+
+    Fix rcqi reheating routines crashing for large values of their argument
+
+ ChangeLog               | 459 ++++++++++++++++++++++++++++++++++++++++++++++++
+ NEWS                    |  17 +-
+ configure.ac            |   4 +-
+ src/rcqi/rcqireheat.f90 |  14 +-
+ src/rcqi/rcqisr.f90     |  71 ++++++--
+ 5 files changed, 545 insertions(+), 20 deletions(-)
+
+
 commit 3d938cca224d44bc5c313daf722fa49e70696ef1 (HEAD -> master)
 Date:   Wed Oct 25 17:52:01 2023 +0200
 
