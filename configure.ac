@@ -1,4 +1,4 @@
-AC_INIT([aspic],[1.5.3],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
+AC_INIT([aspic],[1.6.0],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
 
 AM_INIT_AUTOMAKE
 
