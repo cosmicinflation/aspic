@@ -8,6 +8,9 @@ module kmiisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert,ei
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -135,13 +138,18 @@ contains
   function kmii_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: kmii_efold_primitive
+    real(kp) :: kmii_efold_primitive, epsone
 
     if (alpha.eq.0._kp) stop 'kmii_efold_primitive: alpha=0!'
 
     kmii_efold_primitive = -x+exp(1._kp)/alpha*ei(x-1._kp) &
          -log(x-1._kp)
 
+#ifndef NOVC
+    epsone = kmii_epsilon_one(x,alpha)
+    kmii_efold_primitive = kmii_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function kmii_efold_primitive
 
 
