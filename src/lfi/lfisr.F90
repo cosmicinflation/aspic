@@ -8,7 +8,7 @@ module lfisr
   use infprec, only : kp
 #ifndef NOVC
   use srflow, only : efold_velocity_correction
-#endif  
+#endif
   implicit none
 
   private

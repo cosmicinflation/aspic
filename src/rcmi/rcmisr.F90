@@ -8,6 +8,9 @@ module rcmisr
   use infprec, only : kp, tolkp, transfert
   use specialinf, only : lambert
   use inftools, only : zbrent, easydverk
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -154,7 +157,7 @@ contains
   function rcmi_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: rcmi_efold_primitive
+    real(kp) :: rcmi_efold_primitive, epsone
     type(transfert) :: rcmiData
 !in quadprec, integrating at FP128 is insanely long
 #ifdef QUADPREC
@@ -185,7 +188,12 @@ contains
     rcmi_efold_primitive = yvar(1)
 
 !    print *,'test',rcmi_efold_primitive, primapprox
-    
+
+#ifndef NOVC    
+    epsone = rcmi_epsilon_one(x,alpha)
+    rcmi_efold_primitive = rcmi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+        
   end function rcmi_efold_primitive
 
 
