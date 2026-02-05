@@ -6,6 +6,9 @@
 
 module lfisr
   use infprec, only : kp
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -98,11 +101,16 @@ contains
   function lfi_efold_primitive(x,p)
     implicit none
     real(kp), intent(in) :: x,p
-    real(kp) :: lfi_efold_primitive
+    real(kp) :: lfi_efold_primitive, epsone
 
     if (p.eq.0._kp) stop 'lfi_efold_primitive: p=0!'
 
     lfi_efold_primitive = 0.5_kp*x**2/p
+
+#ifndef NOVC    
+    epsone = lfi_epsilon_one(x,p)
+    lfi_efold_primitive = lfi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
 
   end function lfi_efold_primitive
 

@@ -214,11 +214,7 @@ contains
     real(kp) :: efold_velocity_correction
     real(kp), intent(in), dimension(:) :: epsV
     
-#ifndef NOVC    
     efold_velocity_correction = -hf_velocity_correction(slowroll_to_hubble(epsV))
-#else
-    efold_velocity_correction = 0._kp
-#endif
     
   end function efold_velocity_correction
 

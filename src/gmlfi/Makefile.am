@@ -1,4 +1,4 @@
-SRC = gmlfisr.f90 gmlfireheat.f90
+SRC = gmlfisr.F90 gmlfireheat.f90
 MOD = gmlfisr.$(FC_MODEXT) gmlfireheat.$(FC_MODEXT)
 
 check_PROGRAMS = mlfimain gmlfimain

@@ -1,4 +1,4 @@
-SRC = lfisr.f90 lfireheat.f90
+SRC = lfisr.F90 lfireheat.f90
 MOD = lfisr.$(FC_MODEXT) lfireheat.$(FC_MODEXT)
 
 check_PROGRAMS = lfimain

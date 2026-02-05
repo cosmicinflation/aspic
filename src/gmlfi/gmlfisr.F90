@@ -8,7 +8,9 @@ module gmlfisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : hypergeom_2F1
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -58,7 +60,7 @@ contains
 
 
 !epsilon_one(x)
-  function gmlfi_epsilon_one(x,p,q,alpha)    
+  function gmlfi_epsilon_one(x,p,q,alpha)
     implicit none
     real(kp) :: gmlfi_epsilon_one
     real(kp), intent(in) :: x,alpha,p,q
@@ -140,11 +142,16 @@ contains
   function gmlfi_efold_primitive(x,p,q,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha,p,q
-    real(kp) :: gmlfi_efold_primitive
+    real(kp) :: gmlfi_efold_primitive, epsone
 
     gmlfi_efold_primitive = 0.5_kp/(p+q)*x**2*(1+q/p* &
          hypergeom_2F1(1._kp,2._kp/q,1._kp+2._kp/q,-alpha*q*(1._kp/p+1._kp/q)*x**q))
 
+#ifndef NOVC    
+    epsone = gmlfi_epsilon_one(x,p,q,alpha)
+    gmlfi_efold_primitive = gmlfi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function gmlfi_efold_primitive
 
 
