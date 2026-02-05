@@ -1,5 +1,5 @@
 COMMONSRC = infprec.F90 cosmopar.f90 infinout.F90 inftools.f90 \
-            specialinf.F90 huflow.f90 srflow.f90 srreheat.f90 \
+            specialinf.F90 huflow.f90 srflow.F90 srreheat.f90 \
             bspline.F90 eosflow.f90
 
 COMMONMOD = cosmopar.$(FC_MODEXT) \

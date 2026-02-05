@@ -7,6 +7,9 @@
 module sisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -147,9 +150,14 @@ contains
   function si_efold_primitive(x)
     implicit none
     real(kp), intent(in) :: x
-    real(kp) :: si_efold_primitive
+    real(kp) :: si_efold_primitive, epsone
 
     si_efold_primitive = -0.5_kp*sqrt(1.5_kp)*x+0.75_kp*exp(sqrt(2._kp/3._kp)*x)
+
+#ifndef NOVC    
+    epsone = si_epsilon_one(x)
+    si_efold_primitive = si_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
 
   end function si_efold_primitive
 

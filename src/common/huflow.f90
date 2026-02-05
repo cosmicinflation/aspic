@@ -1,7 +1,7 @@
 module huflow
 !this is in k* defined by k* eta* = -1 and epsH() stands for the Hubble
 !flow parameters evaluated at eta*
-  use infprec, only : kp, pi, CConst
+  use infprec, only : kp, pi, CConst,tolkp
 
   implicit none
 
@@ -16,6 +16,7 @@ module huflow
   public hf_scalar_spectral_index, hf_tensor_spectral_index
   public hf_scalar_running, hf_tensor_running
   public hf_scalar_running_running, hf_tensor_running_running
+  public hf_velocity_correction
   public hubbleflow_corrections, ln_hubbleflow_corrections
   public inverse_hubbleflow_corrections, ln_inverse_hubbleflow_corrections
 
@@ -262,7 +263,25 @@ contains
   end function hf_tensor_running_running
 
 
+  function hf_velocity_correction(epsH)
+    implicit none
+    real(kp) :: hf_velocity_correction
+    real(kp), dimension(:), intent(in) :: epsH
 
+    real(kp) :: Gamma2
+
+!clamp to the range over which it works
+    Gamma2 = 2._kp * min(max(tolkp,epsH(1)),1._kp)
+
+    if ((Gamma2.le.0._kp).or.(Gamma2.ge.6._kp)) then
+       stop 'hf_velocity_correction: Gamma2 out of bounds!'
+    endif
+    
+    hf_velocity_correction = log(Gamma2/(6._kp-Gamma2))/6._kp
+    
+  end function hf_velocity_correction
+
+  
 
 !this gives the normal slow-roll expansion of P(k*)/[H*^2/(8pi^2 eps1*)]
   function hubbleflow_corrections(epsH)

@@ -17,7 +17,7 @@ module srflow
   public scalar_running, tensor_running
   public scalar_running_running, tensor_running_running
   public slowroll_corrections, ln_slowroll_corrections
-  public epsilonV_to_epsilonH
+  public epsilonV_to_epsilonH, efold_velocity_correction
 
 ! because 1/slowroll_corrections >< inverse_slowroll_corrections
 ! it is better to numerically stick to one choice only
@@ -206,7 +206,23 @@ contains
 
   end function tensor_running_running
 
+!Mind the sign. This is the velocity correction on efold_primitive
+!functions, which are the integrals of  V/V' dx = -N(x)
+  function efold_velocity_correction(epsV)
+    use huflow, only : hf_velocity_correction
+    implicit none
+    real(kp) :: efold_velocity_correction
+    real(kp), intent(in), dimension(:) :: epsV
+    
+#ifndef NOVC    
+    efold_velocity_correction = -hf_velocity_correction(slowroll_to_hubble(epsV))
+#else
+    efold_velocity_correction = 0._kp
+#endif
+    
+  end function efold_velocity_correction
 
+  
 
 !this gives the normal slow-roll expansion of P(k*)/[H*^2/(8pi^2 eps1*)]
   function slowroll_corrections(epsV)

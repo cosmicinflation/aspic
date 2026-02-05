@@ -9,6 +9,9 @@
 module ahisr
   use infprec, only : pi, kp, tolkp, transfert
   use inftools, only : zbrent, easydverk
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -149,7 +152,7 @@ contains
 !too long to integrate in QUADPREC
     real(kp), parameter :: tolInt = max(tolkp,epsilon(1._8))
     integer, parameter :: neq = 1
-    real(kp) :: xvar, xinf
+    real(kp) :: xvar, xinf, epsone
     real(kp), dimension(neq) :: yvar
 
     !let us start where inflation ends
@@ -164,6 +167,11 @@ contains
 
     ahi_efold_primitive = yvar(1)
 
+#ifndef NOVC
+    epsone = ahi_epsilon_one(x,f)
+    ahi_efold_primitive = ahi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ahi_efold_primitive
 
   subroutine find_ahi_efold_primitive(n,x,y,yprime,ahiData)
