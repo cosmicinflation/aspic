@@ -1,4 +1,4 @@
-SRC = esisr.f90 esireheat.f90
+SRC = esisr.F90 esireheat.f90
 MOD = esisr.$(FC_MODEXT) esireheat.$(FC_MODEXT)
 
 check_PROGRAMS = esimain

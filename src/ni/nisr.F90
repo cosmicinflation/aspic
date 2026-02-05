@@ -7,6 +7,9 @@
 
 module nisr
   use infprec, only : kp
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -100,11 +103,15 @@ contains
   function ni_efold_primitive(x,f)
     implicit none
     real(kp), intent(in) :: x,f
-    real(kp) :: ni_efold_primitive
+    real(kp) :: ni_efold_primitive, epsone
     
     ni_efold_primitive = -f**2 * log(abs( &
          1._kp-cos(x/f) ))
-         
+
+#ifndef NOVC
+    epsone = ni_epsilon_one(x,f)
+    ni_efold_primitive = ni_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
    
   end function ni_efold_primitive
 

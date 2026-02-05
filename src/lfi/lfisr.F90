@@ -107,7 +107,7 @@ contains
 
     lfi_efold_primitive = 0.5_kp*x**2/p
 
-#ifndef NOVC    
+#ifndef NOVC
     epsone = lfi_epsilon_one(x,p)
     lfi_efold_primitive = lfi_efold_primitive + efold_velocity_correction((/epsone/))
 #endif

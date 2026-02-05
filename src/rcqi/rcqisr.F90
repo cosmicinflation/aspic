@@ -8,6 +8,9 @@ module rcqisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -185,7 +188,7 @@ contains
   function rcqi_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: rcqi_efold_primitive
+    real(kp) :: rcqi_efold_primitive, epsone
 
     real(kp) :: y, test
         
@@ -198,6 +201,11 @@ contains
 !         *ei(y) )
 
     rcqi_efold_primitive = 1._kp/16._kp*x*x*(2._kp - rcqi_numacc_eioexp(x,alpha))
+
+#ifndef NOVC    
+    epsone = rcqi_epsilon_one(x,alpha)
+    rcqi_efold_primitive = rcqi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
     
   end function rcqi_efold_primitive
 

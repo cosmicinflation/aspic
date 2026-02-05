@@ -7,6 +7,9 @@
 module esisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -104,12 +107,17 @@ contains
   function esi_efold_primitive(x,q)
     implicit none
     real(kp), intent(in) :: x,q
-    real(kp) :: esi_efold_primitive
+    real(kp) :: esi_efold_primitive, epsone
 
     if (q.eq.0._kp) stop 'esi_efold_primitive: q=0!'
 
     esi_efold_primitive = 1._kp/q**2 * (exp(q*x)-q*x)
 
+#ifndef NOVC
+    epsone = esi_epsilon_one(x,q)
+    esi_efold_primitive = esi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+   
   end function esi_efold_primitive
 
 
