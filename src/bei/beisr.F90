@@ -6,6 +6,9 @@
 
 module beisr
   use infprec, only : kp, tolkp,transfert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -97,12 +100,17 @@ contains
   function bei_efold_primitive(x,lambda,beta)
     implicit none
     real(kp), intent(in) :: x,lambda,beta
-    real(kp) :: bei_efold_primitive
+    real(kp) :: bei_efold_primitive, epsone
     
      if (lambda.eq.0._kp) stop 'bei_efold_primitive: lambda=0 is singular'
 
     bei_efold_primitive = -x/lambda+0.5_kp*beta*x**2
 
+#ifndef NOVC
+    epsone = bei_epsilon_one(x,lambda,beta)
+    bei_efold_primitive = bei_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function bei_efold_primitive
  
 

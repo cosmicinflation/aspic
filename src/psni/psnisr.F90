@@ -8,6 +8,9 @@ module psnisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : polylog
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -148,7 +151,7 @@ contains
     implicit none
     real(kp), intent(in) :: x,alpha,f
     real(kp) :: psni_efold_primitive
-    real(kp) :: logcosx, logsinx
+    real(kp) :: logcosx, logsinx, epsone
 
     logcosx = 0.5_kp*log(cos(x)**2)
     logsinx = 0.5_kp*log(sin(x)**2)
@@ -158,6 +161,10 @@ contains
     psni_efold_primitive = -f**2/alpha*((1._kp+alpha*logcosx)*logsinx+ &
          0.25_kp*alpha*real(polylog(cmplx(cos(x)**2,0._kp,kp),cmplx(2._kp,0._kp,kp)),kp))
 
+#ifndef NOVC
+    epsone = psni_epsilon_one(x,alpha,f)
+    psni_efold_primitive = psni_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function psni_efold_primitive
 

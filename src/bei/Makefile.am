@@ -1,4 +1,4 @@
-SRC = beisr.f90 beireheat.f90
+SRC = beisr.F90 beireheat.f90
 MOD = beisr.$(FC_MODEXT) beireheat.$(FC_MODEXT)
 
 check_PROGRAMS = beimain

@@ -1,4 +1,4 @@
-SRC = psnisr.f90 psnireheat.f90
+SRC = psnisr.F90 psnireheat.f90
 MOD = psnisr.$(FC_MODEXT) psnireheat.$(FC_MODEXT)
 
 check_PROGRAMS = psnimain
