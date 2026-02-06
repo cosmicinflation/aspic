@@ -8,6 +8,9 @@ module nckisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : polylog,lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -176,7 +179,7 @@ contains
   function ncki_efold_primitive(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
-    real(kp) :: ncki_efold_primitive
+    real(kp) :: ncki_efold_primitive, epsone
 
     if (alpha.eq.0._kp) stop 'ncki_efold_primitive: alpha=0 !'
 
@@ -185,7 +188,11 @@ contains
          +x**2/4._kp-alpha/(4._kp*beta)*log(alpha)*log(x)+alpha/(8._kp*beta)* &
          real(polylog(cmplx(-2._kp*beta/alpha*x**2,0._kp,kp),cmplx(2._kp,0._kp,kp)),kp)
 
-
+#ifndef NOVC
+    epsone = ncki_epsilon_one(x,alpha,beta)
+    ncki_efold_primitive = ncki_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ncki_efold_primitive
 
 
