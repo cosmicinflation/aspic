@@ -7,6 +7,9 @@
 module cndisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -180,12 +183,17 @@ contains
   function cndi_efold_primitive(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
-    real(kp) :: cndi_efold_primitive
+    real(kp) :: cndi_efold_primitive, epsone
 
     if (alpha*beta.eq.0._kp) stop 'cndi_efold_primitive: alpha*beta=0 !'
 
     cndi_efold_primitive = (log(sin(alpha*x))+log(tan(0.5_kp*alpha*x))/beta)/(2._kp*alpha**2)
 
+#ifndef NOVC
+    epsone = cndi_epsilon_one(x,alpha,beta)
+    cndi_efold_primitive = cndi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function cndi_efold_primitive
 
 
