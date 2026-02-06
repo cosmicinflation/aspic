@@ -8,6 +8,9 @@ module sbisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : ei,lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -205,7 +208,7 @@ contains
   function sbi_efold_primitive(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
-    real(kp) :: sbi_efold_primitive
+    real(kp) :: sbi_efold_primitive, epsone
 
     if (beta.eq.0._kp) stop 'sbi_efold_primitive: beta=0 !'
 
@@ -214,6 +217,11 @@ contains
          - exp(2._kp*alpha/beta-0.5_kp)/16._kp*ei(0.5_kp-2._kp*alpha/beta+2._kp*log(x)) &
          +x**2/8._kp
 
+#ifndef NOVC
+    epsone = sbi_epsilon_one(x,alpha,beta)
+    sbi_efold_primitive = sbi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function sbi_efold_primitive
 
 

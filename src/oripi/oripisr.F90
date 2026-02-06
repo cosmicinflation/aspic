@@ -7,6 +7,9 @@
 module oripisr
   use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -147,7 +150,7 @@ contains
   function oripi_efold_primitive(x,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0
-    real(kp) :: oripi_efold_primitive
+    real(kp) :: oripi_efold_primitive, epsone
 
     if (x .eq. oripi_x_derivpotzero(phi0)) then
        stop 'oripi_efold_primitive evaluated at x=4/3 flat inflection point position!'
@@ -156,6 +159,11 @@ contains
     oripi_efold_primitive = phi0**2*(-(2._kp*x/(9._kp)-x**2/8._kp+16._kp/(27._kp* &
          (3._kp*x-4._kp))+4._kp*log(4._kp-3._kp*x)/(27._kp)))
 
+#ifndef NOVC
+    epsone = oripi_epsilon_one(x,phi0)
+    oripi_efold_primitive = oripi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function oripi_efold_primitive
 
 

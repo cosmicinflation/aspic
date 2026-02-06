@@ -7,6 +7,9 @@
 
 module csisr
   use infprec, only : kp, tolkp,transfert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -85,12 +88,17 @@ contains
   function csi_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: csi_efold_primitive
+    real(kp) :: csi_efold_primitive, epsone
     
      if (alpha.eq.0._kp) stop 'csi_efold_primitive: alpha=0 is singular'
 
     csi_efold_primitive = x/(2._kp*alpha)-x**2/4._kp
 
+#ifndef NOVC
+    epsone = csi_epsilon_one(x,alpha)
+    csi_efold_primitive = csi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function csi_efold_primitive
  
 
