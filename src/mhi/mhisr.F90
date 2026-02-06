@@ -9,6 +9,9 @@ module mhisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -116,9 +119,14 @@ contains
   function mhi_efold_primitive(x,mu)
     implicit none
     real(kp), intent(in) :: x,mu
-    real(kp) :: mhi_efold_primitive
+    real(kp) :: mhi_efold_primitive, epsone
 
     mhi_efold_primitive = mu**2*(cosh(x)-2._kp*log(cosh(x/2._kp)))
+
+#ifndef NOVC
+    epsone = mhi_epsilon_one(x,mu)
+    mhi_efold_primitive = mhi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function mhi_efold_primitive
 
