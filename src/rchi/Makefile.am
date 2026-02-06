@@ -1,4 +1,4 @@
-SRC = rchisr.f90 rchireheat.f90
+SRC = rchisr.F90 rchireheat.f90
 MOD = rchisr.$(FC_MODEXT) rchireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rchimain

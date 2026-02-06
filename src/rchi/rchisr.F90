@@ -8,6 +8,9 @@ module rchisr
   use infprec, only : kp,tolkp,transfert,pi
   use specialinf, only : polylog, lambert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
   
   private
@@ -203,7 +206,7 @@ contains
   function rchi_efold_primitive(x,AI)
     implicit none
     real(kp), intent(in) :: x,AI
-    real(kp) :: rchi_efold_primitive
+    real(kp) :: rchi_efold_primitive, epsone
 
 !Approximated Trajectory in  the vacuum dominated approximation
 !rchi_efold_primitive = 48._kp*pi**2/AI*log(abs(1._kp+ & 
@@ -223,6 +226,11 @@ contains
 
     endif
 
+#ifndef NOVC
+    epsone = rchi_epsilon_one(x,AI)
+    rchi_efold_primitive = rchi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
 
 
   end function rchi_efold_primitive
