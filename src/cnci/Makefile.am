@@ -1,4 +1,4 @@
-SRC = cncisr.f90 cncireheat.f90
+SRC = cncisr.F90 cncireheat.f90
 MOD = cncisr.$(FC_MODEXT) cncireheat.$(FC_MODEXT)
 
 check_PROGRAMS = cncimain

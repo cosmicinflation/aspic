@@ -8,6 +8,9 @@ module cnaisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -156,7 +159,7 @@ contains
   function cnai_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: cnai_efold_primitive
+    real(kp) :: cnai_efold_primitive, epsone
 
     if (alpha.eq.0._kp) stop 'cnai_efold_primitive: alpha=0!'
 
@@ -164,6 +167,11 @@ contains
          (3._kp*log(sinh(alpha*x/sqrt(2._kp)))- &
          alpha**2/2._kp*sinh(alpha*x/sqrt(2._kp))**2)
 
+#ifndef NOVC
+    epsone = cnai_epsilon_one(x,alpha)
+    cnai_efold_primitive = cnai_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function cnai_efold_primitive
 
 

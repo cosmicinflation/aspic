@@ -8,6 +8,9 @@ module oisr
   use infprec, only : kp, tolkp,transfert
   use specialinf, only : ei
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -142,7 +145,7 @@ contains
     implicit none
     real(kp), intent(in) :: x,alpha,phi0
     real(kp) :: oi_efold_primitive
-    real(kp) :: xminus,xplus
+    real(kp) :: xminus,xplus,epsone
     
      if (alpha.eq.0._kp) stop 'oi_efold_primitive: alpha=0'
 
@@ -157,6 +160,11 @@ contains
          /(2._kp*sqrt(1._kp+16._kp*alpha))*xminus**2* &
          ei(2._kp*log(x/xminus)))
 
+#ifndef NOVC
+    epsone = oi_epsilon_one(x,alpha,phi0)
+    oi_efold_primitive = oi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function oi_efold_primitive
  
 

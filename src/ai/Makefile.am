@@ -1,4 +1,4 @@
-SRC = aisr.f90 aireheat.f90
+SRC = aisr.F90 aireheat.f90
 MOD = aisr.$(FC_MODEXT) aireheat.$(FC_MODEXT)
 
 check_PROGRAMS = aimain

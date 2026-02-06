@@ -8,6 +8,9 @@
 module aisr
   use infprec, only : kp,tolkp,transfert, pi
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -179,12 +182,17 @@ contains
   function ai_efold_primitive(x,mu)
     implicit none
     real(kp), intent(in) :: x,mu
-    real(kp) :: ai_efold_primitive
+    real(kp) :: ai_efold_primitive, epsone
 
     ai_efold_primitive = -mu**2*(pi*x/2._kp+x**2/6._kp+ &
                          pi*x**3/6._kp-(1._kp+x**2/3._kp)*x*atan(x)+ & 
                          log(1._kp+x**2)/3._kp)
 
+#ifndef NOVC
+    epsone = ai_epsilon_one(x,mu)
+    ai_efold_primitive = ai_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ai_efold_primitive
 
 

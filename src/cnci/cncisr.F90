@@ -7,6 +7,9 @@
 module cncisr
   use infprec, only : kp, tolkp, transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -147,7 +150,7 @@ contains
   function cnci_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: cnci_efold_primitive
+    real(kp) :: cnci_efold_primitive, epsone
     
      if (alpha.eq.0._kp) stop 'cnci_efold_primitive: alpha=0 is singular'
 
@@ -155,6 +158,11 @@ contains
          *(3._kp*log(cosh(alpha*x/sqrt(2._kp))) &
          + alpha**2/2._kp*cosh(alpha*x/sqrt(2._kp))**2)
 
+#ifndef NOVC
+    epsone = cnci_epsilon_one(x,alpha)
+    cnci_efold_primitive = cnci_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function cnci_efold_primitive
 
 

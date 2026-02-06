@@ -8,6 +8,10 @@ module cnbisr
   use infprec, only : kp,tolkp,transfert,pi
   use specialinf, only : lambert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
+  
   implicit none
 
   private
@@ -243,7 +247,7 @@ contains
   function cnbi_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: cnbi_efold_primitive
+    real(kp) :: cnbi_efold_primitive, epsone
 
     if (alpha.eq.0._kp) stop 'cnbi_efold_primitive: alpha=0!'
 
@@ -251,6 +255,11 @@ contains
          (3._kp*log(sin(alpha*x/sqrt(2._kp)))- &
          (6._kp-alpha**2)/2._kp*sin(alpha*x/sqrt(2._kp))**2)
 
+#ifndef NOVC
+    epsone = cnbi_epsilon_one(x,alpha)
+    cnbi_efold_primitive = cnbi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function cnbi_efold_primitive
 
 
