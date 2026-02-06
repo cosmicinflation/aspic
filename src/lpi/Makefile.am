@@ -1,4 +1,4 @@
-SRC = lpicommon.f90 lpi1sr.f90 lpi1reheat.f90 lpi2sr.f90 \
+SRC = lpicommon.F90 lpi1sr.f90 lpi1reheat.f90 lpi2sr.f90 \
 	lpi2reheat.f90 lpi3sr.f90 lpi3reheat.f90
 MOD = lpicommon.$(FC_MODEXT) lpi1sr.$(FC_MODEXT) lpi1reheat.$(FC_MODEXT) \
 	lpi2sr.$(FC_MODEXT) lpi2reheat.$(FC_MODEXT) lpi3sr.$(FC_MODEXT) \

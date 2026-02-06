@@ -8,7 +8,9 @@
 module lpicommon
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
   
   private
@@ -175,13 +177,18 @@ contains
   function lpi_efold_primitive(x,p,q,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0,p,q
-    real(kp) :: lpi_efold_primitive
+    real(kp) :: lpi_efold_primitive, epsone
 
     if (x.le.0._kp) stop 'lpi_efold_primitive: x <=0'
     
     lpi_efold_primitive = phi0**2*(x**2/(2._kp*p)- &
          q/(p**2)*exp(-2._kp*q/p)*ei(2._kp*q/p+2._kp*log(x)))
 
+#ifndef NOVC
+    epsone = lpi_epsilon_one(x,p,q,phi0)
+    lpi_efold_primitive = lpi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function lpi_efold_primitive
 
 
