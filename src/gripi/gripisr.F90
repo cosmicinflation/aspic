@@ -17,6 +17,9 @@ module gripisr
   use gripicommon, only : gripi_x_epstwozero,gripi_x_epsonezero
   use gripicommon, only : gripi_x_epstwomin, gripi_epstwomin
   use gripicommon, only : ripi_x_trajectory, ripi_efold_primitive
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -37,7 +40,7 @@ contains
   function gripi_efold_primitive(x,alpha,phi0)
     implicit none
     real(kp), intent(in) :: x,alpha,phi0
-    real(kp) :: gripi_efold_primitive
+    real(kp) :: gripi_efold_primitive, epsone
     complex(kp) :: carg
 
     if (alpha.eq.0._kp) then 
@@ -60,6 +63,13 @@ contains
 
     endif
 
+#ifndef NOVC
+    if (alpha.ne.1._kp) then
+       epsone = gripi_epsilon_one(x,alpha,phi0)
+       gripi_efold_primitive = gripi_efold_primitive + efold_velocity_correction((/epsone/))
+    endif
+#endif
+    
   end function gripi_efold_primitive
 
 

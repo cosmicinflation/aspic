@@ -7,7 +7,9 @@
 module gripicommon
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -384,7 +386,7 @@ contains
   function ripi_efold_primitive(x,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0
-    real(kp) :: ripi_efold_primitive
+    real(kp) :: ripi_efold_primitive, epsone
 
     if (x .gt. 1._kp) then
        stop 'ripi_efold_primitive evaluated at x>=1 flat inflection point position!'
@@ -393,7 +395,12 @@ contains
     ripi_efold_primitive = phi0**2 * ( &
          0.125_kp - 1._kp/(12._kp*(x-1._kp)) - x/6._kp + x**2/8._kp &
      - log(1._kp-x)/12._kp )
-        
+
+#ifndef NOVC
+    epsone = ripi_epsilon_one(x,phi0)
+    ripi_efold_primitive = ripi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ripi_efold_primitive
   
 
