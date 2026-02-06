@@ -202,7 +202,7 @@ contains
 
 #ifndef NOVC
     epsone = dsi_epsilon_one(x,p,mu)
-    dsii_efold_primitive = dsi_efold_primitive + efold_velocity_correction((/epsone/))
+    dsi_efold_primitive = dsi_efold_primitive + efold_velocity_correction((/epsone/))
 #endif    
 
   end function dsi_efold_primitive
