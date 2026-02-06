@@ -15,6 +15,9 @@
 
 module ssbicommon
   use infprec, only : kp,tolkp,transfert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -111,7 +114,7 @@ contains
   function ssbi_efold_primitive(x,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,alpha,beta
-    real(kp) :: ssbi_efold_primitive
+    real(kp) :: ssbi_efold_primitive, epsone
 
 
     if (alpha*beta .eq. 0._kp) stop 'ssbi_efold_primitive: alpha*beta=0!'
@@ -120,6 +123,11 @@ contains
          +(alpha**2-4._kp*beta)/(16._kp*alpha*beta) &
          *log(abs(1._kp+2._kp*beta/alpha*x**2)) 
 
+#ifndef NOVC
+    epsone = ssbi_epsilon_one(x,alpha,beta)
+    ssbi_efold_primitive = ssbi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ssbi_efold_primitive
 
 
