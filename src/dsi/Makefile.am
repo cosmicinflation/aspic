@@ -1,4 +1,4 @@
-SRC = dsisr.f90 dsireheat.f90
+SRC = dsisr.F90 dsireheat.f90
 MOD = dsisr.$(FC_MODEXT) dsireheat.$(FC_MODEXT)
 
 check_PROGRAMS = dsimain

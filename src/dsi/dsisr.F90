@@ -9,6 +9,9 @@ module dsisr
   use infprec, only : kp,pi,tolkp,transfert
   use inftools, only : zbrent
   use cosmopar, only : powerAmpScalar
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -191,11 +194,16 @@ contains
   function dsi_efold_primitive(x,p,mu)
     implicit none
     real(kp), intent(in) :: x,p,mu
-    real(kp) :: dsi_efold_primitive
+    real(kp) :: dsi_efold_primitive, epsone
 
     if (p.eq.0._kp) stop 'dsi_efold_primitive: p=0 !'
 
     dsi_efold_primitive = -mu**2/(2._kp*p)*(x**2+2._kp/(p+2._kp)*x**(p+2._kp))
+
+#ifndef NOVC
+    epsone = dsi_epsilon_one(x,p,mu)
+    dsii_efold_primitive = dsi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function dsi_efold_primitive
 

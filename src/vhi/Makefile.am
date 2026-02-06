@@ -1,4 +1,4 @@
-SRC = vhisr.f90 vhireheat.f90
+SRC = vhisr.F90 vhireheat.f90
 MOD = vhisr.$(FC_MODEXT) vhireheat.$(FC_MODEXT)
 
 check_PROGRAMS = vhimain
