@@ -1,4 +1,4 @@
-SRC = hicommon.f90 hisr.f90 hireheat.f90
+SRC = hicommon.F90 hisr.f90 hireheat.f90
 
 MOD = hicommon.$(FC_MODEXT) hisr.$(FC_MODEXT) hireheat.$(FC_MODEXT)
 

@@ -10,6 +10,9 @@ module twisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -229,12 +232,16 @@ contains
   function twi_efold_primitive(x,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0
-    real(kp) :: twi_efold_primitive
-
+    real(kp) :: twi_efold_primitive, epsone
 
     twi_efold_primitive = phi0**2*(-ei(x/phi0)/(2._kp*A)+exp(2._kp)*ei(x/phi0-2._kp) &
                           /(2._kp*A)-x/phi0-2._kp*log(x/phi0-2._kp))
 
+#ifndef NOVC
+    epsone = twi_epsilon_one(x,phi0)
+    twi_efold_primitive = twi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function twi_efold_primitive
 
 
