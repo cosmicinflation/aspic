@@ -8,6 +8,9 @@
 module sfisr
   use infprec, only : kp, tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -93,7 +96,7 @@ contains
   function sfi_efold_primitive(x,p,mu)
     implicit none
     real(kp), intent(in) :: x,p,mu
-    real(kp) :: sfi_efold_primitive
+    real(kp) :: sfi_efold_primitive, epsone
     
     if (p == 2._kp) then
        sfi_efold_primitive = x**2 - 2._kp * log(x)
@@ -105,6 +108,11 @@ contains
 
     sfi_efold_primitive = 0.5_kp*sfi_efold_primitive*mu*mu/p
 
+#ifndef NOVC
+    epsone = sfi_epsilon_one(x,p,mu)
+    sfi_efold_primitive = sfi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function sfi_efold_primitive
 
 

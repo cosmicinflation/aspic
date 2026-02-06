@@ -1,4 +1,4 @@
-SRC = sfisr.f90 sfireheat.f90
+SRC = sfisr.F90 sfireheat.f90
 MOD = sfisr.$(FC_MODEXT) sfireheat.$(FC_MODEXT)
 
 check_PROGRAMS = sfimain
