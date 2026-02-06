@@ -28,6 +28,9 @@ module hicommon
   use inftools, only : zbrent
   use cosmopar, only : higgsVeV
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   real(kp), parameter :: sqr6 = sqrt(6._kp)
@@ -312,7 +315,7 @@ contains
 !efold (Einstein Frame) primitive in terms of the parameter hbar
   function hi_parametric_efold_primitive(hbar,xi)
     implicit none
-    real(kp) :: hi_parametric_efold_primitive
+    real(kp) :: hi_parametric_efold_primitive, epsone
     real(kp), intent(in) :: hbar,xi
 
     real(kp) :: xivev2
@@ -322,7 +325,12 @@ contains
     hi_parametric_efold_primitive = 1._kp/(8._kp*xi*(1._kp+xivev2)) &
          * ( (1._kp + 6._kp*xi)*hbar*hbar - xivev2*log(hbar*hbar) &
          - 6._kp*xi*(1._kp + xivev2) * log(1._kp + hbar*hbar) )
-     
+
+#ifndef NOVC
+    epsone = hi_parametric_epsilon_one(hbar,xi)
+    hi_parametric_efold_primitive = hi_parametric_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function hi_parametric_efold_primitive
 
 
@@ -337,7 +345,7 @@ contains
     
 !there is an analytical solution (inverting
 !hi_parametric_efold_primitive) but only for xivev2 = 0, let us do
-!this for xivev2 << 1
+!this for xivev2 << 1.
 
     xivev2 = xi*vev2
     
