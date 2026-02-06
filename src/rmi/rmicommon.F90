@@ -16,6 +16,9 @@ module rmicommon
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
   use specialinf, only : ei
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -114,7 +117,7 @@ contains
   function rmi_efold_primitive(x,c,phi0)
     implicit none
     real(kp), intent(in) :: x,c,phi0
-    real(kp) :: rmi_efold_primitive
+    real(kp) :: rmi_efold_primitive, epsone
 
 
     if (phi0 .eq. 0._kp) stop 'rmi_efold_primitive: phi/Mp=0!'
@@ -122,6 +125,11 @@ contains
     rmi_efold_primitive = -log(abs(log(x)))/c+ &
          x**2*phi0**2/4._kp- &
          phi0**2*ei(2._kp*log(x))/4._kp
+
+#ifndef NOVC
+    epsone = rmi_epsilon_one(x,c,phi0)
+    rmi_efold_primitive = rmi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function rmi_efold_primitive
 
