@@ -10,6 +10,9 @@
 module gmssmicommon
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -309,11 +312,16 @@ contains
   function mssmi_efold_primitive(x,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0
-    real(kp) :: mssmi_efold_primitive
+    real(kp) :: mssmi_efold_primitive, epsone
 
     mssmi_efold_primitive = phi0**2*(x**2/20._kp-1._kp/15._kp*x**2/(x**4-1._kp) &
                + 2._kp/15._kp * atanh(x**2))
 
+#ifndef NOVC
+    epsone = gmssmi_epsilon_one(x=x,alpha=1._kp,phi0=phi0)
+    mssmi_efold_primitive = mssmi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function mssmi_efold_primitive
 
 

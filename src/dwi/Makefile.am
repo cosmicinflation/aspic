@@ -1,4 +1,4 @@
-SRC = dwisr.f90 dwireheat.f90
+SRC = dwisr.F90 dwireheat.f90
 MOD = dwisr.$(FC_MODEXT) dwireheat.$(FC_MODEXT)
 
 check_PROGRAMS = dwimain

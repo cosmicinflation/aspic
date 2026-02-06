@@ -10,6 +10,9 @@ module gmssmisr
 #ifdef NOF08
   use specialinf, only : atan
 #endif
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   use gmssmicommon, only : gmssmi_norm_potential, gmssmi_norm_deriv_potential
   use gmssmicommon, only : gmssmi_norm_deriv_second_potential
   use gmssmicommon, only : gmssmi_epsilon_one, gmssmi_epsilon_two, gmssmi_epsilon_three
@@ -35,7 +38,7 @@ contains
     implicit none
     real(kp), intent(in) :: x,alpha,phi0
     real(kp) :: gmssmi_efold_primitive
-    real(kp) :: xVprime,a,b
+    real(kp) :: xVprime,a,b,epsone
     complex(kp) ::aplus,aminus,bplus,bminus,test1,test2
 
     if (alpha.eq.0._kp) then 
@@ -57,6 +60,14 @@ contains
             +bminus/(10._kp*sqrt(aminus))*atan(sqrt(aminus)*x**2),kp))
 
     endif
+
+#ifndef NOVC
+!mssmi is already corrected    
+    if (alpha.ne.1._kp) then
+       epsone = gmssmi_epsilon_one(x,alpha,phi0)
+       gmssmi_efold_primitive = gmssmi_efold_primitive + efold_velocity_correction((/epsone/))
+    endif
+#endif    
 
   end function gmssmi_efold_primitive
 

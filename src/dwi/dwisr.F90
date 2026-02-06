@@ -9,6 +9,9 @@
 module dwisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -111,11 +114,15 @@ contains
   function dwi_efold_primitive(x,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0
-    real(kp) :: dwi_efold_primitive
+    real(kp) :: dwi_efold_primitive, epsone
 
 
     dwi_efold_primitive = 0.25_kp*phi0**2*(0.5_kp*x**2-log(x))
-
+    
+#ifndef NOVC
+    epsone = dwi_epsilon_one(x,phi0)
+    dwi_efold_primitive = dwi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
 
   end function dwi_efold_primitive
 
