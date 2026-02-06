@@ -7,6 +7,9 @@
 module tisr
   use infprec, only : kp, tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -166,7 +169,7 @@ contains
   function ti_efold_primitive(x,alpha,mu)
     implicit none
     real(kp), intent(in) :: x,alpha,mu
-    real(kp) :: ti_efold_primitive
+    real(kp) :: ti_efold_primitive, epsone
 
     real(kp) :: y
 
@@ -183,6 +186,10 @@ contains
 
     endif
 
+#ifndef NOVC
+    epsone = ti_epsilon_one(x,alpha,mu)
+    ti_efold_primitive = ti_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function ti_efold_primitive
 

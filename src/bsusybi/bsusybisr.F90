@@ -7,6 +7,9 @@
 module bsusybisr
   use infprec, only : kp, tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -122,12 +125,17 @@ contains
   function bsusybi_efold_primitive(x,gammaBSUSYB)
     implicit none
     real(kp), intent(in) :: x,gammaBSUSYB
-    real(kp) :: bsusybi_efold_primitive
+    real(kp) :: bsusybi_efold_primitive, epsone
     
      if (gammaBSUSYB.eq.1._kp) stop 'bsusybi_efold_primitive: gamma=1 is singular'
 
     bsusybi_efold_primitive = 1._kp/sqrt(6._kp)*x-1._kp/(6._kp*gammaBSUSYB) *&
          log(abs(1._kp+gammaBSUSYB*exp(sqrt(6._kp)*(gammaBSUSYB-1._kp)*x)))
+
+#ifndef NOVC
+    epsone =  bsusybi_epsilon_one(x,gammaBSUSYB)
+    bsusybi_efold_primitive = bsusybi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif  
 
   end function bsusybi_efold_primitive
  

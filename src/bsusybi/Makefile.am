@@ -1,4 +1,4 @@
-SRC = bsusybisr.f90 bsusybireheat.f90
+SRC = bsusybisr.F90 bsusybireheat.f90
 MOD = bsusybisr.$(FC_MODEXT) bsusybireheat.$(FC_MODEXT)
 
 check_PROGRAMS = bsusybimain
