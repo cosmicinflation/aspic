@@ -1,4 +1,4 @@
-SRC = wrisr.f90 wrireheat.f90
+SRC = wrisr.F90 wrireheat.f90
 MOD = wrisr.$(FC_MODEXT) wrireheat.$(FC_MODEXT)
 
 check_PROGRAMS = wrimain

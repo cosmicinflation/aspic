@@ -1,4 +1,4 @@
-SRC = ostisr.f90 ostireheat.f90
+SRC = ostisr.F90 ostireheat.f90
 MOD = ostisr.$(FC_MODEXT) ostireheat.$(FC_MODEXT)
 
 check_PROGRAMS = ostimain

@@ -1,4 +1,4 @@
-SRC = imisr.f90 imireheat.f90
+SRC = imisr.F90 imireheat.f90
 MOD = imisr.$(FC_MODEXT) imireheat.$(FC_MODEXT)
 
 check_PROGRAMS = imimain

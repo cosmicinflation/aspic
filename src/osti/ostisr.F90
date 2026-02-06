@@ -10,6 +10,9 @@ module ostisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -136,12 +139,16 @@ contains
   function osti_efold_primitive(x,phi0)
     implicit none
     real(kp), intent(in) :: x,phi0
-    real(kp) :: osti_efold_primitive
+    real(kp) :: osti_efold_primitive, epsone
 
 
     osti_efold_primitive = 0.25_kp*phi0**2*(x**2-ei(1._kp+log(x**2))/exp(1._kp))
 
-
+#ifndef NOVC
+    epsone = osti_epsilon_one(x,phi0)
+    osti_efold_primitive = osti_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function osti_efold_primitive
 
 !returns x=phi/mi at bfold=-efolds before the end of inflation, ie N-Nend
