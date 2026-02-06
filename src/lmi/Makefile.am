@@ -1,4 +1,4 @@
-SRC = lmicommon.f90 lmi1sr.f90 lmi1reheat.f90 lmi2sr.f90 lmi2reheat.f90
+SRC = lmicommon.F90 lmi1sr.f90 lmi1reheat.f90 lmi2sr.f90 lmi2reheat.f90
 MOD = lmicommon.$(FC_MODEXT) lmi1sr.$(FC_MODEXT) lmi1reheat.$(FC_MODEXT) \
 	lmi2sr.$(FC_MODEXT) lmi2reheat.$(FC_MODEXT)
 

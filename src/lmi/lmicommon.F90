@@ -10,6 +10,9 @@ module lmicommon
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : hypergeom_2F1
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -244,7 +247,7 @@ contains
   function lmi_efold_primitive(x,gam,beta)
     implicit none
     real(kp), intent(in) :: x,gam,beta
-    real(kp) :: lmi_efold_primitive
+    real(kp) :: lmi_efold_primitive, epsone
 
     real(kp) ::alpha
     alpha = lmi_alpha(gam)
@@ -255,6 +258,11 @@ contains
     lmi_efold_primitive = x**2._kp/(2._kp*alpha)*hypergeom_2F1(1._kp,2._kp/gam, &
          2._kp/gam+1._kp,beta*gam/alpha*x**gam)
 
+#ifndef NOVC
+    epsone = lmi_epsilon_one(x,gam,beta)
+    lmi_efold_primitive = lmi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function lmi_efold_primitive
 
 

@@ -6,6 +6,9 @@
 
 module rgisr
   use infprec, only : kp
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -104,11 +107,16 @@ contains
   function rgi_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: rgi_efold_primitive
+    real(kp) :: rgi_efold_primitive, epsone
 
     if (alpha.eq.0._kp) stop 'rgi_efold_primitive: alpha=0!'
 
     rgi_efold_primitive = x**2/4._kp+x**4/(8._kp*alpha)
+
+#ifndef NOVC
+    epsone = rgi_epsilon_one(x,alpha)
+    rgi_efold_primitive = rgi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
 
   end function rgi_efold_primitive
 
