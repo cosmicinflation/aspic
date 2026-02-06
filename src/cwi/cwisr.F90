@@ -9,6 +9,10 @@ module cwisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei,lambert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
+  
   implicit none
 
   private
@@ -181,7 +185,7 @@ end function cwi_xplus_positive_potential
   function cwi_efold_primitive(x,alpha,Q)
     implicit none
     real(kp), intent(in) :: x,alpha,Q
-    real(kp) :: cwi_efold_primitive
+    real(kp) :: cwi_efold_primitive, epsone
 
     if (alpha.eq.0._kp) stop 'cwi_efold_primitive: alpha=0!'
 
@@ -190,6 +194,11 @@ end function cwi_xplus_positive_potential
                           -1._kp/(16._kp*sqrt(exp(1._kp))) &
                           *ei(0.5+log(x*x))+0.125_kp*x**2)
 
+#ifndef NOVC
+    epsone = cwi_epsilon_one(x,alpha,Q)
+    cwi_efold_primitive = cwi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function cwi_efold_primitive
 
 

@@ -8,6 +8,9 @@ module lisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -169,13 +172,18 @@ contains
   function li_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: li_efold_primitive
+    real(kp) :: li_efold_primitive, epsone
 
     call li_check_accuracy(alpha)
 
     li_efold_primitive = (-1._kp/4._kp+1._kp/(2._kp*alpha))*x**2 &
          +1._kp/2._kp*x**2*log(x)
 
+#ifndef NOVC
+    epsone = li_epsilon_one(x,alpha)
+    li_efold_primitive = li_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function li_efold_primitive
 
 

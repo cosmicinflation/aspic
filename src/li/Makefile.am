@@ -1,4 +1,4 @@
-SRC = lisr.f90 lireheat.f90
+SRC = lisr.F90 lireheat.f90
 MOD = lisr.$(FC_MODEXT) lireheat.$(FC_MODEXT)
 
 check_PROGRAMS = limain

@@ -8,6 +8,9 @@ module iisr
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : ei
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -110,13 +113,18 @@ contains
   function ii_efold_primitive(x,beta)
     implicit none
     real(kp), intent(in) :: x,beta
-    real(kp) :: ii_efold_primitive
+    real(kp) :: ii_efold_primitive, epsone
 
     if (beta.eq.0._kp) stop 'ii_efold_primitive: beta=0!'
 
     ii_efold_primitive = -1._kp/(2._kp*beta)*x**2 &
          -1._kp/6._kp*log(x**2-beta*(beta+2._kp)/6._kp)
 
+#ifndef NOVC
+    epsone = ii_epsilon_one(x,beta)
+    ii_efold_primitive = ii_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ii_efold_primitive
 
 

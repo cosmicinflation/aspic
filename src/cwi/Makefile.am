@@ -1,4 +1,4 @@
-SRC = cwisr.f90 cwireheat.f90
+SRC = cwisr.F90 cwireheat.f90
 MOD = cwisr.$(FC_MODEXT) cwireheat.$(FC_MODEXT)
 
 check_PROGRAMS = cwimain
