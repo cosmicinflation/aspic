@@ -8,6 +8,9 @@
 module rpicommon
   use infprec, only : kp,tolkp,transfert
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -168,7 +171,7 @@ contains
   function rpi_efold_primitive(y,p)
     implicit none
     real(kp), intent(in) :: y,p
-    real(kp) :: rpi_efold_primitive
+    real(kp) :: rpi_efold_primitive, epsone
 
     if (p.eq.1._kp) then
        rpi_efold_primitive = rpih_efold_primitive(y,p)
@@ -180,6 +183,11 @@ contains
 
     rpi_efold_primitive = 3._kp/4._kp*( -p/(p-1._kp)*log(abs(1._kp + &
          exp(-y)*(1._kp-2._kp*p)/(p-1._kp))) + (1._kp-2._kp*p)/(p-1._kp)*y )
+
+#ifndef NOVC
+    epsone = rpi_epsilon_one(y,p)
+    rpi_efold_primitive = rpi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
 
   end function rpi_efold_primitive
 
