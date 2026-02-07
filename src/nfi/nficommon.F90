@@ -6,6 +6,9 @@
 
 module nficommon
   use infprec, only : kp
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -164,7 +167,7 @@ contains
   function nfi_efold_primitive(x,a,b)
     implicit none
     real(kp), intent(in) :: x,a,b
-    real(kp) :: nfi_efold_primitive
+    real(kp) :: nfi_efold_primitive, epsone
 
     if (b.eq.2._kp) then
        nfi_efold_primitive = -0.5_kp*log(x)/a
@@ -172,6 +175,11 @@ contains
        nfi_efold_primitive = x**(2._kp-b)/(a*b*(b-2._kp))
     endif
 
+#ifndef NOVC
+    epsone = nfi_epsilon_one(x,a,b)
+    nfi_efold_primitive = nfi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function nfi_efold_primitive
 
 
