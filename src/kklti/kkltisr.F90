@@ -8,6 +8,9 @@
 module kkltisr
   use infprec, only : pi, kp, tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -92,11 +95,16 @@ contains
   function kklti_efold_primitive(x,p,mu)
     implicit none
     real(kp), intent(in) :: x,p,mu
-    real(kp) :: kklti_efold_primitive
+    real(kp) :: kklti_efold_primitive, epsone
 
     if ((p.eq.0._kp).or.(p.eq.-2._kp)) stop 'kklti_efold_primitivec: p=0/-2 is singular'
 
     kklti_efold_primitive = 0.5_kp * mu**2 * x**2 * (2._kp*x**p+p+2._kp)/p/(2._kp+p)
+
+#ifndef NOVC
+    epsone = kklti_epsilon_one(x,p,mu)
+    kklti_efold_primitive = kklti_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function kklti_efold_primitive
 

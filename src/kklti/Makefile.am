@@ -1,4 +1,4 @@
-SRC = kkltisr.f90 kkltireheat.f90
+SRC = kkltisr.F90 kkltireheat.f90
 MOD = kkltisr.$(FC_MODEXT) kkltireheat.$(FC_MODEXT)
 
 check_PROGRAMS = kkltimain

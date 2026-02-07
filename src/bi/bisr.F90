@@ -8,6 +8,9 @@
 module bisr
   use infprec, only : pi, kp, tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -92,11 +95,16 @@ contains
   function bi_efold_primitive(x,p,mu)
     implicit none
     real(kp), intent(in) :: x,p,mu
-    real(kp) :: bi_efold_primitive
+    real(kp) :: bi_efold_primitive, epsone
 
     if (p.eq.0._kp) stop 'sf_nufunc: p=0 is singular'
 
     bi_efold_primitive = mu**2/p*(x**(p+2._kp)/(p+2._kp)-x**2/2._kp)
+
+#ifndef NOVC
+    epsone = bi_epsilon_one(x,p,mu)
+    bi_efold_primitive = bi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
 
   end function bi_efold_primitive
 
