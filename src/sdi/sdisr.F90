@@ -6,6 +6,9 @@
 
 module sdisr
   use infprec, only : kp
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -150,12 +153,17 @@ contains
   function sdi_efold_primitive(x,mu)
     implicit none
     real(kp), intent(in) :: x,mu
-    real(kp) :: sdi_efold_primitive
+    real(kp) :: sdi_efold_primitive, epsone
 
     if (mu.eq.0._kp) stop 'sdi_efold_primitive: mu=0!'
 
     sdi_efold_primitive = -mu**2*log(sinh(x))
 
+#ifndef NOVC
+    epsone = sdi_epsilon_one(x,mu)
+    sdi_efold_primitive = sdi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function sdi_efold_primitive
 
 

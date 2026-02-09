@@ -9,6 +9,9 @@
 module sbkisr
   use infprec, only : kp, tolkp, transfert
   use specialinf, only : log_otherbranchcut
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -223,10 +226,10 @@ contains
 
 
 !this is integral(V(phi)/V'(phi) dphi)
-  function sbki_efold_primitive(x, alpha)
+  function sbki_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x, alpha
-    real(kp) :: sbki_efold_primitive
+    real(kp) :: sbki_efold_primitive, epsone
     complex(kp) :: a, astar
 
     a = (-3._kp+sqrt(3._kp)*cmplx(0._kp,1._kp,kp))/(2._kp*alpha)
@@ -235,6 +238,11 @@ contains
     sbki_efold_primitive = -sqrt(3._kp)/(4._kp*alpha)*real(cmplx(0._kp,1._kp,kp)* &
                            log_otherbranchcut((x**2-a)/(x**2-astar)),kp)
 
+#ifndef NOVC
+    epsone = sbki_epsilon_one(x,alpha)
+    sbki_efold_primitive = sbki_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function sbki_efold_primitive
 
 
