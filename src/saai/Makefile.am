@@ -1,4 +1,4 @@
-SRC = saaisr.f90 saaireheat.f90
+SRC = saaisr.F90 saaireheat.f90
 MOD = saaisr.$(FC_MODEXT) saaireheat.$(FC_MODEXT)
 
 check_PROGRAMS = saaimain

@@ -6,6 +6,9 @@
 
 module satisr
   use infprec, only : kp, tolkp
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -144,10 +147,15 @@ contains
   function sati_efold_primitive(x,alpha,n)
     implicit none
     real(kp), intent(in) :: x,alpha,n
-    real(kp) :: sati_efold_primitive
+    real(kp) :: sati_efold_primitive, epsone
 
     sati_efold_primitive = 3._kp*alpha/(4._kp*n)*cosh(sqrt(2._kp/(3._kp*alpha))*x)
 
+#ifndef NOVC
+    epsone = sati_epsilon_one(x,alpha,n)
+    sati_efold_primitive = sati_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function sati_efold_primitive
 
 !returns x at bfold=-efolds before the end of inflation

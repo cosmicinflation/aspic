@@ -1,4 +1,4 @@
-SRC = satisr.f90 satireheat.f90
+SRC = satisr.F90 satireheat.f90
 MOD = satisr.$(FC_MODEXT) satireheat.$(FC_MODEXT)
 
 check_PROGRAMS = satimain

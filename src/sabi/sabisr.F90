@@ -9,6 +9,9 @@
 module sabisr
   use infprec, only : kp, tolkp
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -152,11 +155,16 @@ contains
   function sabi_efold_primitive(x,alpha,n)
     implicit none
     real(kp), intent(in) :: x,alpha,n
-    real(kp) :: sabi_efold_primitive
+    real(kp) :: sabi_efold_primitive, epsone
 
     sabi_efold_primitive = 3._kp*alpha/(4._kp*n)*exp(sqrt(2._kp/(3._kp*alpha))*x) &
          - sqrt(6._kp*alpha)/(4._kp*n)*x
 
+#ifndef NOVC
+    epsone = sabi_epsilon_one(x,alpha,n)
+    sabi_efold_primitive = sabi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function sabi_efold_primitive
 
 !returns x at bfold=-efolds before the end of inflation

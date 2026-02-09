@@ -9,6 +9,9 @@
 module saaisr
   use infprec, only : kp, tolkp, transfert
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -22,7 +25,7 @@ contains
 
 
 !returns V/M**4
-  function saai_norm_potential(x, alpha)
+  function saai_norm_potential(x,alpha)
     implicit none
     real(kp) :: saai_norm_potential
     real(kp), intent(in) :: x, alpha
@@ -33,7 +36,7 @@ contains
 
 
 !returns the first derivative of the potential with respect to x, divided by M**4
-  function saai_norm_deriv_potential(x, alpha)
+  function saai_norm_deriv_potential(x,alpha)
     implicit none
     real(kp) :: saai_norm_deriv_potential
     real(kp), intent(in) :: x, alpha
@@ -47,7 +50,7 @@ contains
 
 
 !returns the second derivative of the potential with respect to x, divided by M**4
-  function saai_norm_deriv_second_potential(x, alpha)
+  function saai_norm_deriv_second_potential(x,alpha)
     implicit none
     real(kp) :: saai_norm_deriv_second_potential
     real(kp), intent(in) :: x, alpha
@@ -60,7 +63,7 @@ contains
 
 
 !epsilon_one(x)
-  function saai_epsilon_one(x, alpha)    
+  function saai_epsilon_one(x,alpha)    
     implicit none
     real(kp) :: saai_epsilon_one
     real(kp), intent(in) :: x, alpha
@@ -71,7 +74,7 @@ contains
 
 
 !epsilon_two(x)
-  function saai_epsilon_two(x, alpha)    
+  function saai_epsilon_two(x,alpha)    
     implicit none
     real(kp) :: saai_epsilon_two
     real(kp), intent(in) :: x, alpha
@@ -82,7 +85,7 @@ contains
 
 
 !epsilon_three(x)
-  function saai_epsilon_three(x, alpha)    
+  function saai_epsilon_three(x,alpha)    
     implicit none
     real(kp) :: saai_epsilon_three
     real(kp), intent(in) :: x, alpha
@@ -104,14 +107,19 @@ contains
   end function saai_x_endinf
 
 !this is integral(V(phi)/V'(phi) dphi)
-  function saai_efold_primitive(x, alpha)
+  function saai_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x, alpha
-    real(kp) :: saai_efold_primitive
+    real(kp) :: saai_efold_primitive, epsone
 
     saai_efold_primitive = 0.75_kp*alpha*exp(sqrt(2._kp/(3._kp*alpha))*x)- &
                             sqrt(6._kp*alpha)/4._kp*x
 
+#ifndef NOVC
+    epsone = saai_epsilon_one(x,alpha)
+    saai_efold_primitive = saai_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function saai_efold_primitive
 
 
