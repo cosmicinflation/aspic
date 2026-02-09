@@ -7,10 +7,11 @@
 module paisr
   use infprec, only : pi, kp, tolkp, transfert
   use inftools, only : zbrent
-  implicit none
 #ifndef NOVC
   use srflow, only : efold_velocity_correction
 #endif
+  implicit none
+
   private
 
   public pai_norm_potential, pai_epsilon_one, pai_epsilon_two, pai_epsilon_three
