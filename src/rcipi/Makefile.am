@@ -1,4 +1,4 @@
-SRC = rcipicommon.f90 rcipisr.f90 rcipireheat.f90
+SRC = rcipicommon.F90 rcipisr.f90 rcipireheat.f90
 MOD = rcipicommon.$(FC_MODEXT) rcipisr.$(FC_MODEXT) rcipireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rcipimain

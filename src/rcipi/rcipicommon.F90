@@ -9,7 +9,9 @@
 module rcipicommon
   use infprec, only : kp, tolkp, transfert
   use inftools, only : selectsort, zbrent
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   
@@ -513,7 +515,7 @@ contains
     real(kp), intent(in) :: x,p,alpha,beta
     complex(kp) :: sqrtdelta, za, zb
     complex(kp) :: expinta, expintb,primitive
-    real(kp) :: lnx, sqrt4bma2
+    real(kp) :: lnx, sqrt4bma2, epsone
 
     lnx = 0.5_kp*log(x*x)
 
@@ -521,22 +523,35 @@ contains
     if ((p.eq.0._kp).and.(alpha.eq.0._kp).and.(beta.eq.0._kp)) then
        stop 'rcipi_efold_primitive: de-Sitter model not supported!'
     endif
+
+#ifndef NOVC
+    epsone = rcipi_epsilon_one(x,p,alpha,beta)
+#endif
     
     if ((p.eq.0._kp).and.(beta.ne.0._kp)) then
        rcipi_efold_primitive = (-(((alpha**2 - 4*beta) &
             *ei(alpha/beta + 2*lnx))/exp(alpha/beta)) &
             + beta*x**2*(alpha - beta + 2*beta*lnx))/(8*beta**2)
+#ifndef NOVC
+       rcipi_efold_primitive = rcipi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
        return
     endif
 
     if ((beta.eq.0._kp).and.(p.ne.0._kp).and.(alpha.ne.0._kp)) then
        rcipi_efold_primitive = x**2/(2._kp*p) - ei(2*(1._kp/alpha + 1._kp/p + lnx)) &
             /(exp(2*(1._kp/alpha + 1._kp/p))*p**2)
+#ifndef NOVC
+       rcipi_efold_primitive = rcipi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
        return
     endif
 
     if ((beta.eq.0._kp).and.(p.eq.0._kp).and.alpha.ne.0._kp) then
        rcipi_efold_primitive = (x**2*(2 - alpha + 2*alpha*lnx))/(4._kp*alpha)
+#ifndef NOVC
+       rcipi_efold_primitive = rcipi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
        return
     endif
 
@@ -557,6 +572,9 @@ contains
             + alpha**3*sqrt4bma2 - 4*alpha*beta*sqrt4bma2 + 2*beta*(alpha**2 - 4*beta + alpha*beta) &
             * sqrt4bma2*lnx + 2*beta**3*sqrt4bma2*lnx**2))/(beta**2*(alpha**2 - 2*beta &
             + 2*alpha*beta*lnx + 2*beta**2*lnx**2)))
+#ifndef NOVC
+       rcipi_efold_primitive = rcipi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
        return
     endif
 
@@ -581,6 +599,10 @@ contains
     
     rcipi_efold_primitive = real(primitive,kp)
 
+#ifndef NOVC
+    rcipi_efold_primitive = rcipi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
     if (isnan(rcipi_efold_primitive)) then
        print *,'za,zb= ', za+2._kp*lnx, zb+2._kp*lnx
        print *,'sqrdelta= ',sqrtdelta

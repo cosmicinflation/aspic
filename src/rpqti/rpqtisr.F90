@@ -12,7 +12,9 @@ module rpqtisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent, QuarticRoots, Sort
   use specialinf, only :  cei
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -325,8 +327,8 @@ contains
   function rpqti_efold_primitive(x,phi0,alpha,beta)
     implicit none
     real(kp), intent(in) :: x,phi0,alpha,beta
-    real(kp) :: rpqti_efold_primitive
-    complex(kp) :: Delta, A, xa, xb, expinta, expintb, result
+    real(kp) :: rpqti_efold_primitive, epsone
+    complex(kp) :: Delta, A, xa, xb, expinta, expintb, cmpresult
 
     Delta = cmplx(beta**2+alpha*(alpha-2._kp),0._kp,kp)
     A = -(1._kp+beta)/sqrt(Delta)
@@ -336,10 +338,15 @@ contains
     expinta =  cei(2._kp*log(x/xa))
     expintb =  cei(2._kp*log(x/xb))
 
-    result =0.125_kp*phi0**2*(x**2-(1._kp-A)/2._kp*xa**2*(expinta)-(1._kp+A)/2._kp*xb**2*(expintb))
+    cmpresult =0.125_kp*phi0**2*(x**2-(1._kp-A)/2._kp*xa**2*(expinta)-(1._kp+A)/2._kp*xb**2*(expintb))
 
-    rpqti_efold_primitive = real(result)
+    rpqti_efold_primitive = real(cmpresult,kp)
 
+#ifndef NOVC
+    epsone = rpqti_epsilon_one(x,phi0,alpha,beta)
+    rpqti_efold_primitive = rpqti_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function rpqti_efold_primitive
 
 
