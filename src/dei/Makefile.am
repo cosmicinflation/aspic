@@ -1,4 +1,4 @@
-SRC = deisr.f90 deireheat.f90
+SRC = deisr.F90 deireheat.f90
 MOD = deisr.$(FC_MODEXT) deireheat.$(FC_MODEXT)
 
 check_PROGRAMS = deimain

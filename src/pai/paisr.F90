@@ -8,7 +8,9 @@ module paisr
   use infprec, only : pi, kp, tolkp, transfert
   use inftools, only : zbrent
   implicit none
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   private
 
   public pai_norm_potential, pai_epsilon_one, pai_epsilon_two, pai_epsilon_three
@@ -145,11 +147,15 @@ contains
   function pai_efold_primitive(x,mu)
     implicit none
     real(kp), intent(in) :: x,mu
-    real(kp) :: pai_efold_primitive
-
+    real(kp) :: pai_efold_primitive, epsone
 
     pai_efold_primitive = (mu**2 * (-x**2 + 2._kp*x*(3._kp + x**2)*atan(x) &
          - 2._kp*log(1._kp + x**2)))/6._kp
+
+#ifndef NOVC
+    epsone = pai_epsilon_one(x,mu)
+    pai_efold_primitive = pai_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
     
   end function pai_efold_primitive
 

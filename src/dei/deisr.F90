@@ -8,6 +8,9 @@
 module deisr
   use infprec, only : kp,tolkp,toldp,transfert
   use inftools, only : zbrent, easydverk
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -107,10 +110,15 @@ contains
   function dei_efold_primitive(x,beta,phi0)
     implicit none
     real(kp), intent(in) :: x,beta,phi0
-    real(kp) :: dei_efold_primitive
+    real(kp) :: dei_efold_primitive, epsone
 
     dei_efold_primitive = ((1._kp+beta**2)/beta*x-log(exp(x/beta)-exp(beta*x)))*phi0**2
 
+#ifndef NOVC
+    epsone = dei_epsilon_one(x,beta,phi0)
+    dei_efold_primitive = dei_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function dei_efold_primitive
 
   subroutine find_dei_efold_primitive(n,x,y,yprime,deiData)
