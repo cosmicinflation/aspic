@@ -1,4 +1,4 @@
-SRC = saiiicommon.f90 saiiicomreh.f90 saiii1sr.f90 saiii1reheat.f90 \
+SRC = saiiicommon.F90 saiiicomreh.f90 saiii1sr.f90 saiii1reheat.f90 \
 	saiii2sr.f90 saiii2reheat.f90 saiii3sr.f90 saiii3reheat.f90
 MOD = saiiicommon.$(FC_MODEXT) saiiicomreh.$(FC_MODEXT) \
 	saiii1sr.$(FC_MODEXT) saiii1reheat.$(FC_MODEXT) \

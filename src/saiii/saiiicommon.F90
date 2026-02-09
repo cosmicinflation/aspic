@@ -9,7 +9,9 @@
 module saiiicommon
   use infprec, only : kp, tolkp, toldp, transfert, pi
   use inftools, only : zbrent, easydverk
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   
@@ -820,7 +822,7 @@ contains
 
     real(kp), dimension(3) :: xpotzero
     real(kp) :: xpotmax
-    real(kp) :: xvar
+    real(kp) :: xvar, epsone
     real(kp), dimension(neq) :: yvar
 
     logical :: hasMinima
@@ -858,6 +860,11 @@ contains
     call easydverk(neq,find_saiii_efold_primitive,xvar,yvar,x,tolInt,saiiiData)
 
     saiii_efold_primitive = yvar(1) * mu * mu
+
+#ifndef NOVC
+    epsone = saiii_epsilon_one(x,alpha,beta,mu)
+    saiii_efold_primitive = saiii_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
     
   end function saiii_efold_primitive
 

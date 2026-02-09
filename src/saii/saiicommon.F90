@@ -9,7 +9,9 @@
 module saiicommon
   use infprec, only : kp, tolkp, toldp, transfert, pi
   use inftools, only : zbrent, easydverk
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   
@@ -353,7 +355,7 @@ contains
     real(kp), parameter :: tolInt = max(tolkp,epsilon(1._8))
     integer, parameter :: neq = 1
 
-    real(kp) :: xVzero, xpotmax, xvar
+    real(kp) :: xVzero, xpotmax, xvar, epsone
     real(kp), dimension(neq) :: yvar
 
 !let us start where the potential vanishes, on the right side compared
@@ -386,6 +388,11 @@ contains
     call easydverk(neq,find_saii_efold_primitive,xvar,yvar,x,tolInt,saiiData)
 
     saii_efold_primitive = yvar(1) * mu * mu
+
+#ifndef NOVC
+    epsone = saii_epsilon_one(x,alpha,mu)
+    saii_efold_primitive = saii_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
     
   end function saii_efold_primitive
 
