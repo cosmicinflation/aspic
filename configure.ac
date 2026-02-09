@@ -1,4 +1,4 @@
-AC_INIT([aspic],[1.6.0],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
+AC_INIT([aspic],[1.7.0],[chris@curl.group],[],[https://github.com/cosmicinflation/aspic])
 
 AM_INIT_AUTOMAKE
 
@@ -9,7 +9,7 @@ AC_PROG_CPP
 LT_INIT
 
 
-version_info="7:3:3"
+version_info="7:4:4"
 AC_SUBST(version_info)
 
 AC_LANG_PREPROC
@@ -51,8 +51,8 @@ AM_COND_IF([USE_OPENMP],
 
 AC_ARG_ENABLE(velcorr,
 	[AS_HELP_STRING([--enable-velcorr],[enable velocity corrections on top of slow-roll in efold primitives (see arXiv:2406.14152)])],
-	ok=$enableval, ok=yes)
-AM_CONDITIONAL([NO_VC],[test "$ok" = "yes"])
+	ok=$enableval, ok=no)
+AM_CONDITIONAL([NO_VC],[test "$ok" = "no"])
 AM_COND_IF([NO_VC],
 [
 	AC_MSG_WARN([disabling velocity corrections in efold primitives!])

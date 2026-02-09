@@ -11,9 +11,13 @@ module gripicommon
   use srflow, only : efold_velocity_correction
 #endif
   implicit none
-
+  
   private
 
+  real(kp), parameter :: ripiAlpha = 1._kp
+  logical, parameter :: verbose = .true.
+
+  
   public gripi_norm_potential, gripi_norm_deriv_potential
   public gripi_norm_deriv_second_potential
   public gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three  
@@ -21,8 +25,9 @@ module gripicommon
   public gripi_x_epstwozero,gripi_x_epsonezero
   public gripi_x_epstwomin, gripi_epstwomin
   public ripi_efold_primitive, ripi_x_trajectory
+  public ripiAlpha
 
-  logical, parameter :: verbose = .true.
+
 
 contains
 
@@ -397,7 +402,7 @@ contains
      - log(1._kp-x)/12._kp )
 
 #ifndef NOVC
-    epsone = ripi_epsilon_one(x,phi0)
+    epsone = gripi_epsilon_one(x,ripiAlpha,phi0)
     ripi_efold_primitive = ripi_efold_primitive + efold_velocity_correction((/epsone/))
 #endif
     
