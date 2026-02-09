@@ -20,6 +20,9 @@ module nmlficommon
   use infprec, only : kp, pi, toldp, tolkp, transfert
   use inftools, only : zbrent
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
 !makes eps1 machine precision for xi > 1
@@ -334,20 +337,30 @@ contains
 !efold (Einstein Frame) primitive in terms of the parameter hbar
   function nmlfi_parametric_efold_primitive(hbar,xi,p)
     implicit none
-    real(kp) :: nmlfi_parametric_efold_primitive
+    real(kp) :: nmlfi_parametric_efold_primitive, epsone
     real(kp), intent(in) :: hbar,xi,p
 
+
+#ifndef NOVC
+    epsone = nmlfi_parametric_epsilon_one(hbar,xi,p)
+#endif
     if (p.eq.4._kp) then
 
        nmlfi_parametric_efold_primitive = (1._kp + 6._kp*xi)*(1._kp+hbar*hbar)/(8._kp*xi) &
             - 0.75_kp*log(1._kp+hbar*hbar)
+#ifndef NOVC
+       nmlfi_parametric_efold_primitive = nmlfi_parametric_efold_primitive + efold_velocity_correction((/epsone/))
+#endif       
        
        return
     endif
     
     nmlfi_parametric_efold_primitive = (2._kp + 3._kp*xi*p)/(4._kp*xi*(p-4._kp)) &
          * log(abs(p+(p-4._kp)*hbar*hbar)) - 0.75_kp*log(1._kp+hbar*hbar)
-     
+#ifndef NOVC
+    nmlfi_parametric_efold_primitive = nmlfi_parametric_efold_primitive + efold_velocity_correction((/epsone/))
+#endif       
+    
   end function nmlfi_parametric_efold_primitive
 
 
