@@ -8,6 +8,9 @@
 module shisr
   use infprec, only : kp,tolkp,toldp,transfert
   use inftools, only : zbrent, easydverk
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -167,7 +170,7 @@ contains
 !avoids prohibitive integration time in QUADPREC
     real(kp), parameter :: tolInt = max(toldp,tolkp)
     integer, parameter :: neq = 1
-    real(kp) :: xvar, xinf
+    real(kp) :: xvar, xinf, epsone
     real(kp), dimension(neq) :: yvar
 
     !let us start at xend vanishes
@@ -181,6 +184,11 @@ contains
 
     shi_efold_primitive = yvar(1)
 
+#ifndef NOVC
+    epsone = shi_epsilon_one(x,alpha,phi0)
+    shi_efold_primitive = shi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function shi_efold_primitive
 
   subroutine find_shi_efold_primitive(n,x,y,yprime,shiData)

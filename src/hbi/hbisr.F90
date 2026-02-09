@@ -7,7 +7,9 @@
 
 module hbisr
   use infprec, only : kp
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -133,10 +135,15 @@ contains
   function hbi_efold_primitive(x,n,mu)
     implicit none
     real(kp), intent(in) :: x,n,mu
-    real(kp) :: hbi_efold_primitive
+    real(kp) :: hbi_efold_primitive, epsone
 
     hbi_efold_primitive = mu**2/n*log(cosh(x))
 
+#ifndef NOVC
+    epsone = hbi_epsilon_one(x,n,mu)
+    hbi_efold_primitive = hbi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function hbi_efold_primitive
 
 
