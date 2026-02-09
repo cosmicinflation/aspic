@@ -23,7 +23,9 @@ module rclfi1sr
   use rclficommon, only : rclfi_epsilon_two, rclfi_epsilon_three
   use rclficommon, only : find_rclfi_x_endinf, rclfi_alpha_zero, rclfi_alpha_one
   use rclficommon, only : find_rclfi_efold_primitive, rclfi_x_derivpotzero
-
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -354,7 +356,7 @@ contains
   function rclfi1_efold_primitive(x,p,alpha,mu)
     implicit none
     real(kp), intent(in) :: x,p,alpha,mu
-    real(kp) :: rclfi1_efold_primitive
+    real(kp) :: rclfi1_efold_primitive, epsone
 
     type(transfert) :: rclfiData
 !too long to integrate in QUADPREC
@@ -389,6 +391,11 @@ contains
     call easydverk(neq,find_rclfi_efold_primitive,xvar,yvar,x,tolInt,rclfiData)
 
     rclfi1_efold_primitive = yvar(1) * mu * mu
+
+#ifndef NOVC
+    epsone = rclfi1_epsilon_one(x,p,alpha,mu)
+    rclfi1_efold_primitive = rclfi1_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
     
   end function rclfi1_efold_primitive
 
