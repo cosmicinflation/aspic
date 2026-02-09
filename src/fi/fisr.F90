@@ -7,6 +7,9 @@
 module fisr
   use infprec, only : kp, toldp, tolkp, transfert
   use inftools, only : zbrent, easydverk
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -333,7 +336,7 @@ contains
 !avoids prohibitive integration time in QUADPREC
     real(kp), parameter :: tolInt = max(toldp,tolkp)
     integer, parameter :: neq = 1
-    real(kp) :: xvar, xinf
+    real(kp) :: xvar, xinf, epsone
     real(kp), dimension(neq) :: yvar
 
     !let us start where epsilon2 vanishes
@@ -346,6 +349,11 @@ contains
     call easydverk(neq,find_fi_efold_primitive,xvar,yvar,x,tolInt,fiData)
 
     fi_efold_primitive = yvar(1)
+
+#ifndef NOVC
+    epsone = fi_epsilon_one(x,delta,n)
+    fi_efold_primitive = fi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif 
 
   end function fi_efold_primitive
 

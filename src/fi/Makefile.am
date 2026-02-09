@@ -1,4 +1,4 @@
-SRC = fisr.f90 fireheat.f90
+SRC = fisr.F90 fireheat.f90
 MOD = fisr.$(FC_MODEXT) fireheat.$(FC_MODEXT)
 
 check_PROGRAMS = fimain
