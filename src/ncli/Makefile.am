@@ -1,4 +1,4 @@
-SRC = nclisr.f90 nclireheat.f90
+SRC = nclisr.F90 nclireheat.f90
 MOD = nclisr.$(FC_MODEXT) nclireheat.$(FC_MODEXT)
 
 check_PROGRAMS = nclimain

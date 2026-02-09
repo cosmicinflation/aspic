@@ -7,6 +7,9 @@
 module hnicommon
   use infprec, only : kp, tolkp,transfert, pi
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -199,13 +202,18 @@ contains
   function hni_efold_primitive(x,alpha,f)
     implicit none
     real(kp), intent(in) :: x,alpha,f
-    real(kp) :: hni_efold_primitive, test
+    real(kp) :: hni_efold_primitive, epsone
 
 !-f**2/alpha*(log(tan(x/2._kp))+alpha*log(sin(x)))
 
     hni_efold_primitive = f**2/alpha*((1._kp-alpha)*log(cos(x/2._kp))-(1._kp+alpha)*log(sin(x/2))) &
          - f**2*log(2._kp)
 
+#ifndef NOVC
+    epsone = hni_epsilon_one(x,alpha,f)
+    hni_efold_primitive = hni_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function hni_efold_primitive
 
 

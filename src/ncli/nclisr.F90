@@ -8,6 +8,9 @@ module nclisr
   use infprec, only : kp, toldp, tolkp, transfert
   use inftools, only : zbrent, easydverk
   use specialinf, only : lambert
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -535,7 +538,7 @@ contains
     real(kp), parameter :: tolInt = max(tolkp,toldp)
 
     integer, parameter :: neq = 1
-    real(kp) :: xvar, xinf
+    real(kp) :: xvar, xinf, epsone
     real(kp), dimension(neq) :: yvar
 
 !let us start at the inflection point
@@ -550,6 +553,11 @@ contains
 
     ncli_efold_primitive = yvar(1)
 
+#ifndef NOVC
+    epsone = ncli_epsilon_one(x,alpha,phi0,n)
+    ncli_efold_primitive = ncli_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
+    
   end function ncli_efold_primitive
 
   subroutine find_ncli_efold_primitive(n,x,y,yprime,ncliData)
