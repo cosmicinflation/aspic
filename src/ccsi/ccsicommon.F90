@@ -364,12 +364,17 @@ contains
   function ccsih_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: ccsih_efold_primitive
+    real(kp) :: ccsih_efold_primitive, epsone
 
     if (alpha.ne.0._kp) stop 'ccsih_efold_primitive: alpha is not vanishing!'
    
     ccsih_efold_primitive = 3._kp/4._kp*(exp(x)-x) 
 
+#ifndef NOVC
+    epsone = ccsi_epsilon_one(x,alpha=0._kp)
+    ccsih_efold_primitive = ccsih_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function ccsih_efold_primitive
 
 
