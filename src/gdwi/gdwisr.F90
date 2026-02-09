@@ -9,6 +9,9 @@
 module gdwisr
   use infprec, only : kp,tolkp,transfert
   use inftools, only : zbrent
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif
   implicit none
 
   private
@@ -169,7 +172,7 @@ contains
   function gdwi_efold_primitive(x,p,phi0)
     implicit none
     real(kp), intent(in) :: x,p,phi0
-    real(kp) :: gdwi_efold_primitive
+    real(kp) :: gdwi_efold_primitive, epsone
 
     if (p.eq.1._kp) then
        gdwi_efold_primitive = 0.25_kp*phi0**2*(0.5_kp*x**2-log(x))
@@ -177,6 +180,11 @@ contains
     endif
 
     gdwi_efold_primitive =x*x*(-1+p+(x*x)**(-p))*phi0**2/(8*p*(p-1))
+
+#ifndef NOVC
+    epsone = gdwi_epsilon_one(x,p,phi0)
+    gdwi_efold_primitive = gdwi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif
     
   end function gdwi_efold_primitive
 
