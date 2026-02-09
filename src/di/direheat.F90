@@ -33,7 +33,9 @@ module direheat
   use dicommon, only : di_parametric_epsilon_one, di_norm_parametric_potential
   use dicommon, only : di_parametric_efold_primitive, di_k2_potmin
   use disr, only : di_x, di_k2, di_k2_epsoneunity
-  
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   real(kp), parameter :: sixth = 1._kp/6._kp
@@ -140,7 +142,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: calF, pi4Pstar24
-    real(kp) :: epsOneEnd,ppotEnd
+    real(kp) :: epsOneEnd,ppotEnd,epsOneStar
     real(kp) :: k2min, k2max, k2potmin, k2star, k2end, lambda
     type(transfert) :: diData
   
@@ -180,6 +182,13 @@ contains
 
        bfoldstar = -( di_parametric_efold_primitive(k2star,f) &
             - di_parametric_efold_primitive(k2end,f) )*lambda**2
+
+#ifndef NOVC
+       epsOneStar = di_parametric_epsilon_one(k2star,f)/lambda/lambda
+       bfoldstar = bfoldstar + efold_velocity_correction((/epsOneEnd/)) &
+            - efold_velocity_correction((/epsOneStar/))
+#endif 
+       
     end if
 
   end function di_k2_star
@@ -192,7 +201,7 @@ contains
     type(transfert), optional, intent(inout) :: diData
     real(kp) :: pi4Pstar24
     real(kp) :: f, pprimStar,ppotStar,pepsOneStar, lambdaStar
-    real(kp) :: k2end, w
+    real(kp) :: k2end, w, epsOneStar, epsOneEnd
     real(kp) :: effCalFend, pprimEnd, ppotEnd, effprimStar
 
     f=diData%real1
@@ -200,14 +209,17 @@ contains
     pi4Pstar24 = diData%real3  
     w = diData%real4
 
+    epsOneEnd = 1._kp
+    
     pepsOneStar = di_parametric_epsilon_one(k2,f)
     if (pepsOneStar.eq.0._kp) pepsOneStar = epsilon(1._kp)
-
+    
     ppotStar = di_norm_parametric_potential(k2,f)
 !numacc towards minimum
     if (ppotStar.eq.0._kp) ppotStar = epsilon(1._kp)
 
     lambdaStar = (pi4Pstar24*pepsOneStar/ppotStar/f/f)**sixth    
+    epsOneStar = pepsOneStar/lambdaStar/lambdaStar
     
     k2end = di_k2_epsoneunity(f,lambdaStar)
 
@@ -221,6 +233,11 @@ contains
          + log(pepsOneStar/ppotStar)*(1._kp+3._kp*w)/(18._kp*(1._kp+w)) &
          + log(ppotEnd)/(3._kp+3._kp*w)
 
+#ifndef NOVC
+    effprimStar = effprimStar + efold_velocity_correction((/epsOneStar/)) &
+         - efold_velocity_correction((/epsOneEnd/))
+#endif
+    
     find_di_k2_star = find_reheat(effprimStar,effcalFend,w,pepsOneStar,ppotStar)
   
   end function find_di_k2_star
@@ -237,7 +254,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: calF, pi4Pstar24
-    real(kp) :: epsOneEnd,ppotEnd
+    real(kp) :: epsOneEnd,ppotEnd, epsOneStar
     real(kp) :: k2min, k2max, k2potmin, k2star, k2end, lambda
     type(transfert) :: diData
 
@@ -278,6 +295,13 @@ contains
 
        bfoldstar = -( di_parametric_efold_primitive(k2star,f) &
             - di_parametric_efold_primitive(k2end,f) )*lambda**2
+
+#ifndef NOVC
+       epsOneStar = di_parametric_epsilon_one(k2star,f)/lambda/lambda
+       bfoldstar = bfoldstar + efold_velocity_correction((/epsOneEnd/)) &
+            - efold_velocity_correction((/epsOneStar/))
+#endif        
+
     end if
 
   end function di_k2_rrad
@@ -287,7 +311,7 @@ contains
     real(kp) :: find_di_k2_rrad
     real(kp), intent(in) :: k2
     type(transfert), optional, intent(inout) :: diData
-    real(kp) :: pi4Pstar24, k2end
+    real(kp) :: pi4Pstar24, k2end, epsOneEnd, epsOneStar
     real(kp) :: f, pprimStar,ppotStar,pepsOneStar, lambdaStar
     real(kp) :: effCalFend, pprimEnd, ppotEnd, effprimStar
 
@@ -295,13 +319,16 @@ contains
     effCalFend = diData%real2
     pi4Pstar24 = diData%real3
 
+    epsOneEnd = 1._kp
+    
     pepsOneStar = di_parametric_epsilon_one(k2,f)
 
     ppotStar = di_norm_parametric_potential(k2,f)
     if (ppotStar.eq.0._kp) ppotStar = epsilon(1._kp)
 
     lambdaStar = (pi4Pstar24*pepsOneStar/ppotStar/f/f)**sixth
-
+    epsOneStar = pepsOneStar/lambdaStar/lambdaStar
+    
     k2end = di_k2_epsoneunity(f,lambdaStar)
 
     pprimStar = di_parametric_efold_primitive(k2,f)
@@ -313,6 +340,11 @@ contains
     effprimStar = (pprimStar - pprimEnd)*lambdaStar**2 &
          + log(pepsOneStar/ppotStar)/12._kp  + 0.25_kp * log(ppotEnd)   
 
+#ifndef NOVC
+    effprimStar = effprimStar + efold_velocity_correction((/epsOneStar/)) &
+         - efold_velocity_correction((/epsOneEnd/))
+#endif
+    
     find_di_k2_rrad = find_reheat_rrad(effprimStar,effCalFend,pepsOneStar,ppotStar)
   
   end function find_di_k2_rrad
@@ -328,7 +360,7 @@ contains
 
     real(kp), parameter :: tolzbrent=tolkp
     real(kp) :: calF, pi4Pstar24
-    real(kp) :: epsOneEnd,ppotEnd
+    real(kp) :: epsOneEnd,ppotEnd,epsOneStar
     real(kp) :: k2min, k2max, k2potmin, k2star, k2end, lambda
     type(transfert) :: diData
 
@@ -366,6 +398,13 @@ contains
        k2end = di_k2_epsoneunity(f,lambda)
        bfoldstar = -( di_parametric_efold_primitive(k2star,f) &
             - di_parametric_efold_primitive(k2end,f) )*lambda**2
+
+#ifndef NOVC
+       epsOneStar = di_parametric_epsilon_one(k2star,f)/lambda/lambda
+       bfoldstar = bfoldstar + efold_velocity_correction((/epsOneEnd/)) &
+            - efold_velocity_correction((/epsOneStar/))
+#endif        
+
     end if
 
   end function di_k2_rreh
@@ -375,7 +414,7 @@ contains
     real(kp) :: find_di_k2_rreh
     real(kp), intent(in) :: k2
     type(transfert), optional, intent(inout) :: diData
-    real(kp) :: pi4Pstar24, k2end
+    real(kp) :: pi4Pstar24, k2end, epsOneEnd, epsOneStar
     real(kp) :: f, pprimStar,ppotStar,pepsOneStar, lambdaStar
     real(kp) :: effCalFend, pprimEnd, ppotEnd, effprimStar
 
@@ -383,12 +422,16 @@ contains
     effCalFend = diData%real2
     pi4Pstar24 = diData%real3
 
+    epsOneEnd = 1._kp
+    
     pepsOneStar = di_parametric_epsilon_one(k2,f)
 
     ppotStar = di_norm_parametric_potential(k2,f)
     if (ppotStar.eq.0._kp) ppotStar = epsilon(1._kp)
 
     lambdaStar = (pi4Pstar24*pepsOneStar/ppotStar/f/f)**sixth
+    epsOneStar = pepsOneStar/lambdaStar/lambdaStar
+    
     k2end = di_k2_epsoneunity(f,lambdaStar)
 
     pprimStar = di_parametric_efold_primitive(k2,f)
@@ -399,6 +442,10 @@ contains
     
     effprimStar =  (pprimStar - pprimEnd)*lambdaStar**2 + 0.5_kp*log(ppotEnd)
 
+#ifndef NOVC
+    effprimStar = effprimStar + efold_velocity_correction((/epsOneStar/)) &
+         - efold_velocity_correction((/epsOneEnd/))
+#endif
 
     find_di_k2_rreh = find_reheat_rreh(effprimStar,effCalFend,ppotStar)  
 

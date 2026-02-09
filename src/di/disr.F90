@@ -28,6 +28,9 @@ module disr
   use dicommon, only : di_deriv_third_x, di_k2_nunull, di_k2_potmin
   use dicommon, only : di_parametric_epsilon_one, di_parametric_epsilon_two
   use dicommon, only : di_parametric_epsilon_three, di_parametric_efold_primitive
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -308,11 +311,16 @@ contains
     real(kp), intent(in) :: x,f,lambda
     real(kp) :: di_efold_primitive
 
-    real(kp) :: k2
+    real(kp) :: k2, epsone
 
     k2 = di_k2(x)
 
     di_efold_primitive = lambda*lambda*di_parametric_efold_primitive(k2,f)
+
+#ifndef NOVC
+    epsone = di_epsilon_one(x,f,lambda)
+    di_efold_primitive = di_efold_primitive + efold_velocity_correction((/epsone/))
+#endif 
 
   end function di_efold_primitive
 
@@ -344,6 +352,7 @@ contains
     real(kp) :: mini,maxi
     type(transfert) :: diData
 
+    real(kp), parameter :: epsoneEnd=1._kp
 
     mini = epsilon(1._kp)
     maxi = k2end
@@ -352,6 +361,12 @@ contains
     diData%real1 = f
     diData%real2 = lambda
     diData%real3 = -bfold + lambda*lambda*di_parametric_efold_primitive(k2end,f)
+
+
+#ifndef NOVC
+    diData%real3 = diData%real3 + efold_velocity_correction((/epsOneEnd/))
+#endif     
+    
     diData%msg = 'di_k2_trajectory'
     
     di_k2_trajectory = zbrent(find_di_k2_trajectory,mini,maxi,tolFind,diData)
@@ -364,7 +379,7 @@ contains
     real(kp), intent(in) :: k2
     type(transfert), optional, intent(inout) :: diData
     real(kp) :: find_di_k2_trajectory
-    real(kp) :: f, lambda,NplusNuend
+    real(kp) :: f, lambda,NplusNuend, epsone
 
     f = diData%real1
     lambda = diData%real2
@@ -373,6 +388,11 @@ contains
     find_di_k2_trajectory = lambda*lambda*di_parametric_efold_primitive(k2,f) &
          - NplusNuend 
 
+#ifndef NOVC
+    epsone = di_parametric_epsilon_one(k2,f)/lambda/lambda
+    find_di_k2_trajectory = find_di_k2_trajectory + efold_velocity_correction((/epsone/))
+#endif     
+    
   end function find_di_k2_trajectory
 
 
