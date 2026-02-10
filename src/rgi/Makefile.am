@@ -1,4 +1,4 @@
-SRC = rgisr.f90 rgireheat.f90
+SRC = rgisr.F90 rgireheat.f90
 MOD = rgisr.$(FC_MODEXT) rgireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rgimain

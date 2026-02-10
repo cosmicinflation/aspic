@@ -1,4 +1,4 @@
-SRC = paisr.f90 paireheat.f90
+SRC = paisr.F90 paireheat.f90
 MOD = paisr.$(FC_MODEXT) paireheat.$(FC_MODEXT)
 
 check_PROGRAMS = paimain

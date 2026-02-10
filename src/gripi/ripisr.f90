@@ -12,12 +12,11 @@ module ripisr
   use gripicommon, only : gripi_epsilon_one, gripi_epsilon_two, gripi_epsilon_three
   use gripicommon, only : gripi_x_epsonemin, gripi_x_endinf
   use gripicommon, only : ripi_efold_primitive, ripi_x_trajectory
+  use gripicommon, only : ripiAlpha
 
   implicit none
   
   private
-
-  real(kp), parameter :: ripiAlpha = 1._kp
 
   public ripi_norm_potential, ripi_norm_deriv_potential
   public ripi_norm_deriv_second_potential

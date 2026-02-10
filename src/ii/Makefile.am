@@ -1,4 +1,4 @@
-SRC = iisr.f90 iireheat.f90
+SRC = iisr.F90 iireheat.f90
 MOD = iisr.$(FC_MODEXT) iireheat.$(FC_MODEXT)
 
 check_PROGRAMS = iimain

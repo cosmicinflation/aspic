@@ -1,4 +1,4 @@
-SRC = rpicommon.f90 rpi1sr.f90 rpi1reheat.f90 rpi2sr.f90 rpi2reheat.f90 rpi3sr.f90 rpi3reheat.f90
+SRC = rpicommon.F90 rpi1sr.f90 rpi1reheat.f90 rpi2sr.f90 rpi2reheat.f90 rpi3sr.f90 rpi3reheat.f90
 MOD = rpicommon.$(FC_MODEXT) rpi1sr.$(FC_MODEXT) rpi1reheat.$(FC_MODEXT) \
 	rpi2sr.$(FC_MODEXT) rpi2reheat.$(FC_MODEXT) \
 	rpi3sr.$(FC_MODEXT) rpi3reheat.$(FC_MODEXT)

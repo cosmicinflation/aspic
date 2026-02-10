@@ -1,4 +1,4 @@
-SRC = cnbisr.f90 cnbireheat.f90
+SRC = cnbisr.F90 cnbireheat.f90
 MOD = cnbisr.$(FC_MODEXT) cnbireheat.$(FC_MODEXT)
 
 check_PROGRAMS = cnbimain

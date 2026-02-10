@@ -1,4 +1,4 @@
-SRC = tisr.f90 tireheat.f90
+SRC = tisr.F90 tireheat.f90
 MOD = tisr.$(FC_MODEXT) tireheat.$(FC_MODEXT)
 
 check_PROGRAMS = timain

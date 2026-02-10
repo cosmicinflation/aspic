@@ -1,4 +1,4 @@
-SRC = shisr.f90 shireheat.f90
+SRC = shisr.F90 shireheat.f90
 MOD = shisr.$(FC_MODEXT) shireheat.$(FC_MODEXT)
 
 check_PROGRAMS = shimain

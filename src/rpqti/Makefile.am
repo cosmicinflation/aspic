@@ -1,4 +1,4 @@
-SRC = rpqtisr.f90 rpqtireheat.f90
+SRC = rpqtisr.F90 rpqtireheat.f90
 MOD = rpqtisr.$(FC_MODEXT) rpqtireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rpqtimain

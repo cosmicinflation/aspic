@@ -1,4 +1,4 @@
-SRC = gdwisr.f90 gdwireheat.f90
+SRC = gdwisr.F90 gdwireheat.f90
 MOD = gdwisr.$(FC_MODEXT) gdwireheat.$(FC_MODEXT)
 
 check_PROGRAMS = gdwimain

@@ -1,4 +1,4 @@
-SRC = mhisr.f90 mhireheat.f90
+SRC = mhisr.F90 mhireheat.f90
 MOD = mhisr.$(FC_MODEXT) mhireheat.$(FC_MODEXT)
 
 check_PROGRAMS = mhimain

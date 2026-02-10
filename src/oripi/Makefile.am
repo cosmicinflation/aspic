@@ -1,4 +1,4 @@
-SRC = oripisr.f90 oripireheat.f90
+SRC = oripisr.F90 oripireheat.f90
 MOD = oripisr.$(FC_MODEXT) oripireheat.$(FC_MODEXT)
 
 check_PROGRAMS = oripimain

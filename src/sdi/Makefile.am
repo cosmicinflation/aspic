@@ -1,4 +1,4 @@
-SRC = sdisr.f90 sdireheat.f90
+SRC = sdisr.F90 sdireheat.f90
 MOD = sdisr.$(FC_MODEXT) sdireheat.$(FC_MODEXT)
 
 check_PROGRAMS = sdimain

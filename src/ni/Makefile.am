@@ -1,4 +1,4 @@
-SRC = nisr.f90 nireheat.f90
+SRC = nisr.F90 nireheat.f90
 MOD = nisr.$(FC_MODEXT) nireheat.$(FC_MODEXT)
 
 check_PROGRAMS = nimain

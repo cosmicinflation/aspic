@@ -1,4 +1,4 @@
-SRC = sabisr.f90 sabireheat.f90
+SRC = sabisr.F90 sabireheat.f90
 MOD = sabisr.$(FC_MODEXT) sabireheat.$(FC_MODEXT)
 
 check_PROGRAMS = sabimain

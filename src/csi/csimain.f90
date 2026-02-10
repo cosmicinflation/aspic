@@ -130,7 +130,7 @@ program csimain
   alpha=1._kp
 
   !Prior on xend
-  xendmax=csi_xendmax(59._kp,alpha)
+  xendmax=csi_xendmax(60._kp,alpha)
   xendmin=-1000._kp
   nxend=600
 

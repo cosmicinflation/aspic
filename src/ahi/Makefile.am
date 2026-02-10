@@ -1,4 +1,4 @@
-SRC = ahisr.f90 ahireheat.f90
+SRC = ahisr.F90 ahireheat.f90
 MOD = ahisr.$(FC_MODEXT) ahireheat.$(FC_MODEXT)
 
 check_PROGRAMS = ahimain

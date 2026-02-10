@@ -1,4 +1,4 @@
-SRC = rmicommon.f90 rmicomreh.f90 \
+SRC = rmicommon.F90 rmicomreh.f90 \
 	rmi1sr.f90 rmi1reheat.f90 \
 	rmi2sr.f90 rmi2reheat.f90 \
 	rmi3sr.f90 rmi3reheat.f90 \

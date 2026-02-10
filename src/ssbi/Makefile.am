@@ -1,4 +1,4 @@
-SRC = ssbicommon.f90 ssbicomreh.f90 \
+SRC = ssbicommon.F90 ssbicomreh.f90 \
 	ssbi1sr.f90 ssbi1reheat.f90 \
 	ssbi2sr.f90 ssbi2reheat.f90 \
 	ssbi3sr.f90 ssbi3reheat.f90 \

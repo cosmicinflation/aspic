@@ -1,4 +1,4 @@
-SRC = oisr.f90 oireheat.f90
+SRC = oisr.F90 oireheat.f90
 MOD = oisr.$(FC_MODEXT) oireheat.$(FC_MODEXT)
 
 check_PROGRAMS = oimain

@@ -1,7 +1,7 @@
-SRC = rclficommon.f90 rclfi1sr.f90 rclfi1reheat.f90 \
-	rclfi2sr.f90 rclfi2reheat.f90 \
-	rclfi3sr.f90 rclfi3reheat.f90 \
-	rclfi4sr.f90 rclfi4reheat.f90
+SRC = rclficommon.f90 rclfi1sr.F90 rclfi1reheat.f90 \
+	rclfi2sr.F90 rclfi2reheat.f90 \
+	rclfi3sr.F90 rclfi3reheat.f90 \
+	rclfi4sr.F90 rclfi4reheat.f90
 MOD = rclficommon.$(FC_MODEXT)  \
 	rclfi1sr.$(FC_MODEXT) rclfi1reheat.$(FC_MODEXT) \
 	rclfi2sr.$(FC_MODEXT) rclfi2reheat.$(FC_MODEXT) \

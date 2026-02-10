@@ -1,4 +1,4 @@
-SRC = nckisr.f90 nckireheat.f90
+SRC = nckisr.F90 nckireheat.f90
 MOD = nckisr.$(FC_MODEXT) nckireheat.$(FC_MODEXT)
 
 check_PROGRAMS = nckimain

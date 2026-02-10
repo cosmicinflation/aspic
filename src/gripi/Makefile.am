@@ -1,4 +1,4 @@
-SRC = gripicommon.f90 ripisr.f90 ripireheat.f90 gripisr.F90 gripireheat.f90
+SRC = gripicommon.F90 ripisr.f90 ripireheat.f90 gripisr.F90 gripireheat.f90
 MOD = gripicommon.$(FC_MODEXT) ripisr.$(FC_MODEXT) ripireheat.$(FC_MODEXT) \
 	 gripisr.$(FC_MODEXT) gripireheat.$(FC_MODEXT)
 

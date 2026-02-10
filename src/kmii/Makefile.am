@@ -1,4 +1,4 @@
-SRC = kmiisr.f90 kmiireheat.f90
+SRC = kmiisr.F90 kmiireheat.f90
 MOD = kmiisr.$(FC_MODEXT) kmiireheat.$(FC_MODEXT)
 
 check_PROGRAMS = kmiimain

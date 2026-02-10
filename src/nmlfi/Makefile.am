@@ -1,4 +1,4 @@
-SRC = nmlficommon.f90 nmlficomreh.f90 nmlfi1sr.f90 nmlfi1reheat.f90 \
+SRC = nmlficommon.F90 nmlficomreh.f90 nmlfi1sr.f90 nmlfi1reheat.f90 \
 nmlfi2sr.f90 nmlfi2reheat.f90 nmlfi3sr.f90 nmlfi3reheat.f90
 
 MOD = nmlficommon.$(FC_MODEXT) nmlficomreh.$(FC_MODEXT) \

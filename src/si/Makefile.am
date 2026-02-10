@@ -1,4 +1,4 @@
-SRC = sisr.f90 sireheat.f90
+SRC = sisr.F90 sireheat.f90
 MOD = sisr.$(FC_MODEXT) sireheat.$(FC_MODEXT)
 
 check_PROGRAMS = simain

@@ -1,4 +1,4 @@
-SRC = nficommon.f90 nficomreh.f90 \
+SRC = nficommon.F90 nficomreh.f90 \
 	nfi1sr.f90 nfi1reheat.f90 \
 	nfi2sr.f90 nfi2reheat.f90 \
 	nfi3sr.f90 nfi3reheat.f90 \

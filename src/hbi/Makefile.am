@@ -1,4 +1,4 @@
-SRC = hbisr.f90 hbireheat.f90
+SRC = hbisr.F90 hbireheat.f90
 MOD = hbisr.$(FC_MODEXT) hbireheat.$(FC_MODEXT)
 
 check_PROGRAMS = hbimain

@@ -1,4 +1,4 @@
-SRC = sbkisr.f90 sbkireheat.f90
+SRC = sbkisr.F90 sbkireheat.f90
 MOD = sbkisr.$(FC_MODEXT) sbkireheat.$(FC_MODEXT)
 
 check_PROGRAMS = sbkimain

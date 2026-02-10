@@ -12,6 +12,9 @@ module ccsicommon
 #ifdef NOF08
   use specialinf, only : atanh
 #endif
+#ifndef NOVC
+  use srflow, only : efold_velocity_correction
+#endif  
   implicit none
 
   private
@@ -312,7 +315,7 @@ contains
     real(kp), intent(in) :: x,alpha
     real(kp) :: ccsi_efold_primitive
 
-    real(kp) :: ex, aexm1, s1p3aexm1
+    real(kp) :: ex, aexm1, s1p3aexm1, epsone
     complex(kp) :: sqralpha, cprim
 
     ex = exp(x)
@@ -335,6 +338,10 @@ contains
   
     ccsi_efold_primitive = real(cprim,kp) * 3._kp/8._kp
 
+#ifndef NOVC
+    epsone = ccsi_epsilon_one(x,alpha)
+    ccsi_efold_primitive = ccsi_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
     
   end function ccsi_efold_primitive
 
@@ -357,12 +364,17 @@ contains
   function ccsih_efold_primitive(x,alpha)
     implicit none
     real(kp), intent(in) :: x,alpha
-    real(kp) :: ccsih_efold_primitive
+    real(kp) :: ccsih_efold_primitive, epsone
 
     if (alpha.ne.0._kp) stop 'ccsih_efold_primitive: alpha is not vanishing!'
    
     ccsih_efold_primitive = 3._kp/4._kp*(exp(x)-x) 
 
+#ifndef NOVC
+    epsone = ccsi_epsilon_one(x,alpha=0._kp)
+    ccsih_efold_primitive = ccsih_efold_primitive + efold_velocity_correction((/epsone/))
+#endif    
+    
   end function ccsih_efold_primitive
 
 

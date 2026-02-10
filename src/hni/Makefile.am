@@ -1,4 +1,4 @@
-SRC = hnicommon.f90 hnicomreh.f90 hni1sr.f90 hni1reheat.f90 \
+SRC = hnicommon.F90 hnicomreh.f90 hni1sr.f90 hni1reheat.f90 \
 	hni2sr.f90 hni2reheat.f90
 
 MOD = hnicommon.$(FC_MODEXT) hnicomreh.$(FC_MODEXT) \

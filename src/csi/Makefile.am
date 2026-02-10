@@ -1,4 +1,4 @@
-SRC = csisr.f90 csireheat.f90
+SRC = csisr.F90 csireheat.f90
 MOD = csisr.$(FC_MODEXT) csireheat.$(FC_MODEXT)
 
 check_PROGRAMS = csimain

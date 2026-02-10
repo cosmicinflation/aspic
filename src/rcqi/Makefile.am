@@ -1,4 +1,4 @@
-SRC = rcqisr.f90 rcqireheat.f90
+SRC = rcqisr.F90 rcqireheat.f90
 MOD = rcqisr.$(FC_MODEXT) rcqireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rcqimain

@@ -1,4 +1,4 @@
-SRC = cnaisr.f90 cnaireheat.f90
+SRC = cnaisr.F90 cnaireheat.f90
 MOD = cnaisr.$(FC_MODEXT) cnaireheat.$(FC_MODEXT)
 
 check_PROGRAMS = cnaimain

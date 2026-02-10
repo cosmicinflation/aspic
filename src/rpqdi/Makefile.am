@@ -1,4 +1,4 @@
-SRC = rpqdisr.f90 rpqdireheat.f90
+SRC = rpqdisr.F90 rpqdireheat.f90
 MOD = rpqdisr.$(FC_MODEXT) rpqdireheat.$(FC_MODEXT)
 
 check_PROGRAMS = rpqdimain

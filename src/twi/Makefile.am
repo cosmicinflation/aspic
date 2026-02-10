@@ -1,4 +1,4 @@
-SRC = twisr.f90 twireheat.f90
+SRC = twisr.F90 twireheat.f90
 MOD = twisr.$(FC_MODEXT) twireheat.$(FC_MODEXT)
 
 check_PROGRAMS = twimain
