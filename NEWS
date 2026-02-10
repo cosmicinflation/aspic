@@ -1,3 +1,13 @@
+* version 1.7.* (GREENLAND release)
+--------------------------------
+
+- Velocity corrections implemented on all efold primitive functions
+  (see arXiv:2406.14152): observable predictions in the reheating
+  modules are now accurate at 0.1 efold precision. Trajectory
+  functions, the inverse of efold primitives, remain pure slow-roll
+  (unless they're zbrented from the efold_primitive).
+
+
 * version 1.5.* (EUCLID release)
 --------------------------------
 - New functions fooi_lnrho_endinf() returning Jordan Frame energy
