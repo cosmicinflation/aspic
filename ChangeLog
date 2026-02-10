@@ -1,3 +1,517 @@
+commit 3ba63504c92eb4a81ac002d4493df4ea1bfa2537
+Date:   Tue Feb 10 10:40:52 2026 +0100
+
+    Update news
+
+ NEWS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+commit 8cc03487b3598118bea2f2dbbe6d883038b3bd63
+Date:   Tue Feb 10 10:25:33 2026 +0100
+
+    Fix testsuite and improve logs
+
+ src/csi/csimain.f90 | 2 +-
+ tests/runmains.bash | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+commit 14d98a95920e9cebe503f40e4a32d0b4b64d1d4b
+Date:   Mon Feb 9 17:56:31 2026 +0100
+
+    Fix typo in paisr
+
+ src/pai/paisr.F90 | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit b644facffcdf2b2d640db77521d5e387f1520b3d
+Date:   Mon Feb 9 17:50:15 2026 +0100
+
+    Velocity corrections for nmlfi
+
+ src/nmlfi/Makefile.am                          |  2 +-
+ src/nmlfi/{nmlficommon.f90 => nmlficommon.F90} | 17 +++++++++++++++--
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+
+commit d9f006afcc109b46f8be20ae733de471fb685c78
+Date:   Mon Feb 9 17:44:01 2026 +0100
+
+    Remove residual man draft for nmlfi
+
+ src/nmlfi/aspic_nmlfi.3 | 272 ------------------------------------------------
+ 1 file changed, 272 deletions(-)
+
+commit b9d1609b98b11f66f76ae088c3aed5cea2dd5db7
+Date:   Mon Feb 9 17:38:51 2026 +0100
+
+    Velocity corrections for dei and pai
+
+ src/dei/Makefile.am              |  2 +-
+ src/dei/{deisr.f90 => deisr.F90} | 10 +++++++++-
+ src/pai/Makefile.am              |  2 +-
+ src/pai/{paisr.f90 => paisr.F90} | 12 +++++++++---
+ 4 files changed, 20 insertions(+), 6 deletions(-)
+
+commit a64004afc18b0b722f15138711c09406ab1cc0bf
+Date:   Mon Feb 9 17:34:10 2026 +0100
+
+    Velocity corrections for saii and saiii
+
+ src/saii/Makefile.am                           |  2 +-
+ src/saii/{saiicommon.f90 => saiicommon.F90}    | 11 +++++++++--
+ src/saiii/Makefile.am                          |  2 +-
+ src/saiii/{saiiicommon.f90 => saiiicommon.F90} | 11 +++++++++--
+ 4 files changed, 20 insertions(+), 6 deletions(-)
+
+commit 80c6f747ed5b6dc160b5b0bfb8104a3e8caa34b5
+Date:   Mon Feb 9 17:27:08 2026 +0100
+
+    Velocity corrections for gdwi
+
+ src/gdwi/Makefile.am                |  2 +-
+ src/gdwi/{gdwisr.f90 => gdwisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit d136c18fb89d3009d206e065b0c7b093e49f48e9
+Date:   Mon Feb 9 17:23:58 2026 +0100
+
+    Velocity corrections for rclfi1234
+
+ src/rclfi/Makefile.am                    |  8 ++++----
+ src/rclfi/{rclfi1sr.f90 => rclfi1sr.F90} | 11 +++++++++--
+ src/rclfi/{rclfi2sr.f90 => rclfi2sr.F90} | 11 +++++++++--
+ src/rclfi/{rclfi3sr.f90 => rclfi3sr.F90} | 11 +++++++++--
+ src/rclfi/{rclfi4sr.f90 => rclfi4sr.F90} | 11 +++++++++--
+ 5 files changed, 40 insertions(+), 12 deletions(-)
+
+commit ac1735ef5716ba69129bdbc82d8fbea888d73974
+Date:   Mon Feb 9 17:18:53 2026 +0100
+
+    Velocity corrections for rcipi, rpqdi and rpqti
+
+ src/rcipi/Makefile.am                          |  2 +-
+ src/rcipi/{rcipicommon.f90 => rcipicommon.F90} | 26 ++++++++++++++++++++++++--
+ src/rpqdi/Makefile.am                          |  2 +-
+ src/rpqdi/{rpqdisr.f90 => rpqdisr.F90}         | 17 ++++++++++++-----
+ src/rpqti/Makefile.am                          |  2 +-
+ src/rpqti/{rpqtisr.f90 => rpqtisr.F90}         | 17 ++++++++++++-----
+ 6 files changed, 51 insertions(+), 15 deletions(-)
+
+commit a8d4c2649f2de2af4eb2bc28beb1feaa8dbaa24a
+Date:   Mon Feb 9 16:29:41 2026 +0100
+
+    Fix gripi and update configure
+
+ configure.ac              |  8 ++++----
+ src/gripi/gripicommon.F90 | 11 ++++++++---
+ src/gripi/ripisr.f90      |  3 +--
+ 3 files changed, 13 insertions(+), 9 deletions(-)
+
+commit dce5a9c78082ea5b78657ef9960853e3087d4561
+Date:   Mon Feb 9 16:14:42 2026 +0100
+
+    Velocity corrections for hbi and shi
+
+ src/hbi/Makefile.am              |  2 +-
+ src/hbi/{hbisr.f90 => hbisr.F90} | 11 +++++++++--
+ src/shi/Makefile.am              |  2 +-
+ src/shi/{shisr.f90 => shisr.F90} | 10 +++++++++-
+ 4 files changed, 20 insertions(+), 5 deletions(-)
+
+commit df0181006ecd2fc3743be8a5537fe424931ed0ef
+Date:   Mon Feb 9 16:11:12 2026 +0100
+
+    Velocity corrections for alpha attractors saai, sabi and sati
+
+ src/saai/Makefile.am                |  2 +-
+ src/saai/{saaisr.f90 => saaisr.F90} | 24 ++++++++++++++++--------
+ src/sabi/Makefile.am                |  2 +-
+ src/sabi/{sabisr.f90 => sabisr.F90} | 10 +++++++++-
+ src/sati/Makefile.am                |  2 +-
+ src/sati/{satisr.f90 => satisr.F90} | 10 +++++++++-
+ 6 files changed, 37 insertions(+), 13 deletions(-)
+
+commit 578d598e7ca1141e30a8cbf1b501969ab078fbf2
+Date:   Mon Feb 9 16:02:39 2026 +0100
+
+    Velocity corrections for sbki and sdi
+
+ src/sbki/Makefile.am                |  2 +-
+ src/sbki/{sbkisr.f90 => sbkisr.F90} | 12 ++++++++++--
+ src/sdi/Makefile.am                 |  2 +-
+ src/sdi/{sdisr.f90 => sdisr.F90}    | 10 +++++++++-
+ 4 files changed, 21 insertions(+), 5 deletions(-)
+
+commit 591895c65c4e096102957b39f8f906f0cae20686
+Date:   Mon Feb 9 15:59:26 2026 +0100
+
+    Velocity corrections for fi and NOT vfmi
+
+ src/fi/Makefile.am            |  2 +-
+ src/fi/{fisr.f90 => fisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit b872122013708b01fb1d5ed8f64d3c8f760175bc
+Date:   Mon Feb 9 15:56:53 2026 +0100
+
+    Velocity corrections for hni and ncli
+
+ src/hni/Makefile.am                      |  2 +-
+ src/hni/{hnicommon.f90 => hnicommon.F90} | 10 +++++++++-
+ src/ncli/Makefile.am                     |  2 +-
+ src/ncli/{nclisr.f90 => nclisr.F90}      | 10 +++++++++-
+ 4 files changed, 20 insertions(+), 4 deletions(-)
+
+commit 5dbdad24072a973e6cd5146d18cdc9b38b231e08
+Date:   Mon Feb 9 15:47:47 2026 +0100
+
+    Velocity corrections for the Monster
+
+ src/di/Makefile.am                    |  2 +-
+ src/di/{direheat.f90 => direheat.F90} | 65 ++++++++++++++++++++++++++++++-----
+ src/di/{disr.f90 => disr.F90}         | 24 +++++++++++--
+ 3 files changed, 79 insertions(+), 12 deletions(-)
+
+commit 43bec1bc23a1b44cee8c03d2ce51ec036eac3ec6
+Date:   Mon Feb 9 14:07:26 2026 +0100
+
+    Velocity corrections for ccsih
+
+ src/ccsi/ccsicommon.F90 | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+commit 13d97a8cdb9b7223a613aa60d2f6d90655c689cc
+Date:   Mon Feb 9 13:37:04 2026 +0100
+
+    Velocity corrections for ccsi
+
+ src/ccsi/ccsicommon.F90 | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+commit 3974c51d319468ba2f4f1777a25a0310870e172b
+Date:   Mon Feb 9 13:34:50 2026 +0100
+
+    Default disable during test phase
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 9812b8ce356f927f48812f18cd522c6ad50923d7
+Date:   Sat Feb 7 10:06:14 2026 +0100
+
+    Velocity corrections for nfi
+
+ src/nfi/Makefile.am                      |  2 +-
+ src/nfi/{nficommon.f90 => nficommon.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 9236afa66015935e900026207459f60648bd024a
+Date:   Sat Feb 7 10:02:11 2026 +0100
+
+    Velocity corrections for bi and kklti
+
+ src/bi/Makefile.am                     |  2 +-
+ src/bi/{bisr.f90 => bisr.F90}          | 10 +++++++++-
+ src/kklti/Makefile.am                  |  2 +-
+ src/kklti/{kkltisr.f90 => kkltisr.F90} | 10 +++++++++-
+ 4 files changed, 20 insertions(+), 4 deletions(-)
+
+commit 77105a7f4ab75a4a94409800d9c9b47e137930cd
+Date:   Fri Feb 6 16:21:37 2026 +0100
+
+    Velocity corrections for gripi
+
+ src/gripi/Makefile.am                          |  2 +-
+ src/gripi/{gripicommon.f90 => gripicommon.F90} | 13 ++++++++++---
+ src/gripi/gripisr.F90                          | 12 +++++++++++-
+ 3 files changed, 22 insertions(+), 5 deletions(-)
+
+commit 84076b618ae7eadc7b04b453f93ced775af42bee
+Date:   Fri Feb 6 16:05:06 2026 +0100
+
+    Velocity corrections for wri, osti, imi
+
+ src/imi/Makefile.am                 |  2 +-
+ src/imi/{imisr.f90 => imisr.F90}    | 10 +++++++++-
+ src/osti/Makefile.am                |  2 +-
+ src/osti/{ostisr.f90 => ostisr.F90} | 11 +++++++++--
+ src/wri/Makefile.am                 |  2 +-
+ src/wri/{wrisr.f90 => wrisr.F90}    | 10 ++++++++--
+ 6 files changed, 29 insertions(+), 8 deletions(-)
+
+commit d43afd89490d5b72753391723e95082a352b6e6e
+Date:   Fri Feb 6 15:56:06 2026 +0100
+
+    Velocity corrections for rchi
+
+ src/rchi/Makefile.am                |  2 +-
+ src/rchi/{rchisr.f90 => rchisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 1c3a686c5bb7387e71081206c81beaeb39e45c96
+Date:   Fri Feb 6 15:54:28 2026 +0100
+
+    Velocity corrections for cndi
+
+ src/cndi/Makefile.am                |  2 +-
+ src/cndi/{cndisr.f90 => cndisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit caccbddccf608f6ae0e4e28055f8dad6d525de04
+Date:   Fri Feb 6 15:52:09 2026 +0100
+
+    Velocity corrections for lpi
+
+ src/lpi/Makefile.am                      |  2 +-
+ src/lpi/{lpicommon.f90 => lpicommon.F90} | 11 +++++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+
+commit 4a668bc308ae632e37627a572fb5bad2f471ad37
+Date:   Fri Feb 6 15:46:24 2026 +0100
+
+    Velocity corrections for rmi
+
+ src/rmi/Makefile.am                      |  2 +-
+ src/rmi/{rmicommon.f90 => rmicommon.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 37a38b923a10dd16d68f8c92414365ecbef6af53
+Date:   Fri Feb 6 15:34:55 2026 +0100
+
+    Fix typo in dsisr
+
+ src/dsi/dsisr.F90 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1347a0cda2eb5d6c7e8bc7dac48a8d8c5261360b
+Date:   Fri Feb 6 15:30:40 2026 +0100
+
+    Velocity corrections for csi, oripi, sbi
+
+ src/csi/Makefile.am                    |  2 +-
+ src/csi/{csisr.f90 => csisr.F90}       | 10 +++++++++-
+ src/oripi/Makefile.am                  |  2 +-
+ src/oripi/{oripisr.f90 => oripisr.F90} | 10 +++++++++-
+ src/sbi/Makefile.am                    |  2 +-
+ src/sbi/{sbisr.f90 => sbisr.F90}       | 10 +++++++++-
+ 6 files changed, 30 insertions(+), 6 deletions(-)
+
+commit 8a9bcb44f5a3bf4ef47c6e7943431d8cda9e2967
+Date:   Fri Feb 6 15:20:15 2026 +0100
+
+    Velocity corrections for ai, oi, cnai, cnbi and cnci
+
+ src/ai/Makefile.am                  |  2 +-
+ src/ai/{aisr.f90 => aisr.F90}       | 10 +++++++++-
+ src/cnai/Makefile.am                |  2 +-
+ src/cnai/{cnaisr.f90 => cnaisr.F90} | 10 +++++++++-
+ src/cnbi/Makefile.am                |  2 +-
+ src/cnbi/{cnbisr.f90 => cnbisr.F90} | 11 ++++++++++-
+ src/cnci/Makefile.am                |  2 +-
+ src/cnci/{cncisr.f90 => cncisr.F90} | 10 +++++++++-
+ src/oi/Makefile.am                  |  2 +-
+ src/oi/{oisr.f90 => oisr.F90}       | 10 +++++++++-
+ 10 files changed, 51 insertions(+), 10 deletions(-)
+
+commit 85c69bfa62c92d766877037d7da37b7d96dc5e1d
+Date:   Fri Feb 6 14:38:52 2026 +0100
+
+    Velocity corrections for ssbi
+
+ src/ssbi/Makefile.am                        |  2 +-
+ src/ssbi/{ssbicommon.f90 => ssbicommon.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 5089cf102478599ed8a6772468f8679dccfdbe50
+Date:   Fri Feb 6 14:35:18 2026 +0100
+
+    Velocity corrections for vhi and dsi
+
+ src/dsi/Makefile.am              |  2 +-
+ src/dsi/{dsisr.f90 => dsisr.F90} | 10 +++++++++-
+ src/vhi/Makefile.am              |  2 +-
+ src/vhi/{vhisr.f90 => vhisr.F90} | 10 +++++++++-
+ 4 files changed, 20 insertions(+), 4 deletions(-)
+
+commit 44461a7bcef65c91bb7b6a3a0241781b28b142dd
+Date:   Fri Feb 6 14:29:29 2026 +0100
+
+    Velocity corrections for lmi and rgi
+
+ src/lmi/Makefile.am                      |  2 +-
+ src/lmi/{lmicommon.f90 => lmicommon.F90} | 10 +++++++++-
+ src/rgi/Makefile.am                      |  2 +-
+ src/rgi/{rgisr.f90 => rgisr.F90}         | 10 +++++++++-
+ 4 files changed, 20 insertions(+), 4 deletions(-)
+
+commit f596f1ddd89b3acdfe5f85a45637fddf3e979802
+Date:   Fri Feb 6 14:14:50 2026 +0100
+
+    Velocity corrections for ncki
+
+ src/ncki/Makefile.am                |  2 +-
+ src/ncki/{nckisr.f90 => nckisr.F90} | 11 +++++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+
+commit 352ce09e56f87a250643da901d408616967b49b9
+Date:   Fri Feb 6 14:12:34 2026 +0100
+
+    Velocity corrections for bei and psni
+
+ src/bei/Makefile.am                 |  2 +-
+ src/bei/{beisr.f90 => beisr.F90}    | 10 +++++++++-
+ src/psni/Makefile.am                |  2 +-
+ src/psni/{psnisr.f90 => psnisr.F90} |  9 ++++++++-
+ 4 files changed, 19 insertions(+), 4 deletions(-)
+
+commit 45837b59693f1aad270c1e00b495e9298bfee7f9
+Date:   Fri Feb 6 14:03:34 2026 +0100
+
+    Velocity corrections for ti
+
+ src/bsusybi/Makefile.am                      |  2 +-
+ src/bsusybi/{bsusybisr.f90 => bsusybisr.F90} | 10 +++++++++-
+ src/ti/Makefile.am                           |  2 +-
+ src/ti/{tisr.f90 => tisr.F90}                |  9 ++++++++-
+ 4 files changed, 19 insertions(+), 4 deletions(-)
+
+commit dbb3bea375df21a734fb75bc23923fa31e976606
+Date:   Fri Feb 6 13:48:20 2026 +0100
+
+    Velocity corrections for mssmi and gmssmi
+
+ src/dwi/Makefile.am                               |  2 +-
+ src/dwi/{dwisr.f90 => dwisr.F90}                  | 11 +++++++++--
+ src/gmssmi/Makefile.am                            |  2 +-
+ src/gmssmi/{gmssmicommon.f90 => gmssmicommon.F90} | 10 +++++++++-
+ src/gmssmi/gmssmisr.F90                           | 13 ++++++++++++-
+ 5 files changed, 32 insertions(+), 6 deletions(-)
+
+commit 7550e0f2543b617e761a5d71f7ebfea732e6f24e
+Date:   Fri Feb 6 11:46:49 2026 +0100
+
+    Velocity corrections for rpi
+
+ src/rpi/Makefile.am                      |  2 +-
+ src/rpi/{rpicommon.f90 => rpicommon.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit b02ed494a86069de438dca9a1b6bbe9c6dbafbde
+Date:   Fri Feb 6 11:35:38 2026 +0100
+
+    Velocity corrections for mhi
+
+ src/mhi/Makefile.am              |  2 +-
+ src/mhi/{mhisr.f90 => mhisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 77aafb4b80909d63c98886ad56db922acf4c207b
+Date:   Fri Feb 6 10:45:43 2026 +0100
+
+    Velocity corrections for twi
+
+ src/hi/Makefile.am               |  2 +-
+ src/twi/Makefile.am              |  2 +-
+ src/twi/{twisr.f90 => twisr.F90} | 11 +++++++++--
+ 3 files changed, 11 insertions(+), 4 deletions(-)
+
+commit b1fa1509865a503505d81a0b818e6806041769de
+Date:   Fri Feb 6 10:23:41 2026 +0100
+
+    Velocity corrections for hi (in parametric routines)
+
+ src/hi/{hicommon.f90 => hicommon.F90} | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+commit 82d097d466eb3f880e6fe31392fd6bc7ba25f418
+Date:   Fri Feb 6 10:00:30 2026 +0100
+
+    Velocity corrections for li, ii and cwi
+
+ src/cwi/Makefile.am              |  2 +-
+ src/cwi/{cwisr.f90 => cwisr.F90} | 11 ++++++++++-
+ src/ii/Makefile.am               |  2 +-
+ src/ii/{iisr.f90 => iisr.F90}    | 10 +++++++++-
+ src/li/Makefile.am               |  2 +-
+ src/li/{lisr.f90 => lisr.F90}    | 10 +++++++++-
+ 6 files changed, 31 insertions(+), 6 deletions(-)
+
+commit c867ab31d89c38b23bc5bca7980d1793222188e7
+Date:   Fri Feb 6 09:47:51 2026 +0100
+
+    Velocity corrections for sfi and NOT hf1i
+
+ src/sfi/Makefile.am              |  2 +-
+ src/sfi/{sfisr.f90 => sfisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit b11d7ff51af3d326a1c0d555dfc419d420277574
+Date:   Thu Feb 5 16:56:08 2026 +0100
+
+    Velocity correction for kmii
+
+ src/kmii/Makefile.am                |  2 +-
+ src/kmii/{kmiisr.f90 => kmiisr.F90} | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit b02ebc4aea41cc411b89b199814eb903c501dcfe
+Date:   Thu Feb 5 16:51:56 2026 +0100
+
+    Velocity correction for rcqi, ni, esi and NOT pli
+
+ src/esi/Makefile.am                 |  2 +-
+ src/esi/{esisr.f90 => esisr.F90}    | 10 +++++++++-
+ src/lfi/lfisr.F90                   |  2 +-
+ src/ni/Makefile.am                  |  2 +-
+ src/ni/{nisr.f90 => nisr.F90}       | 11 +++++++++--
+ src/rcqi/Makefile.am                |  2 +-
+ src/rcqi/{rcqisr.f90 => rcqisr.F90} | 10 +++++++++-
+ 7 files changed, 31 insertions(+), 8 deletions(-)
+
+commit e0b0aa4d8a57d314d9ba4859489d20b44472a970
+Date:   Thu Feb 5 16:10:58 2026 +0100
+
+    Velcorr for rcmi
+
+ src/lfi/lfisr.F90   |  2 +-
+ src/rcmi/rcmisr.F90 | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+commit d4a60e236c549aa48a6d89e8947a23ed60e2b717
+Date:   Thu Feb 5 16:04:45 2026 +0100
+
+    Velcorr on lfi and gmlfi
+
+ src/common/Makefile.am                 |  2 +-
+ src/common/{srflow.F90 => srflow.f90}  |  4 ----
+ src/gmlfi/Makefile.am                  |  2 +-
+ src/gmlfi/{gmlfisr.f90 => gmlfisr.F90} | 13 ++++++++++---
+ src/lfi/Makefile.am                    |  2 +-
+ src/lfi/{lfisr.f90 => lfisr.F90}       | 10 +++++++++-
+ 6 files changed, 22 insertions(+), 11 deletions(-)
+
+commit 4ad0ddad4a5b7826815ab0af7a7cabf83dc364b5
+Date:   Thu Feb 5 15:38:25 2026 +0100
+
+    Add velocity corrections routines and test si and ahi
+
+ configure.ac                          | 16 +++++++++++++---
+ src/ahi/Makefile.am                   |  2 +-
+ src/ahi/{ahisr.f90 => ahisr.F90}      | 10 +++++++++-
+ src/common/Makefile.am                |  2 +-
+ src/common/huflow.f90                 | 21 ++++++++++++++++++++-
+ src/common/{srflow.f90 => srflow.F90} | 18 +++++++++++++++++-
+ src/si/Makefile.am                    |  2 +-
+ src/si/{sisr.f90 => sisr.F90}         | 10 +++++++++-
+ 8 files changed, 71 insertions(+), 10 deletions(-)
+
+commit 9a9481529fd3f57b7496f8f683049de4b52fa0aa
+Date:   Wed Jan 15 17:03:37 2025 +0100
+
+    Update logs
+
+ ChangeLog | 244 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 244 insertions(+)
+
 commit f12d287246425f32ffaadef3b08ee82a06fd6714
 Date:   Wed Jan 15 16:49:52 2025 +0100
 
@@ -124,7 +638,7 @@ Date:   Tue Nov 28 15:04:44 2023 +0100
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 commit c11eae398c9382e83bd83de7cc98cc63b282f4ee
-Author: chris <chris@ringeval.com>
+
 Date:   Fri Nov 24 17:30:23 2023 +0100
 
     Fix sneaky bug where dx is actually too small and dV=0
@@ -166,7 +680,7 @@ Date:   Thu Nov 16 14:56:10 2023 +0100
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 commit fdf0d32782c4aa8378e0a41b428be2750f312ff4
-Author: chris <chris@ringeval.com>
+
 Date:   Wed Nov 15 12:00:44 2023 +0100
 
     Add missing documentation in the libaspic man
@@ -221,7 +735,7 @@ Date:   Thu Nov 9 17:47:30 2023 +0100
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 commit f224027cebe33697f1ca1b30a072bd03c758fb63
-Author: chris <chris@ringeval.com>
+
 Date:   Tue Oct 31 11:15:14 2023 +0100
 
     update configure to next version
@@ -711,7 +1225,7 @@ Date:   Fri Oct 13 17:44:26 2023 +0200
  2 files changed, 6 insertions(+)
 
 commit 233217e60fc8cbcaabf710cad0391de96a92212e
-Author: chris <chris@ringeval.com>
+
 Date:   Thu Oct 12 17:10:45 2023 +0200
 
     Tune accurcy settings for finding eps1 for di
@@ -771,7 +1285,7 @@ Date:   Fri Oct 6 17:10:12 2023 +0200
  5 files changed, 71 insertions(+), 12 deletions(-)
 
 commit 4dc45c1b34b59ff223d2ee8bc408d55b11313cd4
-Author: chris <chris@ringeval.com>
+
 Date:   Fri Oct 6 15:57:29 2023 +0200
 
     Fix conformal function in rpi and add error log to elliptic functions
@@ -954,7 +1468,6 @@ Date:   Tue May 9 14:30:04 2023 +0200
  2 files changed, 54 insertions(+)
 
 commit caa94b15dedf03aeb1677c963fc1511e51947d08
-Author: chris <chris@ringeval.com>
 Date:   Thu Apr 20 11:25:38 2023 +0200
 
     Fix precision
